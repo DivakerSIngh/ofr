@@ -1,0 +1,122 @@
+﻿@model   OneFineRateBLL.Entities.PropDetailsM
+<style>
+    .scrolldiv {
+        height: 545px;
+        overflow-y: scroll;
+    }
+</style>
+
+<div class="col-lg-9 col-md-9   margintop10 scrolldiv" style="width:74%; margin-right:10px;" id="rooms">
+    @foreach (var item in Model.lstetblRooms)
+    {
+
+        <div class="row border1 whitebg">
+            <div class="col-md-3">
+                <img src="../images/hotel-img.png" alt="Image" class="imgheight132">
+            </div>
+            <div class="col-md-6 col-xs-7">
+
+                <h4><strong>@item.sRoomName</strong></h4>
+                <div class=" facilityicon margintop-10">
+                    <ul>
+                        <li><img src="../images/wifi.png" width="100%"></li>
+                        <li><img src="../images/wifi.png" width="100%"></li>
+                        <li><img src="../images/wifi.png" width="100%"></li>
+                        <li><img src="../images/wifi.png" width="100%"></li>
+                    </ul>
+                </div>
+                <p>
+                    Prices are per room<br>
+                    <strong> Not Included : </strong>  <strong> INR 1,350 </strong>   City tax per night, <strong> 7.42%  </strong> TAX.
+                </p>
+
+            </div>
+            <div class="col-md-3  col-xs-5">
+                <div class="font12 pull-right">
+                    <ul>
+                        <li>Maximum Occupancy : <strong>@item.MaxOccupancy</strong></li>
+                        <li>King/Twin bed : <strong>@item.TwinBed</strong></li>
+                        <li>Extra Bed: <strong>@item.ExtraBed</strong></li>
+                </div>
+            </div>
+
+
+            <hr>
+
+
+            <div class=" col-md-12">
+                <span><strong>Rate Inclusions:</strong> Room Only</span> | <span><strong>Cancellation:</strong> Non Refundable</span>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <td>Occupancy</td>
+                                <td>Rate</td>
+                                <td>Rooms</td>
+                                <td>Adults</td>
+                                <td>Kids</td>
+                                <td>Extra Bed</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="glyphicon glyphicon-user"></span> <span class="glyphicon glyphicon-user"></span></td>
+                                <td class="bluetext"><strong>Rs 15000<strong></td>
+                                <td>&nbsp;</td>
+                                <td><select class="form-control"><option>Select</option> <option>1</option><option>2</option><option>3</option><select></td>
+                                <td><select class="form-control"><option>Select</option> <option>1</option><option>2</option><option>3</option><select></td>
+                                <td><select class="form-control"><option>Select</option> <option>1</option><option>2</option><option>3</option><select></td>
+                            </tr>
+                            <tr>
+                                <td><span class="glyphicon glyphicon-user"></span></td>
+                                <td class="bluetext"><strong>Rs 18000<strong></td>
+                                <td>&nbsp;</td>
+                                <td><select class="form-control"><option>Select</option> <option>1</option><option>2</option><option>3</option><select></td>
+                                <td><select class="form-control"><option>Select</option> <option>1</option><option>2</option><option>3</option><select></td>
+                                <td><select class="form-control"><option>Select</option> <option>1</option><option>2</option><option>3</option><select></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div><hr>
+            </div>
+            <div class=" col-md-12">
+                <span><strong>Rate Inclusions:</strong> Room Only</span> | <span><strong>Cancellation:</strong> Non Refundable</span>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <td>Occupancy</td>
+                                <td>Rate</td>
+                                <td>Rooms</td>
+                                <td>Adults</td>
+                                <td>Kids</td>
+                                <td>Extra Bed</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="glyphicon glyphicon-user"></span> <span class="glyphicon glyphicon-user"></span></td>
+                                <td class="bluetext"><strong>Rs 15000<strong></td>
+                                <td>&nbsp;</td>
+                                <td><select class="form-control"><option>Select</option> <option>1</option><option>2</option><option>3</option><select></td>
+                                <td><select class="form-control"><option>Select</option> <option>1</option><option>2</option><option>3</option><select></td>
+                                <td><select class="form-control"><option>Select</option> <option>1</option><option>2</option><option>3</option><select></td>
+                            </tr>
+                            <tr>
+                                <td><span class="glyphicon glyphicon-user"></span></td>
+                                <td class="bluetext"><strong>Rs 16000<strong></td>
+                                <td>&nbsp;</td>
+                                <td><select class="form-control"><option>Select</option> <option>1</option><option>2</option><option>3</option><select></td>
+                                <td><select class="form-control"><option>Select</option> <option>1</option><option>2</option><option>3</option><select></td>
+                                <td><select class="form-control"><option>Select</option> <option>1</option><option>2</option><option>3</option><select></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+

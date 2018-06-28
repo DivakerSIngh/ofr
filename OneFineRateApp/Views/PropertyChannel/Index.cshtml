@@ -1,0 +1,175 @@
+﻿@{
+    ViewBag.Title = "Property Channel Manager Management";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+<script type="text/javascript">
+
+
+    $(document).ready(function () {
+
+        var Data1 = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("GetProperties")"));
+        var Data2 = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("GetChannelMgr")"));
+
+        var Prop = [], CM = [];
+        Prop.push('<option value="0" Selected>--Select--</option>');
+        CM.push('<option value="0" Selected>--Select--</option>');
+
+        $.each($.parseJSON(Data1.msg), function () {
+            Prop.push('<option value="' + this.Id + '">' + this.Name + '</option>');
+        });
+        $("select[name='Prop']").html(Prop.join(''));
+
+        $.each($.parseJSON(Data2.msg), function () {
+            CM.push('<option value="' + this.Id + '">' + this.Name + '</option>');
+        });
+        $("select[name='CM']").html(CM.join(''));
+
+        bindgrid(); //binding datatable
+
+        
+        $('#Submit').click(function () {
+
+            var prop = parseInt($('#Prop').val());
+            var CM = parseInt($('#CM').val());
+
+            //Check that range is provided
+            if (isNaN(prop) || prop == 0) {
+                toastr.error('Please select a Property.');
+                return;
+            }
+
+            // Check that Discount is provided
+            if (isNaN(CM) || CM == 0) {
+                toastr.error('Please select a Channel Manager.');
+                return;
+            }
+
+            var values = {
+                PropId: prop,
+                ChannMgr: CM
+            };
+
+            document.getElementById('Progress').style.display = 'block';
+            var Data1 = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("Check")", values));
+            bootbox.confirm(Data1.msg, function (result) {
+                if (result == true) {
+                    document.getElementById('Progress').style.display = 'block';
+                    var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("Update")", values));
+                    if (Data != null) {
+                        if (Data.st == '1') {
+                            bindgrid();
+                            $('.close').click();
+                            toastr.success(Data.msg);
+                            return true;
+                        }
+                        else if (Data.st == '0') {
+                            toastr.error(Data.msg);
+                            return false;
+                        }
+                    }
+                }
+            });
+        });
+
+    });
+
+    // Delete data from list
+    function DeleteData(obj) {
+        var id = decodeURIComponent($(obj).attr('eid'));
+        bootbox.confirm("Are you sure?", function (result) {
+            if (result == true) {
+                document.getElementById('Progress').style.display = 'block';
+                var values = {
+                    id: id
+                };
+                var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("Delete")", values));
+                if (Data != null) {
+                    if (Data.st == '1') {
+                        bindgrid();
+                        $('.close').click();
+                        toastr.success(Data.msg);
+                        return true;
+                    }
+                    else if (Data.st == '0') {
+                        toastr.error(Data.msg);
+                        return false;
+                    }
+
+                }
+            }
+        });
+    }
+
+    // bind list
+    function bindgrid() {
+
+        try {
+            var aoColumns =
+                [
+                 { "sTitle": "Property", "mData": "sHotelName" },
+                 { "sTitle": "Channel Manager", "mData": "sChannelMgrName" },
+                 {
+                     "sTitle": "Modify Date", "mData": "dtActionDate", "bSortable": false,
+                     "mRender": function (data, type, full) {
+                         return getNorDateTime(data);
+                     }
+                 },
+                 { "sTitle": "Modified By", "mData": "sActionBy", "bSortable": false },
+                 {
+                     "sTitle": "Action", "mData": "iPropId", "bSortable": false,
+                     "mRender": function (data, type, full) {
+                         var html = '<button type="button" onclick="DeleteData(this)"; eid=' + encodeURIComponent(full.iPropId) + ' class=" btn btn-danger btn-xs margintop10">Delete</button>&nbsp';
+                         return html;
+                     }
+                 }
+
+                ];
+            DatatableServerSide("#tblData", aoColumns, "/Services/Service.asmx/GetChannelManagerMapping");
+        }
+        catch (e) {
+
+        }
+
+    }
+
+</script>
+@*<form id="list">*@
+<div class="container margintop20">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-md-12">
+                    <h4 class="panel-title">
+                        Property Channel Manager Management
+                    </h4>
+                </div>
+                @*<div class="col-md-6">
+                    <button type="button" class="pull-right btn btn-warning" data-toggle="modal" data-target="#AddNewUsers"><i class="fa fa-plus"></i> Add Users </button>
+                                </div>*@
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class=" col-md-1">Properties</div>
+                <div class="col-md-4">
+                    <select class="form-control" id="Prop" name="Prop"></select>
+                </div>
+                <div class="col-md-2">Channel Manager</div>
+                <div class="col-md-4">
+                    <select class="form-control" id="CM" name="CM"></select>
+                </div>
+                <div class="col-md-1"> <input type="button" name="Submit" value="Submit" id="Submit" class="btn btn-primary width40"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <div class="table-responsive margintop20">
+            <table class="table table-striped table-bordered table-hover display" id="tblData"></table>
+        </div>
+        <!-- End  table -->
+    </div>
+    <!-- container div END bottom -->
+</div>

@@ -1,0 +1,235 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+
+<script type="text/javascript">
+
+
+    $(document).ready(function () {
+
+        bindgrid(); //binding datatable
+
+        //Inserting data through Ajax
+        document.getElementById('frmState').onsubmit = function (e) {
+            e.preventDefault();
+            var f = document.getElementById('frmState');
+            if (f.checkValidity()) {
+                var values = {
+                    countryid: $("#ddlCountry").val(), countryid: $("#ddlCountry").val(),
+                    statename: $("#txtState").val(), statename: $("#txtState").val()
+                };
+                var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("AddState")", values));
+                if (Data != null) {
+                    if (Data.st == '1') {
+                        bindgrid();
+                        resetform('frmState');
+                        $('.close').click();
+                        toastr.success(Data.msg);
+                        return true;
+                    }
+                    else if (Data.st == '0') {
+                        toastr.error(Data.msg);
+                        return false;
+                    }
+                }
+
+            }
+        }
+
+        //Updating data through Ajax
+        document.getElementById('frmStateUpdate').onsubmit = function (e) {
+            e.preventDefault();
+            var f = document.getElementById('frmStateUpdate');
+            if (f.checkValidity()) {
+                var values = {
+                    id: $('#hdnId').val(),
+                    countryid: $("#ddlCountryup").val(),
+                    statename: $("#txtStateup").val()
+                };
+                var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("UpdateState")", values));
+                if (Data != null) {
+                    if (Data.st == '1') {
+                        bindgrid();
+                        resetform('frmStateUpdate');
+                        $('.close').click();
+                        toastr.success(Data.msg);
+                        return true;
+                    }
+                    else if (Data.st == '0') {
+                        toastr.error(Data.msg);
+                        return false;
+                    }
+                }
+
+            }
+        }
+
+        //Pop up cancel button click event
+        $('#btnCancel').click(function () {
+            resetform('frmState');
+            $('.close').click();
+        });
+    })
+
+    // Delete data from list
+    function DeleteData(id) {
+        bootbox.confirm("Are you sure?", function (result) {
+            if (result == true) {
+                var values = { id: id };
+                var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("DeleteState")", values));
+                if (Data != null) {
+                    if (Data.st == '1') {
+                        bindgrid();
+                        $('.close').click();
+                        toastr.success(Data.msg);
+                        return true;
+                    }
+                    else if (Data.st == '0') {
+                        toastr.error(Data.msg);
+                        return false;
+                    }
+
+                }
+            }
+        });
+    }
+
+    // bind list
+    function bindgrid() {
+
+        try {
+            var aoColumns =
+                [
+                 { "sTitle": "Country", "mData": "sCountry" },
+                 { "sTitle": "State", "mData": "sState" },
+                 { "sTitle": "Status", "mData": "cStatus" },
+                  {
+                      "sTitle": "Created On", "mData": "dtActionDate",
+                      "mRender": function (data, type, full) {
+                          return getNorDateTime(data);
+                      }
+                  },
+                  {
+                      "sTitle": "Edit", "mData": "iCountryId",
+                      "mRender": function (data, type, full) {
+                          var html = '<button type="button" onclick="EditData(this)"; eid=' + full.iStateId + ' countryid=' + full.iCountryId + ' statename=\"' + full.sState + '\"  class="btn btn-warning">Edit</button>&nbsp';
+                          html += '<button type="button" onclick="DeleteData(' + full.iStateId + ')";  class="btn btn-danger">Delete</button>';
+                          return html;
+                      }
+                  }
+
+
+                ];
+            DatatableServerSide("#tblData", aoColumns, "/Services/Service.asmx/GetAllStateRecords?id=1");
+        }
+        catch (e) {
+
+        }
+
+    }
+    //fill form on click edit in the list
+    function EditData(obj) {
+        $('#hdnId').val($(obj).attr('eid'));
+        $("#ddlCountryup").select2("val", $(obj).attr('countryid'));
+        $("#txtStateup").val($(obj).attr('statename'))
+        $('#UpdateState').modal({
+            show: 'true'
+        });
+
+    }
+
+
+
+</script>
+
+<div class="container margintop20">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <strong>States</strong>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#AddPolicy"><i class="fa fa-plus"></i> Add State </button>
+            </h4>
+
+        </div>
+        <div class="panel-body">
+
+            <div class="table-responsive margintop20">
+                <table class="display" id="tblData"></table>
+            </div>
+            <!-- End  table -->
+        </div>
+    </div>
+    <!-- container div END bottom -->
+</div>
+<!-- Add State -->
+<form id="frmState">
+    <div id="AddPolicy" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Countries</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="col-xs-4">
+                            Country
+                            @Html.DropDownList("ddlCountry", new SelectList(ViewBag.CountryList, "iCountryId", "CountryName"), "Select Country", new { @class = "form-control", oninvalid = "setCustomValidity('Please select country')", onchange = "try{setCustomValidity('')}catch(e){}", required = true, initialvalue = "Select Country" })
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-4">
+                            State Name
+                            @Html.TextBox("txtState", null, new { @class = "form-control", oninvalid = "setCustomValidity('Please enter only alphabets')", onchange = "try{setCustomValidity('')}catch(e){}", pattern = "[A-Za-z ]+", maxlength = "50", required = true })
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="btnSubmit" class="btn btn-primary">SAVE</button>
+                    <button type="button" id="btnCancel" class="btn btn-danger">CANCEL</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+<!-- Update State -->
+<form id="frmStateUpdate">
+    @Html.Hidden("hdnId");
+    <div id="UpdateState" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Update Countries</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-4">
+                            Country
+                            @Html.DropDownList("ddlCountryup", new SelectList(ViewBag.CountryList, "iCountryId", "CountryName"), null, new { @class = "form-control", oninvalid = "setCustomValidity('Please select country')", onchange = "try{setCustomValidity('')}catch(e){}", required = true })
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-4">
+                            State Name
+                            @Html.TextBox("txtStateup", null, new { @class = "form-control", oninvalid = "setCustomValidity('Please enter only alphabets')", onchange = "try{setCustomValidity('')}catch(e){}", pattern = "^[a-zA-Z]+[a-zA-Z0-9 ]*$", maxlength = "50", required = true })
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="btnUpdate" class="btn btn-primary">Update</button>
+                    <button type="button" id="btnCancel" class="btn btn-danger">CANCEL</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>

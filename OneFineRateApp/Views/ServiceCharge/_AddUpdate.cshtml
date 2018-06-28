@@ -1,0 +1,213 @@
+﻿@model OneFineRateBLL.Entities.eServiceChargeM
+
+
+@using (Html.BeginForm("AddUpdate", "ServiceCharge", FormMethod.Post, new { id = "frmAddUpdateServiceCharge" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Service Charge</h4>
+    </div>
+    <div class="modal-body">
+        <div class="form-horizontal">
+
+            @Html.HiddenFor(m => m.ServiceChargeId)
+            @Html.HiddenFor(m => m.ActionDate)
+            @Html.HiddenFor(m => m.Status)
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="row">
+                <div class="col-md-6">
+                    @Html.LabelFor(model => model.From, htmlAttributes: new { @class = "control-label" }) <spam class="red">*</spam>
+
+                    @Html.EditorFor(model => model.From, new { htmlAttributes = new { id = "dtFrom", maxlength = "200", @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.From, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="col-md-6">
+                    @Html.LabelFor(model => model.To, htmlAttributes: new { @class = "control-label" }) <spam class="red">*</spam>
+
+                    @Html.EditorFor(model => model.To, new { htmlAttributes = new { id = "dtTo", maxlength = "100", @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.To, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-8">
+                    @Html.LabelFor(model => model.ServiceCharge, htmlAttributes: new { @class = "control-label" }) <spam class="red">*</spam>
+
+                    @Html.EditorFor(model => model.ServiceCharge, new { htmlAttributes = new { maxlength = "10", @class = "form-control decimal" } })
+                    @Html.ValidationMessageFor(model => model.ServiceCharge, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    @Html.LabelFor(model => model.GstValueType, htmlAttributes: new { @class = "control-label" }) <spam class="red">*</spam>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-12">
+                            @Html.DropDownListFor(m => m.GstValueType, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="%",Value="p" },
+                                                                            new SelectListItem {Text="Value",Value="v" }},
+                                        new { @class = "form-control ", id = "ddlGstValueType" })
+                        </div>
+                    </div>
+                    @Html.ValidationMessageFor(model => model.GstValueType, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-6">
+                    @Html.LabelFor(model => model.GstValue, htmlAttributes: new { @class = "control-label" }) <spam class="red">*</spam>
+                    @Html.TextBoxFor(model => model.GstValue, new { maxlength = "10", @class = "form-control decimal", id="txtGstValue" })
+                    @Html.ValidationMessageFor(model => model.GstValue, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" id="btnSubmit" class="btn btn-primary">Save</button>
+        <button type="button" data-dismiss="modal" id="btnCancel" class="btn btn-danger">Cancel</button>
+    </div>
+}
+
+<script title="AddServiceCharge">
+
+    function calendar() {
+
+        var d = new Date();
+
+        $('#dtFrom').datepicker({
+            startDate: d,
+            minDate:d,
+            autoclose: true,
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true,
+            onClose: function (selectedDate) {
+                if(selectedDate)
+                $("#dtTo").datepicker("option", "minDate", selectedDate);
+            }
+        });
+
+        $('#dtTo').datepicker({
+            startDate: d,
+            minDate: d,
+            autoclose: true,
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true,
+            onClose: function (selectedDate) {
+                //if (selectedDate)
+                //$("#dtFrom").datepicker("option", "maxDate", selectedDate);
+            }
+        });
+
+
+        $("#dtFrom").each(function () {
+            var selecteddate = $("#dtFrom").datepicker("getDate");
+            var dateString = $.datepicker.formatDate('dd/mm/yy', selecteddate);
+            if (dateString == "01/01/2001") {
+                $("#dtFrom").datepicker('setDate', new Date('dd/mm/yy'));
+            }
+            $('#dtFrom').attr('disable', true);
+
+        });
+
+        $("#dtTo").each(function () {
+            var selecteddate = $("#dtTo").datepicker("getDate");
+            var dateString = $.datepicker.formatDate('dd/mm/yy', selecteddate);
+            if (dateString == "01/01/2001") {
+                $("#dtTo").datepicker('setDate', new Date('dd/mm/yy'));
+            }
+        });
+
+        $("#ui-datepicker-div").hide();
+    }
+
+
+    $(function () {
+
+        //debugger;
+
+        calendar();
+
+        $('#ddlGstValueType').select2();
+
+
+        $('#frmAddUpdateServiceCharge').submit(function (e) {
+
+            e.preventDefault();
+
+            if ($(this).valid()) {
+
+                var isAllTaxValid = true;
+
+                $("#ddlGstValueType").get().forEach(function (entry, index, array) {
+
+                    if ($(entry).val() == 'p') {
+
+                        var dataTaxId = $(entry).data('taxid');
+
+                        var respectiveTextBox = $('#txtGstValue');
+
+                        var respectiveTextBoxVal = parseFloat(respectiveTextBox.val());
+
+                        if (respectiveTextBoxVal >= 100) {
+
+                            isAllTaxValid = false;
+                            return false;
+                        }
+                    }
+                });
+
+                if (!isAllTaxValid) {
+                    toastr.error('Tax value can not be greater than or equal to 100%');
+                    return false;
+                }
+
+                var frmData = $(this).serializeArray();
+
+                $.post($(this).attr('action'), frmData).done(function (data) {
+
+                    toastr.clear($('.toast'));
+
+                    if (data.status == false) {
+                        toastr.error(data.Msg);
+                    }
+                    else if (data.status == true) {
+
+                        $('#addUpdateServiceChargeModal').modal('hide');
+
+                        BindServiceChargeGrid();
+
+                        toastr.success(data.Msg);
+                    }
+                });
+            }
+        });
+
+
+        $(".decimal").keydown(function (event) {
+
+            if (event.shiftKey == true) {
+                event.preventDefault();
+            }
+
+            if ((event.keyCode >= 48 && event.keyCode <= 57)
+                || (event.keyCode >= 96 && event.keyCode <= 105)
+                || event.keyCode == 8 || event.keyCode == 9
+                || event.keyCode == 37 || event.keyCode == 39
+                || event.keyCode == 46 || event.keyCode == 190) {
+
+            } else {
+                event.preventDefault();
+            }
+
+            if ($(this).val().indexOf('.') !== -1 && event.keyCode == 190)
+                event.preventDefault();
+        });
+
+    });
+
+</script>

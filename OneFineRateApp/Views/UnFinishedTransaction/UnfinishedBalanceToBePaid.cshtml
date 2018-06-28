@@ -1,0 +1,147 @@
+﻿@model OneFineRateBLL.Entities.etblUnfinishedTransactionsToBePaid
+@{
+    ViewBag.Title = "UnfinishedBalanceToBePaid";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+<link href="~/css/style1.css" rel="stylesheet" />
+
+@using (Html.BeginForm("UnfinishedBalanceToBePaidSendLink", "UnFinishedTransaction", new { id = "form1", role = "form" }))
+{
+    @Html.HiddenFor(m => Model.iPropId)
+    @Html.HiddenFor(m => Model.iBookingID)
+    @Html.HiddenFor(m => Model.sHotelName)
+    @Html.HiddenFor(m => Model.sHotelAddress)
+    @Html.HiddenFor(m => Model.sHotelImgURL)
+    @Html.HiddenFor(m => Model.iStarCategory)
+    @Html.HiddenFor(m => Model.dtCheckIn)
+    @Html.HiddenFor(m => Model.dtCheckOut)
+    @Html.HiddenFor(m => Model.iCalcNights)
+    @Html.HiddenFor(m => Model.dNegotiationAmount)
+    @Html.HiddenFor(m => Model.dAdvancePaid)
+    @Html.HiddenFor(m => Model.dBalancePayment)
+    @Html.HiddenFor(m => Model.sCustomerEmailID)
+    @Html.HiddenFor(m => Model.lstetblHotelFacilities)
+
+
+    
+
+
+    <div class="container margintop20">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Unfinished Transactions
+            </div>
+
+            <div class="thirdsection">
+                <div class="container">
+                    <div class="col-md-8 paddingtop-bottom15">
+                        <div class="col-md-5 col-xs-12">
+                            <div class="img-res"> <img src='@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()@Model.sHotelImgURL' alt="Image" width="100%"> </div>
+                        </div>
+                        <div class="col-md-5 col-xs-12">
+                            <h4>Hotel Emperor Plams</h4>
+                            <div class="margintop-10"> <img src="~/images/inner-star@(Model.iStarCategory).png"></div>
+                            <address>
+                                @Html.DisplayFor(m => m.sHotelAddress)
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-3 col-sm-3  col-xs-3">Facilities:</div>
+                                    <div class="col-md-8 col-xs-8 facilityicon">
+                                        <ul>
+                                            @for (int i = 0; i < Model.lstetblHotelFacilities.Count; i++)
+                                            {
+                                                <li><img src='@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()@Model.lstetblHotelFacilities[i].sImgUrl' id="iconPreview" width="100%"></li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                            </address>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-xs-12">
+                        <div class="row">
+                            <div class="col-md-6 col-xs-6 pull-left">
+                                <div class="whitebg center  border1">
+                                    <h4>Check In</h4>
+                                </div>
+                                <div class="lytgry center  border1">
+                                    <div class="row">
+                                        <div class="col-md-5   col-xs-5"><img src="../images/calendar_icon.png" alt=""></div>
+                                        <div class="col-md-7   col-xs-7">
+                                            <div class="bluetextsmall">@Html.DisplayFor(m => m.dtCheckIn)</div>
+                                            @*<div class="bluetextbig">@Html.DisplayFor(m => m.dtCheckIn)</div>*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-xs-6 pull-right">
+                                <div class="whitebg center  border1">
+                                    <h4>Check Out</h4>
+                                </div>
+                                <div class="lytgry center  border1">
+                                    <div class="row">
+                                        <div class="col-md-5  col-xs-5"><img src="../images/calendar_icon.png" alt=""></div>
+                                        <div class="col-md-7 col-xs-7">
+                                            <div class="bluetextsmall">@Html.DisplayFor(m => m.dtCheckOut)</div>
+                                            @*<div class="bluetextbig">2015</div>*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 margintop10">
+                                <div class="col-md-3">&nbsp;</div>
+                                <div class="col-md-6 whitebg center border1"><h4>Nights: @Html.DisplayFor(m => m.iCalcNights)</h4> </div>
+                                <div class="col-md-3">&nbsp;</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--next section-->
+            </div>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12 center margintop20">
+                        <h3>Congratulations! Your bargain amount has been accepted by the hotel. </h3>
+                        <h5>Please pay the balance amount to recieve the final confirmation.</h5>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-3 margintop10">
+                        <div class="tablebluebg paddingleft20">Payment Summary</div>
+                        <div class=" table-responsive">
+                            <table class="table table-bordered table-striped  table-hover">
+
+                                <tbody>
+                                    <tr>
+                                        <td align="left"><strong>Your Bargain Amount </strong>	</td>
+                                        <td align="right">@Html.DisplayFor(m => m.dNegotiationAmount)</td>
+                                    </tr>
+                                    <tr>
+                                        <td align="left"><strong>Advance Paid 	</strong></td>
+                                        <td align="right">@Html.DisplayFor(m => m.dAdvancePaid)</td>
+                                    </tr>
+                                    <tr>
+                                        <td align="left"><strong>Balance Payment 	</strong></td>
+                                        <td align="right">@Html.DisplayFor(m => m.dBalancePayment)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="col-md-12 center margintop10 marginbottom20">
+                    <button type="submit" class="btn btn-success  btn-lg">Send link again</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+}
+
+

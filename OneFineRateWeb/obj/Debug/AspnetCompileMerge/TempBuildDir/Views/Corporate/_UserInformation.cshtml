@@ -1,0 +1,477 @@
+﻿@model   OneFineRateBLL.Entities.PropDetailsM
+@using OneFineRateBLL
+@using Microsoft.AspNet.Identity
+
+
+
+<style>
+    .select2 {
+        width: 50% !important;
+        float: left !important;
+    }
+
+    .select2-container--default .select2-selection--single {
+        height: 34px;
+    }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 33px;
+        }
+</style>
+
+
+<form id="frmCorporateUserDetails">
+    <div class="container">
+        <div class=" margintop10">
+            <div class="tablebluebg">Your Information</div>
+            @Html.HiddenFor(x => x.TaxCharges.dOFRServiceCharge, new { @id = "ServiceCharge" })
+            @Html.HiddenFor(x => x.TaxCharges.TaxOnServiceCharge, new { @id = "TaxOnServiceCharge" })
+            @Html.HiddenFor(x => x.TaxCharges.dGstValue, new { @id = "dGstValue_puserinformation" })
+            @Html.HiddenFor(x => x.TaxCharges.cGstValueType, new { @id = "cGstValueType" })
+            <div class=" table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th width="9%">TITLE<span class="red">*</span></th>
+                            <th width="14%">FIRST NAME<span class="red">*</span></th>
+                            <th width="14%">LAST NAME<span class="red">*</span></th>
+                            <th width="18%">EMAIL ID<span class="red">*</span></th>
+                            <th width="26%">MOBILE NO.<span class="red">*</span></th>
+                            <th width="15%">STATE<span class="red">*</span></th>
+                            <th width="10%" class="clsedit" style="display:none;">Edit</th>
+                        </tr>
+
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                @Html.DropDownListFor(m => m.sUserTitle, new List<SelectListItem> { new SelectListItem { Value = "Mr.", Text = "Mr.", Selected = Model.sUserTitle == "Mr." }, new SelectListItem { Value = "Ms.", Text = "Ms.", Selected = Model.sUserTitle == "Ms." } }, "Select title", new { @class = "form-control mwidth110", disabled = "disabled", id = "ddtitle", required = "true" })
+
+                                @*@Html.DropDownListFor(m => m.sUserTitle, new List<SelectListItem> {
+                                    new SelectListItem { Value = "Mr.", Text = "Mr.", Selected = Model.sUserTitle == "Mr." },
+                                    new SelectListItem { Value = "Mrs.", Text = "Mrs.", Selected = Model.sUserTitle == "Mrs." },
+                                    new SelectListItem { Value = "Ms.", Text = "Ms.", Selected = Model.sUserTitle == "Ms." },
+                                    new SelectListItem { Value = "Dr.", Text = "Dr.", Selected = Model.sUserTitle == "Dr." },
+                                    new SelectListItem { Value = "Prof.", Text = "Prof.", Selected = Model.sUserTitle == "Prof." }},
+                                          "Title", new { @class = "form-control mwidth110", disabled = "disabled", id = "ddtitle", required = "true" })*@
+
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.sUserFirstName, new { id = "txtFirstName", type = "text", placeholder = "First Name", disabled = "disabled", @class = "form-control mwidth130", required = "true" })
+
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.sUserLastName, new { id = "txtLastName", type = "text", placeholder = "Last Name", disabled = "disabled", @class = "form-control mwidth130", required = "true" })
+
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.sUserEmail, new { id = "txtEmailId", type = "email", placeholder = "Email Id", disabled = "disabled", @class = "form-control mwidth130", required = "true", oninvalid = "setCustomValidity('Please enter valid email id.')", onchange = "try{setCustomValidity('')}catch(e){}" })
+
+                            </td>
+                            <td>
+                                <div style="width:100%">
+                                    <div style="width:50%; float:left">
+                                        @Html.DropDownListFor(model => model.sCountryPhoneCode, new SelectList(Model.CountryCodePhoneList, "sCode", "sFrontendCode", "+91"), new { style = "width:50%; float:left", @disabled = "disabled", id = "ddlCountryCode", @class = "form-control" })
+                                    </div>
+                                    <div>
+                                        @Html.TextBoxFor(m => m.sUserMobileNo, new { style = "width:50%; float:left", id = "txtMobileNo", type = "phone", placeholder = "Mobile No,An OTP will sent", maxlength = "10", disabled = "disabled", @class = "form-control", required = "true", pattern = @"^[\-\+]?\d+$", oninvalid = "setCustomValidity('Please enter valid mobile number.')", onchange = "try{setCustomValidity('')}catch(e){}" })
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                @{
+                                    var selectListItem = OneFineRateBLL.BL_Country.GetStatesByCountryId(1);
+                                    selectListItem.Insert(0, new OneFineRateBLL.Entities.eStates { iStateId = -1, sState = "Out Side India" });
+
+                                    <style>
+                                        .select2 {
+                                            width: 100% !important;
+                                        }
+                                    </style>
+                                }
+
+                                @if (Model.iStateId == 0)
+                                {
+                                    @Html.DropDownListFor(model => model.iStateId, new SelectList(selectListItem, "iStateId", "sState"), "Select State", new { @class = "form-control", style = "width:100% !important", id = "ddlGuestStateId" })
+                                }
+                                else
+                                {
+                                    @Html.DropDownListFor(model => model.iStateId, new SelectList(selectListItem, "iStateId", "sState"), "Select State", new { @class = "form-control", disabled = "disabled", style = "width:100% !important", id = "ddlGuestStateId" })
+                                }
+                            </td>
+                            <td class="clsedit" style="display:none;">
+                                @*<button id="btnVerifyMobileNumber" disabled="disabled" class="btn btn-primary">Verify Mobile Number</button>*@
+                                <a href="javascript:void(0);" onclick="EditUserInformation()">Edit</a>
+                            </td>
+                        </tr>
+                        <tr id="trOTP" style="display:none;">
+                            <td colspan="6" align="center">
+                                <div class="col-md-12">
+                                    Please Enter OTP : <input id="txtOTP" style="width:100px;" type="text" placeholder="" maxlength="6" class="form-control">
+                                </div>
+                                <div>
+                                    <a style="cursor:pointer; text-decoration:underline" id="btnResend">Re-Send OTP</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="col-md-12 center margintop10">
+            <button type="button" id="btnModify" class="btn btn-primary  btn-lg ">Modify Search</button>
+            <button type="submit" id="btnChargeCard" class="btn btn-primary  btn-lg mtop4">Proceed to Payment</button>
+        </div>
+    </div>
+</form>
+<input type="hidden" id="hdntype" value="@ViewBag.type" />
+<input type="hidden" id="hdnreqstatus" value="@ViewBag.reqstatus" />
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $('#ddlCountryCode').select2();
+        $('#ddlGuestStateId').select2();
+
+        $('#frmCorporateUserDetails #txtMobileNo').keypress(function (e) {
+
+            var cursorPosition = document.getElementById('txtMobileNo').selectionStart;
+
+            if ((this.value.length == 0 || cursorPosition == 0) && e.which == 48) {
+
+                return false;
+            }
+
+        });
+
+
+        $('#hdnVC').val('');
+        $('[data-toggle="popover"]').popover();
+        SetValues();
+
+        $('#btnResend').click(function (e) {
+            e.preventDefault();
+            var param = {
+                Mobile: $("#frmCorporateUserDetails #txtMobileNo").val(),
+                VC: $("#hdnVC").val()
+            }
+            var data = AjaxCallWithDataMVC('../Negotiation/ReSendOTPCode', param);
+            if (data != null) {
+                if (data.st == '1') {
+                    $('#hdnVC').val(data.VC);
+                    toastr.success('OTP sent on mobile no: ' + $("#frmCorporateUserDetails #txtMobileNo").val() + '');
+                }
+                else {
+                    toastr.error('Kindly try after some time.')
+                }
+            }
+            else {
+                toastr.error('Kindly try after some time.')
+            }
+        });
+    });
+
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+
+    function SetValues() {
+        var type = $("#hdntype").val();
+        var hdnreqstatus = $("#hdnreqstatus").val();
+        if (type == 'G' || type == 'L') {
+
+            if ('@Model.sActionType' == 'N') {  //Its for Negotiation
+                var NegoAmount = $("#txtNegotiaionAmount").val();
+                var amt = parseFloat(NegoAmount);
+                var taxexamt = '@Model.dSummaryTaxes';
+                //$('#spgrantotal').html(parseFloat(taxexamt) + amt);
+                //$('#hdnNegoGrandTAmt').val(parseFloat(taxexamt) + amt);
+                $('#hdnNegoGrandTAmt').val('');
+                $('#anCalculate').click();
+            }
+
+            $('#txtNegotiaionAmount').attr('disabled', 'disabled');
+            $('#chkAgree').attr('disabled', 'disabled');
+            $('#chkAgree').attr('checked', 'checked');
+        }
+        else if (type == 'O') {
+            {
+                $('#txtNegotiaionAmount').removeAttr('disabled');
+                $('#chkAgree').removeAttr('disabled');
+                $('#chkAgree').removeAttr('checked');
+            }
+        }
+
+        if (type == 'G') {
+            debugger;
+            $('#ddtitle').removeAttr('disabled');
+            $('#txtFirstName').removeAttr('disabled');
+            $('#txtLastName').removeAttr('disabled');
+            $('#txtEmailId').removeAttr('disabled');
+            $('#frmCorporateUserDetails #txtMobileNo').removeAttr('disabled');
+            $("#ddlCountryCode").removeAttr('disabled');
+            $('#ddlGuestStateId').removeAttr('disabled');
+            //  $('#btnVerifyMobileNumber').removeAttr('disabled');
+        }
+
+
+
+        if (hdnreqstatus == 'OTP') {
+            $('#trOTP').removeAttr('style');
+            $('#txtOTP').val('');
+            // $('#btnChargeCard').attr('disabled', 'disabled');
+
+            $('#ddtitle').attr('disabled', 'disabled');
+            $('#txtFirstName').attr('disabled', 'disabled');
+            $('#txtLastName').attr('disabled', 'disabled');
+            $('#txtEmailId').attr('disabled', 'disabled');
+            $('#frmCorporateUserDetails #txtMobileNo').attr('disabled', 'disabled');
+            //$('#btnVerifyMobileNumber').attr('disabled', 'disabled');
+
+            $('#ddlCountryCode').prop('disabled', true);
+        }
+    }
+
+</script>
+
+<script type="text/javascript">
+
+    function EditUserInformation() {
+
+        $('#trOTP').attr('style', 'display:none;');
+        $('#ddtitle').removeAttr('disabled');
+        $('#txtFirstName').removeAttr('disabled');
+        $('#txtLastName').removeAttr('disabled');
+        $('#txtEmailId').removeAttr('disabled');
+        $('#frmCorporateUserDetails #txtMobileNo').removeAttr('disabled');
+        $('.clsedit').hide();
+        $('#hdnVC').val('');
+        $("#hdnreqstatus").val('');
+        $("#txtOTP").val('');
+        $('#ddlCountryCode').prop('disabled', false);
+
+    }
+
+    $(function () {
+
+        $('#btnModify').click(function () {
+
+            window.location.href = '@Html.Raw(ViewBag.PrevUrl)';
+        });
+    });
+
+    $(function () {
+        $('#txtOTP').blur(function () {
+            $('#btnChargeCard').removeAttr('disabled');
+        });
+    });
+
+    $(function () {
+        $('#btnVerifyMobileNumber').click(function (event) {
+            var NegoAmount = 0;
+            event.preventDefault();
+            if ('@Model.sActionType' == 'N') {  //Its for Negotiation
+                NegoAmount = $("#txtNegotiaionAmount").val();
+            }
+
+            $.ajax({
+
+                type: 'POST',
+                url: '../Negotiation/VerifyMobileNo',
+                cache: false,
+                dataType: 'json',
+                data: {
+                    NegotiationAmount: NegoAmount,
+                    Title: $("#ddtitle").val(),
+                    FirstName: $("#txtFirstName").val(),
+                    LastName: $("#txtLastName").val(),
+                    EmailID: $("#txtEmailId").val(),
+                    Mobile: $("#frmCorporateUserDetails #txtMobileNo").val()
+                },
+                success: function (data) {
+                    if (data.st == 0) {
+                        toastr.info(data.msg);
+
+                        $('#ddtitle').attr('disabled', 'disabled');
+                        $('#txtFirstName').attr('disabled', 'disabled');
+                        $('#txtLastName').attr('disabled', 'disabled');
+                        $('#txtEmailId').attr('disabled', 'disabled');
+                        $('#frmCorporateUserDetails #txtMobileNo').attr('disabled', 'disabled');
+                        $('#btnVerifyMobileNumber').attr('disabled', 'disabled');
+                        $('#ddlCountryCode').prop('disabled', true);
+                    }
+                    else {
+
+                        $('#hdnVC').val(data.VC);
+                        $("#hdnreqstatus").val("OTP");
+                        $("#hdntype").val("G");
+                        SetValues();
+                    }
+
+                },
+                error: function (err) {
+                    alert('Error block')
+                    console.log(err);
+                }
+            });
+            @*}
+            else {
+                toastr.warning("Please enter negotiation amount less than or equals to @Model.dNegotiationAmtMax ");
+                $("#txtNegotiaionAmount").focus();
+            }*@
+        });
+    });
+
+
+
+    $(function () {
+
+        document.getElementById('frmCorporateUserDetails').onsubmit = function (e) {
+            e.preventDefault();
+            $('#anCalculate').click();
+
+            var NegoAmount = 0;
+            var f = document.getElementById('frmCorporateUserDetails');
+            if (f.checkValidity()) {
+
+                if ('@Model.sActionType' == 'N') {  //Its for Negotiation
+                    if (isNaN(parseFloat($('#hdnNegoGrandTAmt').val()))) {
+                        toastr.warning('Please calculate grand total first.');
+                        return false;
+                    }
+                }
+                else {
+                    $('#hdnNewTaxes').val(0);
+                }
+
+
+                if (!$("#chkAgree").prop('checked')) {
+                    toastr.error('Please accept the terms and conditions first.');
+                    return false;
+                }
+                if (!$("#ddlGuestStateId").val()) {
+                    toastr.error('Please select state, In case out side India, You can select "Out Side India" as option.');
+                    return false;
+                }
+                if ('@Model.sActionType' == 'N') {  //Its for Negotiation
+                    NegoAmount = $("#txtNegotiaionAmount").val();
+                    var isvalid = !isNaN(parseFloat($('#txtNegotiaionAmount').val())) && isFinite($('#txtNegotiaionAmount').val());
+                    if (!isvalid) {
+                        $('#spgrantotal').html('');
+                        $('#hdnNegoGrandTAmt').val('');
+                        $('#spgrantotal_span').hide();
+                        $('#hdnNewTaxes').val(0);
+                        toastr.error('Please enter valid negotiation amount.');
+                        return false;
+                    }
+                    var amt = parseFloat(NegoAmount);
+                    var negamt = '@Model.dNegotiationAmtMax';
+                    var TotalAmt = '@Model.dSummaryTotal';
+                    if (amt >= negamt && amt < TotalAmt) {
+
+                    }
+                    else {
+                        $('#spgrantotal').html('');
+                        $('#hdnNegoGrandTAmt').val('');
+                        $('#spgrantotal_span').hide();
+                        $('#hdnNewTaxes').val(0);
+                        $("#txtNegotiaionAmount").focus();
+                        toastr.info('Please enter amount greater than equals to @Model.dNegotiationAmtMax and less than @Model.dSummaryTotal');
+                        return false;
+                    }
+                }
+
+                if ($('#hdnVC').val() != '') {
+                    if ($("#txtOTP").val() == '') {
+                        toastr.error('Please enter the OTP first.');
+                        $('#trOTP').removeAttr('style');
+                        return false;
+                    }
+
+                }
+
+                setTimeout(function () {
+                    //startSpinning();
+                    $.ajax({
+                        type: 'POST',
+                        url: '../Corporate/ChargeCard',
+                        cache: false,
+                        dataType: 'json',
+                        data: {
+                            NegotiationAmount: NegoAmount,
+                            Title: $("#ddtitle").val(),
+                            FirstName: $("#txtFirstName").val(),
+                            LastName: $("#txtLastName").val(),
+                            EmailID: $("#txtEmailId").val(),
+                            iStateId: $("#ddlGuestStateId").val(),
+                            Mobile: $("#frmCorporateUserDetails #txtMobileNo").val(),
+                            VC: $("#hdnVC").val(),
+                            OTPCode: $("#txtOTP").val(),
+                            GrandTotal: parseFloat($('#hdnNegoGrandTAmt').val()),
+                            promocode: $("#txtPromoCode").val(),
+                            promoapplied: $('#hdnPromoCodeApplied').val(),
+                            promovalue: parseFloat($('#hdnPromoValue').val()),
+                            promotype: $('#hdnPromoCodeType').val(),
+                            promoamenity: $('#hdnAmenityName').val(),
+                            promoDescription: $('#hdnPromoValueDesc').val(),
+                            dtax: $('#hdnNewTaxes').val(),
+                            sCountryCode: $('#ddlCountryCode').val(),
+                            OfrServiceCharge: $("#ServiceCharge").val(),
+                            GstOfrServiceCharge: $("#TaxOnServiceCharge").val(),
+                            dGSTServiceType: $("#cGstValueType").val(),
+                            dGSTValue: $("#dGstValue_puserinformation").val()
+                        },
+                        success: function (data) {
+                            debugger;
+                            if (data.st == 0) {
+                                toastr.info(data.msg);
+                                $('#ddtitle').attr('disabled', 'disabled');
+                                $('#txtFirstName').attr('disabled', 'disabled');
+                                $('#txtLastName').attr('disabled', 'disabled');
+                                $('#txtEmailId').attr('disabled', 'disabled');
+                                $('#frmCorporateUserDetails #txtMobileNo').attr('disabled', 'disabled');
+                                $('.clsedit').show();
+                                //stopSpinning();
+                                // $('#btnVerifyMobileNumber').attr('disabled', 'disabled');
+                            }
+                            else if (data.st == 1) {
+                                toastr.success('OTP sent on mobile no: ' + $("#frmCorporateUserDetails #txtMobileNo").val() + '');
+                                $('#hdnVC').val(data.VC);
+                                $("#hdnreqstatus").val("OTP");
+                                $("#hdntype").val("G");
+                                $('.clsedit').show();
+                                SetValues();
+                                //stopSpinning();
+                            }
+
+                            if (data.reqStatus == 'C') {
+                                var BookingId = parseInt(data.result);
+                                if (BookingId > 0) {
+                                    url = "../Payment/PayNow?bookingId=" + BookingId;
+                                    window.location.href = url;
+                                }
+                                else {
+                                    toastr.error('kindly try after some time');
+                                }
+                                $('#trOTP').attr('style', 'display:none;');
+                            }
+                        },
+                        error: function (err) {
+                            toastr.error('Kindly please wait.')
+                            console.log(err);
+                            //stopSpinning();
+                        }
+                    });
+
+                }, 200);
+            }
+        }
+    });
+
+
+</script>

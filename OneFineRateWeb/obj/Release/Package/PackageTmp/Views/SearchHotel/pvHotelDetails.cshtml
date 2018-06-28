@@ -1,0 +1,84 @@
+﻿@model OneFineRateWeb.ViewModels.PropDetailsForBooking
+
+
+
+<script src="../js/Jquery1.10.3.js"></script>
+
+@foreach (var item in Model.PropDetailsList)
+{
+    var blobUrl = System.Configuration.ConfigurationManager.AppSettings["BlobUrl"];
+    <div class="container">
+        <div class="border1 marginbottom10">
+            <div class="col-md-10">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="row">
+                            <img src="@blobUrl@Url.Content(item.propImageURL)" class="imgheight165">
+                            <div class="redlabel">
+                                <div class="pull-left">Today’s Deal:</div>
+                                <div class="pull-right">22% Discount</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="row">
+                            <div class="col-md-4 col-sm-4  col-xs-7">
+                                <h4 class="text_limit21">
+                                    @Html.Label(item.propName)
+                                </h4>
+                                <h5>@Html.Label(item.localityName)</h5>
+                            </div>
+                            <div class="col-md-2  col-sm-3  col-xs-3">
+                                <div class="inner_star">
+                                    @for (int i = 0; i < item.ipropStarCategoryId; i++)
+                                    {
+                                        <img src="../images/yellow-star.JPG">
+                                    }
+                                </div>
+
+                            </div>
+                            <div class="col-md-1  col-sm-1  col-xs-1"><img src="../images/medal_icon.png" class="img-res"></div>
+                        </div>
+                        <div class="row margintop20">
+                            <div class="col-md-8 col-sm-8 col-xs-8 ">
+                                <em><strong>TripAdvisor Rating</strong></em><br>
+                                <div>
+                                    <img src="../images/tripadvisor-logo.jpg" class="img-res">
+
+                                </div>
+                                <em class="green">#17 of 99 hotels in Delhi</em>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="red">Last booked 1 day ago !</div>
+                                <div class="facilityicon margintop-10"><ul><li><img src="../images/wifi.png" width="100%"></li><li><img src="../images/wifi.png" width="100%"></li><li><img src="../images/wifi.png" width="100%"></li> <li><img src="../images/wifi.png" width="100%"></li> </ul></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="col-md-10 bg-primary"><em>Special Deal Available</em></div>
+                        <p class="pull-right red">4 People are viewing it</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 lightgry">
+                <div class="text-center">
+                    @if (Convert.ToDecimal(item.dmainPrice) > Convert.ToDecimal(item.ddiscountedPrice))
+                    {
+                        <h4 class="bluestrickedtext"><strong>@item.dmainPrice</strong></h4>
+                        <h3 class="blueboldtext"><strong>@item.ddiscountedPrice</strong></h3>
+                    }
+                    else
+                    {
+                        <h4 >&nbsp;</h4>
+                        <h3 class="blueboldtext"><strong>@item.dmainPrice</strong></h3>
+                    }
+
+                    <div class="col-md-12 btn btn-primary marginbottom10">Negotiate</div>
+                    <div class="col-md-12 btn btn-success marginbottom10">Book Now</div>
+                    <div class="red">Few rooms available</div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+

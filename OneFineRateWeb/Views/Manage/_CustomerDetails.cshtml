@@ -1,0 +1,42 @@
+﻿@model OneFineRateWeb.ViewModels.CutomerDetailModel
+
+@if (Model != null)
+{
+    <div class="row">
+        <div class="col-md-3">
+            <img onerror="this.src ='../images/default-profile-img.png'" src="@Model.ProfileImageUrl"  class="profilepicdiv" id="profilepicPreview">
+        </div>
+        <div class="col-md-8">
+            <div class="margintop10">
+                <div class="table-responsive">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td>Name</td>
+                                <td>:</td>
+                                <td><strong>@Model.Name</strong></td>
+                            </tr>
+
+                            <tr>
+                                <td>Email</td>
+                                <td>:</td>
+                                <td><strong>@Model.Email</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Phone</td>
+                                <td>:</td>
+                                <td><strong>@Model.Phone</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Birthday</td>
+                                <td>:</td>
+                                <td><strong>@Model.BirthDate</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}

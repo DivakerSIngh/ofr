@@ -1,0 +1,77 @@
+﻿@model   OneFineRateBLL.Entities.PropDetailsM
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBA8k8_YKEbkfECgXpF6FKdMkMA1jS1qAQ"></script>
+<script type="text/javascript">
+
+    function initialize() {
+        //var myLatlng = new google.maps.LatLng(28.690587654250713, 77.16796875);
+        var myLatlng = new google.maps.LatLng(@Model.dLatitude, @Model.dLongitude);
+        var myOptions = {
+            zoom: 6,
+            center: myLatlng,
+            zoomControl:true,
+            mapTypeControl:true,
+            scaleControl:true,
+            streetViewControl:true,
+            overviewMapControl:true,
+            rotateControl:true,
+
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+
+        var map = new google.maps.Map(document.getElementById('googleMap'),
+             myOptions);
+
+        // marker STARTS
+        var marker = new google.maps.Marker({
+            position: myLatlng,
+            title: "Click to view info!"
+        });
+        marker.setMap(map);
+
+        // marker ENDS
+        google.maps.event.addListener(map, "click", function (e) {
+            marker.setMap(null); //clear old markers
+            //lat and lng is available in e object
+            var latLng = e.latLng;
+            marker = new google.maps.Marker({ position: e.latLng, map: map });
+        });
+        // info-window STARTS
+        var infowindow = new google.maps.InfoWindow({ content: "<div class='map_bg_logo'><span style='color:#1270a2;'><b><?=$row->bridge_name?></b> (<?=$row->bridge_no?>)</span><div style='border-top:1px dotted #ccc; height:1px;  margin:5px 0;'></div><span style='color:#555;font-size:11px;'><b>Length: </b><?=$row->bridge_length?> meters</span></div>" });
+        google.maps.event.addListener(marker, 'click', function () {
+            infowindow.open(map, marker);
+        });
+        // info-window ENDS
+    }
+    google.maps.event.addDomListener(window, 'load', initialize);
+
+</script>
+
+<div class="col-md-4 margintop10">
+    <div class="reviewtextpara border1 whitebg">
+        <h5><strong>Distance to Airport</strong></h5>
+        @Html.DisplayFor(m => m.sDistanceToAirportRailway)
+        <h5><strong>Nearest Transport</strong></h5>
+        @Html.DisplayFor(m => m.sNearestTransport)
+        <h5>
+            <strong>
+                Area recommended for
+            </strong>
+        </h5>
+        <ul>
+            <li>@Html.DisplayFor(m => m.sAreaRecommended1)</li>
+            <li>@Html.DisplayFor(m => m.sAreaRecommended2)</li>
+            <li>@Html.DisplayFor(m => m.sAreaRecommended3)</li>
+        </ul>
+        <h5>
+            <strong>
+                Top Attractions in the area
+            </strong>
+        </h5>
+        @Html.DisplayFor(m => m.sTopAttraction)
+    </div>
+    <div class="margintop10 border1">
+        <div id="googleMap" style=" width:auto;height:180px;"></div>
+    </div>
+</div>
+

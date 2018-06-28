@@ -1,0 +1,293 @@
+﻿@model OneFineRateWeb.Models.ProfileViewModel
+@using OneFineRateBLL.WebUserBL
+
+<style>
+    .profilepicdiv {
+        width: auto;
+        height: 100px;
+        border-radius: 0px;
+    }
+
+    .fa-check-circle-o {
+        color: green;
+    }
+</style>
+
+<div class="tablebluebg accordion" id="MyProfile">Profile</div>
+
+<div class="padding10  bookingbxbg">
+
+    @using (Html.BeginForm("UserProfile", "Manage", FormMethod.Post, new { enctype = "multipart/form-data", userIdentity = User.ProfileImageUrl(), id = "frmUserProfile" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <input style="display:none" type="file" accept="image/*" class="userImageInputType" data-previewid="profilepicPreview" name="ProfileImagePostedFile" id="profileImageInput" />
+
+        <div class="row">
+            <div class="col-md-3">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <img onerror="this.src ='../images/default-profile-img.png'" src="@Model.ProfileImageUrl" id="profilepicPreview" class="profilepicdiv">
+                    </div>
+                    <div class="col-md-12 text-center">
+                        <label class="btn btn-default btn-file" onclick="$('#profileImageInput').trigger('click')">
+                            Upload Pic
+                        </label>
+                    </div>
+                    <div class="col-md-12 margintop10 text-center">Supports JPEG, PNG, GIF, PDF</div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Title<span class="red">* </span></label> @Html.ValidationMessageFor(model => model.Title, "", new { @class = "red" })
+                    @Html.DropDownListFor(m => m.Title, new List<SelectListItem> {
+                   new SelectListItem { Value = "Mr.", Text = "Mr.", Selected = Model.Title == "Mr." }, new SelectListItem { Value = "Ms.", Text = "Ms.", Selected = Model.Title == "Ms." } }, "Select title", new { @class = "form-control", required = "true" })
+
+                    @*@Html.DropDownListFor(m => m.Title, new List<SelectListItem> {
+                        new SelectListItem { Value = "Mr.", Text = "Mr.", Selected = Model.Title == "Mr." },
+                        new SelectListItem { Value = "Mrs.", Text = "Mrs.", Selected = Model.Title == "Mrs." },
+                        new SelectListItem { Value = "Ms.", Text = "Ms.", Selected = Model.Title == "Ms." },
+                        new SelectListItem { Value = "Dr.", Text = "Dr.", Selected = Model.Title == "Dr." },
+                        new SelectListItem { Value = "Prof.", Text = "Prof.", Selected = Model.Title == "Prof." }},
+                        "Select title", new { @class = "form-control", required = "true" })*@
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FirstName)<span class="red">* </span> @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "red" })
+                    @Html.TextBoxFor(model => model.FirstName, new { placeholder = "First Name", maxlength = "40", @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.LastName)<span class="red">* </span> @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "red" })
+                    @Html.TextBoxFor(model => model.LastName, new { placeholder = "Last Name", maxlength = "40", @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.DisplayName)<span class="red">* </span> @Html.ValidationMessageFor(model => model.DisplayName, "", new { @class = "red" })
+                    @Html.TextBoxFor(model => model.DisplayName, new { placeholder = "Display Name", maxlength = "50", @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-md-3">
+                @*<div class="form-group">*@
+                @Html.LabelFor(model => model.Email)<span class="red">* </span> @Html.ValidationMessageFor(model => model.Email, "", new { @class = "red" })
+                <div class="input-group">
+
+                    @Html.TextBoxFor(model => model.Email, new { @disabled = "", placeholder = "First Name", maxlength = "50", @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "red" })
+                    <div class="input-group-addon">
+                        @if (Model.EmailConfirmed)
+                        {
+                            <span title="Verified">
+                                <i class="fa fa-check-circle-o" aria-hidden="true"></i>
+                            </span>
+                        }
+                        else
+                        {
+                            <span title="Not Verified">
+                                <a id="emailVerifylnk" href="javascript:void(0)"> Not Verified?</a>
+                            </span>
+                        }
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                @*<div class="form-group">*@
+                @Html.LabelFor(model => model.CorporateEmail)
+                <div class="input-groupaaa input-group">
+
+                    @Html.TextBoxFor(model => model.CorporateEmail, new { placeholder = "Email Address", maxlength = "50", @class = "form-control" })
+
+                    @if (Model.CorporateEmailConfirmed)
+                    {
+                        <span title="Verified" class="input-group-addon">
+                            <i class="fa fa-check-circle-o" aria-hidden="true"></i>
+                        </span>
+                    }
+                    else
+                    {
+                        <span title="Not Verified" class="input-group-addon">
+                            Not Verified
+                        </span>
+                    }
+                </div>
+                @Html.ValidationMessageFor(model => model.CorporateEmail, "", new { @id = "errorSpanCustomerEmailId", @class = "red" })
+
+            </div>
+            <div class="col-md-4">
+                @* <div class="form-group">*@
+                @Html.LabelFor(model => model.PhoneNumber)<br />
+                <div class="input-group">
+                    @Html.DropDownListFor(model => model.sCountryPhoneCode, new SelectList(Model.CountryCodePhoneList, "sCode", "sFrontendCode", "+91"), new { style = "width:40%; float:left", data_live_search = "true", id = "ddlCountryCode", @class = "form-control selectpicker" })
+                    @Html.TextBoxFor(model => model.PhoneNumber, new { style = "width:60%; float:left", placeholder = "Phone Number", maxlength = "13", @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "red" })
+                    @if (Model.PhoneNumberConfirmed)
+                    {
+                        <span title="Verified" class="input-group-addon">
+                            <i class="fa fa-check-circle-o" title="Verified" aria-hidden="true"></i>
+                        </span>
+                    }
+                    else
+                    {
+                        <span title="Not Verified" class="input-group-addon">
+                            <a id="phoneVerifylnk" href="javascript:void(0)"> Not Verified?</a>
+                        </span>
+                    }
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.DateOfBirth)
+                    @Html.TextBoxFor(model => model.DateOfBirth, new { onkeypress = "return false;", placeholder = "dd/mm/yyyy", @class = "form-control profileDatepicker" })
+                    @Html.ValidationMessageFor(model => model.DateOfBirth, "", new { @class = "red" })
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.MartialStatus)
+                    @Html.EnumDropDownListFor(x => x.MartialStatus, "Select status", new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.AnniversaryDate)
+                    @Html.TextBoxFor(model => model.AnniversaryDate, new { id = "aniversaryDatepicker", onkeypress = "return false;", placeholder = "dd/mm/yyyy", @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.AnniversaryDate, "", new { @class = "red" })
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.SpouseName)
+                    @Html.TextBoxFor(model => model.SpouseName, new { placeholder = "Spouse Name", maxlength = "40", @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.SpouseName, "", new { @class = "red" })
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.CurrentAddressLine1)
+                    @Html.TextBoxFor(model => model.CurrentAddressLine1, new { placeholder = "Address line 1", maxlength = "200", @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.CurrentAddressLine1, "", new { @class = "red" })
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.CurrentAddressLine2)
+                    @Html.TextBoxFor(model => model.CurrentAddressLine2, new { placeholder = "Address line 2", maxlength = "200", @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.CurrentAddressLine2, "", new { @class = "red" })
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Country</label>
+                    @Html.DropDownListFor(m => m.CountryId, new SelectList(OneFineRateBLL.BL_Country.GetAllRecords(), "iCountryId", "sCountry"), "Select", new { @class = "form-control", Id = "ddlCountry" })
+                    @Html.ValidationMessageFor(model => model.CountryId, "", new { @class = "red" })
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>State</label>
+                    @if (Model.CountryId.HasValue)
+                    {
+                        @Html.DropDownListFor(model => model.StateId, new SelectList(OneFineRateBLL.BL_Country.GetStatesByCountryId(Model.CountryId.Value), "iStateId", "sState", Model.StateId), "Select State", new { @class = "form-control", id = "ddlState" })
+                    }
+                    else
+                    {
+                        @Html.DropDownListFor(model => model.StateId, Enumerable.Empty<SelectListItem>(), "Select State", new { @class = "form-control", id = "ddlState" })
+                    }
+                    @Html.ValidationMessageFor(model => model.StateId, "", new { @class = "red" })
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.City)
+
+                    @if (Model.StateId.HasValue)
+                    {
+                        @Html.DropDownListFor(model => model.City, new SelectList(OneFineRateBLL.BL_Country.GetCitiesByStateId(Model.StateId.Value), "sCity", "sCity", Model.City), "Select City", new { @class = "form-control", id = "ddlCity" })
+                    }
+                    else
+                    {
+                        @Html.DropDownListFor(model => model.City, Enumerable.Empty<SelectListItem>(), "Select City", new { @class = "form-control", id = "ddlCity" })
+                    }
+
+                    @Html.ValidationMessageFor(model => model.City, "", new { @class = "red" })
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PinCode)
+                    @Html.TextBoxFor(model => model.PinCode, new { placeholder = "Pin Code", maxlength = "6", @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.PinCode, "", new { @class = "red" })
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-inline">
+                    <br />
+                    @Html.CheckBoxFor(x => x.NewsNotifications, new { id = "notification", @class = "checkbox" })
+                    <label for="notification" style="cursor:pointer"> I would like to get the News Notifications</label>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <label class="red">Note : Your GSTIN Compliance invoice shall be sent to you seperately on your email. </label>
+                <br />
+                <b> GSTIN Detail :</b>
+            </div>
+            <div class="col-md-3">
+                <label class="control-label">Legal Name of Entity</label>
+                @Html.TextBoxFor(model => model.GstnEntityName, new { placeholder = "Entity Name", maxlength = "200", @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.GstnEntityName, "", new { @class = "red" })
+            </div>
+            <div class="col-md-3">
+                <label class="control-label">GSTIN of the Bussiness</label>
+                @Html.TextBoxFor(model => model.GstnNumber, new { placeholder = "GSTIN", maxlength = "200", @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.GstnNumber, "", new { @class = "red" })
+            </div>
+            <div class="col-md-3">
+                @Html.LabelFor(model => model.GstnEntityType)
+
+                <input type="text" id="txtGstnEntityType" readonly class="form-control" placeholder="Entity Type" />
+
+                @Html.DropDownListFor(model => model.GstnEntityType, new SelectList(new List<SelectListItem> {
+
+                   new SelectListItem{ Text = "Person/Individual",Value="p" },
+                    new SelectListItem{ Text = "Company",Value="c" },
+                     new SelectListItem{ Text = "HUF",Value="h" },
+                      new SelectListItem{ Text = "Firm",Value="f" },
+                       new SelectListItem{ Text = "Association of Person (AOP)",Value="a" },
+                        new SelectListItem{ Text = "AOP (Trust)",Value="t" },
+                         new SelectListItem{ Text = "Body of Individuals (BOI)",Value="b" },
+                          new SelectListItem{ Text = "Local Authorithy",Value="l" },
+                           new SelectListItem{ Text = "Artifical Juridical Person",Value="j" },
+                            new SelectListItem{ Text = "Government",Value="g" },
+
+
+                   }, "Value", "Text"), "Select", new { @class = "form-control hide", id = "ddlGstnEntityType" })
+                
+
+                @Html.ValidationMessageFor(model => model.GstnEntityType, "", new { @class = "red" })
+            </div>
+        </div>
+        <br />
+        <hr>
+        <div class="clearfix"></div>
+
+        <div class="row">
+            <div class="col-md-12 ">
+                <button type="button" id="cancelUserProfile" class="btn btn-danger cancelMyAccountForm marginleft5 pull-right">Cancel</button>
+                <button type="submit" id="submitUserProfile" class="btn btn-success pull-right">Save</button>
+            </div>
+        </div>
+    }
+</div>

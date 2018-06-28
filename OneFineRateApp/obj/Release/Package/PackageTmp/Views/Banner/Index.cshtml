@@ -1,0 +1,142 @@
+﻿@model OneFineRateBLL.Entities.etblBannerM
+@{
+    ViewBag.Title = "Banner";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        bindgrid();
+        if ('@TempData["msg"]' != '') {
+            if ('@TempData["Mode"]' == 'Add') {
+                OpenPopUp();
+            }
+            if ('@TempData["Mode"]' == 'Copy') {
+                CopyData('@TempData["id"]');
+            }
+            if ('@TempData["Mode"]' == 'Modify') {
+                EditData('@TempData["id"]');
+            }
+        }
+    });
+
+    function bindgrid() {
+        var status = "Live";
+        try {
+            var aoColumns =
+                [
+                 { "sTitle": "Banner Type", "mData": "sBannerType" },
+                 {
+                     "sTitle": "Image", "mData": "sState", "bSortable": false,
+                     "mRender": function (data, type, full) {
+                         return '<img  src="@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()' + full.sImgUrl + '"  height="100" onerror="this.src=&quot;http://placehold.it/100x100&quot;" width="100" >';
+                     }
+
+                 },
+                 { "sTitle": "Name", "mData": "sBannerName" },
+                 { "sTitle": "Description", "mData": "sDescription", "bSortable": false },
+                 { "sTitle": "Text Position", "mData": "sTextPosition", "bSortable": false },
+
+                 { "sTitle": "Status", "mData": "cstatus" },
+                 {
+                     "sTitle": "Edit", "bSortable": false, "mData": "iBannerId",
+                     "mRender": function (data, type, full) {
+                         var html = '<button type="button" onclick="EditData(' + full.iBannerId + ')";  class="btn btn-warning btn-sm margintop10">Edit</button>&nbsp';
+                         if (full.cstatus == "Live") {
+                             html += '<button type="button" onclick="DeleteData(' + full.iBannerId + ',\'Live\')";  class="btn btn-danger btn-sm margintop10">Disable</button>';
+                         }
+                         else {
+                             html += '<button type="button" onclick="DeleteData(' + full.iBannerId + ',\'Disable\')";  class="btn btn-success btn-sm margintop10">Enable</button>';
+                         }
+                         return html;
+                     }
+                 }
+                ];
+            DatatableServerSide("#tblData", aoColumns, "/Services/Service.asmx/GetAllBanners");
+            $('.dataTables_filter input').attr('title', 'Type here to search in the Banner Name Column');
+        }
+        catch (e) {
+
+        }
+
+    }
+
+
+
+    function OpenPopUp() {
+        $('#AddBanner').html('');
+        var url = '@Url.Action("Add")';
+        $("#AddBanner").load(url);
+        $('#AddBanner').modal({
+            show: 'true'
+        });
+    }
+
+    function EditData(Id) {
+        $('#AddBanner').html('');
+        var url = '@Url.Action("Edit")' + "/" + Id;
+        $("#AddBanner").load(url);
+        $('#AddBanner').modal({
+            show: 'true'
+        });
+    }
+
+    function DeleteData(Id, Status) {
+        if (Status == "Live") {
+
+            bootbox.confirm("Are you sure you want to disable it ?", function (e) {
+                if (e == true) {
+                    var url = '@Url.Action("Delete")' + "/" + Id;
+                    window.location = url;
+                }
+            })
+        }
+        else {
+            bootbox.confirm("Are you sure you want to enable it ?", function (e) {
+                if (e == true) {
+                    var url = '@Url.Action("Delete")' + "/" + Id;
+                    window.location = url;
+                }
+            })
+        }
+
+
+    }
+
+
+</script>
+
+
+<div class="container margintop20">
+    <div class="row panel panel-default">
+        <div class="container panel-heading">
+            <div class="col-md-6">
+                <h4 class="panel-title">
+                    Banner
+                </h4>
+            </div>
+            <div class="col-md-6"><button type="button" class="pull-right btn btn-warning" data-toggle="modal" onclick="OpenPopUp()"><i class="fa fa-plus"></i> Add Banner </button></div>
+
+        </div>
+        <div class="panel-body">
+
+            <div class="table-responsive margintop20">
+                <table class="table table-striped table-bordered table-hover display" id="tblData"></table>
+            </div>
+            <!-- End  table -->
+        </div>
+    </div>
+    <!-- container div END bottom -->
+</div>
+<!-- Add Banner -->
+        @Html.Hidden("hdnId")
+        <div id="AddBanner" class="modal fade" role="dialog">
+           
+        </div>
+ <style type="text/css">
+    .dz-max-files-reached {
+        background-color: red;
+    }
+</style>
+
+

@@ -1,0 +1,234 @@
+﻿@using MvcCheckBoxList.Model;
+@model OneFineRateBLL.Entities.etblPropertyAmenitiesMap
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutProperty.cshtml";
+}
+<style>
+    .abc {
+        height: auto;
+    }
+</style>
+<style>
+    label {
+        padding: 5px !important;
+    }
+
+    .alinghTable td {
+        width: 30%;
+    }
+
+    .marginRightRadio {
+        margin-right: 5%;
+    }
+
+    .WidthRadio {
+        width: 180px;
+    }
+</style>
+@*-----validation engine used in this page as HTMl validation was not working (Mayank)----*@
+<link href="~/css/validationEngine.jquery.css" rel="stylesheet" />
+<script src="~/js/jquery.validationEngine.js"></script>
+<script src="~/js/jquery.validationEngine-en.js"></script>
+@*----------------------------------------------------------------------------------------*@
+
+<script type="text/javascript">
+    (function () {
+        var hm = document.createElement('script'); hm.type = 'text/javascript'; hm.async = true;
+        hm.src = ('++u-heatmap-it+log-js').replace(/[+]/g, '/').replace(/-/g, '.');
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        if ('@Model.bAirportTransferAvalible' == 'True') {
+            var url = '@Url.Action("AddPartial")';
+            $("#divPropertyParking").removeAttr("style");
+            $("#divPropertyParking").load(url);
+
+            $('#btnsubmit').attr('onclick', 'return FetchData()');
+        }
+        else {
+            $("#divPropertyParking").attr("style", "display:none");
+            $('#btnsubmit').removeAttr("onclick");
+        }
+
+        $('#chkairport').click(function () {
+            if ($(this).is(':checked')) {
+                var url = '@Url.Action("AddPartial")';
+                $("#divPropertyParking").removeAttr("style");
+                $("#divPropertyParking").load(url);
+                $('#btnsubmit').attr('onclick', 'return FetchData()');
+            }
+            else {
+                $("#divPropertyParking").attr("style", "display:none");
+                $('#btnsubmit').removeAttr("onclick");
+            }
+        });
+
+    });
+
+
+</script>
+
+@using (Html.BeginForm("Modify", "PropertyAmenities", FormMethod.Post, new { ReturnUrl = ViewBag.ReturnUrl, id = "myform", role = "form" }))
+{
+
+    @Html.HiddenFor(u => u.iPropId);
+    <div class="panel-group">
+        <div class="panel panel-default">
+
+            <div class="panel-heading">
+                <h4 class="panel-title">
+
+                    Amenities/ Services
+
+                </h4>
+            </div>
+            <div class="panel-body" id="testBody">
+                <div class="col-md-12 ">
+                    <div class="subheadcolor"><h4>Internet Services (Public Area)</h4></div>
+                    <hr />
+                </div>
+                <div class="col-md-12">
+
+
+                    @{
+    foreach (var item in Model.HotelAmenities)
+    {
+        @Html.RadioButtonFor(m => m.sHotelAmenities, item.iHotelAmenityId)
+                        @Html.Label(item.sAmenity, new { @class = "marginRightRadio" })
+    }
+                    }
+
+
+                </div>
+
+
+
+                <div class="col-md-12 ">
+                    <div class="subheadcolor"><h4>Parking & Transport</h4></div>
+                    <hr />
+                </div>
+
+                <div class="col-md-12 ">
+                    @{
+    foreach (var item in Model.HotelParkingsRadio)
+    {
+        @Html.RadioButtonFor(m => m.sHotelParkingRadio, item.iHotelParkingId)
+                        @Html.Label(item.sParking, new { @class = "marginRightRadio WidthRadio" })
+    }
+                    }
+
+
+                </div>
+
+                <div class="col-md-12">
+
+                    @Html.CheckBoxListFor(m => m.SelectedHotelParkings, m => m.HotelParkingsItems,
+                            group => group.Value,
+                            group => group.Text,
+                            m => m.Selected,
+                            MvcCheckBoxList.Model.Position.Horizontal,
+                            x => new { @class = " CheckBoxList" })
+                </div>
+
+                <div class="col-md-12">
+                    @Html.CheckBoxFor(m => m.bAirportTransferAvalible, new { id = "chkairport" })
+                    @Html.Label("lblAirportTransferAvalible", "Transfer Available")
+                </div>
+
+                @{
+                    <div class="col-md-12 abc" id="divPropertyParking">
+                        @*@Html.Partial("PropertyParking", Model)*@
+                    </div>
+
+                }
+
+
+                <!-- partking ends -->
+                <!-- common service start-->
+                <div class="col-md-12">
+
+
+                    <div class="subheadcolor"><h4>Common Services</h4></div>
+                    <hr />
+
+                    @{ var putCheckBoxesIntoTable = new HtmlListInfo(HtmlTag.table, 3, new { @class = "alinghTable", style = "width:100%;" }); }
+                    @Html.CheckBoxListFor(m => m.SelectedCommonServices, m => m.CommonServicesItems,
+                                group => group.Value,
+                                group => group.Text,
+                                m => m.Selected,
+ putCheckBoxesIntoTable)
+
+                </div>
+
+                <!-- Convenience start-->
+                <div class="col-md-12" style="width:100%">
+
+
+                    <div class="subheadcolor"><h4>Convenience</h4></div>
+                    <hr />
+                    @{
+    var putCheckBoxesIntoTablenew =
+      new HtmlListInfo(HtmlTag.table, 3, new { @class = "alinghTable", style = "width:100%;" });
+                    }
+                    @Html.CheckBoxListFor(m => m.SelectedConveniences, m => m.ConveniencesItems,
+                                group => group.Value,
+                                group => group.Text,
+                                m => m.Selected,
+             putCheckBoxesIntoTablenew)
+
+                </div>
+
+                <!-- Leisure start-->
+                <div class="col-md-12">
+
+                    <div class="subheadcolor"><h4>Leisure</h4></div>
+                    <hr />
+                    @{
+    var sasasasadsa =
+      new HtmlListInfo(HtmlTag.table, 3, new { @class = "alinghTable", style = "width:100%;" });
+                    }
+                    @Html.CheckBoxListFor(m => m.SelectedLeisure, m => m.LeisureItems,
+                                group => group.Value,
+                                group => group.Text,
+                                m => m.Selected,
+             sasasasadsa)
+
+                </div>
+
+                <!-- Meetings & confereance start-->
+                <div class="col-md-12">
+
+                    <div class="subheadcolor"><h4>Meetings & Conferences</h4></div>
+                    <hr />
+                    @{
+    var meetings =
+      new HtmlListInfo(HtmlTag.table, 3, new { @class = "alinghTable", style = "width:100%;" });
+                    }
+                    @Html.CheckBoxListFor(m => m.SelectedMeetings, m => m.MeetingsItems,
+                                group => group.Value,
+                                group => group.Text,
+                                m => m.Selected,
+                               meetings)
+                    @*<div class="col-xs-4">
+                            <input name="" type="checkbox" value=""> Wedding Facilities
+                        </div>*@
+                </div><br />
+                
+
+            </div>
+        </div>
+        <!-- Panel 1 div END  -->
+
+    </div>
+    <div class="col-md-12 text-right marginbottom10">
+
+        <input type="submit" id="btnsubmit" class="btn btn-primary" value="Save">
+
+    </div>
+}
+<!-- Panel group div END  -->

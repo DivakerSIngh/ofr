@@ -1,0 +1,204 @@
+﻿@model OneFineRateBLL.Entities.eRoomRatePrice_Ph
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutMobile.cshtml";
+}
+<link href="~/css/jquery-ui.css" rel="stylesheet" />
+<script src="~/js/Jquery1.10.3.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script src="~/js/jquery-ui.js"></script>
+@*//Scripts for validation server side through ajax call*@
+@System.Web.Optimization.Scripts.Render("~/bundles/validation")
+<style>
+    span.field-validation-error{
+        color:red;
+    }
+</style>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        var d = new Date();
+
+        $("#FromDate").datepicker({
+            startDate: d,
+            minDate: d,
+            numberOfMonths: 1,
+            autoclose: true,
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd/mm/yy',
+            onClose: function (selectedDate) {
+                $("#ToDate").datepicker("option", "minDate", selectedDate);
+            }
+        });
+        $("#ToDate").datepicker({
+            startDate: d,
+            minDate: d,
+            dateFormat: 'dd/mm/yy',
+            autoclose: true,
+            numberOfMonths: 1,
+            changeMonth: true,
+            changeYear: true,
+            onClose: function (selectedDate) {
+                $("#FromDate").datepicker("option", "maxDate", selectedDate);
+            }
+        });
+
+        //On State selection
+        $("#ddlRoom").change(function () {
+            var ddlsource = "select[name='RoomId']";
+            var ddlRatePlan = "#ddlRatePlan";
+
+            if ($(ddlsource).val() != '') {
+                var url = '@Url.Content("/")' + "RoomRatePlan/BindRatePlans";
+                $.getJSON(url, { id: $(ddlsource).val() }, function (data) {
+                    $(ddlRatePlan).empty();
+                    $(ddlRatePlan).append("<option value='none'>Select Rate Plan</option>");
+                    $.each(data.suggestions, function (index, optionData) {
+                        $(ddlRatePlan).append("<option value='" + optionData.Id + "'>" + optionData.Name + "</option>");
+                    });
+
+                });
+            }
+            else {
+                $(ddlRatePlan).empty();
+                $(ddlRatePlan).append("<option value='none'>Select Rate Plan</option>");
+
+            }
+        });
+
+    });
+    function GetResult(data) {
+        if (data.st == '1') {
+            toastr.success('Updated successfully.');
+            $("#ToDate").val('');
+            $("#FromDate").val('');
+            $("#SingleRate").val('');
+            $("#DoubleRate").val('');
+            $("#TripleRate").val('');
+            $("#QuadrupleRate").val('');
+            $("#QuintrupleRate").val('');
+            $(ddlRatePlan).empty();
+            $(ddlRatePlan).append("<option value='none'>Select Rate Plan</option>");
+        }
+        else if (data.st == '2') {
+
+            $("#table tr:not(:first)").remove();
+            var JS = $.parseJSON(data.msg);
+            var table = document.getElementById("table");
+            for (var i = 0; i < JS.length; i++) {
+                var row = table.insertRow(i + 1);
+                var cell1 = row.insertCell(0);
+                var cell2 = row.insertCell(1);
+                var cell3 = row.insertCell(2);
+                cell1.innerHTML = JS[i].sRatePlan;
+                cell2.innerHTML = JS[i].dtValidFrom;
+                cell3.innerHTML = JS[i].dtValidTo;
+            }
+
+            $('#FailDiv').modal({
+                show: 'true'
+            });
+            return false;
+        }
+        else if (data.st == '0') {
+            debugger;
+            toastr.error(data.msg);
+            return false;
+        }
+    }
+
+</script>
+@using (Ajax.BeginForm("AddUpdate", "RoomRatePrices", new AjaxOptions() { InsertionMode = InsertionMode.Replace, UpdateTargetId = "targetid", HttpMethod = "POST", OnSuccess = "GetResult" }))
+{
+    <div class="container whitebg border1">
+        <h4>Rate Changes</h4>
+        <hr>
+        <form id="frm1">
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-md-2 col-xs-12 marginbottom10">
+                        <label>From</label>
+                        @Html.TextBoxFor(u => u.FromDate, new { @class = "form-control", id = "FromDate", onkeyup = "this.value=''", required = "true" })
+                        @Html.ValidationMessageFor(m => m.FromDate)
+                    </div>
+                    <div class="col-md-2 col-xs-12 marginbottom10">
+                        <label>To</label>
+                        @Html.TextBoxFor(u => u.ToDate, new { @class = "form-control", id = "ToDate", onkeyup = "this.value=''", required = "true" })
+                        @Html.ValidationMessageFor(m => m.ToDate)
+                    </div>
+                    <div class="col-md-2 col-xs-12 marginbottom10">
+                        <label>Room Type</label>
+                        @Html.DropDownListFor(m => m.RoomId, new SelectList(OneFineRateBLL.BL_tblPropertyRoomMap.GetAllPropertyRoomNames(Convert.ToInt32(Session["PropId"].ToString())), "Id", "Name"), "Select Room", new { @class = "form-control", required = "true", id = "ddlRoom" })
+                        @Html.ValidationMessageFor(m => m.RoomId)
+                    </div>
+                    <div class="col-md-2 col-xs-12 marginbottom10">
+                        <label>Rate Plan</label>
+                        @Html.DropDownListFor(m => m.PlanId, new SelectList(OneFineRateBLL.BL_tblPropertyRatePlanMap.GetRatePlanRoomWise(0, 0), "Id", "Name"), "Select Rate Plan", new { @class = "form-control", required = "true", id = "ddlRatePlan" })
+                        @Html.ValidationMessageFor(m => m.PlanId)
+                    </div>
+                     <div class="col-md-2 col-xs-12 marginbottom10">
+                        <label>Single Rate</label>
+                        @Html.TextBoxFor(u => u.SingleRate, new { @class = "form-control",pattern="[0-9]+([\\.,][0-9]+)?", maxlength="9"  })
+                        @Html.ValidationMessageFor(m => m.SingleRate)
+                    </div>
+                    <div class="col-md-2 col-xs-12 marginbottom10">
+                        <label>Double Rate</label>
+                        @Html.TextBoxFor(u => u.DoubleRate, new { @class = "form-control", pattern = "[0-9]+([\\.,][0-9]+)?", maxlength = "9" })
+                        @Html.ValidationMessageFor(m => m.DoubleRate)
+                    </div>
+                    <div class="col-md-2 col-xs-12 marginbottom10">
+                        <label>Triple Rate</label>
+                        @Html.TextBoxFor(u => u.TripleRate, new { @class = "form-control", pattern = "[0-9]+([\\.,][0-9]+)?", maxlength = "9" })
+                        @Html.ValidationMessageFor(m => m.TripleRate)
+                    </div>
+                    <div class="col-md-2 col-xs-12 marginbottom10">
+                        <label>Quadruple Rate</label>
+                        @Html.TextBoxFor(u => u.QuadrupleRate, new { @class = "form-control", pattern = "[0-9]+([\\.,][0-9]+)?", maxlength = "9" })
+                        @Html.ValidationMessageFor(m => m.QuadrupleRate)
+                    </div>
+                    <div class="col-md-2 col-xs-12 marginbottom10">
+                        <label>Quintuple Rate</label>
+                        @Html.TextBoxFor(u => u.QuintrupleRate, new { @class = "form-control", pattern = "[0-9]+([\\.,][0-9]+)?", maxlength = "9" })
+                        @Html.ValidationMessageFor(m => m.QuintrupleRate)
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="col-md-2 col-xs-12"><button type="submit" class="btn btn-success margintop24 width100">Ok</button></div>
+
+                </div>
+            </div>
+        </form>
+    </div>
+    <div id="targetid"></div>
+    <form id="frmUsersFail">
+        <div id="FailDiv" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">FAILURE</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div>
+                            The dates have been provided beyond the validity of the following rate plan(s).
+                        </div>
+                        <div class="row" id="tables">
+                            <table id="table" border="1" style="width: 100%;text-align: center;">
+                                <tr>
+                                    <th style="text-align: center;">Rate Plan</th>
+                                    <th style="text-align: center;">Valid From</th>
+                                    <th style="text-align: center;">Valid To</th>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+}
+
+

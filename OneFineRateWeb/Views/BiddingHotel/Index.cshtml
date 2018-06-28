@@ -1,0 +1,158 @@
+﻿@model OneFineRateBLL.Entities.PropDetailsM
+    @{
+        ViewBag.Title = "Index";
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OFR - Hotel Description</title>
+    <link href="../css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <!-- FONT AWESOME ICONS  -->
+    <link href="../css/font-awesome.css" rel="stylesheet" type="text/css" />
+    <!-- CUSTOM STYLE  -->
+    <link href="../css/style.css" rel="stylesheet" type="text/css" />
+    <!-- JS -->
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="http://maps.googleapis.com/maps/api/js"></script>
+
+    <!--top header-->
+    <div class="container-wrapper">
+        <div class="light_header_bar">
+            <div class="container">
+                <div class="col-md-4">
+                    <div class="form-group"><input type="text" class="form-control" placeholder="Location"></div>
+                </div>
+                <div class="col-md-3  col-sm-6 col-xs-6">
+                    <div class="form-group"><input type="date" class="form-control"></div>
+                </div>
+                <div class="col-md-3  col-sm-6 col-xs-6">
+                    <div class="form-group"><input type="date" class="form-control"></div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group"><button type="submit" class="btn btn-info">Modify Search</button></div>
+                </div>
+            </div>
+        </div>
+        <div class="blue_header_bar">
+            <div class="container">
+                <div class="col-md-9 col-xs-7">
+                    <div class="whitetextleft">Hotel Emperor Plams  <img src="../images/inner-star.png" class="inner_star"></div>
+                    <address class="whitext">
+                        Karol Bagh, New Delhi
+                        <div class="row">
+                            <div class="col-md-8 col-xs-8 facilityicon margintop5">
+                                <ul>
+                                    <li><img src="../images/wifi.png" width="100%"></li>
+                                    <li><img src="../images/wifi.png" width="100%"></li>
+                                    <li><img src="../images/wifi.png" width="100%"></li>
+                                    <li><img src="../images/wifi.png" width="100%"></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </address>
+                </div>
+                <div class=" col-md-3 col-xs-5 margintop20">
+                    <div class="row pull-right">
+                        <div class="col-md-2"><img src="../images/trip-adv-icon.png" class="tripadv_icon"></div>
+                        <div class="col-md-10"> <em class="whitext marginleft8"> #17 of 99 hotels in Delhi</em></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!--next section-end here-->
+    <div class="light_header_bar">
+        <div class="container">
+            <div class="col-md-12">
+                <div class="reviewlist">
+                    <ul>
+                        <li><a href="#overview">ABOUT HOTEL</a></li>
+                        <li><a href="#rooms">AVAILABLE ROOMS</a></li>
+                        <li><a href="#rating">FACILITIES</a></li>
+                        <li><a href="#rating">POLICIES</a></li>
+                        <li><a href="#rating">TRIP ADVISOR REVIEWS</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    @Html.Partial("pvPhotoGallery", Model)
+                    @Html.Partial("pvHotelLocationDetails", Model)
+
+                </div>
+                @Html.Partial("pvHotelOverview", Model)
+                @Html.Partial("pvHotelRooms", Model)
+
+                <div class="col-lg-3 col-md-3 margintop20  whitebg border1 text-center sticky" style="top:-9px; <!-- z-index:-99; position:relative  -->">
+                    <div class="col-md-12">
+                        <button class="btn btn-success col-md-12" value="Buy This"> Book </button>
+                        <br> or
+                        <br>
+                        <button class="btn btn-primary col-md-12" value="Buy This"> Bargain </button>
+                        <br><br>
+                        <h4>RATE SUMMARY</h4>
+                        <hr>
+                        <div class="table-responsive ">
+                            <table class="table font12">
+                                <tbody align="left">
+                                    <tr>
+                                        <td>Room Rate</td>
+                                        <td>:</td>
+                                        <td>27000 </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Taxes	</td>
+                                        <td>:</td>
+                                        <td>7000 </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Extra Bed Charges</td>
+                                        <td>:</td>
+                                        <td>1500 </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Grand Total</strong></td>
+                                        <td>:</td>
+                                        <td><strong>31000</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="clearfix"></div>
+                @Html.Partial("pvHotelPolicies", Model)
+          
+            </div>
+            <!--section-1-->
+            <!--section-->
+        </div>
+
+
+        <script src="../js/stickyfill.js"></script>
+
+        <script>
+            $(function () {
+                $('.sticky').Stickyfill();
+
+                $('body').on('contextmenu', 'p', function (event) {
+                    event.preventDefault();
+                    $(this).remove();
+                });
+
+
+
+                $('.js-top').on('mousedown', function () {
+                    window.scrollTo((document.documentElement.scrollLeft || document.body.scrollLeft), (document.documentElement.scrollTop || document.body.scrollTop) - 1);
+                });
+
+
+            });
+        </script>
+
+

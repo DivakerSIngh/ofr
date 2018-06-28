@@ -1,0 +1,644 @@
+﻿@model OneFineRateBLL.Entities.eDashBoardNotifications
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+
+
+<link href="~/css/TimeSheetDashboard.css" rel="stylesheet" />
+<script src="~/js/TimeSheetDashboard.js"></script>
+<script type="text/javascript">
+
+
+    $(document).ready(function () {
+        //BindBestPossibleRates();
+    });
+
+    function BindBestPossibleRates() {
+        var url = '@Url.Action("BindBestPossibleRates", "Property")';
+        $.getJSON(url, function (data) {
+            //console.log(data)
+            var tableTemplete = $('<table class="table table-bordered">');
+            tableTemplete.append("<thead>");
+            tableTemplete.append("<th>Hotel Name</th>");
+            tableTemplete.append("<th>Column1</th>");
+            tableTemplete.append("<th>Column2</th>");
+            tableTemplete.append("<th>Column3</th>");
+            tableTemplete.append("<th>Column4</th>");
+            tableTemplete.append("<th>Column5</th>");
+            tableTemplete.append("<th>Column6</th>");
+            tableTemplete.append("<th>Column7</th>");
+            tableTemplete.append('</thead>');
+            tableTemplete.append('<tbody>');
+            //$.each(data.suggestions, function () {
+            //    tableTemplete.append("<tr><td>").append(this.HotelName).append("</td>");
+            //    tableTemplete.append("<td>").append(this.Column1).append("</td>");
+            //    tableTemplete.append("<td>").append(this.Column2).append("</td>");
+            //    tableTemplete.append("<td>").append(this.Column3).append("</td>");
+            //    tableTemplete.append("<td>").append(this.Column4).append("</td>");
+            //    tableTemplete.append("<td>").append(this.Column5).append("</td>");
+            //    tableTemplete.append("<td>").append(this.Column6).append("</td>");
+
+            //});
+
+            tableTemplete.append('</tbody></table>');
+
+
+            $('#tableBPR').html(tableTemplete);
+        });
+    }
+
+</script>
+
+<style>
+    .tooltip-inner {
+        background-color: rgba(128, 128, 128, 0.51);       
+        color: white;
+    }
+
+    .tooltip.bottom .tooltip-arrow {
+       background-color: rgba(128, 128, 128, 0.51);       
+        color: white;
+    }
+
+</style>
+
+<script type="text/javascript">
+    var dayList = '';
+    var hourList = '';
+    var sheetData = '';
+    var dimensions = '';
+    var startdate = '';
+    var NextDueDate = '';
+    var TodayDate = '';
+    var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+    function Toggletr(obj) {
+        $(".parent").one("click", function (e) {
+            if (e.target != obj)
+                return;
+            if ($(this).hasClass("abc")) {
+                $(this).nextUntil(".parent").fadeIn(200);
+                $(this).removeClass('abc');
+            }
+            else {
+                $(this).nextUntil(".parent").fadeOut(250);
+                $(this).addClass('abc');
+            }
+        });
+        $(this).unbind('click');
+
+
+        var img = $(obj).next(".pull-right").children('img').attr('src');
+
+        if (img == "../images/rightarrow.png") {
+            $(obj).next(".pull-right").children('img').attr('src', '../images/downarrow.png');
+        }
+        else {
+            $(obj).next(".pull-right").children('img').attr('src', '../images/rightarrow.png');
+        }
+
+
+
+        setTimeout(
+                  function () {
+                      var hght = 0;
+                      $('#J_timedSheet tbody tr').each(function () {
+                          if ($(this).css('display') !== 'none') {
+                              hght += $(this).innerHeight();
+                          }
+                      })
+
+                      $('.parent').each(function () {
+                          hght += 10;
+
+                      })
+
+                      if (hght < 500) {
+                          $('#J_timedSheet thead').css('width', '100%');
+                          $('#J_timedSheet tbody').innerHeight(hght);
+                      }
+                      else {
+                          var wdth = $("#J_timedSheet").width() - 16;
+                          $('#J_timedSheet thead').css('width', wdth);
+                          $('#J_timedSheet tbody').innerHeight(500);
+                      }
+                  }, 500);
+    }
+
+
+    function BindGrid(startdate) {
+
+
+
+        $.ajax({
+            url: '/Dashboard/BindGrid',
+            dataType: 'json',
+            async: true,
+            data: { cdate: startdate },
+            success: function (Data) {
+
+                try {
+                    $("#div_bestPossibleRates").LoadingOverlay("hide");
+
+                    if (Data.st == 1) {
+                        dayList = JSON.parse(Data.rooms);
+                        hourList = JSON.parse(Data.days);
+                        sheetData = JSON.parse(Data.values);
+                        dimensions = [sheetData.length, 7];
+                        var sheet = $("#tbldash").TimeSheetDashboard({
+                            data: {
+                                dimensions: dimensions,
+                                colHead: hourList,
+                                rowHead: dayList,
+                                sheetHead: { name: "Competition Set" },
+                                sheetData: sheetData
+                            },
+                            end: function (ev, selectedArea) {
+                                //updateRemark(sheet);
+                            }
+                        });
+
+                        $('[data-toggle="tooltip"]').popover({ trigger: "hover" });
+                    }
+                    else {
+                        toastr.info(Data.msg);
+                    }
+
+                } catch (e) {
+                    $('#div_bestPossibleRates').LoadingOverlay("hide");
+                }
+
+            },
+            error: function () {
+
+            },
+            always: function () {
+
+            }
+        });
+
+    }
+
+    function FetchNegCount() {
+
+        $.ajax({
+            url: '/Dashboard/FetchNegCount',
+            dataType: 'json',
+            async: true,
+            data: '',
+            success: function (Data) {
+
+                try {
+
+                    if (Data.CNT > 0) {
+                        $('#NegCount').html('You Have ' + Data.CNT + ' Pending Negotiations');
+                        $('#imgShowNego').show();
+                    }
+                    else {
+                        //$('#NegCount').html('You Have No Pending Negotiations');
+                        $('#NegCount').html('');
+                        $('#imgShowNego').hide();
+                    }
+
+                } catch (e) {
+
+                }
+
+            },
+            error: function () {
+
+            },
+            always: function () {
+
+            }
+        });
+    }
+    function GetNotification() {
+
+        $.ajax({
+            url: '/Dashboard/GetHotelRank',
+            dataType: 'json',
+            async: true,
+            data: '',
+            success: function (Data) {
+                try {
+                    $("#rankingLeft").LoadingOverlay("hide");
+                    $('#divRanking').show();
+                    if (Data.data != null) {
+                        $('#spTotalHotels').html(Data.data.Hotels);
+                        $('#spRank').html(Data.data.MyRank);
+                    }
+                    else {
+                        $('#spTotalHotels').html('');
+                        $('#spRank').html('');
+                    }
+
+                } catch (e) {
+
+                }
+
+            },
+            error: function () {
+            },
+            always: function () {
+
+            }
+        });
+    }
+    function GetHotelRanking() {
+
+        $.ajax({
+            url: '/Dashboard/GetHotelRank',
+            dataType: 'json',
+            async: true,
+            data: '',
+            success: function (Data) {
+                try {
+                    $("#rankingLeft").LoadingOverlay("hide");
+                    $('#divRanking').show();
+                    if (Data.data != null) {
+                        $('#spTotalHotels').html(Data.data.Hotels);
+                        $('#spRank').html(Data.data.MyRank);
+                    }
+                    else {
+                        $('#spTotalHotels').html('');
+                        $('#spRank').html('');
+                    }
+
+                } catch (e) {
+
+                }
+
+            },
+            error: function () {
+            },
+            always: function () {
+
+            }
+        });
+    }
+    function ShowNego() {
+        window.location.href = '/PendingNegotiations';
+    }
+
+    function ImproveBidding() {
+        window.open('/BulkBid', '_blank');
+    }
+
+    function IncreaseNegotiation() {
+        window.open('/NegotiationNotification', '_blank');
+    }
+
+    $(document).ready(function () {
+
+        GetHotelRanking();
+
+        FetchNegCount();
+        BindGrid();
+
+        var url = '/Dashboard/GetNotifications';
+        $("#divNotifications").load(url, function () {
+            $('#divNotifications').LoadingOverlay("hide");;
+        });
+    });
+
+
+</script>
+
+<style>
+    #tbldash .TimeSheetDashboard-head {
+        width: 23.5% !important;
+        text-align: left !important;
+    }
+
+    .TimeSheetDashboard-rowHead, .TimeSheetDashboard-colHead {
+        text-align: left !important;
+    }
+</style>
+
+<input type="hidden" id="hdnPropId" value="@Session["PropId"]" />
+
+<div class="container margintop20">
+    <div class="panel panel-default">
+        <div class="panel-heading">Dashboard</div>
+
+        <div class="panel-body">
+            <div class="content">
+                <div class="col-md-12 marginbottom10">
+                    <div class="row">
+                        <div class="col-md-3 border1 " style="height:210px;">
+                            <div class="row"><div class="col-md-12 alert-info"><h5><strong>Ranking</strong></h5></div></div>
+                            <div style="min-height:160px" class="text-center margintop10 loadingOverlay" id="rankingLeft">
+                                <h3 style="display:none" id="divRanking">Your Ranking for Today <br /><br /><strong id="spRank" class="blue">-</strong> out of <strong id="spTotalHotels" class="blue">-</strong> &nbsp;<img src="~/images/ranking.png" width="60px" /></h3>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+
+
+                            <div class="alert-info">
+                                <div class="row" style="height:37px">
+                                    <div class="col-md-4 paddingleft20 paddingtop5 "><strong>Notifications</strong></div>
+                                    <div class="col-md-8 text-center" style="margin-bottom:-10px">
+                                        <div class="row">
+                                            <div class="col-md-8" style="text-align:right">
+                                                <div class=" txtblk paddingtop5" id="NegCount">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <input type="image" id="imgShowNego" style="display:none" src="~/images/ofr-gif.gif" alt="Submit" onclick="ShowNego()">
+                                                @*<button type="Submit" value="Show Negotiations" class="btn btn-danger center NegCount" >Show Negotiations</button>*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="divNotifications" style="height:172px" class="loadingOverlay">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @*<div class="content">
+                <div class="col-md-12">*@
+                    <hr class="margin0">
+                    <div class="content">
+                        <div class="col-md-12 dashboardhdg">
+                            <div class="pull-left paddingleft10"><strong>Competition Analysis for the next 7 days</strong></div>
+                            <div class="pull-right paddingright10">Next 7 Days</div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="table-responsive  margintop15">
+                        <div class="" id="divRates"></div>
+                        <table class="table scroll" id="tbldash"></table>
+                    </div>
+                @*</div>
+            </div>*@
+
+
+
+            @*<div class="row">
+                    <div class="col-md-4 alert-success marginleft20 minheight">
+                        <h4>Notifications</h4>
+                        <hr>
+                        <div class="content">&nbsp;</div>
+                    </div>
+                    <div class="col-md-3  alert-info marginleft20  minheight">
+                        <h4>Pending Negotiations</h4>
+                        <hr>
+                        <div class="content">
+                            <h5 id="NegCount"></h5>
+                            <button type="Submit" value="Show Negotiations" class="btn btn-danger center NegCount" onclick="ShowNego()">Show Negotiations</button>
+                        </div>
+                    </div>
+
+
+                </div>*@
+
+            <!--booking overview row-->
+            @*<div class="content">
+                <div class="col-md-12">*@
+                    <hr class="margin0">
+                    <div class="content">
+                        <div class="col-md-12 dashboardhdg">
+                            <div class="pull-left paddingleft10"><strong>Booking Overview</strong></div>
+                            <div class="pull-right marginright10" @*style="margin-top:-6px; margin-bottom:2px"*@>
+                                <select id="ddlBookingOverview" class="width120">
+                                    <option value="31"> Past 31 days</option>
+                                    <option selected value="7"> Past 7 days</option>
+                                    <option value="1">Yesterday</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div><hr>
+
+                @*</div>
+            </div>*@
+            <div class="row margintop20 ">
+                <div class="col-md-3 marginleft20 borderlight1 graphbox">
+                    <div class="col-md-12 darkgbg">
+                        <strong>Views</strong>
+                    </div>
+                    <hr>
+                    <div class="col-md-6">
+                        <div class="loadingOverlay" id="divViews_Ours" style="width: 100%; height: 250px;"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="loadingOverlay" id="divViews_Competitors" style="width: 100%; height: 250px;"></div>
+                    </div>
+
+                </div>
+
+                <div class="col-md-3 borderlight1 graphbox marginleft30">
+                    <div class="col-md-12 bluebg">
+                        <strong>Bookings</strong>
+
+                    </div>
+                    <hr>
+                    <div class="col-md-6">
+                        <div class="loadingOverlay" id="divBooking_Ours" style="width: 100%; height: 250px;"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="loadingOverlay" id="divBooking_Competitors" style="width: 100%; height: 250px;"></div>
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-3 borderlight1 graphbox marginleft30">
+                    <div class="col-md-12 greenbg">
+                        <strong>Conversion %</strong>
+
+                    </div>
+                    <hr>
+                    <div class="col-md-6">
+                        <div class="loadingOverlay" id="divCommission_Ours" style="width: 100%; height: 250px;"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="loadingOverlay" id="divCommission_Competitors" style="width: 100%; height: 250px;"></div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 margintop20 text-center">
+                    <button type="Submit" value="Improve Bidding Success" onclick="ImproveBidding()" class="btn btn-primary center ">Improve Bidding Success</button>
+                </div>
+            </div>
+
+            <!--booking insight row-->
+            <div class="row margintop20">
+                <div class="col-md-12">
+                    <hr class="margin0">
+                    <div class="content ">
+                        <div class="col-md-12 dashboardhdg ">
+                            <div class="pull-left  paddingleft10"><strong>Booking Insights</strong></div>
+                            <div class="pull-right marginright10" @*style="margin-top:-6px; margin-bottom:2px"*@>
+                                <a href="javascript:void(0)" style="" class="lnkBookingOrRevenue booking-active" data-type="B">Bookings</a>
+                                 | <a href="javascript:void(0)" style="margin-right:40px" class="lnkBookingOrRevenue" data-type="R">Revenue</a>
+                                <input style="display:none" checked id="rdBooking" name="bookingOrRevenue" value="N" type="radio" />
+                                <input style="display:none" id="rdRevenue" name="bookingOrRevenue" value="R" type="radio" />
+                                <select id="ddlBookingInsights" class="width120">
+                                    <option value="31"> Past 31 days</option>
+                                    <option selected value="7"> Past 7 days</option>
+                                    <option value="1">Yesterday</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                </div>
+                <div class="col-md-12 margintop10 border1">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2">
+                        <label class="radio-inline">
+                            <strong><input type="radio" checked name="radioBookingType" value="O" />Overall</strong>
+                        </label>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="radio-inline">
+                            <strong> <input type="radio" name="radioBookingType" value="B" />Bid</strong>
+                        </label>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="radio-inline">
+                            <strong>  <input type="radio" name="radioBookingType" value="N" />Negotiate</strong>
+                        </label>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="radio-inline">
+                            <strong><input type="radio" name="radioBookingType" value="R" />Buy</strong>
+                        </label>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="radio-inline">
+                            <strong><input type="radio" name="radioBookingType" value="C" />Corporate</strong>
+                        </label>
+                    </div>
+                    <div class="col-md-1"></div>
+                </div>
+                <div class="col-md-6 border1">
+                    <div class="loadingOverlay" id="divLeadTime" style="width: 100%; height: 500px;"></div>
+                </div>
+                <div class="col-md-6 border1">
+                    <div class="loadingOverlay" id="divDayOfWeek" style="width: 100%; height: 500px;"></div>                    
+                </div>
+                <div class="col-md-6 border1">
+                    <div class="loadingOverlay" id="divLengthOfStay" style="width: 100%; height: 500px;"></div>
+                </div>
+                <div class="col-md-6 border1">
+                    <div class="loadingOverlay" id="divNumberOfRooms" style="width: 100%; height: 500px;"></div>
+                </div>
+            </div>
+
+            <!--Performance overview row-->
+            <div class="row">
+                <div class="col-md-12">
+                    <hr class="margin0">
+                    <div class="content ">
+                        <div class="col-md-12 dashboardhdg">
+                            <div class="pull-left paddingleft10"><strong>Performance Overview</strong></div>
+                            <div class="pull-right marginright10" @*style="margin-top:-6px; margin-bottom:2px"*@>
+                                <select id="ddlPerformanceOverview" class="width120">
+                                    <option value="31"> Past 31 days</option>
+                                    <option selected value="7"> Past 7 days</option>
+                                    <option value="1">Yesterday</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                </div>
+            </div>
+
+            <div class="row margintop20 ">
+                <div class="col-md-12" id="divPerformanceOverview"></div>
+            </div>
+
+            <!--Negotiation insights row-->
+            <div class="row">
+                <div class="col-md-12">
+                    <hr class="margin0">
+                    <div class="content ">
+                        <div class="col-md-12 dashboardhdg">
+                            <div class="pull-left paddingleft10"><strong>Negotiation Insights</strong></div>
+                            <div class="pull-right marginright10" @*style="margin-top:-6px; margin-bottom:2px"*@>
+                                Bookings
+                                <select id="ddlNegotitaionOverview" class="width120">
+                                    <option value="31"> Past 31 days</option>
+                                    <option selected value="7"> Past 7 days</option>
+                                    <option value="1">Yesterday</option>
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                </div>
+
+            </div>
+            <div class="row margintop20">
+
+                <div class="col-md-12" id="nego_overview_container">
+                    <div class="col-md-6  borderlight">
+                        <div class="col-md-12 bluebg">
+                            <div class="text-center"><strong>Your responses to guest negotiation</strong></div>
+
+                        </div>
+                        @*<div class="col-md-6 text-center bluebg borderright bordertop"><strong>Your Hotel</strong></div>
+                            <div class="col-md-6 text-center bluebg borderright bordertop"><strong>Best in your Peer Group</strong></div>*@
+
+
+                        <div class="col-md-6 borderright">
+                            <div class="loadingOverlay" id="divNegotiation_Ours" style="width: 100%; height: 250px;"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="loadingOverlay" id="divNegotiation_Competitors" style="width: 100%; height: 250px;"></div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6  borderlight   ">
+                        <div class="col-md-12 bluebg">
+                            <div class="text-center"><strong>Responses  of guests to your counter offers</strong></div>
+
+                        </div>
+                        @*<div class="col-md-6 text-center bluebg borderright bordertop"><strong>Your Hotel</strong></div>
+                            <div class="col-md-6 text-center bluebg borderright bordertop"><strong>Best in your Peer Group</strong></div>*@
+
+
+                        <div class="col-md-6 borderright">
+                            <div class="loadingOverlay" id="divNegotiationAccepted_Ours" style="width: 100%; height: 250px;"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="loadingOverlay" id="divNegotiationAccepted_Competitors" style="width: 100%; height: 250px;"></div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-12 margintop20 text-center">
+                        <button type="Submit" value="Increase Negotiation Trigger Discount" onclick="IncreaseNegotiation()" class="btn btn-primary center ">Increase Negotiation Trigger Discount</button>
+                    </div>
+
+                </div>
+            </div>
+            <!--no of room booked row-->
+            @*<div class="row margintop20">
+                    <div class="col-md-12">
+                        <hr>
+
+                        <div class="col-md-12 ">
+                            <div class="loadingOverlay" id="divRoomProductivity" style="width: 100%; min-height:200px; height: 350px;"></div>
+                        </div>
+                    </div>
+                </div>*@
+        </div>
+
+    </div>
+</div>
+
+<script src="~/js/highcharts.js"></script>
+<script src="~/js/dashboardChart.js"></script>

@@ -1,0 +1,100 @@
+/**
+ * default development theme for jQRangeSlider
+ * Using fam fam icon set from Mark James, http://www.famfamfam.com/lab/icons/silk/ (Creative Commons Attribution 2.5 License)
+ */
+
+.ui-rangeSlider {
+    height: 22px;
+}
+
+    .ui-rangeSlider .ui-rangeSlider-innerBar {
+        height: 24px;
+        margin: 3px 6px;
+        background: #e0e0e0;
+        background-image: url('../images/Star.png');
+        cursor: pointer;
+    }
+
+    .ui-rangeSlider .ui-rangeSlider-handle {
+        width: 8px;
+        height: 30px;
+        background: #c2e155;
+        cursor: pointer;
+    }
+
+    .ui-rangeSlider .ui-rangeSlider-bar {
+        margin: 1px 0;
+        background: #CCC;
+        background: #68a1d6;
+        height: 28px;
+        cursor: move;
+        cursor: grab;
+        cursor: -moz-grab;
+    }
+
+        .ui-rangeSlider .ui-rangeSlider-bar.ui-draggable-dragging {
+            cursor: -moz-grabbing;
+            cursor: grabbing;
+        }
+
+.ui-rangeSlider-arrow {
+    height: 28px;
+    margin: 2px 0;
+    width: 16px;
+    background-repeat: no-repeat;
+}
+
+    .ui-rangeSlider-arrow.ui-rangeSlider-leftArrow {
+        background-image: url('icons-classic/resultset_previous.png');
+        background-position: center left;
+    }
+
+    .ui-rangeSlider-arrow.ui-rangeSlider-rightArrow {
+        background-image: url('icons-classic/resultset_next.png');
+        background-position: center right;
+    }
+
+.ui-rangeSlider-arrow-inner {
+    display: none;
+}
+
+.ui-rangeSlider-container {
+    height: 26px;
+}
+
+.ui-rangeSlider-withArrows .ui-rangeSlider-container {
+    margin: 0 11px;
+}
+
+.ui-rangeSlider-noArrow .ui-rangeSlider-container {
+    margin: 0;
+}
+
+.ui-rangeSlider-label {
+    margin: 0 2px 2px;
+    background-image: url('icons-classic/label.png');
+    background-position: bottom center;
+    background-repeat: no-repeat;
+    float: left;
+    font-size: 11px;
+    font-weight: bold;
+    color: #7b7b7b;
+    white-space: nowrap;
+    bottom: 2px;
+    padding: 3px 6px 7px;
+    cursor: col-resize;
+}
+
+.ui-rangeSlider-label-inner {
+    display: none;
+}
+
+/*
+ * Edit slider
+ */
+
+input.ui-editRangeSlider-inputValue {
+    width: 3em;
+    vertical-align: middle;
+    text-align: center;
+}

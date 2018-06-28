@@ -1,0 +1,532 @@
+﻿@model dynamic
+<style>
+    .ui-helper-hidden-accessible {
+        display: none;
+    }
+
+    /*.childli {
+        float: left;
+        width: 112px;
+        margin-right: 14px;
+        margin-top: 10px;
+    }*/
+
+    .ui-autocomplete-category {
+        font-weight: bold;
+        padding: .2em .4em;
+        margin: .8em 0 .2em;
+        line-height: 1.5;
+    }
+
+    .ui-menu li a {
+        text-decoration: none !important;
+    }
+
+    .ui-menu {
+        overflow: auto;
+    }
+
+    .mod {
+        height: auto !important;
+    }
+</style>
+
+<div class="light_header_bar">
+    <form id="frmsearch">
+        @Html.Hidden("hdnJson")
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4  mbottom10 form-group">
+                    <input type="hidden" id="hdnSelectedLocalityID" />
+                    <input type="hidden" id="hdnSelectedType" />
+                    <input id="txtlocname" type="text" placeholder="Where are you going?" class="form-control autosuggest" required>
+                </div>
+                <div class="col-md-2 mbottom10">
+                    <input type="text" id="txtstayfrom" placeholder="Check In" class="form-control" required>
+                </div>
+                <div class="col-md-2 mbottom10">
+                    <input type="text" id="txtstayto" placeholder="Check Out" class="form-control" required>
+                </div>
+
+                <div class="col-md-2 mbottom10">
+
+                    <div id="txttotalcount_Co" class="form-control ">2 Guests in 1 Room</div>
+
+                    <div id="divwhole_Co" class='width284 row' style="display:none; border:1px solid #d1d1d1; z-index:9999; background-color:#fff; position:absolute; top:50px; left:13%;">
+                        <i class="sprite-booking-engine ico-be-sub-arrow"></i>
+                        <div id="roomContainerDiv_Co">
+                            <div class="rooms">
+                                <div class='col-md-12 col-xs-12  pull-left'>
+                                    <h5><strong>Room1:</strong></h5>
+                                </div>
+                                <div class='col-md-6 col-xs-6'>
+                                    <h5><strong>Adult</strong></h5>
+                                    <h6>Above 12 years</h6>
+
+                                    <div class='input-group width110'>
+                                        <input id="Co_adult1" class="form-control adult1" itype="adult1" type="number" roomno="1" readonly="readonly" value="2" min="1" max="6" />
+                                    </div>
+                                </div>
+                                <div class='col-md-6 col-xs-6'>
+                                    <h5><strong>Children</strong></h5>
+                                    <h6>Below 12 years</h6>
+                                    <div class='input-group width110'>
+                                        <input id="Co_children1" class="form-control children1" readonly="readonly" roomno="1" itype="children1" type="number" value="0" min="0" max="6" />
+
+                                    </div>
+                                </div>
+                                <div class='col-md-12 col-xs-12' id="Co_divChildAge1" style="display:none;">
+                                    <h5><strong>Age of Childen</strong></h5>
+                                    <ul style="list-style:none; padding:0; margin:0; " id="Co_ulchilds1"></ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class='col-md-12 col-xs-12 margintop5'>
+                            <a id="Co_btnaddroom" href='javascript:void(0);' onclick="Co_AddRooms();">Add a room</a>
+                            <span id="Co_sppipe" style="display:none;">|</span>
+                            <a id="Co_btnremoveroom" href='javascript:void(0);' style="display:none;" onclick="Co_RemoveRoom();">Remove this room</a>
+                            <hr>
+                            <div onclick="Co_FetchRoomDetails();" class='btn btn-primary margintop5 marginbottom10 col-md-12'>Done</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-1 mbottom10">
+                    <div class="form-group "><button type="button" id="btnModfySeach" data-button_name="@(Model !=null ? Model.sRequestType:"")" class="btn btn-bannerbtn ">Modify Search</button></div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<script src="~/js/bootstrap-number-CommonSearch.js"></script>
+
+<script type="text/javascript">
+    var count = 0;
+    $.widget("custom.catcomplete", $.ui.autocomplete, {
+
+        _create: function () {
+            this._super();
+            this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
+        },
+
+        _resizeMenu: function () {
+            this.menu.element.outerWidth(470).outerHeight(300);
+        },
+
+        _renderMenu: function (ul, items) {
+            var that = this,
+           currentCategory = "";
+            count = 0;
+
+            $.each(items, function (index, item) {
+                var li;
+                count++;
+                if (item.category != currentCategory&&item.href==undefined) {
+                    ul.append("<li class='ui-autocomplete-category " + item.category + "'>" + item.category + "</li>");
+                    currentCategory = item.category;
+                }
+
+                li = that._renderItemData(ul, item);
+
+                if (item.category) {
+                    li.attr("aria-label", item.category + " : " + item.label);
+                }
+            });
+        },
+
+        _renderItem: function (ul, item) {
+            if (item.href != undefined) {
+                debugger;
+           //     return $("<button class=\"btn btn-default\">")
+           //.addClass(item.category)
+           //.attr("data-value", item.value)
+           //.append($("<a href=" + item.href + ">").append(item.category))
+                //.appendTo(ul);
+                return $("<a style='color:#337ab7;padding-left:13px;' href=" + item.href + ">").append(item.category)
+                .appendTo(ul);
+            }
+            else {
+                return $("<li>")
+                .addClass(item.category)
+                .attr("data-value", item.value)
+                .append($("<a>").text(item.label))
+                .appendTo(ul);
+            }
+        },
+        _resizeMenu: function () {
+            if (count > 10) {
+                this.menu.element.removeClass("mod");
+                this.menu.element.outerHeight(250);
+            }
+            else {
+                this.menu.element.addClass("mod");
+            }
+
+        }
+    });
+
+</script>
+
+<script type="text/javascript">
+    var srchdetails = '';
+    var pro = [];
+    var SearchId = '';
+    var SearchType = '';
+    var dCheckIn = '';
+    var dCheckOut = '';
+
+    $(document).ready(function () {
+
+        var searchData = $.cookie("srchdetails");
+
+        if (searchData) {
+            var jsonSearchData = $.parseJSON(searchData);
+
+            if (jsonSearchData) {
+                debugger;
+                var d = new Date();
+                //$('#txtstayfrom').val(jsonSearchData.sCheckIn).attr("disabled", "disabled");
+                //$('#txtstayto').val(jsonSearchData.sCheckOut).attr("disabled", "disabled");
+                //$('#txtlocname').val(jsonSearchData.cname).attr("disabled", "disabled");
+                //$('#hdnSelectedLocalityID').val(jsonSearchData.cid);
+                //$('#hdnJson').val(jsonSearchData.sRoomData);
+                //$('#txttotalcount').html(jsonSearchData.totalGuestCount);
+
+                var curr_date = d.getDate();
+                var curr_month = d.getMonth() + 1;
+                var curr_year = d.getFullYear();
+                if (curr_date < 10) {
+                    curr_date = '0' + curr_date
+                }
+                if (curr_month < 10) {
+                    curr_month = '0' + curr_month
+                }
+                var TodayDate = curr_date + '/' + curr_month + '/' + curr_year;
+                a = jsonSearchData.sCheckIn.split('/');
+                var dcheckin = a[0] + '/' + a[1] + '/' + a[2];
+
+                if (new Date(TodayDate) > new Date(dcheckin))
+                    $("#txtstayfrom").val(TodayDate).attr("disabled", "disabled");
+                else
+                    $("#txtstayfrom").val(jsonSearchData.sCheckIn).attr("disabled", "disabled");
+
+                a = jsonSearchData.sCheckOut.split('/');
+                var dcheckout = a[0] + '/' + a[1] + '/' + a[2];
+                if (new Date(TodayDate) > new Date(dcheckout))
+                    $("#txtstayto").val(TodayDate).attr("disabled", "disabled");
+                else
+                    $("#txtstayto").val(jsonSearchData.sCheckOut).attr("disabled", "disabled");
+
+
+                $('#hdnSelectedLocalityID').val(jsonSearchData.cid);
+                $('#hdnSelectedType').val(jsonSearchData.ctype);
+                $('#txtlocname').val(jsonSearchData.cname).attr("disabled", "disabled");
+                $('#txttotalcount_Co').val(jsonSearchData.cname).attr("disabled", "disabled");
+                SearchId = jsonSearchData.cid;
+                SearchType = jsonSearchData.ctype;
+                dCheckIn = jsonSearchData.sCheckIn;
+                dCheckOut = jsonSearchData.sCheckOut;
+                $('#hdncheckIn').val(dCheckIn);
+                $('#hdncheckOut').val(dCheckOut);
+
+                $('#hdnJson').val(jsonSearchData.sRoomData);
+
+                Co_BindRoomData($.parseJSON(jsonSearchData.sRoomData));
+            }
+        }
+        else {
+            $('#Co_adult1').bootstrapNumber_Common();
+            $('#Co_children1').bootstrapNumber_Common();
+            $('#btnModfySeach').text('Search');
+        }
+
+
+
+        document.getElementById('frmsearch').onsubmit = function (e) {
+
+            e.preventDefault();
+            var f = document.getElementById('frmsearch');
+            if (f.checkValidity()) {
+
+                if ($('#hdnSelectedLocalityID').val() == "") {
+                    toastr.warning('Please select the Destination City.');
+                    return false;
+                }
+                if ($('#txtstayfrom').val() == "") {
+                    toastr.warning('Please select your Check In date.');
+                    return false;
+                }
+                if ($('#txtstayto').val() == "") {
+                    toastr.warning('Please select your Check Out date.');
+                    return false;
+                }
+                Co_FetchRoomDetails();
+                var IsNegoValid = Co_FetchRoomDetails();   //Check for more than 3 room for a valid negotiation
+                if ($('#btnModfySeach').data('button_name') == "negotiate") {
+
+                    if (IsNegoValid == false) {
+                        toastr.warning('Negotiation not allowed on more than 3 rooms.');
+                        return false;
+                    }
+                }
+
+                if ($("#hdnJson").val() == "") {
+                    toastr.warning('Please select rooms.');
+                    return false;
+                }
+                var values = { cid: $('#hdnSelectedLocalityID').val(), ctype: $('#hdnSelectedType').val(), cname: $('#txtlocname').val(), sCheckIn: $('#txtstayfrom').val(), sCheckOut: $('#txtstayto').val(), sRoomData: $("#hdnJson").val(), totalGuestCount: $('#txttotalcount').html(), sRequestType: $('#btnModfySeach').data('button_name') };
+                $.removeCookie('srchdetails'); //for removing cookie
+                // $.cookie.json = true;
+                srchdetails = $.cookie('srchdetails');
+
+                pro = [];
+                pro.push(JSON.stringify(values));
+
+                $.cookie("srchdetails", pro, { expires: 2, path: '/' });
+                //startSpinning();
+                window.location.href = '@Url.Action("Index", "Search")?cid=' + values.cid + '&ctype=' + values.ctype + '&cname=' + values.cname + '&sCheckIn=' + values.sCheckIn + '&sCheckOut=' + values.sCheckOut + '&sRoomData=' + values.sRoomData + '&sRequestType=' + values.sRequestType;
+
+            }
+        }
+
+
+
+        //bind autocomplete event on locality,city and macro area textbox on load
+        $(".autosuggest").catcomplete({
+            delay: 0,
+            source: function (request, response) {
+                response([{ label: "", loading: true }]);
+                $.ajax({
+                    url: "/Home/GetSearchData",
+                    contentType: "application/json; charset=utf-8",
+                    data: { txt: request.term },
+                    dataType: "json",
+                    type: "GET",
+                    async: false,
+                    success: function (data) {
+                        $('#hdnSelectedLocalityID').val('');
+                        $('#hdnSelectedType').val('');
+                        if (!data.length) {
+
+                            var result = [
+                             {
+                                 value: response.term,
+                                 category: "No Matches Found"
+                             }
+                            ];
+                            response(result);
+                        }
+                        else {
+                            response($.map(data, function (item) {
+                                return {
+                                    label: item.label,
+                                    category: item.category,
+                                    value: item.Id
+                                }
+                            }));
+                        }
+                    }
+                });
+            },
+            minLength: 3,
+            //autoFocus: true,
+            select: function (event, ui) {
+                //Set autocomplete element to display the label
+                $(".autosuggest").val(ui.item.label);
+                $('#hdnSelectedLocalityID').val(ui.item.value.trim());
+                $('#hdnSelectedType').val(ui.item.category);
+                event.preventDefault();
+                if ($('#txtstayfrom').val() == undefined || $('#txtstayfrom').val() == "") {
+                    $('#txtstayfrom').focus();
+                }
+            },
+            focus: function (event, ui) {
+                event.preventDefault();
+                //  $(".autosuggest").val(ui.item.label);
+                return false;
+            }
+        });
+
+
+        $('#btnModfySeach').click(function (e) {
+            e.preventDefault();
+
+            if ($(this).text() == 'Search') {
+                $('#frmsearch').submit();
+            }
+            else if ($(this).text() == 'Modify Search') {
+
+                $('#txtstayfrom').removeAttr("disabled");
+                $('#txtstayto').removeAttr("disabled");
+                $('#txtlocname').removeAttr("disabled");
+                $('#txttotalcount_Co').removeAttr("disabled");
+
+                $('#txtHotelName').prop('disabled', true);
+                $('#txtlocality').prop('disabled', true);
+                $('#applyFilter').prop('disabled', true);
+
+                $(this).text('Search');
+            }
+        });
+
+    });
+</script>
+
+<script>
+
+    var numberOfMonth = 2;
+
+    @if (Request.Browser.IsMobileDevice)
+        {
+            <text> numberOfMonth = 1; </text>
+
+        }
+
+    $(function () {
+
+
+
+        $('#txtstayfrom').bind("cut copy paste", function (e) {
+            e.preventDefault();
+        });
+
+        $('#txtstayto').bind("cut copy paste", function (e) {
+            e.preventDefault();
+        });
+
+        $('#txtstayfrom').keydown(function (e) {
+            e.preventDefault();
+            return false;
+        });
+
+        $('#txtstayto').keydown(function (e) {
+            e.preventDefault();
+            return false;
+        });
+
+        var tomorrow = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
+        var today = new Date(),
+
+          from = $("#txtstayfrom").datepicker({
+
+              changeMonth: false,
+              numberOfMonths: numberOfMonth,
+              minDate: today,
+              dateFormat: 'dd/mm/yy',
+              onSelect: function (selected, event) {
+
+                  var selectedDate = new Date(event.selectedMonth + 1 + '/' + event.selectedDay + '/' + event.selectedYear);
+                  var oneDayAfter = selectedDate;
+                  oneDayAfter.setDate(oneDayAfter.getDate() + 1);
+
+                  to.datepicker("option", "minDate", oneDayAfter);
+
+                  var afterHalfMonth = new Date(selectedDate);
+                  afterHalfMonth.setDate(afterHalfMonth.getDate() + 45);
+                  to.datepicker("option", "maxDate", afterHalfMonth);
+
+                  var txtToSelectedVal = $('#txtstayto').val();
+
+                  if (txtToSelectedVal) {
+
+                      var toVal_ddmmyy = txtToSelectedVal.split('/');
+
+                      if (toVal_ddmmyy) {
+
+                          var txtToSelectedDate = new Date(toVal_ddmmyy[1] + '/' + toVal_ddmmyy[0] + '/' + toVal_ddmmyy[2])
+
+                          if (selectedDate > txtToSelectedDate) {
+
+                              var dd = txtToSelectedDate.getDate();
+                              var mm = txtToSelectedDate.getMonth() + 1;
+                              var yy = txtToSelectedDate.getFullYear();
+
+                              dd < 10 ? dd = '0' + dd : dd = dd;
+                              mm < 10 ? mm = '0' + mm : mm = mm;
+
+                              var nextDayMMDDYYFormat_txtTo = dd + '/' + mm + '/' + yy;
+                              $('#txtstayto').val(nextDayMMDDYYFormat_txtTo);
+                          }
+
+                      }
+                  }
+                  else {
+                      var dd = oneDayAfter.getDate();
+                      var mm = oneDayAfter.getMonth() + 1;
+                      var yy = oneDayAfter.getFullYear();
+
+                      dd < 10 ? dd = '0' + dd : dd = dd;
+                      mm < 10 ? mm = '0' + mm : mm = mm;
+
+                      var nextDayMMDDYYFormat = dd + '/' + mm + '/' + yy;
+                      $('#txtstayto').val(nextDayMMDDYYFormat);
+                  }
+
+                  setTimeout(function () {
+                      $("#txtstayto").datepicker('show');
+                  }, 16);
+              },
+              onClose: function (dateText, inst) {
+                  $(this).attr("disabled", false);
+              },
+              beforeShow: function (input, inst) {
+                  $(this).attr("disabled", true);
+              }
+          });
+
+        //var date2 = $('#txtstayfrom').datepicker('getDate');
+        //var nextDayDate = new Date();
+        //nextDayDate.setDate(date2.getDate() + 1);
+
+        var to = $("#txtstayto").datepicker({
+
+            changeMonth: false,
+            minDate: tomorrow,
+            numberOfMonths: numberOfMonth,
+            dateFormat: 'dd/mm/yy',
+            onSelect: function (selected, event) {
+
+                var selectedDate = new Date(event.selectedMonth + 1 + '/' + event.selectedDay + '/' + event.selectedYear);
+
+                var txtFromSelectedVal = $('#txtstayfrom').val();
+
+                if (txtFromSelectedVal) {
+
+                    var fromVal_ddmmyy = txtFromSelectedVal.split('/');
+
+                    if (fromVal_ddmmyy) {
+
+                        var txtFromSelectedDate = new Date(fromVal_ddmmyy[1] + '/' + fromVal_ddmmyy[0] + '/' + fromVal_ddmmyy[2])
+
+                        var oneDayBefore = selectedDate;
+                        oneDayBefore.setDate(oneDayBefore.getDate() - 1);
+
+                        if (oneDayBefore >= new Date()) {
+                            if (selectedDate < txtFromSelectedDate) {
+
+                                var dd = oneDayBefore.getDate();
+                                var mm = oneDayBefore.getMonth() + 1;
+                                var yy = oneDayBefore.getFullYear();
+
+                                dd < 10 ? dd = '0' + dd : dd = dd;
+                                mm < 10 ? mm = '0' + mm : mm = mm;
+
+                                var nextDayMMDDYYFormat_txtFrom = dd + '/' + mm + '/' + yy;
+                                $('#txtstayfrom').val(nextDayMMDDYYFormat_txtFrom);
+                            }
+                        }
+                    }
+                }
+            },
+            onClose: function (dateText, inst) {
+                $(this).attr("disabled", false);
+            },
+            beforeShow: function (input, inst) {
+                $(this).attr("disabled", true);
+            }
+        });
+    });
+
+
+</script>

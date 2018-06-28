@@ -1,0 +1,178 @@
+﻿@model OneFineRateBLL.Entities.eLoyalityPoints
+@{
+    ViewBag.Title = "Loyality";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        bindgrid(); //binding datatable
+
+        //Updating data through Ajax
+        document.getElementById('frmLoyalityPoints').onsubmit = function (e) {
+            e.preventDefault();
+            var f = document.getElementById('frmLoyalityPoints');
+            if (f.checkValidity()) {
+                var values = {
+                    iLoyalityId: $("#iLoyalityId").val(),
+                    EarnRupees: $("#iEarnMoney").val(), EarnPoints: $("#iEarnPoints").val()
+                    , RedeemPoints: $("#iRedeemPoints").val(), RedeemRupees: $("#iRedeemMoney").val()
+                };
+                var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("UpdateLoyalityPoints")", values));
+                if (Data != null) {
+                    if (Data.st == '1') {
+                        toastr.success(Data.msg);
+                        return true;
+                    }
+                    else if (Data.st == '0') {
+                        toastr.error(Data.msg);
+                        return false;
+                    }
+                }
+            }
+        }
+        
+        document.getElementById('frmLoyalityPointsMap').onsubmit = function (e) {
+            e.preventDefault();
+            var f = document.getElementById('frmLoyalityPointsMap');
+            if (f.checkValidity()) {
+                var values = { ipoints: $("#txtPointsMap").val(), iamenityid: $("#ddlAmenities").val() };
+                var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("AddLoyalityPointsAmenityMap")", values));
+                if (Data != null) {
+                    $("#ddlAmenities").select2("val", "");                    
+                    if (Data.st == '1') {
+                        bindgrid();
+                        resetform('frmLoyalityPointsMap');
+                        toastr.success(Data.msg);
+                        return true;
+                    }
+                    else if (Data.st == '0') {
+                        toastr.error(Data.msg);
+                        return false;
+                    }
+                }
+
+            }
+        }
+    });
+    // bind list
+    function bindgrid() {
+
+        try {
+            var aoColumns =
+                [
+                 { "sTitle": "Points", "mData": "iPoints" },
+                 { "sTitle": "Amenity", "mData": "sAmenityName" },
+                 {
+                     "sTitle": "Action Date", "mData": "dtActionDate", "bSortable": false,
+                     "mRender": function (data, type, full) {
+                         return getNorDateTime(data);
+                     }
+                 },
+                 { "sTitle": "Action By", "mData": "ActionBy", "bSortable": false },
+                 {
+                     "sTitle": "Delete", "mData": "iLoyalityAmenityId", "bSortable": false,
+                     "mRender": function (data, type, full) {
+                         var html = '<button type="button" onclick="DeleteData(' + data + ')";  class="btn btn-danger">Delete</button>';
+                         return html;
+                     }
+                 }
+                ];
+            DatatableServerSide("#tblData", aoColumns, "/Services/Service.asmx/GetAllLoyalityPoints");
+        }
+        catch (e) {
+
+        }
+
+    }
+    // Delete data from list
+    function DeleteData(id) {
+        bootbox.confirm("Are you sure?", function (result) {
+            if (result == true) {
+                var values = { id: id };
+                var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("DeleteData")", values));
+                if (Data != null) {
+                    if (Data.st == '1') {
+                        bindgrid();
+                        $('.close').click();
+                        toastr.success(Data.msg);
+                        return true;
+                    }
+                    else if (Data.st == '0') {
+                        toastr.error(Data.msg);
+                        return false;
+                    }
+
+                }
+            }
+        });
+    }
+</script>
+<div class="container margintop20">
+    <div class="col-md-12">
+        <!--   table -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <b>Loyalty Points</b>
+            </div>
+            <form id="frmLoyalityPoints">
+
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-xs-12 subheadcolor">
+                            <h4>Earn Points</h4>
+                            <hr />
+                        </div>
+                        <div class="col-xs-1">Rupees</div>
+                        <div class="col-xs-2">
+                            @Html.HiddenFor(m => m.iLoyalityId)
+                            @Html.TextBoxFor(m => m.iEarnMoney, null, new { @class = "form-control", oninvalid = "setCustomValidity('Numberic value is allowed')", onchange = "try{setCustomValidity('')}catch(e){}", pattern = "[0-9]+", maxlength = "4", required = true })
+                        </div>
+                        <div class="col-xs-1">Points</div>
+                        <div class="col-xs-2">
+                            @Html.TextBoxFor(m => m.iEarnPoints, null, new { @class = "form-control", oninvalid = "setCustomValidity('Numberic value is allowed')", onchange = "try{setCustomValidity('')}catch(e){}", pattern = "[0-9]+", maxlength = "4", required = true })
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 subheadcolor">
+                            <h4>Redeem Points</h4>
+                            <hr />
+                        </div>
+                        <div class="col-xs-1">Points</div>
+                        <div class="col-xs-2">                            
+                            @Html.TextBoxFor(m => m.iRedeemPoints, null, new { @class = "form-control", oninvalid = "setCustomValidity('Numberic value is allowed')", onchange = "try{setCustomValidity('')}catch(e){}", pattern = "[0-9]+", maxlength = "4", required = true })
+                        </div>
+                        <div class="col-xs-1">Rupees</div>
+                        <div class="col-xs-2">
+                            @Html.TextBoxFor(m => m.iRedeemMoney, null, new { @class = "form-control", oninvalid = "setCustomValidity('Numberic value is allowed')", onchange = "try{setCustomValidity('')}catch(e){}", pattern = "[0-9]+", maxlength = "4", required = true })
+                        </div>
+                        <div class="col-xs-2"> <input type="submit" name="Submit" value="SAVE" class="btn btn-primary"></div>
+                    </div>
+                </div>
+            </form>
+            <form id="frmLoyalityPointsMap">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-xs-12 subheadcolor">
+                            <h4>Map Points-Amenity</h4>
+                            <hr />
+                        </div>
+                        <div class="col-xs-1">Points</div>
+                        <div class="col-xs-2">
+                            @Html.TextBox("txtPointsMap", null, new { @class = "form-control", oninvalid = "setCustomValidity('Numberic value is allowed')", onchange = "try{setCustomValidity('')}catch(e){}", pattern = "[0-9]+", maxlength = "4", required = true })
+                        </div>
+                        <div class="col-xs-1">Amenity</div>
+                        <div class="col-xs-2">
+                            @Html.DropDownList("ddlAmenities", new SelectList(OneFineRateBLL.BL_Amenity.GetAllAmenities(), "iAmenityId", "sAmenityName"), "", new { @class = "form-control", oninvalid = "setCustomValidity('Please select Amenity')", onchange = "try{setCustomValidity('')}catch(e){}", required = true })
+                        </div>
+                        <div class="col-xs-2"> <input type="submit" name="Submit" value="Add" class="btn btn-primary"></div>
+                    </div>
+                </div>
+            </form>
+            <div class="table-responsive margintop20">
+                <table class="table table-striped table-bordered table-hover display" id="tblData"></table>
+            </div>
+        </div>
+        <!-- End  table -->
+    </div>
+</div>

@@ -1,0 +1,1291 @@
+﻿@model OneFineRateBLL.Entities.PropDetailsM
+@using OneFineRateAppUtil
+
+@if (Model != null && Model.cStatus == "A")
+{
+    <style type="text/css">
+        .NextImg {
+            position: absolute;
+            bottom: 200px;
+            right: 21px;
+        }
+
+        .PrevImg {
+            position: absolute;
+            bottom: 200px;
+            left: 21px;
+        }
+
+        #sticky {
+            background-color: #0f204b;
+            width: 85%;
+        }
+
+            #sticky.stick {
+                margin-top: 0 !important;
+                position: fixed;
+                top: 0;
+                z-index: 10000;
+            }
+    </style>
+  
+    <div class="light_header_bar">
+        <div class="container">
+            <h4 class="msgvertical"><strong>Share booking information</strong> </h4>
+        </div>
+    </div>
+    <div class="blue_header_bar">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7 col-sm-12 col-xs-12 margintop10">
+                    <div class="fonthtlnme">@Model.sPropertyName</div>
+                    <div class="bookingstar"><img src="~/images/inner-star@(Model.iStarCategory).png" /></div>
+                    <address>
+                        @Model.sPropertyAddress
+                        <div class="row">
+                            <div class="col-md-8 col-xs-8 facilityicon margintop5">
+                                <ul>
+                                    @for (int i = 0; i < Model.lstetblHotelFacilities.Count; i++)
+                                    {
+                                        @Html.HiddenFor(m => Model.lstetblHotelFacilities[i].sImgUrl)
+                                        <li><img src='@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()@Model.lstetblHotelFacilities[i].sImgUrl' onerror="this.src='@Url.Content("~/images/noimage.jpg")'" id="iconPreview" title="@Model.lstetblHotelFacilities[i].sHotelFacilites" style="height: 20px; width: 20px"></li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </address>
+
+                </div>
+
+                @if (!String.IsNullOrEmpty(Model.objTripAdvisonReviews.iTripAdvisorLOCID.ToString()))
+                {
+                    <div class=" col-md-3 col-sm-12 col-xs-12 margintop20">
+                        <div class="row ">
+                            <div class="col-md-12 col-sm-12  col-xs-12">
+                                <img src="/images/trip-adv-icon.png" class="tripadv_icon"> <em class="green marginleft8"> @Model.objTripAdvisonReviews.sRankingString</em>
+                                <br> <em class=" marginleft8"> Based on <span class="bluetext font15">@Model.objTripAdvisonReviews.iReviewsCount Reviews</span></em>
+                            </div>
+                        </div>
+                    </div>
+                    <div class=" col-md-2  col-sm-12 col-xs-12  margintop20">
+                        <img src="@Model.objTripAdvisonReviews.sRatingImageURL" class="tripadv_icon"><br>
+                        <em class="marginleft8"> Based on <span class="bluetext font15">@Model.objTripAdvisonReviews.iReviewsCount Reviews</span></em>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <div class="loyality_infobg">
+            <div id="sticky-anchor"></div>
+            <div id="sticky" class=" sortlist">
+                <ul>
+                    <li><a href="#aboutHotel" class="active smoothScroll">ABOUT HOTEL</a></li>
+                    @*<li><a href="#divRooms">AVAILABLE ROOMS</a></li>*@
+                    <li><a href="#divFacilities" class="smoothScroll">FACILITIES</a>	</li>
+                    <li><a href="#divPolicies" class="smoothScroll">POLICIES</a></li>
+                    <li class="noborder"><a href="#divTripadvisor" class="smoothScroll">TRIP ADVISOR REVIEWS</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="marginbottom10 margintop15" id="aboutHotel">
+            <div class="row ">
+                <form id="frmgallery">
+                    <div class="col-md-7">
+                        <div class="PrevImg">
+                            <i class="fa fa-chevron-circle-left" style="font-size:45px; color:#cccccc;"></i>
+                        </div>
+
+                        @if (Model.lstetblPhotoGallery.Count > 0)
+                        {
+                            <div id="imgdiv"><img src='@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()@Model.lstetblPhotoGallery[0].sMainImgUrl' id="imagePreview" class="image-ban"></div>
+                        }
+
+                        <div class="NextImg">
+                            <i class="fa fa-chevron-circle-right" style="font-size:45px; color:#cccccc;"></i>
+                        </div>
+                        <div class="position5 margin-5">
+                            <a class="whitetext"><strong id="imgtitle">@Model.lstetblPhotoGallery[0].sName</strong> </a>
+                        </div>
+                    </div>
+                    <div class="col-md-2 offerimg" style="height:427px; overflow-y : auto;overflow-x: hidden;">
+                        <ul class="ul-loop">
+
+                            @if (Model.lstetblPhotoGallery.Count > 0)
+                            {
+                                for (int i = 0; i < Model.lstetblPhotoGallery.Count; i++)
+                                {
+
+                                    string thumbURL = System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString() + Model.lstetblPhotoGallery[i].sthumbImgUrl;
+                                    string MainURL = System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString() + Model.lstetblPhotoGallery[i].sMainImgUrl;
+                                    <li>
+                                        <img src="@thumbURL" stitle="@Model.lstetblPhotoGallery[i].sName" alt="@MainURL" id="thumbPreview" style="height: 114px; width: auto; margin-bottom: 1px;" class="@String.Concat("image-thumb",i)" onclick="PreviewImage(this)">
+                                        <input type="hidden" id="@String.Concat("hdntitle",i)" value="@Model.lstetblPhotoGallery[i].sName" />
+                                    </li>
+                                }
+                            }
+
+                        </ul>
+                    </div>
+                </form>
+                <div class="col-md-3">
+                    <div class="reviewtextpara  border1  padding5">
+                        @if (!string.IsNullOrEmpty(Model.sDistanceToAirportRailway1) || !string.IsNullOrEmpty(Model.sDistanceToAirportRailway2) || !string.IsNullOrEmpty(Model.sDistanceToAirportRailway3))
+                        {
+                            <h5><strong>Nearest Airport/ Railway Station</strong></h5>
+                            <ul>
+                                @if (!string.IsNullOrEmpty(Model.sDistanceToAirportRailway1))
+                                {
+                                    <li> @Html.DisplayFor(m => m.sDistanceToAirportRailway1) (@Html.DisplayFor(m => m.dDistanceToAirportRailway1) Km) </li>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.sDistanceToAirportRailway2))
+                                {
+                                    <li> @Html.DisplayFor(m => m.sDistanceToAirportRailway2) (@Html.DisplayFor(m => m.dDistanceToAirportRailway2) Km)  </li>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.sDistanceToAirportRailway3))
+                                {
+                                    <li> @Html.DisplayFor(m => m.sDistanceToAirportRailway3) (@Html.DisplayFor(m => m.dDistanceToAirportRailway3) Km)  </li>
+                                }
+                            </ul>
+                        }
+
+
+                        @if (!string.IsNullOrEmpty(Model.sNearestTransport1) || !string.IsNullOrEmpty(Model.sNearestTransport2) || !string.IsNullOrEmpty(Model.sNearestTransport3))
+                        {
+                            <h5><strong>Nearest Transport</strong></h5>
+                            <ul>
+                                @if (!string.IsNullOrEmpty(Model.sNearestTransport1))
+                                {
+                                    <li> @Html.DisplayFor(m => m.sNearestTransport1)  (@Html.DisplayFor(m => m.dNearestTransport1) Km) </li>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.sNearestTransport2))
+                                {
+                                    <li> @Html.DisplayFor(m => m.sNearestTransport2)  (@Html.DisplayFor(m => m.dNearestTransport2) Km) </li>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.sNearestTransport3))
+                                {
+                                    <li> @Html.DisplayFor(m => m.sNearestTransport3)  (@Html.DisplayFor(m => m.dNearestTransport3) Km) </li>
+                                }
+                            </ul>
+                        }
+
+
+
+                        @if (!string.IsNullOrEmpty(Model.sAreaRecommended1) || !string.IsNullOrEmpty(Model.sAreaRecommended2) || !string.IsNullOrEmpty(Model.sAreaRecommended3))
+                        {
+                            <h5><strong>Area recommended for</strong></h5>
+
+                            <ul>
+                                @if (!string.IsNullOrEmpty(Model.sAreaRecommended1))
+                                {
+                                    <li> @Html.DisplayFor(m => m.sAreaRecommended1)</li>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.sAreaRecommended2))
+                                {
+                                    <li> @Html.DisplayFor(m => m.sAreaRecommended2)</li>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.sAreaRecommended3))
+                                {
+                                    <li> @Html.DisplayFor(m => m.sAreaRecommended3)</li>
+                                }
+                            </ul>
+                        }
+
+
+                        @if (!string.IsNullOrEmpty(Model.sTopAttraction1) || !string.IsNullOrEmpty(Model.sTopAttraction2) || !string.IsNullOrEmpty(Model.sTopAttraction3))
+                        {
+                            <h5><strong>Top Attractions in the area </strong></h5>
+                            <ul>
+                                @if (!string.IsNullOrEmpty(Model.sTopAttraction1))
+                                {
+                                    <li> @Html.DisplayFor(m => m.sTopAttraction1)</li>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.sTopAttraction2))
+                                {
+                                    <li> @Html.DisplayFor(m => m.sTopAttraction2)</li>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.sTopAttraction3))
+                                {
+                                    <li> @Html.DisplayFor(m => m.sTopAttraction3)</li>
+                                }
+                            </ul>
+                        }
+
+                    </div>
+                    <div class="margintop10   border1" style="width:263px;height:70px;">
+                        <div id="googleMap" style=" width:100%;height:58px;"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="border1 whitebg padding10 margintop15" id="overview">
+            <h4 class="margintop-5">
+                Hotel Overview
+            </h4>
+            <div class="overviewparatext" id="OverviewText">
+            </div>
+            @Html.HiddenFor(m => m.sDescription, new { Id = "hdnContent" })
+        </div>
+
+        <div class="modal fade" id="mapDivPopup">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title">@Model.sPropertyName</h4>
+                    </div>
+                    <div class="modal-body" id="popupMapDiv" style="height:450px;overflow:hidden;">
+
+                    </div>
+                    <div class="modal-footer">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row margin0" id="divRooms">
+
+            <div class="borderleftright hotelsectionbg bordertop  margintop10">
+
+                <div class="col-md-3">
+                    <img src="@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()@Model.BidRoomDetails.sDefaultImage" alt="Image" class="imgheight132" onerror="this.src='http://placehold.it/100x100'">
+                </div>
+                <div class="col-md-2">
+                    <h4><a href="javascript:void(0)" class="hoteltitles" onclick="OpenPopUp('@Model.iPropId','@Model.sRoomId')">@Model.BidRoomDetails.sRoomName</a></h4>
+                    <div class=" facilityicon margintop-10">
+                        <ul>
+
+                            @foreach (var amenity in Model.BidRoomDetails.FirstFourNonEmptyAmenityUrl())
+                            {
+                                <li>
+                                    <img src='@amenity.Split(',')[1]' title="@amenity.Split(',')[0]" style="height: 20px; width: 20px">
+                                </li>
+                            }
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <ul class="nomargin nopadding">
+                        <li><b>Room Size:</b> @Model.BidRoomDetails.sSizeSqft Sq/ft - @Model.BidRoomDetails.sSizeMtr Sq/mt </li>
+                        <li>
+                            <b>Bed Types:</b>
+                            @if (Model.BidRoomDetails.sSingleBed != "" && Model.BidRoomDetails.sDoubleBed != "")
+                            {
+                                @Html.Raw(Model.BidRoomDetails.sSingleBed + "/" + Model.BidRoomDetails.sDoubleBed)
+                            }
+                            else if (Model.BidRoomDetails.sSingleBed == "" && Model.BidRoomDetails.sDoubleBed != "")
+                            {
+                                @Html.Raw(Model.BidRoomDetails.sDoubleBed)
+                            }
+                            else if (Model.BidRoomDetails.sSingleBed != "" && Model.BidRoomDetails.sDoubleBed == "")
+                            {
+                                @Html.Raw(Model.BidRoomDetails.sSingleBed)
+                            }
+                        </li>
+                        <li><b>View:</b> @Model.BidRoomDetails.sOutdoorLocation</li>
+                    </ul>
+
+                </div>
+                @*<div class="col-md-3">
+                        <div><b>Maximum Occupancy</b></div>
+                        <br>
+                        @for (int i = 0; i < Model.BidRoomDetails.iMaxOccupancy; i++)
+                        {
+                            @Html.Raw("<span class='glyphicon glyphicon-user'></span>")
+                        }
+                    </div>*@
+            </div>
+        </div>
+        <div class="clearfix"></div>
+
+        <div class="margintop15 marginbottom20" id="rating">
+
+            <ul class="nav nav-tabs tablebluebg1" role="tablist">
+                <li role="presentation" class="liTrip"><a href="#divTripadvisor" aria-controls="divTripadvisor" role="tab" data-toggle="tab">Tripadvisor Reviews</a></li>
+                <li role="presentation" class="liFac"><a href="#divFacilities" aria-controls="divFacilities" role="tab" data-toggle="tab">Hotel Facilities</a></li>
+                <li role="presentation" class="liPolicy active"><a href="#divPolicies" aria-controls="divPolicies" role="tab" data-toggle="tab">Policies</a></li>
+            </ul>
+
+            <div class="tab-content whitebg border1">
+                <div role="tabpanel" class="tab-pane divPolicy active" id="divPolicies">
+                    <div class=" table-responsive">
+                        <table class="table">
+
+                            <tbody>
+
+                                @if (!String.IsNullOrEmpty(Model.sCheckInMM))
+                                {
+                                    <tr>
+                                        <td><b>Check-In</b></td>
+                                        <td>:</td>
+                                        <td>
+
+                                            @if (Model.b24HrsCheckIn == true)
+                                            {
+                                                <text>
+                                                    24 hours Check-In is Available.Early Check-In is
+                                                    @if (Model.bEarlyCheckInChargeable == true)
+                                                    {
+                                                        <text>Chargeable</text>
+                                                    }
+                                                    else
+                                                    {<text>Not Chargeable</text>}
+                                                </text>
+                                            }
+                                            else
+                                            {
+                                                <text>
+                                                    From @Html.DisplayFor(m => m.sCheckInHH):@Html.DisplayFor(m => m.sCheckInMM). Early Check-In is @if (Model.bEarlyCheckInChargeable == true)
+                                                    { <text>Chargeable</text> }
+                                                    else
+                                                    {<text>Not Chargeable</text>}
+                                                </text>
+                                            }
+                                        </td>
+
+                                    </tr>
+                                }
+
+
+                                @if (!String.IsNullOrEmpty(Model.sCheckoutMM))
+                                {
+                                    <tr>
+                                        <td><b>Check-out</b></td>
+                                        <td>:	</td>
+                                        <td>
+                                            @if (Model.b24HrsCheckout == true)
+                                            {
+                                                <text>
+                                                    24 hours Check-Out is Available. Late Check-Out is @if (Model.bEarlyCheckoutChargeable == true)
+                                                    { <text>Chargeable</text> }
+                                                    else
+                                                    {<text>Not Chargeable</text>}
+                                                </text>
+                                            }
+                                            else
+                                            {
+                                                <text>
+                                                    Until @Html.DisplayFor(m => m.sCheckoutHH):@Html.DisplayFor(m => m.sCheckoutMM). hrs @clsUtils.GetTimeType(Model.sCheckoutHH)Late Check-Out is @if (Model.bEarlyCheckoutChargeable == true)
+                                                    { <text>Chargeable</text> }
+                                                    else
+                                                    {<text>Not Chargeable</text>}
+                                                </text>
+                                            }
+
+
+                                        </td>
+                                    </tr>
+                                }
+
+
+                                <tr>
+                                    <td><b>Cancellation/ Prepayment</b></td>
+                                    <td>:	</td>
+                                    <td>Cancellation and prepayment policies vary according to room type. Please check what room conditions may apply when selecting room.</td>
+                                </tr>
+
+                                <tr>
+                                    <td><b>Children and Extra Beds</b></td>
+                                    <td>:	</td>
+                                    <td colspan="2">
+                                        <ul class="mar-padd0">
+
+                                            <li>All children are welcome</li>
+                                            @if (Model.iComplimentaryStayAge != null)
+                                            {
+                                                <li>Complementary stay for children below @Html.DisplayFor(m => m.iComplimentaryStayAge) years without extra bed</li>
+                                            }
+
+                                            <li>Extrabed required for children from @Html.DisplayFor(m => m.iExtraBedRequiredFrom) years</li>
+                                            <li>
+                                                Extra child or an adult using an Extrabed will be charged at  @Model.Symbol
+
+                                                @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dExtraBedCharges));
+
+                                                excluding taxes.
+                                            </li>
+                                            <li>@Html.DisplayFor(m => m.iMinCheckInAge) years is Minimum age of check in</li>
+                                        </ul>
+                                    </td>
+                                </tr>
+
+                                @if (Model.bVisitorsAllowed == true || Model.bAlcoholAllowedOnsite == true || Model.bAlcoholServedOnsite == true || Model.bPetsAllowed == true || Model.bPartiesAllowed == true)
+                                {
+                                    <tr>
+                                        <td><b>Other Polices</b></td>
+                                        <td>:</td>
+                                        <td>
+                                            <ul class="mar-padd0">
+                                                @if (Model.bVisitorsAllowed == true)
+                                                {
+                                                    <li>Visitors are allowed.</li>
+                                                }
+
+                                                @if (Model.bAlcoholAllowedOnsite == true)
+                                                {
+                                                    <li>Alcohol allowed onsite</li>
+                                                }
+
+                                                @if (Model.bAlcoholServedOnsite == true)
+                                                {
+                                                    <li>Alcohol Served onsite</li>
+                                                }
+
+                                                @if (Model.bPetsAllowed == true)
+                                                {
+                                                    <li>Pets are allowed.</li>
+                                                }
+                                                else
+                                                {
+                                                    <li>Pets are not allowed.</li>
+                                                }
+
+                                                @if (Model.bPartiesAllowed == true)
+                                                {
+                                                    <li>Stag/ bachelor and hen/ bachelorette parties are allowed.</li>
+                                                }
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                }
+
+
+                                @if (Model.sCreditCardId != null)
+                                {
+                                    <tr>
+                                        <td><b>Cards accepted at this property</b> </td>
+                                        <td>:</td>
+                                        <td>
+                                            @{
+                                    string[] arr = new string[10];
+                                    arr = Model.sCreditCardId.Split(',');
+                                    for (int i = 0; i < arr.Length; i++)
+                                    {
+                                        <a href="#"></a><a href="#"><img src="@(arr[i])"></a>
+                                    }
+                                            }
+
+                                        </td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div role="tabpanel" class="tab-pane divFacility" id="divFacilities">
+                    <div class=" table-responsive">
+                        <table class="table">
+
+                            <tbody>
+
+                                @if (!String.IsNullOrEmpty(Model.sAwardsCertificates))
+                                {
+                                    <tr>
+                                        <td><b>Awards and Certifications</b></td>
+                                        <td>:</td>
+                                        <td>@Html.DisplayFor(m => m.sAwardsCertificates)</td>
+                                    </tr>
+                                }
+
+
+                                @if (!String.IsNullOrEmpty(Model.sAffiliations))
+                                {
+                                    <tr>
+                                        <td style="width:20%"><b>Affiliations</b></td>
+                                        <td>:</td>
+                                        <td>@Html.DisplayFor(m => m.sAffiliations)</td>
+                                    </tr>
+                                }
+
+
+                                @if (!String.IsNullOrEmpty(Model.sLanguagesSpoken))
+                                {
+                                    <tr>
+                                        <td><b>Languages spoken</b></td>
+                                        <td>:</td>
+                                        <td>@Html.DisplayFor(m => m.sLanguagesSpoken)</td>
+                                    </tr>
+                                }
+
+                                @if (Model.lstPropertyDiningAndRestaurants.Count > 0)
+                                {
+                                    <tr>
+                                        <td><b>Dining and Restaurants</b></td>
+                                        <td>:</td>
+                                        <td>
+                                            <div>
+                                                <table width="100%">
+                                                    @foreach (var item in Model.lstPropertyDiningAndRestaurants)
+                                                    {
+
+                                                        <tr>
+                                                            @{
+                                                        var ResType = "";
+                                                        if (item.cType == "R") { ResType = "Restaurant"; }
+                                                        if (item.cType == "C") { ResType = "Coffee Shop"; }
+                                                        if (item.cType == "B") { ResType = "Bar"; }
+                                                        if (item.cType == "I") { ResType = "In The Room"; }
+                                                            }
+
+
+                                                            <td width="25%">@item.sRestaurantName </td>
+                                                            <td width="25%">@ResType Timing</td>
+                                                            <td width="50%">
+                                                            
+                                                                @if (item.s24hours == true)
+                                                                {
+                                                                    @Html.Raw("24 Hours")
+                                                                }
+                                                                else
+                                                                {
+                                                                    @Html.Raw("Limited Hours")
+                                                                }
+
+
+                                                            @*@item.sTimingFromHH : @item.sTimingFromMM To @item.sTimingToHH : @item.sTimingToMM*@ 
+                                                            
+                                                            </td>
+
+                                                        </tr>
+                                                        <tr>
+                                                            <td>&nbsp;</td>
+                                                            <td>Cusines</td>
+                                                            <td>@item.sDescription </td>
+
+                                                        </tr>
+                                                        <tr>
+                                                            <td>&nbsp;</td>
+                                                            <td>Meals served</td>
+                                                            <td>
+
+                                                                @if (item.bBreakfast == true)
+                                                                {
+                                                                    item.sMealServed = "Breakfast";
+                                                                }
+                                                                @if (item.bLunch == true)
+                                                                {
+                                                                    if (item.sMealServed == "" || item.sMealServed == null)
+                                                                    {
+                                                                        item.sMealServed = "Lunch";
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        item.sMealServed += ", Lunch";
+                                                                    }
+                                                                }
+
+                                                                @if (item.bDinner == true)
+                                                                {
+                                                                    if (item.sMealServed == "" || item.sMealServed == null)
+                                                                    {
+                                                                        item.sMealServed = "Dinner";
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        item.sMealServed += ", Dinner";
+                                                                    }
+                                                                }
+
+                                                                @Html.DisplayFor(m => item.sMealServed)
+
+                                                            </td>
+
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="3">&nbsp;</td>
+                                                        </tr>
+                                                    }
+                                                </table>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+
+                                <tr>
+                                    <td><strong>Wellness Facilites</strong></td>
+                                    <td>:</td>
+                                    <td>
+                                        <table width="100%">
+                                            <tr>
+                                                <td>@Html.DisplayFor(m => Model.objPropertyWellnessFacilities.sSpaDesc)</td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;</td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>
+
+                                                    @if (Model.objPropertyWellnessFacilities != null)
+                                                    {
+
+
+                                                        if (Model.objPropertyWellnessFacilities.bHotsprings == true)
+                                                        {
+                                                            Model.objPropertyWellnessFacilities.sPointers = "Hotsprings";
+                                                        }
+                                                        if (Model.objPropertyWellnessFacilities.bSauna == true)
+                                                        {
+                                                            if (Model.objPropertyWellnessFacilities.sPointers == "" || Model.objPropertyWellnessFacilities.sPointers == null)
+                                                            {
+                                                                Model.objPropertyWellnessFacilities.sPointers = "Sauna";
+                                                            }
+                                                            else
+                                                            {
+                                                                Model.objPropertyWellnessFacilities.sPointers += ", Sauna";
+                                                            }
+
+                                                        }
+
+                                                        if (Model.objPropertyWellnessFacilities.bMudbath == true)
+                                                        {
+                                                            if (Model.objPropertyWellnessFacilities.sPointers == "" || Model.objPropertyWellnessFacilities.sPointers == null)
+                                                            {
+                                                                Model.objPropertyWellnessFacilities.sPointers = "Mudbath";
+                                                            }
+                                                            else
+                                                            {
+                                                                Model.objPropertyWellnessFacilities.sPointers += ", Mudbath";
+                                                            }
+
+                                                        }
+
+                                                        if (Model.objPropertyWellnessFacilities.bSpaTub == true)
+                                                        {
+                                                            if (Model.objPropertyWellnessFacilities.sPointers == "" || Model.objPropertyWellnessFacilities.sPointers == null)
+                                                            {
+                                                                Model.objPropertyWellnessFacilities.sPointers = "SpaTub";
+                                                            }
+                                                            else
+                                                            {
+                                                                Model.objPropertyWellnessFacilities.sPointers += ", SpaTub";
+                                                            }
+
+                                                        }
+
+                                                        if (Model.objPropertyWellnessFacilities.bSteamRoom == true)
+                                                        {
+                                                            if (Model.objPropertyWellnessFacilities.sPointers == "" || Model.objPropertyWellnessFacilities.sPointers == null)
+                                                            {
+                                                                Model.objPropertyWellnessFacilities.sPointers = "SteamRoom";
+                                                            }
+                                                            else
+                                                            {
+                                                                Model.objPropertyWellnessFacilities.sPointers += ", SteamRoom";
+                                                            }
+
+                                                        }
+
+                                                        @Html.DisplayFor(m => Model.objPropertyWellnessFacilities.sPointers)
+                                                    }
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    The spa is open for
+                                                    @if (Model.objPropertyWellnessFacilities != null)
+                                                    {
+                                                        if (Model.objPropertyWellnessFacilities.b24hours == true)
+                                                        {
+                                                            Model.objPropertyWellnessFacilities.sIsSPA = "24 hours";
+                                                        }
+                                                        else
+                                                        {
+                                                            Model.objPropertyWellnessFacilities.sIsSPA = "limited time";
+                                                        }
+
+                                                        @Html.DisplayFor(m => Model.objPropertyWellnessFacilities.sIsSPA)
+
+                                                        <text> and Advnace booking is </text>
+
+                                                        if (Model.objPropertyWellnessFacilities.bAdvancedBooking == true)
+                                                        {
+                                                            Model.objPropertyWellnessFacilities.sIsAdvanceBooking = "available";
+                                                        }
+                                                        else
+                                                        {
+                                                            Model.objPropertyWellnessFacilities.sIsAdvanceBooking = "not available";
+                                                        }
+
+                                                        @Html.DisplayFor(m => Model.objPropertyWellnessFacilities.sIsAdvanceBooking)
+                                                    }
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+
+
+                                @if (!String.IsNullOrEmpty(Model.sInternetFacility))
+                                {
+                                    <tr>
+                                        <td><b>Internet Facility</b></td>
+                                        <td>:</td>
+                                        <td>@Html.DisplayFor(m => m.sInternetFacility)</td>
+                                    </tr>
+                                }
+
+                                <tr>
+                                    <td><b>Parking & Transport</b></td>
+                                    <td>:</td>
+                                    <td>
+
+                                        <li>@Html.DisplayFor(m => m.sHoteParkingRadio)</li>
+                                        <li>@Html.DisplayFor(m => m.sParkingTransport)</li>
+                                        @if (Model.lstPropertyParkingTransport != null && Model.lstPropertyParkingTransport.Count > 0)
+                                        {
+                                            for (int i = 0; i < Model.lstPropertyParkingTransport.Count; i++)
+                                            {
+                                                <li>
+                                                    @Html.DisplayFor(m => m.lstPropertyParkingTransport[i].sCarName) from
+                                                    @if (Model.lstPropertyParkingTransport[i].cAirportRail == "A")
+                                                    {
+                                                        <label>Airport</label>
+                                                    }
+                                                    @if (Model.lstPropertyParkingTransport[i].cAirportRail == "B")
+                                                    {
+                                                        <label>Bus Stand</label>
+                                                    }
+
+                                                    @if (Model.lstPropertyParkingTransport[i].dTwowayCharge.ToString() != "0.00")
+                                                    {
+                                                        <label>at @Model.Currency</label> @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.lstPropertyParkingTransport[i].dTwowayCharge)) <label>for two way transfer</label>
+                                                    }
+
+                                                    @if (Model.lstPropertyParkingTransport[i].dOnewayCharge.ToString() != "0.00")
+                                                    {
+                                                        <label>at @Model.Currency</label> @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.lstPropertyParkingTransport[i].dOnewayCharge))  <label>for one way transfer</label>
+                                                    }
+
+                                                </li>
+                                            }
+                                        }
+
+                                    </td>
+                                </tr>
+
+                                @if (!String.IsNullOrEmpty(Model.sCommonServices))
+                                {
+                                    <tr>
+                                        <td><b>Common Services</b></td>
+                                        <td>:	</td>
+                                        <td>@Html.DisplayFor(m => m.sCommonServices)</td>
+                                    </tr>
+                                }
+
+
+                                @if (!String.IsNullOrEmpty(Model.sConvenience))
+                                {
+                                    <tr>
+                                        <td><b>Convenience</b></td>
+                                        <td>:	</td>
+                                        <td>@Html.DisplayFor(m => m.sConvenience)</td>
+                                    </tr>
+                                }
+
+
+                                @if (!String.IsNullOrEmpty(Model.sLeisure))
+                                {
+                                    <tr>
+                                        <td><b>Leisure</b></td>
+                                        <td>:	</td>
+                                        <td colspan="2">
+                                            @Html.DisplayFor(m => m.sLeisure)
+                                        </td>
+                                    </tr>
+                                }
+
+
+                                @if (!String.IsNullOrEmpty(Model.sMeetingsConferences))
+                                {
+                                    <tr>
+                                        <td><b>Meetings & Conferences</b></td>
+                                        <td>:</td>
+                                        <td>
+                                            @Html.DisplayFor(m => m.sMeetingsConferences)
+                                        </td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane divTrip" id="divTripadvisor">
+                    <div class=" table-responsive">
+                        <table class="table">
+
+                            @for (int rv = 0; rv < Model.lstTripAdvisonReviews.Count; rv++)
+                            {
+                                <tr>
+                                    <td style="border-bottom:1px dashed #ccc;"><b>@Model.lstTripAdvisonReviews[rv].sReviewer</b> <br />@Model.lstTripAdvisonReviews[rv].sUserLocation <br /><b>Trip Type:</b><br />@Model.lstTripAdvisonReviews[rv].sTripType</td>
+                                    <td style="vertical-align:top; border-bottom:1px dashed #ccc;">@Model.lstTripAdvisonReviews[rv].sTitle<br /><img src="@Model.lstTripAdvisonReviews[rv].sRatingImageURL" />  @Model.lstTripAdvisonReviews[rv].sDayMonth @Model.lstTripAdvisonReviews[rv].sYear    <br />@Model.lstTripAdvisonReviews[rv].sText <a target="_blank" href="@Model.lstTripAdvisonReviews[rv].sReviewURL">more</a> »</td>
+                                </tr>
+                            }
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <link href="~/Content/horizontalSlider.css" rel="stylesheet" />
+
+    <script src="~/Scripts/horizontalSlider.js"></script>
+
+    <div id="RoomDetails" class="modal fade" role="dialog">
+        @*@Html.Partial("~/Views/OfferReview/pvRoomInfo.cshtml", Model.BidRoomDetails)*@
+    </div>
+    
+
+    <div id="MapDetails" class="modal fade" role="dialog">
+
+    </div>
+
+    <script type="text/javascript">
+
+        var images = [], x = 0,imgindex =0;
+
+        var shortText = 0;
+        var content =    "@Html.Raw(Model.sDescription.TrimEnd('\r', '\n').Replace(Environment.NewLine, "<br/>").Replace("\"", "\'"))";
+        var showChar = 515;
+        var ellipsestext = "...";
+        var moretext = "More";
+        var lesstext = "Less";
+
+        $(".NextImg").css( 'cursor', 'pointer' );
+        $(".PrevImg").css( 'cursor', 'pointer' );
+
+
+        $(".ul-loop li").each(function (i) {
+            images.push({
+                id:i,
+                img: $(".image-thumb"+i).prop("alt"),
+                title:$("#hdntitle"+i+"").val()
+            });
+            imgindex = i;
+        });
+
+        function toggleOverview(){
+            if(shortText == 0)
+            {
+                if (content.length > showChar) {
+                    var c = content.substr(0, showChar);
+                    var html = c + '<span>'+ ellipsestext +'</span>';
+                    html += '<span class="pull-right"><a onclick="moreClick()" href="javascript:void(0)" class="morelink"" >'+ moretext + '</a></span>'
+                    $('#OverviewText').html('');
+                    $('#OverviewText').html(html);
+                    shortText = c.length;
+
+                }
+                else
+                {
+                    $('#OverviewText').html(content);
+                }
+            }
+            else
+            {
+                moreClick();
+            }
+        };
+
+        function moreClick() {
+            if(shortText == showChar)
+            {
+                var c = content;
+                var html = c;
+                html += '<span class="pull-right"><a onclick="toggleOverview()" href="javascript:void(0)" class="morelink"" >'+ lesstext + '</a></span>'
+
+                $('#OverviewText').html('');
+                $('#OverviewText').html(html);
+                shortText = c.length;
+            }
+            else
+            {
+                var c = content.substr(0, showChar);
+                var html = c + '<span>'+ ellipsestext +'</span>';
+                html += '<span class="pull-right"><a onclick="toggleOverview()" href="javascript:void(0)" class="morelink"" >'+ moretext + '</a></span>'
+
+                $('#OverviewText').html('');
+                $('#OverviewText').html(html);
+                shortText = c.length;
+            }
+        };
+
+        function AutoScrollGallery(){
+            setInterval(function() {
+                displayNextImage();
+            },  10000);
+        }
+
+        function displayNextImage() {
+
+            x = (x === images.length - 1) ? 0 : x + 1;
+            try {
+                $('#imgdiv').fadeOut('fast',function(){
+
+                    document.getElementById("imagePreview").src = images[x].img;
+                    $('#imgtitle').html(images[x].title);
+                });
+                $('#imgdiv').fadeIn('fast');
+            } catch (err) {}
+        }
+
+        function PreviewImage(val) {
+
+            $('#imgdiv').fadeOut('fast',function(){
+                $('#imagePreview').attr('src', $(val).attr('alt'));
+                $('#imgtitle').html($(val).attr('stitle'));
+            });
+            $('#imgdiv').fadeIn('fast');
+
+            $(".ul-loop li").each(function (i) {
+
+                images.push({
+                    id:i,
+                    img: $(".image-thumb"+i).prop("alt"),
+                    title:$("#hdntitle"+i+"").val()
+                });
+
+                if(images[i].img == $(val).attr('alt')){
+                    x = i;
+                    console.log(x);
+                }
+            });
+        }
+
+
+        toggleOverview();
+
+        AutoScrollGallery();
+
+        $(".NextImg").click(function(){
+            var imgbanner = $(".image-ban").prop("src");
+
+            var IsFound = false;
+            $(".ul-loop li").each(function (i) {
+
+                var imgthumb = $(".image-thumb"+i).prop("alt");
+                var title = $("#hdntitle"+i+"").val();
+                if(IsFound == true){
+                    $('#imgdiv').fadeOut('fast',function(){
+                        $('#imagePreview').attr('src', imgthumb);
+                        $('#imgtitle').html(title);
+                    });
+                    $('#imgdiv').fadeIn('fast');
+                    return false;
+                }else{
+                    if(imgbanner == imgthumb){
+                        IsFound = true;
+                    }
+                }
+            });
+        });
+
+
+        $(".PrevImg").click(function(){
+            var imgbanner = $(".image-ban").prop("src");
+
+            var IsFound = false;
+            var PreviousImgURL = null;
+            var Prevtitle='';
+            $(".ul-loop li").each(function (i) {
+
+                var imgthumb = $(".image-thumb"+i).prop("alt");
+                var title = $("#hdntitle"+i+"").val();
+                if(IsFound == true){
+                    if(PreviousImgURL != null){
+                        return false;
+                    }
+                    else{
+                        $('#imgdiv').fadeOut('fast',function(){
+                            $('#imagePreview').attr('src', imgthumb);
+                            $('#imgtitle').html(title);
+                        });
+                        $('#imgdiv').fadeIn('fast');
+                        return false;
+                    }
+                }else{
+                    if(imgbanner == imgthumb){
+                        if(i != 0 ){
+                            IsFound = true;
+                        }
+                    }else{
+                        PreviousImgURL = imgthumb;
+                        Prevtitle=title;
+                    }
+                }
+            });
+            if(IsFound == true && PreviousImgURL != null){
+                $('#imgdiv').fadeOut('fast',function(){
+                    $('#imagePreview').attr('src', PreviousImgURL);
+                    $('#imgtitle').html(Prevtitle);
+
+                });
+                $('#imgdiv').fadeIn('fast');
+            }
+        });
+
+
+        function sticky_relocate() {
+            var window_top = $(window).scrollTop();
+            var div_top = $('#sticky-anchor').offset().top;
+            if (window_top > div_top) {
+                $('#sticky').addClass('stick');
+                $('#sticky-anchor').height($('#sticky').outerHeight());
+            } else {
+                $('#sticky').removeClass('stick');
+                $('#sticky-anchor').height(0);
+            }
+        }
+
+        $(function(){
+            $(window).scroll(sticky_relocate);
+            sticky_relocate();
+        });
+
+
+
+        function OpenPopUp(propid, roomid) {
+            var url = '@Url.Action("RoomInfo", "OfferReview")?propid=' + propid + '&roomid=' + roomid;
+            $("#RoomDetails").html('');
+            //startSpinning();
+            $("#RoomDetails").load(url, function () {
+
+                //stopSpinning();
+            });
+            $('#RoomDetails').modal({
+                show: 'true'
+            });
+        }
+    </script>
+
+    <script src="~/Scripts/UserScripts/jquery.slider.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBA8k8_YKEbkfECgXpF6FKdMkMA1jS1qAQ"></script>
+    <script src="~/Scripts/Jquery.googleMapLebel.js"></script>
+
+    <script type="text/javascript">
+
+
+        var popupMap;
+
+
+        var myLatlng = new google.maps.LatLng(@Model.dLatitude, @Model.dLongitude);
+
+        var myOptions = {
+            zoom: 17,
+            center: myLatlng,
+            zoomControl: false,
+            clickableIcons: false
+        };
+
+
+        var mapLabel = new MapLabel({
+            text: '@Model.sPropertyName',
+            position: myLatlng,
+            map: popupMap,
+            fontSize: 20,
+            fontColor:'#A52A2A',
+            align: 'Left'
+        });
+
+        function initialize() {
+
+            var map = new google.maps.Map(document.getElementById('googleMap'), myOptions);
+            popupMap = new google.maps.Map(document.getElementById("popupMapDiv"),myOptions);
+
+            var centerControlDiv = document.createElement('div');
+            var centerControl = new CenterControl(centerControlDiv, map);
+
+            centerControlDiv.index = 1;
+            map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
+
+            var marker = new google.maps.Marker({
+                position: myLatlng
+            });
+
+            var marker2 = new google.maps.Marker({
+                position: myLatlng
+            });
+
+            marker.setMap(map);
+
+            mapLabel.set('position', myLatlng);
+
+            marker2.bindTo('map', mapLabel);
+            marker2.bindTo('position', mapLabel);
+            marker2.setDraggable(false);
+            marker2.setMap(popupMap);
+
+        }
+
+        google.maps.event.addDomListener(window, 'load', initialize);
+        google.maps.event.addDomListener(window, "resize", resizingMap());
+
+        function CenterControl(controlDiv, map) {
+
+            var controlUI = document.createElement('div');
+            controlUI.style.backgroundColor = '#fff';
+            controlUI.style.border = '2px solid #fff';
+            controlUI.style.borderRadius = '3px';
+            controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+            controlUI.style.cursor = 'pointer';
+            controlUI.style.marginBottom = '0px';
+            controlUI.style.textAlign = 'center';
+            controlUI.title = 'Click to View larger Map';
+            controlDiv.appendChild(controlUI);
+
+            var controlText = document.createElement('div');
+            controlText.style.color = '#337ab7';
+            controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+            controlText.style.fontSize = '10px';
+            controlText.style.lineHeight = '20px';
+            controlText.style.paddingLeft = '5px';
+            controlText.style.paddingRight = '5px';
+            controlText.innerHTML = 'View larger Map';
+            controlUI.appendChild(controlText);
+
+            controlUI.addEventListener('click', function() {
+
+                $('#mapDivPopup').modal({
+                    show: 'true'
+                });
+            });
+        }
+
+
+        $('#mapDivPopup').on('show.bs.modal', function() {
+            resizeMap();
+        })
+
+        function resizeMap() {
+            if(typeof popupMap =="undefined") return;
+            setTimeout( function(){resizingMap();} , 400);
+        }
+
+        function resizingMap() {
+            if(typeof popupMap =="undefined") return;
+            var center = popupMap.getCenter();
+            google.maps.event.trigger(popupMap, "resize");
+            popupMap.setCenter(center);
+        }
+
+
+    </script>
+
+    <script>
+
+       
+        function OverviewToggle() {
+
+            var showChar = 100;
+            var ellipsestext = "...";
+            var moretext = "more";
+            var lesstext = "less";
+            $('.more').each(function () {
+                var content = $(this).html();
+
+                if (content.length > showChar) {
+
+                    var c = content.substr(0, showChar);
+                    var h = content.substr(showChar - 1, content.length - showChar);
+
+                    var html = c + '<span class="moreellipses">' + ellipsestext + '&nbsp;</span><span class="morecontent"><span>' + h + '</span>&nbsp;&nbsp;<a href="" class="morelink">' + moretext + '</a></span>';
+
+                    $(this).html(html);
+                }
+
+            });
+
+            $(".morelink").click(function () {
+                if ($(this).hasClass("less")) {
+                    $(this).removeClass("less");
+                    $(this).html(moretext);
+                } else {
+                    $(this).addClass("less");
+                    $(this).html(lesstext);
+                }
+                $(this).parent().prev().toggle();
+                $(this).prev().toggle();
+                return false;
+            });
+        }
+
+
+        $(function () {
+
+            OverviewToggle();
+
+            $('a[href^="#"]').on('click', function (e) {
+
+                var target = this.hash;
+                var $target = $(target);
+                $('.smoothScroll').removeClass('active');
+                $(this).addClass('active');
+
+                if (target == '#divFacilities') {
+                    $(".divFacility").attr("class", "tab-pane divFacility active");
+                    $(".divPolicy").attr("class", "tab-pane divPolicy");
+                    $(".divTrip").attr("class", "tab-pane divTrip");
+
+                    $(".liFac").attr("class", "liFac active");
+                    $(".liPolicy").attr("class", "liPolicy");
+                    $(".liTrip").attr("class", "liTrip");
+
+                    target = '#rating';
+                    $target = $(target);
+                }
+
+                else if (target == '#divPolicies') {
+                    $(".divFacility").attr("class", "tab-pane divFacility");
+                    $(".divPolicy").attr("class", "tab-pane divPolicy active");
+                    $(".divTrip").attr("class", "tab-pane divTrip");
+
+                    $(".liFac").attr("class", "liFac");
+                    $(".liPolicy").attr("class", "liPolicy active");
+                    $(".liTrip").attr("class", "liTrip");
+
+
+                    target = '#rating';
+                    $target = $(target);
+                }
+
+                else if (target == '#divTripadvisor') {
+                    $(".divFacility").attr("class", "tab-pane divFacility");
+                    $(".divPolicy").attr("class", "tab-pane divPolicy");
+                    $(".divTrip").attr("class", "tab-pane divTrip active");
+
+                    $(".liFac").attr("class", "liFac");
+                    $(".liPolicy").attr("class", "liPolicy");
+                    $(".liTrip").attr("class", "liTrip active");
+
+                    target = '#rating';
+                    $target = $(target);
+                }
+
+                $('html, body').stop().animate({
+                    'scrollTop': parseInt($target.offset().top -40)
+                }, 600, 'swing', function () {
+                    window.location.hash = target;
+                });
+            });
+
+        });
+
+    </script>
+}
+
+
+
+
+

@@ -1,0 +1,113 @@
+﻿@{
+    ViewBag.Title = "MappedHotels";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+
+
+<script>
+    var str = @Html.Raw(Json.Encode(ViewData["UserId"]));
+    var Anc=false;
+    var success = @((Session["PendingNegotiations"] != null).ToString().ToLower());
+    if (success == true) {
+        Anc=true;
+    }
+
+
+
+
+    $(document).ready(function () {
+
+        bindgrid();
+        $("#tblData thead tr th").eq(1).css('width','52%')
+    });
+
+    function bindgrid() {
+
+        try {
+            var aoColumns =
+                [
+                 { "sTitle": "ID", "mData": "iPropId" },
+                 {
+                     "sTitle": "Name", "mData": "sHotelName",
+                     "mRender": function (data, type, full) {
+                         var html = '<a name="hotelname" id="' + full.iPropId + '"   onclick="GoToPage(' + full.iPropId + ',\'' + escape(full.sHotelName) +  '\')">' + data + '</a><br>';
+                         html += full.sAddress;
+                         return html;
+                     }
+                 },
+                 {
+                     "sTitle": "OFR Link", "mData": "sWebSite","bSortable": false,
+                     "mRender": function (data, type, full) {
+                         var html = '<a href="' + data + '"  target="_blank"><img border="0" src="../images/WebLink.png" width="25" height="25" ></a>';
+                         return html;
+                     }
+                 },
+                 { "sTitle": "Arriving Today", "mData": "Arriving" },
+                 //{ "sTitle": "Pending Negotiations", "mData": "Pending" }
+                 {
+                     "sTitle": "Pending Negotiations", "mData": "Pending",
+                     "mRender": function (data, type, full) {
+                         var html = '';
+
+                         if(Anc)
+                         {
+                             if(parseInt(data)>0)
+                                 html = '<a  onclick="CallNegotiation(' + full.iPropId + ',\'' + escape(full.sHotelName) +  '\')">' + data + '</a>';
+                             else
+                                 html='<span>'+data+'</span>'
+                         }
+                         else{
+                             html='<span>'+data+'</span>'
+                         }
+
+                         return html;
+                     }
+                 },
+                ];
+            DatatableServerSide("#tblData", aoColumns, "/Services/Service.asmx/GetAllUserPropertyList?id="+str);
+        }
+        catch (e) {
+
+        }
+
+    }
+
+    function GoToPage(a, pname){
+        @*window.location.href = @Url.Action("ViewDashboard", "Property", new RouteValueDictionary(new { PropId = a }));*@
+        window.location.href = '/Property/ViewDashboard?PropId=' + a + '&PropName='+ pname;
+    }
+    function CallNegotiation(a, pname){
+        @*window.location.href = @Url.Action("ViewDashboard", "Property", new RouteValueDictionary(new { PropId = a }));*@
+        window.location.href = '/Property/AuthPendingNego?PropId=' + a + '&PropName='+ pname;
+    }
+
+</script>
+
+<div class="container margintop20">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                Hotels Listing
+            </h4>
+        </div>
+        <div class="panel-body">
+
+            <div class="table-responsive margintop20">
+                <table class="display table table-striped table-bordered table-hover" id="tblData"></table>
+            </div>
+            <!-- End  table -->
+        </div>
+    </div>
+    <!-- container div END bottom -->
+</div>
+
+@*<a href='@Url.Action("ViewDashboard", "Property", new RouteValueDictionary(new { PropId = 1}))'>View Dashboard</a>*@
+
+<script>
+
+    $(function(){
+    
+        $('#searchbox').attr('title','Search by Name or Address');
+    
+    })
+</script>

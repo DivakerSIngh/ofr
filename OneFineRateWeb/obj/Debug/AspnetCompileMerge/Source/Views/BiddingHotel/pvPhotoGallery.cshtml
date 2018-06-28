@@ -1,0 +1,22 @@
+﻿@model   OneFineRateBLL.Entities.PropDetailsM
+
+<form id="frmgallery">
+    <div class="col-md-6 margintop10">
+        <img src='@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()@Model.lstetblPhotoGallery[0].sMainImgUrl' id="imagePreview" class="image-ban">
+    </div>
+    <div class="col-md-2 margintop10">
+        <ul>
+            @for (int i = 0; i < Model.lstetblPhotoGallery.Count; i++)
+            {
+                <li><img src='@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()@Model.lstetblPhotoGallery[i].sthumbImgUrl' id="thumbPreview" class="image-thumb" onclick="PreviewImage(this.src)"></li>
+            }
+        </ul>
+    </div>
+</form>
+
+
+<script type="text/javascript">
+    function PreviewImage(val) {
+        $('#imagePreview').attr('src', val);
+    }
+</script>

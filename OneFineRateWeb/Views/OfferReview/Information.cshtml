@@ -1,0 +1,314 @@
+﻿@model OneFineRateBLL.Entities.BookingInformation
+@{
+    ViewBag.Title = "Information";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using (Html.BeginForm("BookingInformation", "OfferReview", FormMethod.Post, new { ReturnUrl = ViewBag.ReturnUrl, id = "myform", role = "form" }))
+{
+<div class="main-wrapper">
+    <div class="blue_header_bar">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2>Information</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--2nd row start-->
+    <div class="container">
+        <div class="row boxshadow">
+            <div>
+                <div class="col-md-8 paddingtop15">
+                    <div class="col-md-6 col-xs-12">
+                        <div class="img-res"> <img src="../images/hotel-img.png" alt="Image" width="100%"> </div>
+                    </div>
+                    <div class="col-md-4 col-xs-12">
+                        <div class="margintop-5"> <img src="../images/inner-star.png"></div>
+                        <h5><strong>Hotel Emperor Plams</strong></h5>
+                        <address>
+                            Karol Bagh, New Delhi
+                            <div class="row">
+                                <div class="col-lg-4 col-md-3 col-sm-3  col-xs-3">Facilities:</div>
+                                <div class="col-md-8 col-xs-8 facilityicon">
+                                    <ul>
+                                        <li><img src="../images/wifi.png" width="100%"></li>
+                                        <li><img src="../images/wifi.png" width="100%"></li>
+                                        <li><img src="../images/wifi.png" width="100%"></li>
+                                        <li><img src="../images/wifi.png" width="100%"></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <hr>
+                        </address>
+                        <div class="row margintop-10">
+                            <div class="col-md-12">
+                                <div class="table-responsive noborder  info">
+                                    <table class="table">
+                                        <tr>
+                                            <td>Check In:</td>
+                                            <td><strong>04/ 03/ 2016</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Check Out:</td>
+                                            <td><strong>06/ 03/ 2016</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Rooms:</td>
+                                            <td><strong>02</strong></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <!--<div class="pull-left">Check In:<br>
+                                  Check Out:<br>
+                                  Rooms:</div>
+                                <div class="pull-right"><strong>04/ 03/ 2016</strong><br>
+                                  <strong>06/ 03/ 2016</strong><br>
+                                  <strong>02</strong></div> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-xs-12">
+                    <div class="row lytgry">
+                        <div class="col-md-12">
+                            <h3 class="center">Total Summary </h3>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-7 col-xs-5 pull-left">Rooms Rate</div>
+                                <div class="col-md-1 col-xs-1">:</div>
+                                <div class="col-md-4  col-xs-5 pull-right"><strong>6000</strong></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-7  col-xs-5">Services & Taxes </div>
+                                <div class="col-md-1 col-xs-1">:</div>
+                                <div class="col-md-4  col-xs-5  pull-right"><strong>4000</strong></div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-7  col-xs-5">Total</div>
+                                <div class="col-md-1  col-xs-2">:</div>
+                                <div class="col-md-4  col-xs-5  pull-right"><strong>INR 8900</strong></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--next section-->
+    <!--2nd row row end-->
+    <!--3rd row row start-->
+    <div class="container  margintop30">
+        <div class="row">
+            <div class="greybg-lighter">
+                <div class="col-md-12 col-xs-12 form-inline "><h4>Are you the guest?
+
+                    @Html.RadioButtonFor(m => m.sSelfTraveling, "Y", new { @class = "radio-inline" }) Yes
+                    @Html.RadioButtonFor(m => m.sSelfTraveling, "N", new { @class = "radio-inline" }) No
+                    </h4> </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="container">
+    <div class="row margintop30">
+        <div class="tablebluebg">Superior Room</div>
+        <div class=" table-responsive  table-bordered  padding15 lightgrybg">
+            <table class="table  table-bordered table-hover">
+                <thead>
+                <th>&nbsp;</th>
+                <th> GUEST NAME</th>
+                <th>MAIL ID	</th>
+                <th> MOBILE</th>
+                <th>Bed Preference </th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><label>Room 1 </label></td>
+                        <td><div class="form-group"><input type="text" class="form-control" maxlength="20" placeholder="Name"></div></td>
+                        <td><div class="form-group"><input type="email" class="form-control" maxlength="20" placeholder="Email"></div></td>
+                        <td><div class="form-group"><input type="phone" class="form-control" maxlength="10" placeholder="Phone No."></div></td>
+                        <td>
+                            <div class="form-group">
+                                <select class="form-control">
+                                    <option selected="selected">Select</option>
+                                    <option>Single</option>
+                                    <option>Double</option>
+                                    <option>King Size</option>
+                                </select>
+                            </div>
+                            <div class="margintop-10"><a href="#">+ Add name of the accompanying guest</a></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label>Room 2 </label></td>
+                        <td><div class="form-group"><input type="text" class="form-control" maxlength="20" placeholder="Name"></div></td>
+                        <td><div class="form-group"><input type="email" class="form-control" maxlength="20" placeholder="Same as above"></div></td>
+                        <td><div class="form-group"><input type="phone" class="form-control" maxlength="10" placeholder="Same as above"></div></td>
+                        <td>
+                            <div class="form-group">
+                                <select class="form-control">
+                                    <option selected="selected">Select</option>
+                                    <option>Single</option>
+                                    <option>Double</option>
+                                    <option>King Size</option>
+                                </select>
+                            </div>
+                            <div class="margintop-10"><a href="#">+ Add name of the accompanying guest</a></div>
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+        <div class="redtextsmall">*Confirmation letter will be sent to the contact details provided above.</div>
+    </div>
+</div>
+<div class="container">
+    <div class="row ">
+        <div class="tablebluebg">Preferences</div>
+        <div class=" table-responsive table-bordered padding10 lightgrybg">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class=" table-responsive noborder">
+                            <table class="table">
+                                <thead class="noborder">
+                                <th>Preferences</th>
+                                <th>Yes</th>
+                                <th>No</th>
+                                <th>NA</th>
+                                </thead>
+                                <tbody class="noborder">
+
+                                    <tr>
+                                        <td>Are you a single lady traveller?</td>
+                                        <td>
+                                             @Html.RadioButtonFor(m => m.sSingleLady, "Y", new { @class = "radio-inline" })
+                                        </td>
+                                        <td>
+                                             @Html.RadioButtonFor(m => m.sSingleLady, "N", new { @class = "radio-inline" })
+                                        </td>
+                                        <td>
+                                             @Html.RadioButtonFor(m => m.sSingleLady, "NA", new { @class = "radio-inline" })
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Do you want room away from elevator?</td>
+                                        <td><input type="radio" class="radio-inline" name="option"></td>
+                                        <td><input type="radio" class="radio-inline" name="option"></td>
+                                        <td><input type="radio" class="radio-inline" name="option"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Do you want a smoking room?</td>
+                                        <td><input type="radio" class="radio-inline" name="option"></td>
+                                        <td><input type="radio" class="radio-inline" name="option"></td>
+                                        <td><input type="radio" class="radio-inline" name="option"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Do you want a quiet room?</td>
+                                        <td><input type="radio" class="radio-inline" name="option"></td>
+                                        <td><input type="radio" class="radio-inline" name="option"></td>
+                                        <td><input type="radio" class="radio-inline" name="option"></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Do you want to pick-up ?</td>
+                                        <td><input type="radio" class="radio-inline" name="option"></td>
+                                        <td><input type="radio" class="radio-inline" name="option"></td>
+                                        <td><input type="radio" class="radio-inline" name="option"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>Are you travelling on for any special occasion?</label>
+                        <div class="form-inline">
+                            <input type="checkbox" class="checkbox"> Birthday	  <input type="checkbox" class="checkbox"> Anniversary 	  
+                        </div>
+                        <div class="form-inline">
+                            <input type="checkbox" class="checkbox"> Honeymoon
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Special requests (100 characters)</label>
+                            <textarea placeholder="Special Requests " class="form-control height100"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class=" form-inline">
+                            <label>EXPECTED CHECK-IN TIME</label>
+                            <select class="form-control"><option selected="selected">Not Sure</option> <option>11:00</option>  <option>12:00</option></select>
+                        </div>
+                        <p>
+                            <span class="red">*</span> Please note that the check-in time of the hotel is <strong>1200hrs</strong>. Early check-in will be subject to availability
+                            and may incur extra charges.
+                        </p>
+                    </div>
+
+                    <div class="col-md-12 bg-info">
+                        <div class="col-lg-4">Flight Number : <input type="text" class="form-control" /></div>
+                        <div class="col-lg-4">Arrival Time : <select class="form-control">
+                                                    <option>Select</option>
+                                                    <option>Single</option>
+                                                    <option>Double</option>
+                                                    <option>King Size</option></select>
+                        </div>
+
+                        <div class="col-lg-4">Landing At : <input type="text" class="form-control" /></div>
+
+                        <div class="col-lg-4">Type of Cars : <select class="form-control">
+                                                                <option>Select</option>
+                                                                <option>Single</option>
+                                                                <option>Double</option>
+                                                                <option>King Size</option>
+                                                            </select>
+                        </div>
+
+                        <div class="col-lg-4">Number of Cars : <select class="form-control">
+                                                                    <option>Select</option>
+                                                                    <option>Single</option>
+                                                                    <option>Double</option>
+                                                                    <option>King Size</option>
+                                                                </select>
+                        </div>
+                        
+                        <div class="col-lg-4 margintop30">Total Amount : INR 10000</div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="col-md-12 t-c">
+
+        <p>
+            <span class="red">*</span> Please note that all preferences will be subject to availability & at the sole description of the hotel. You can also directly contact the hotel. For
+            any further assistance..
+        </p>
+    </div>
+    <div class="container">
+        <div class="col-md-12 center margintop20">
+
+            <button type="submit" class="btn btn-success  btn-lg">Show My Confirmation</button>
+        </div>
+    </div>
+    <!--footer-start here-->
+    <div class="marginbottom20">&nbsp;</div>
+</div>
+}
+

@@ -1,0 +1,491 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+<link href="~/css/TimeSheetBid.css" rel="stylesheet" />
+
+@System.Web.Optimization.Scripts.Render("~/bundles/ajaxpostform")
+@System.Web.Optimization.Scripts.Render("~/bundles/validation")
+<script src="~/js/TimeSheetBid.js"></script>
+<script src="~/js/jquery-ui.js"></script>
+
+<style>
+    .hideancor {
+        display: none;
+    }
+
+    .container {
+        width: 100% !important;
+    }
+</style>
+<script type="text/javascript">
+    var dayList = '';
+    var hourList = '';
+    var sheetData = '';
+    var dimensions = '';
+    var startdate = '';
+    var NextDueDate = '';
+    var TodayDate = '';
+    var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    var dimensions = [8, 15];
+
+    //type desc
+    // 1 for base - Public
+    // 2 for base - Corporate
+
+    // 3 for length of stay - Public
+    // 4 for length of stay - Corporate
+
+    // 5 for Multiple rooms - Public
+    // 6 for Multiple rooms - Corporate
+
+    // 7 for lead time - Public
+    // 8 for lead time - Corporate
+
+    // 9 for weekdays and weekends - Public
+    // 10 for weekdays and weekends - Corporate
+
+    // Public types are odd. Corporate types are even.
+
+
+
+    var dayList = [
+       { name: "Bid Room", type: "0" }
+       ,{ name: "Base - P", type: "1" },{ name: "Base - C", type: "2" }
+       ,{ name: "Length of stay - P", type: "3" },{ name: "Length of stay - C", type: "4" }
+       ,{ name: "Multiple Rooms - P", type: "5" },{ name: "Multiple Rooms - C", type: "6" }
+       ,{ name: "Lead Time - P", type: "7" },{ name: "Lead Time - C", type: "8" }
+       ,{ name: "Weekend/Weekday - P", type: "9" },{ name: "Weekend/Weekday - C", type: "10" }
+    ]
+    //,    { name: "Maximum Discount Applicable", type: "0" }, { name: "Maximum discount giving by competative hotel", type: "0" }
+
+    function getdata(obj) {
+
+        //debugger;
+
+        var type = $(obj).attr('type');
+        var cdate = $(obj).attr('cdate');
+
+        var publicOrCorporate = 'p';
+
+        var rowid = $(obj).closest('tr').data('rowid');
+        if (rowid && rowid >= 6)
+            publicOrCorporate = 'c';
+        else
+            publicOrCorporate = 'p';
+
+
+        if (type == 1 || type == 2) {
+
+            var url = '@Url.Action("Basic")' + "?date=" + cdate + "&&typ=" + type+ "&pctype=" + publicOrCorporate;
+            $("#divbasic").load(url);
+            $('#divbasic').modal({
+                show: 'true'
+            });
+        }
+        else if (type == 3 || type == 4) {
+            var url = '@Url.Action("LOS")' + "?date=" + cdate + "&&typ=" + type+ "&pctype=" + publicOrCorporate;
+            $("#divlos").load(url);
+            $('#divlos').modal({
+                show: 'true'
+            });
+        }
+        else if (type == 5 || type == 6) {
+            var url = '@Url.Action("Rooms")' + "?date=" + cdate + "&&typ=" + type+ "&pctype=" + publicOrCorporate;
+            $("#divRooms").load(url);
+            $('#divRooms').modal({
+                show: 'true'
+            });
+        }
+        else if (type == 7 || type == 8) {
+            var url = '@Url.Action("LeadTime")' + "?date=" + cdate + "&&typ=" + type+ "&pctype=" + publicOrCorporate;
+            $("#divleadtime").load(url);
+            $('#divleadtime').modal({
+                show: 'true'
+            });
+        }
+        else if (type == 9 || type == 10) {
+            var url = '@Url.Action("Week")' + "?date=" + cdate + "&&type=" + type+ "&pctype=" + publicOrCorporate;
+            $("#divWeekEndWeekDay").load(url);
+            $('#divWeekEndWeekDay').modal({
+                show: 'true'
+            });
+        }
+        else if(type.indexOf('_') == 0){
+            var url = '@Url.Action("Updates")' + "?date=" + cdate+"&&id="+type.split('_')[1];
+            if (!$(obj).hasClass("yellowbg")) {
+                $("#divUpdates").load(url);
+                $('#divUpdates').modal({
+                    show: 'true'
+                });
+            }
+        }
+    }
+
+    function Toggletr(obj) {
+        $(".parent").click(function () {
+            $(this).nextUntil(".parent").toggle();
+        });
+    }
+    function GetResult(data) {
+        if (data.st == '1') {
+            toastr.success(data.msg);
+            $('.close').click();
+            BindGrid(startdate);
+        }
+        else {
+            toastr.error(data.msg);
+        }
+    }
+
+    function BindGrid(startdate) {
+
+        var values = { cdate: startdate };
+
+        document.getElementById('Progress').style.display = 'block';
+
+        setTimeout(function () {
+
+            var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("BindGrid")", values));
+
+            if (Data.st == 1) {
+
+                hourList = JSON.parse(Data.days);
+                sheetData = JSON.parse(Data.values);
+                dimensions = [Data.count, 15];
+
+                //#region Seperate Public and Corporate
+
+                var formattedSheetData = [];
+
+                console.log(sheetData.length)
+
+                formattedSheetData.push(sheetData[0]);
+
+                for (var i = 1; i <= 10; i+=2) {
+                    formattedSheetData.push(sheetData[i]);
+                }
+
+                for (var i = 2; i <= 10; i+=2) {
+                    formattedSheetData.push(sheetData[i]);
+                }
+
+                for (var i = 11; i < 15; i++) {
+                    formattedSheetData.push(sheetData[i]);
+                }
+
+                var dayListFormatted = [
+                  { name: "Bid Room", type: "0" },
+                  { name: "Base - P", type: "1" },
+                  { name: "Length of stay - P", type: "3" },
+                  { name: "Multiple Rooms - P", type: "5" },
+                  { name: "Lead Time - P", type: "7" },
+                  { name: "Weekend/Weekday - P", type: "9" },
+
+                  { name: "Base - C", type: "2" },
+                  { name: "Length of stay - C", type: "4" },
+                  { name: "Multiple Rooms - C", type: "6" },
+                  { name: "Lead Time - C", type: "8" },
+                  { name: "Weekend/Weekday - C", type: "10" }
+                ]
+
+
+                //#endregion
+
+
+                var dayList = [
+                   { name: "Bid Room", type: "0" }
+                   ,{ name: "Base - P", type: "1" },{ name: "Base - C", type: "2" }
+                   ,{ name: "Length of stay - P", type: "3" },{ name: "Length of stay - C", type: "4" }
+                   ,{ name: "Multiple Rooms - P", type: "5" },{ name: "Multiple Rooms - C", type: "6" }
+                   ,{ name: "Lead Time - P", type: "7" },{ name: "Lead Time - C", type: "8" }
+                   ,{ name: "Weekend/Weekday - P", type: "9" },{ name: "Weekend/Weekday - C", type: "10" }
+                ];
+
+
+                var Rooms = JSON.parse(Data.rooms);
+                for (var i = 0; i < Rooms.length; i++) {
+                    var p =
+                    { name: Rooms[i].name, type: Rooms[i].id }
+
+                    dayList.push(p);
+
+                    //TO DO Aditya
+                    dayListFormatted.push(p);
+                }
+
+                var sheet = $("#tblinventory").TimeSheetBid({
+                    data: {
+                        dimensions: dimensions,
+                        colHead: hourList,
+                        //rowHead: dayList,
+                        rowHead: dayListFormatted,
+                        sheetHead: { name: "Close Out" },
+                        //sheetData: sheetData,
+                        sheetData: formattedSheetData
+                    },
+                    end: function (ev, selectedArea) {
+                        //updateRemark(sheet);
+                    }
+                });
+
+                //$('#tblinventory').gridviewScroll({
+                //    width: 660,
+                //    height: 200
+                //});
+            }
+            else {
+                toastr.info(Data.msg);
+            }
+        });
+    }
+
+    function GetRowsData(type) {
+        var RowData = [];
+        $("#tblinventory tr.TimeSheetBid-row").each(function () {
+            var otype = $(this).find("input:checkbox.hddesc")[0].checked;
+            if (otype) {
+                var obj = $(this).find("input:checkbox.hddesc")[0].attributes;
+                RowData.push({
+                    Type: obj.ctype.value
+                });
+            }
+        });
+        if (RowData.length > 0) {
+            bootbox.confirm(type == false?"Are you sure you want to open?": "Are you sure you want to close out?", function (result) {
+                if (result == true) {
+                    var values = { data: JSON.stringify(RowData), startdate: startdate,type:type };
+                    var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("UpdateCloseOut")", values));
+                    if (Data.st == 1) {
+                        BindGrid(startdate);
+                        toastr.success('Updated successfully');
+                    }
+                    else {
+                        toastr.error('Kindly try after some time.');
+                    }
+                }
+            });
+        }
+        else {
+            toastr.info('No rooms or rate plan selected.');
+        }
+    }
+    $(document).ready(function () {
+
+        var d = new Date();
+        //$('#spdate').html(months[d.getMonth()] + ' ' + d.getFullYear());
+        var curr_date = d.getDate();
+        var curr_month = d.getMonth() + 1;
+        var curr_year = d.getFullYear();
+        if (curr_date < 10) {
+            curr_date = '0' + curr_date
+        }
+        if (curr_month < 10) {
+            curr_month = '0' + curr_month
+        }
+        TodayDate= curr_month + '/' + curr_date + '/' + curr_year;
+        var str = @Html.Raw(Json.Encode(ViewData["StartDate"]));
+        if(str != ""){
+            var a = str.split('/');
+            $('#txtdate').val(a[0] + '/' + a[1] + '/' + a[2]);
+            startdate = a[1] + '/' + a[0] + '/' + a[2];
+        }
+        else{
+            startdate = curr_month + '/' + curr_date + '/' + curr_year;
+            $('#txtdate').val(curr_date + '/' + curr_month + '/' + curr_year)
+        }
+
+        GetNextDueDate(startdate);
+        BindGrid(startdate);
+
+
+        var ThreeYearDate = new Date();
+        var a = ThreeYearDate.getFullYear();
+        ThreeYearDate.setFullYear(a+3);
+
+        $('#txtdate').datepicker({
+            startDate: d,
+            minDate: d,
+            maxDate: ThreeYearDate,
+            autoclose: true,
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true
+        });
+
+        document.getElementById('frmDate').onsubmit = function (e) {
+            e.preventDefault();
+            var f = document.getElementById('frmDate');
+            if (f.checkValidity()) {
+                var date = $('#txtdate').val();
+                var d = new Date(date.split("/").reverse().join("-"));
+                var dd = d.getDate();
+                var mm = d.getMonth() + 1;
+                var yy = d.getFullYear();
+
+                if (dd < 10) {
+                    dd = '0' + dd
+                }
+                if (mm < 10) {
+                    mm = '0' + mm
+                }
+                startdate = mm + "/" + dd + "/" + yy;
+                BindGrid(startdate);
+                GetNextDueDate(startdate);
+                if(new Date(startdate) > new Date())
+                    $('#btnlast15').removeClass('hideancor');
+                else
+                    $('#btnlast15').addClass('hideancor');
+            }
+        }
+        $("#btnExcelDownload").click(function(){
+            location.href = '@Url.Action("ExportExcel", "RateInventoryBid")';
+        });
+        $("#btnGoToSimulator").click(function(){
+            location.href = '/Simulator';
+        });
+
+        $("#ui-datepicker-div").hide();
+    });
+
+
+
+    function GetNextDueDate(CDate) {
+        startdate = CDate;
+        var date = new Date(CDate);
+        //$('#spdate').html(months[date.getMonth()] + ' ' + date.getFullYear());
+        var newdate = new Date(date);
+        newdate.setDate(newdate.getDate() + 15);
+        var dd = newdate.getDate();
+        var mm = newdate.getMonth() + 1;
+        var y = newdate.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd
+        }
+        if (mm < 10) {
+            mm = '0' + mm
+        }
+        NextDueDate = mm + '/' + dd + '/' + y;
+    }
+    function GetLastDueDate(CDate) {
+        startdate = CDate;
+        var date = new Date(CDate);
+        //$('#spdate').html(months[date.getMonth()] + ' ' + date.getFullYear());
+        var newdate = new Date(date);
+        newdate.setDate(newdate.getDate() - 15);
+        var dd = newdate.getDate();
+        var mm = newdate.getMonth() +1;
+        var y = newdate.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd
+        }
+        if (mm < 10) {
+            mm = '0' + mm
+        }
+
+        NextDueDate = CDate;
+        startdate = mm + '/' + dd + '/' + y;
+    }
+
+    function GetNext15DaysData() {
+
+        BindGrid(NextDueDate);
+        GetNextDueDate(NextDueDate);
+        if(new Date(startdate) >= new Date(TodayDate))
+            $('#btnlast15').removeClass('hideancor');
+
+    }
+    function GetLast15DaysData() {
+        GetLastDueDate(startdate);
+        BindGrid(startdate);
+        if(new Date(startdate) <= new Date(TodayDate)){
+            $('#btnlast15').addClass('hideancor');
+            startdate = TodayDate;
+            GetNextDueDate(startdate);
+        }
+    }
+</script>
+<div class="container margintop20">
+    <div class="panel panel-default">
+
+        <div class="panel-heading">
+
+            Express View
+            <span style="text-align:right; float:right;">
+                <button type="submit" id="btnGoToSimulator" class="btn btn-warning">Overview</button>
+                <button type="submit" id="btnExcelDownload" class="btn btn-warning">Excel Download</button>
+                <a class="btn btn-info" href="/BulkBid">Back to bulk update</a>
+            </span>
+        </div>
+
+        @*<div class="panel-heading">
+                <h4>Overview</h4>
+            </div>*@
+
+
+        <div class="panel-body">
+            <div class="margin15t">
+                <div class="row">
+                    <div class="col-md-2" style="width:9%;">
+
+                        <label>Start Date</label>
+                    </div>
+                    <form id="frmDate">
+                        <div class="col-md-2" style="width:11%;">
+                            @Html.TextBox("txtdate", null, new { @class = "form-control ", id = "txtdate", onkeyup = "this.value=''", required = "true" })
+
+                        </div>
+                        <div class="col-md-3 ">
+                            <button type="submit" id="btnSubmit" class="btn btn-primary">OK</button>
+                        </div>
+                    </form>
+                    <div class="col-md-5">
+                        <span class="pull-left padding10 " id="spdate"></span> <span class="pull-right padding10 "><a onclick="GetNext15DaysData();" style="cursor:pointer; color: blue;">Next 15 Days</a></span>
+                        <span class="pull-left padding10 " id="spdate"></span> <span class="pull-right padding10 "><a id="btnlast15" onclick="GetLast15DaysData();" class="hideancor" style="cursor:pointer; color: blue; ">Last 15 Days</a></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 red marginbottom10">
+                        <h4><b>Instructions:</b>  Click on a Cell in the grid below to update your daily discounts and restrictions.</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive margintop20 margin15">
+                <table class="table table-striped table-bordered table-hover txtcenter" id="tblinventory"></table>
+
+                <div class="pull-right padding10"><span style="background-color: aliceblue;padding: 4px;font-size: 11px;">P-Public C-Corporate L–Linked </span><img src="../images/2.jpg" alt=""></div>
+            </div>
+            <!-- End  table -->
+        </div>
+    </div>
+</div>
+<!-- Popup 1-->
+<div id="divleadtime" class="modal fade" role="dialog">
+
+</div>
+<!-- Popup1-->
+<!-- Popup 2-->
+<div id="divlos" class="modal fade" role="dialog">
+
+</div>
+<!-- Popup2-->
+<!-- Popup 3-->
+<div id="divRooms" class="modal fade" role="dialog">
+
+</div>
+<!-- Popup3-->
+<!-- Popup 4-->
+<div id="divWeekEndWeekDay" class="modal fade" role="dialog">
+
+</div>
+<!-- Popup4-->
+<!-- Popup 5-->
+<div id="divbasic" class="modal fade" role="dialog">
+
+</div>
+<!-- Popup5-->
+<!-- Popup 6-->
+<div id="divUpdates" class="modal fade" role="dialog">
+
+</div>
+<!-- Popup6-->

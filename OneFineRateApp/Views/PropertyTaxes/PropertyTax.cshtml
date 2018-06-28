@@ -1,0 +1,235 @@
+﻿@model OneFineRateBLL.Entities.etblPropertyTaxMap
+
+@using (Ajax.BeginForm("AddUpdate", "PropertyTaxes", new AjaxOptions() { InsertionMode = InsertionMode.Replace, UpdateTargetId = "targetid", HttpMethod = "POST", OnSuccess = "GetResult" }))
+{
+
+    <script type="text/javascript">
+
+        function GetResult(data) {
+
+            if (data.st == '1') {
+                toastr.success(data.msg);
+                bindgrid();
+                $('.close').click();
+
+                if (data.bookingAffected)
+                {
+                    bootbox.confirm('Please go to Tax Changes Email Trigger screen to send emails to the guest(s).', function (result) {
+
+                        if (result == true) {
+
+                            window.location.href = '@Url.Action("Index","TaxAffectedBookings")';
+                        }
+                    });
+                }               
+            }            
+            else {
+                toastr.error(data.msg);
+            }
+        }
+
+        $(document).ready(function () {
+            var d = new Date();
+            $('#txtstayfrom').datepicker({
+                startDate: d,
+                minDate: d,
+                autoclose: true,
+                defaultDate: '@Model.stayfrom',
+                dateFormat: 'dd/mm/yy',
+                changeMonth: true,
+                changeYear: true,
+                onClose: function (selectedDate) {
+                    $("#txtstayto").datepicker("option", "minDate", selectedDate);
+                }
+
+            })
+
+            $('#txtstayto').datepicker({
+                startDate: d,
+                minDate: d,
+                autoclose: true,
+                defaultDate: '@Model.stayto',
+                dateFormat: 'dd/mm/yy',
+                changeMonth: true,
+                changeYear: true,
+                onClose: function (selectedDate) {
+                    $("#txtstayfrom").datepicker("option", "maxDate", selectedDate);
+                }
+
+            })
+            $("#ui-datepicker-div").hide();
+        });
+
+
+        function minmax(id, value, min, max) {
+            //alert(value)
+            // alert(id)
+            if ($('#ddltaxtype_' + id).val() == 'true') {
+                if (value == '.') {
+                    return '0.';
+                }
+                else if (parseFloat(value) < min || isNaN(value))
+                    return 0;
+                else if (parseFloat(value) > max) {
+                    $('#txtValue' + id).val(null);
+                    return null;
+                }
+                else {
+                    $('#txtValue' + id).val(value);
+                    return value;
+                }
+            }
+            else {
+                $('#txtValue' + id).val(value);
+                return value;
+            }
+        }
+        function ddListChange(id) {
+            // alert($('#ddltaxtype_' + id ).val() == 'true')
+            if ($('#ddltaxtype_' + id).val() == 'true') {
+                var v = $('#txtValue' + id).val();
+                minmax(id, v, 0, 100);
+            }
+
+        }
+
+</script>
+    @Html.HiddenFor(x => x.SelectedTaxes, new { id = "hdnJson" })
+    @Html.HiddenFor(x => x.iPropTaxId)
+    @Html.HiddenFor(x => x.iPropId)
+    @Html.HiddenFor(x => x.iRPId)
+    @*@Html.HiddenFor(x => x.iRoomId)*@
+    @Html.HiddenFor(x => x.cStatus)
+    @Html.HiddenFor(x => x.dtActionDate)
+    @Html.HiddenFor(x => x.iActionBy)
+    @Html.HiddenFor(x => x.Mode)
+    @*@Html.HiddenFor(x => x.ListTaxes)*@
+    @Html.HiddenFor(x => x.heading)
+    @*@Html.HiddenFor(x => x.ListRatePlans)*@
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">@ViewBag.heading</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-6" style="width:44%;">
+                        Room Name <span class="star">*</span>
+
+                        @{
+    var ratePlanList = OneFineRateBLL.BL_tblPropertyRoomMap.GetAllPropertyTypes(Convert.ToInt32(Session["PropId"]));
+    ratePlanList.Insert(0, new OneFineRateBLL.Entities.PNames { Id = "0", Name = "All Rooms" });
+    var selectList = new SelectList(ratePlanList, "Id", "Name");
+
+
+    if (Model.Mode == "Edit")
+    {
+        @Html.DropDownListFor(m => m.iRoomId, selectList, "Select", new { @class = "form-control", disabled = "true" })
+    }
+    else
+    {
+        @Html.DropDownListFor(m => m.iRoomId, selectList, "Select", new { @class = "form-control", required = "true" })
+    }
+
+                        }
+
+                    </div>
+                    <div class="col-xs-3">
+                        Stay From <span class="star">*</span>
+                        @Html.TextBoxFor(u => u.stayfrom, new { @class = "form-control", id = "txtstayfrom", onkeyup = "this.value=''", required = "true" })
+                        @Html.ValidationMessageFor(u => u.stayfrom, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-3">
+                        Stay To <span class="star">*</span>
+                        @Html.TextBoxFor(u => u.stayto, new { @class = "form-control", id = "txtstayto", onkeyup = "this.value=''", required = "true" })
+                    </div>
+                </div>
+                <div class="row">
+
+                </div>
+                <div class="row" id="divtaxes">
+                    @foreach (var item in Model.ListTaxes)
+                    {
+                        <div class="col-xs-12 taxes">
+                            @Html.HiddenFor(u => item.iTaxId, new { @class = "hdnTaxId" })
+
+                            <div class="row margintop10">
+                                <div class="col-xs-4" style="width:23%;">
+                                    @Html.Label(item.sTaxName)
+                                </div>
+                                <div class="col-xs-4">
+                                    @{
+                        if (item.Type == "1")
+                        {
+
+                            <select id="ddltaxtype_@item.iTaxId" name="select" class="form-control ddltype" onchange="ddListChange(@item.iTaxId)">
+                                <option value="true">%</option>
+                                <option value="false">Value</option>
+                            </select>
+                        }
+                        else if (item.Type == "0")
+                        {
+                            <select id="ddltaxtype_@item.iTaxId" name="select" class="form-control ddltype" onchange="ddListChange(@item.iTaxId)">
+                                <option value="false">Value</option>
+                                <option value="true">%</option>
+                            </select>
+                        }
+                        else
+                        {
+                            <select id="ddltaxtype_@item.iTaxId" name="select" class="form-control ddltype" onchange="ddListChange(@item.iTaxId)">
+                                <option value="true">%</option>
+                                <option value="false">Value</option>
+                            </select>
+                        }
+                                    }
+                                </div>
+                                <div class="col-xs-4">
+                                    @Html.TextBoxFor(u => item.value, new { id = "txtValue" + item.iTaxId, title = item.iTaxId, @class = "form-control value txtOnlyDecimalAllowed", onkeyup = "this.value = minmax(this.title,this.value, 0, 100)"})
+
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="modal-footer">
+                @if (Model.cStatus == "I")
+                {
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                }
+                else
+                {
+                    <button type="submit" onclick="return FetchData();" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                }
+
+            </div>
+        </div>
+
+    </div>
+    <div id="targetid"></div>
+}
+
+<script>
+    var txtOnlyDecimalAllowed = document.getElementsByClassName('txtOnlyDecimalAllowed');
+
+    for (var i = 0; i < txtOnlyDecimalAllowed.length; i++) {
+
+        txtOnlyDecimalAllowed[i].addEventListener('input', function (prev) {
+            return function (evt) {
+                if (!/^\d{0,5}(?:\.\d{0,3})?$/.test(this.value)) {
+                    // alert("Please enter only numeric values")
+                    this.value = prev;
+                }
+                else {
+                    prev = this.value;
+                }
+            };
+        }
+        (txtOnlyDecimalAllowed[i].value), false);
+
+    }
+</script>

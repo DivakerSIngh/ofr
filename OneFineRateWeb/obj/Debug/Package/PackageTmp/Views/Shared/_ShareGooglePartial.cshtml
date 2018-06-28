@@ -1,0 +1,36 @@
+﻿@model OneFineRateBLL.Entities.PropDetailsM
+@{
+    Layout = null;
+}
+
+@if (Model != null)
+{
+    <div class="marginbottom10 margintop15">
+        <div class="row ">
+            <div class="col-md-12">
+                
+                <div class="overviewparatext" id="OverviewText">
+                    @if (!string.IsNullOrEmpty(Model.sDescription))
+                    {
+                        <h3> @Html.Raw(Model.sDescription != null ? Model.sDescription.TrimEnd('\r', '\n').Replace(Environment.NewLine, "<br/>").Replace("\"", "\'") : "")</h3>
+                    }
+                </div>
+            </div>
+            <div class="col-md-12">
+                @if (Model.lstetblPhotoGallery != null && Model.lstetblPhotoGallery.Count > 0)
+                {
+                    <div id="imgdiv"><img src='@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()@Model.lstetblPhotoGallery[0].sMainImgUrl' id="imagePreview" class="image-ban"></div>
+                }
+                else if (Model.sImageUrlTG != null)
+                {
+                    <div id="imgdiv"><img src='@Model.sImageUrlTG' id="imagePreview" class="image-ban"></div>
+                }
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div><h3></h3></div>
+}
+

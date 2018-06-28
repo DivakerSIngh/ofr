@@ -1,0 +1,685 @@
+﻿@model OneFineRateBLL.Entities.etblBankDetail
+@{
+    ViewBag.Title = "BankDetail";
+    Layout = "~/Views/Shared/_LayoutProperty.cshtml";
+    var allowedImageExtenstions = new List<string> { ".JPG", ".JPEG", ".BMP", ".GIF", ".PNG" };
+
+}
+
+<style>
+    #ddlState {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+</style>
+
+<link href="~/Content/prettyPhoto.css" rel="stylesheet" />
+<script src="~/Scripts/jquery.prettyPhoto.js"></script>
+@{Html.EnableClientValidation();}
+@System.Web.Optimization.Scripts.Render("~/bundles/validation")
+@using (Html.BeginForm("Add", "BankDetail", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title"> Bank Detail</h4>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    @Html.HiddenFor(m => m.iPropId)
+                    <div class="col-xs-12">
+
+                        <div class="row ">
+                            <div class="col-xs-4">
+                                Bank Account No <span style="color:red">*</span>
+                                @Html.TextBoxFor(m => m.sBankAccountNo, new { @class = "form-control", required = true, maxlength = "20", id = "bankAccountNumber", placeholder = "Bank Account Number" })
+                                @Html.ValidationMessageFor(m => m.sBankAccountNo, "", new { @class = "red" })
+                            </div>
+                            <div class="col-xs-4">
+                                Beneficiary's Name <span style="color:red">* @Html.ValidationMessageFor(m => m.sBaneficiariesName)</span>
+                                @Html.TextBoxFor(m => m.sBaneficiariesName, new { @class = "form-control", required = true, maxlength = "100", placeholder = "Baneficiaries Name" })
+
+                            </div>
+                            <div class="col-xs-4">
+                                Bank Name <span style="color:red">* @Html.ValidationMessageFor(m => m.sBankName)</span>
+                                @Html.TextBoxFor(m => m.sBankName, new { @class = "form-control", required = true, maxlength = "100", placeholder = "Bank Name" })
+                            </div>
+                        </div>
+                        <div class="row margintop10">
+                            <div class="col-xs-4">
+                                Branch Name <span style="color:red">* @Html.ValidationMessageFor(m => m.sBranchName)</span>
+                                @Html.TextBoxFor(m => m.sBranchName, new { @class = "form-control", required = true, maxlength = "200", placeholder = "Branch Name" })
+                            </div>
+
+                            <div class="col-xs-4">
+                                MICR Code <span style="color:red">* @Html.ValidationMessageFor(m => m.sMicrCode)</span>
+                                @Html.TextBoxFor(m => m.sMicrCode, new { @class = "form-control width60", required = true, maxlength = "10", id = "microCode", placeholder = "MICR Code" })
+                            </div>
+                            <div class="col-xs-4">
+                                IFSC Code <span style="color:red">* @Html.ValidationMessageFor(m => m.sIfscCode)</span>
+                                @Html.TextBoxFor(m => m.sIfscCode, new { @class = "form-control width60", required = true, id = "ifscCode", maxlength = "11", placeholder = "IFSC Code" })
+                            </div>
+
+
+                        </div>
+                        <div class="row margintop10">
+                            <div class="col-xs-12">
+                                Branch Address <span style="color:red">* @Html.ValidationMessageFor(m => m.sBranchAddress)</span>
+                                @Html.TextBoxFor(m => m.sBranchAddress, new { @class = "form-control", required = true, maxlength = "500", placeholder = "Branch Address" })
+                            </div>
+
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-xs-12" style="color:red"> Only pdf and images with .jpg , .jpeg , .png and .gif extenstions are allowed. </div>
+                        </div>
+                        <div class="row margintop10">
+                            <div class="col-xs-3">Letterhead/ Bank A/C Detail <span style="color:red"> @Html.ValidationMessageFor(m => m.sLetterhead_BankAccount)</span></div>
+
+                            @if (Model != null && !string.IsNullOrEmpty(Model.sLetterhead_BankAccount))
+                            {
+                                <div class="col-xs-5">
+                                    <input type="file" name="Letterhead_BankAccount" id="Letterhead_BankAccount" class="form-control">
+
+                                </div>
+                                <div class="col-xs-2">
+                                    @{
+                                        string extension = Path.GetExtension(Model.sLetterhead_BankAccount);
+                                        if (allowedImageExtenstions.Contains(extension.ToUpper()))
+                                        {
+                                            <a href="@Url.Content(Model.sLetterhead_BankAccount)" rel="prettyPhoto[gallery]"><img id="sLetterhead_BankAccount_image_upload_preview" onerror="this.src = 'http://placehold.it/50x50'" height="50" width="50" src="@Url.Content(Model.sLetterhead_BankAccount)" alt="bank account image" /></a>
+                                        }
+                                        else
+                                        {
+                                            string fileName = System.IO.Path.GetFileName(new Uri(Model.sLetterhead_BankAccount).LocalPath);
+                                            <a style="color:#2c5ccc" id="sLetterhead_BankAccount_pdf_upload_preview" href="@Model.sLetterhead_BankAccount">@fileName</a>
+                                            <a href="#" rel="prettyPhoto[gallery]">
+                                                <img id="sLetterhead_BankAccount_image_upload_preview" style="display:none" height="50" width="50" src="http://placehold.it/50x50" alt="bank account image" />
+                                            </a>
+                                        }
+                                    }
+                                </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="col-xs-3">
+                                                <input type="file" name="Letterhead_BankAccount" id="Letterhead_BankAccount" class="form-control">
+
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <a href="#" rel="prettyPhoto[gallery]"><img id="sLetterhead_BankAccount_image_upload_preview" height="50" width="50" src="http://placehold.it/50x50" alt="bank account image" /></a>
+                                            </div>
+                                        }
+
+                        </div>
+                        <div class="row margintop10">
+                            <div class="col-xs-3">Cancelled Cheque <span style="color:red">@Html.ValidationMessageFor(m => m.sCancelledCheque)</span></div>
+
+                            @if (Model != null && !string.IsNullOrEmpty(Model.sCancelledCheque))
+                            {
+                                <div class="col-xs-5">
+                                    <input type="file" name="CancelledCheque" id="CancelledCheque" class="form-control">
+
+                                </div>
+                                <div class="col-xs-2">
+                                    @{
+                                        string extension = Path.GetExtension(Model.sCancelledCheque);
+                                        if (allowedImageExtenstions.Contains(extension.ToUpper()))
+                                        {
+                                            <a href="@Url.Content(Model.sCancelledCheque)" rel="prettyPhoto[gallery]">
+                                                <img id="CancelledCheque_image_upload_preview" onerror="this.src = 'http://placehold.it/50x50'" height="50" width="50" src="@Url.Content(Model.sCancelledCheque)" alt="cancelledCheque image" />
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            string fileName = System.IO.Path.GetFileName(new Uri(Model.sCancelledCheque).LocalPath);
+                                            <a style="color:#2c5ccc" id="CancelledCheque_pdf_upload_preview" href="@Model.sCancelledCheque">@fileName</a>
+                                            <a href="#" rel="prettyPhoto[gallery]">
+                                                <img id="CancelledCheque_image_upload_preview" style="display:none" height="50" width="50" src="http://placehold.it/50x50" alt="cancelledCheque image" />
+                                            </a>
+                                        }
+                                    }
+                                </div>
+                                        }
+                                        else
+                                        {
+
+                                            <div class="col-xs-3">
+                                                <input type="file" name="CancelledCheque" id="CancelledCheque" class="form-control">
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <a href="#" rel="prettyPhoto[gallery]"> <img id="CancelledCheque_image_upload_preview" height="50" width="50" src="http://placehold.it/50x50" alt="cancelledCheque image" /></a>
+                                            </div>
+                                        }
+                        </div>
+                        <div class="row margintop10">
+                            <div class="col-xs-3">Pan Card Details <span style="color:red"> @Html.ValidationMessageFor(m => m.sPanCard)</span></div>
+
+                            @if (Model != null && !string.IsNullOrEmpty(Model.sPanCard))
+                            {
+                                <div class="col-xs-5">
+                                    <input type="file" name="PanCard" id="PanCard" class="form-control">
+
+                                </div>
+                                <div class="col-xs-2">
+                                    @{
+                                        string extension = Path.GetExtension(Model.sPanCard);
+                                        if (allowedImageExtenstions.Contains(extension.ToUpper()))
+                                        {
+                                            <a href="@Url.Content(Model.sPanCard)" rel="prettyPhoto[gallery]">
+
+                                                <img id="PanCard_image_upload_preview" height="50" onerror="this.src = 'http://placehold.it/50x50'" width="50" src="@Model.sPanCard" alt="panCard image" />
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            string fileName = System.IO.Path.GetFileName(new Uri(Model.sPanCard).LocalPath);
+                                            <a style="color:#2c5ccc" id="PanCard_pdf_upload_preview" href="@Model.sPanCard">@fileName</a>
+                                            <a href="#" rel="prettyPhoto[gallery]">
+                                                <img id="PanCard_image_upload_preview" style="display:none" height="50" width="50" src="http://placehold.it/50x50" alt="panCard image" />
+                                            </a>
+                                        }
+                                    }
+                                </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="col-xs-3">
+                                                <input type="file" name="PanCard" id="PanCard" class="form-control">
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <a href="#" rel="prettyPhoto[gallery]"> <img id="PanCard_image_upload_preview" height="50" width="50" src="http://placehold.it/50x50" alt="panCard image" /></a>
+                                            </div>
+                                        }
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="subheadcolor">
+                                    <h4>Commission Details </h4>
+                                </div>
+                                <hr />
+                            </div>
+                            <div class="col-xs-2">Commission % <span style="color:red">*</span></div>
+                            <div class="col-xs-2">
+                                @Html.TextBoxFor(m => m.dCommission, new { @class = "form-control txtOnlyDecimalAllowed", placeholder = "Commission %" })
+                            </div>
+                            <div class="col-xs-6 red">
+                                @Html.ValidationMessageFor(m => m.dCommission)
+                            </div>
+                        </div>
+
+                        <!-- GSTIN Details -->
+
+                        <div class="row">
+                            <br />
+                            <div class="col-xs-12">
+                                <div class="subheadcolor"><h4>GSTIN Information </h4></div>
+                                <hr />
+                            </div>
+                         
+                                <div class="col-xs-6">
+                                    Legal Name of Entity <span style="color:red">*</span>
+                                    @Html.TextBoxFor(m => m.sRegisteredEntityName, new { @class = "form-control", maxlength = "200", placeholder = "Legal Name of Entity" })
+                                    @Html.ValidationMessageFor(m => m.sRegisteredEntityName, "", new { @class = "red" })
+                                </div>
+
+                                <div class="col-xs-6">
+                                    PAN Number <span style="color:red">*</span>
+                                    @Html.TextBoxFor(m => m.sPanNumber, new { @class = "form-control", id= "PanNumber", maxlength = "10", placeholder = "PAN Number" })
+                                    @Html.ValidationMessageFor(m => m.sPanNumber, "", new { @class = "red" })
+                                </div>
+
+                            <div class="clearfix"> </div>
+
+                          
+                                <div class="col-xs-4">
+                                    GSTIN of the Business <span style="color:red">*</span>
+                                    @Html.TextBoxFor(m => m.sGstinNumber, new { @class = "form-control", maxlength = "15", id="GstnNumber", placeholder = "GST Number" })
+                                    @Html.ValidationMessageFor(m => m.sGstinNumber, "", new { @class = "red" })
+                                </div>
+
+                                <div class="col-xs-4">
+
+                                    <label>State <span style="color:red">*</span></label>
+                                    @if (Model.iStateId.HasValue)
+                                    {
+                                        @Html.DropDownListFor(model => model.iStateId, new SelectList(OneFineRateBLL.BL_Country.GetStatesByStateIdForDropdown(Model.iStateId.Value), "iStateId", "sState", Model.iStateId), "Select State", new { @class = "form-control notSelect2", id = "ddlState", @readonly = "readonly" })
+                                    }
+                                    else
+                                    {
+                                        @Html.DropDownListFor(model => model.iStateId, Enumerable.Empty<SelectListItem>(), "Select State", new { @class = "form-control notSelect2", id = "ddlState", @readonly = "readonly" })
+                                    }
+
+                                    @Html.ValidationMessageFor(model => model.iStateId, "", new { @class = "red" })
+
+                                </div>
+
+                                <div class="col-xs-4">
+
+                                    @Html.LabelFor(model => model.sEntityType) <span style="color:red">*</span>
+
+                                    <input type="text" id="txtGstnEntityType" readonly class="form-control" placeholder="Entity Type" />
+
+                                    @Html.DropDownListFor(model => model.sEntityType, new SelectList(new List<SelectListItem> {
+
+                   new SelectListItem{ Text = "Person/Individual",Value="p" },
+                    new SelectListItem{ Text = "Company",Value="c" },
+                     new SelectListItem{ Text = "HUF",Value="h" },
+                      new SelectListItem{ Text = "Firm",Value="f" },
+                       new SelectListItem{ Text = "Association of Person (AOP)",Value="a" },
+                        new SelectListItem{ Text = "AOP (Trust)",Value="t" },
+                         new SelectListItem{ Text = "Body of Individuals (BOI)",Value="b" },
+                          new SelectListItem{ Text = "Local Authorithy",Value="l" },
+                           new SelectListItem{ Text = "Artifical Juridical Person",Value="j" },
+                            new SelectListItem{ Text = "Government",Value="g" },
+
+                   }, "Value", "Text"), "Select", new { @class = "form-control hide", id = "GstnEntityType" })
+
+                                    @Html.ValidationMessageFor(model => model.sEntityType, "", new { @class = "red" })
+
+                                </div>
+
+                            <div class="clearfix"> </div>
+
+                        </div>
+
+                        <!-- End GSTIN Details-->
+
+
+                        <!-- Finance Contact div start -->
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="subheadcolor"><h4>Finance Contact Details </h4></div>
+                                <hr />
+                            </div>
+                            <div class="col-xs-6">
+                                Name <span style="color:red">* </span>
+                                @Html.TextBoxFor(m => m.sFName, new { @class = "form-control", maxlength = "50", placeholder = "Name" })
+                                <span style="color:red"> @Html.ValidationMessageFor(m => m.sFName)</span>
+                            </div>
+                            <div class="col-xs-3 ">
+                                Phone No <span style="color:red">* </span>
+                                @Html.TextBoxFor(m => m.sFPhoneNo, new { @class = "form-control width70", maxlength = "15", id = "phoneNumber", placeholder = "Phone No" })
+                                <span style="color:red">@Html.ValidationMessageFor(m => m.sFPhoneNo)</span>
+                            </div>
+
+                            <div class="col-xs-3">
+                                Fax No. @*<span style="color:red">* </span>*@
+                                @Html.TextBoxFor(m => m.sFFaxNo, new { @class = "form-control width70", maxlength = "20", placeholder = "Fax No" })
+                                <span style="color:red">@Html.ValidationMessageFor(m => m.sFFaxNo)</span>
+                            </div>
+                            <div class="col-xs-6 margintop10">
+                                Email ID <span style="color:red">* </span>
+                                @Html.TextBoxFor(m => m.sFEmailId, new { @class = "form-control", maxlength = "100", placeholder = "Email ID" })
+                                <span style="color:red">@Html.ValidationMessageFor(m => m.sFEmailId)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 margintop20 ">
+                        @if (ViewBag.FixedOFRFinanceDetails != null)
+                        {
+                            dynamic fixedOFRFinanceDetails = ViewBag.FixedOFRFinanceDetails;
+                            <div class="row ofrfinance">
+                                <div class="col-xs-12">
+                                    <div class="subheadcolor"><h4>OFR Finance Details</h4></div>
+                                </div>
+                                <div class="col-xs-2" style="width:11%;"> <b>Phone No.</b> </div>
+                                <div class="col-xs-10">@fixedOFRFinanceDetails.sPhone </div>
+                                <div class="col-xs-2" style="width:11%;"> <b>Email</b> </div>
+                                <div class="col-xs-10">@fixedOFRFinanceDetails.sEmail </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="row ofrfinance">
+                                <div class="col-xs-12">
+                                    <div class="subheadcolor"><h4>OFR Finance Details</h4></div>
+                                </div>
+                                <div class="col-xs-5"> Phone No.</div>
+                                <div class="col-xs-7">value </div>
+                                <div class="col-xs-5"> Email</div>
+                                <div class="col-xs-7">value</div>
+                                <!--<div class="col-xs-12 text-center">
+                                <input type="submit" name="Submit" value="Send Message" class="btn btn-primary"></div>-->
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- container div END bottom -->
+    </div>
+    <!-- CONTENT-WRAPPER SECTION END-->
+                                        <div class="row pull-right marginbottom10">
+                                            <div class="col-xs-12 ">
+                                                <input type="submit" name="submit" value="Save" class="btn btn-primary">
+                                            </div>
+
+                                        </div>
+                                        }
+
+
+<script>
+    $(function () {
+
+        $('#ddlState').on('mousedown', function (e) {
+            e.preventDefault();
+            this.blur();
+            window.focus();
+        });
+
+        $('#txtGstnEntityType').val($('#GstnEntityType option:selected').text());
+
+        $('#PanNumber').keyup(function (e) {
+
+            $(this).val($(this).val().toUpperCase());
+        });
+
+
+        $('#GstnNumber').keyup(function (e) {
+            
+            //debugger;
+
+            var ddlState = "#ddlState";
+
+            $(this).val($(this).val().toUpperCase());
+
+            var $thisVal = $(this).val().trim();
+
+            if ($thisVal.length >= 2) {
+                
+                var firstTwoDigit = $thisVal.substring(0, 2);
+
+                if ($.isNumeric(firstTwoDigit))
+                {
+                    var url = '@Url.Action("GetStatesByGST", "CorporateCompany")'
+
+                    $.ajax({
+                        type: "GET",
+                        global: false,
+                        url: url,
+                        data: { gstFirstTwoDigit: firstTwoDigit },
+                        success: function (data) {
+
+                            //debugger;
+
+                            if (data.results && data.results.iStateId != 0) {
+
+                                $(ddlState).html("<option selected value='" + data.results.iStateId + "'>" + data.results.sState + "</option>").change();
+
+                                $('#txtGstnEntityType').val($('#GstnEntityType option:selected').text());
+                            }
+                            else {
+                                $(ddlState).html("<option selected value=''>Select State </option>").change();
+                            }
+                        }
+                    });
+                }
+                else {
+                    $(ddlState).html("<option selected value=''>Select State </option>").change();
+                }
+
+
+                try {
+
+                    var validEntityType = ['c', 'p', 'h', 'f', 'a', 't', 'b', 'l', 'j', 'g', 'k'];
+
+                    var sixthChar = $thisVal.charAt(5).toString().toLowerCase();
+
+                    if ($.inArray(sixthChar, validEntityType) != -1) {
+
+                        //$("#GstnEntityType").children('option').hide();
+                        //$("#GstnEntityType").children("option[value^=" + sixthChar + "]").show();
+                        $('#GstnEntityType').val(sixthChar).change();
+
+                        $('#txtGstnEntityType').val($('#GstnEntityType option:selected').text());
+
+                    }                   
+                }
+                catch(e)
+                {
+
+                }
+            }
+          
+            else {
+
+                if ($thisVal.length < 2) {
+                    $(ddlState).html("<option value=''>Select State</option>");
+                    $(ddlState).change();
+                    $('#txtGstnEntityType').val($('#GstnEntityType option:selected').text());
+                }
+
+                if ($thisVal.length < 6 && $thisVal.length >= 2) {
+
+                    $('#GstnEntityType').val('').change();
+                }
+            }
+        });
+
+
+        $('#GstnNumber').blur(function (e) {
+
+            toastr.clear($('.toast'));
+
+            var ddlState = "#ddlState";
+
+            var stateValue = $(ddlState).val();
+            var $thisVal = $(this).val().trim();
+
+            var validEntityType = ['c', 'p', 'h', 'f', 'a', 't', 'b', 'l', 'j', 'g', 'k'];
+
+            if ($thisVal && $thisVal.length >= 6) {
+
+                var sixthChar = $thisVal.charAt(5).toString().toLowerCase();
+
+                if ($.inArray(sixthChar, validEntityType) != -1) {
+
+                    $('#GstnEntityType').val(sixthChar).change();
+                    $('#txtGstnEntityType').val($('#GstnEntityType option:selected').text());                   
+                }               
+            }
+
+            if ($thisVal && $thisVal.length >= 6) {
+
+                var firstTwoDigit = $thisVal.substring(0, 2);
+
+                var url = '@Url.Action("GetStatesByGST", "CorporateCompany")' //'CorporateCompany/GetStatesByGST';
+
+                $.ajax({
+                    type: "GET",
+                    global: false,
+                    url: url,
+                    data: { gstFirstTwoDigit: firstTwoDigit },
+                    success: function (data) {
+
+                        if (data.results) {
+                            
+                            $(ddlState).html("<option selected value='" + data.results.iStateId + "'>" + data.results.sState + "</option>").change();
+
+                            var sixthChar = $thisVal.charAt(5).toString().toLowerCase();
+
+                            if ($.inArray(sixthChar, validEntityType) != -1) {
+
+                                $('#GstnEntityType').val(sixthChar).change();
+                                $('#txtGstnEntityType').val($('#GstnEntityType option:selected').text());
+                                $("#GstnEntityType option").not(':selected').each(function (index) {
+                                    $(this).prop('disabled', true);
+                                });
+                            }                           
+                        }
+                    }
+                });
+            }
+            else {
+
+                $(ddlState).html("<option value=''>Select State</option>");
+                $(ddlState).change();
+                $('#GstnEntityType').val('').change();
+                $('#txtGstnEntityType').val($('#GstnEntityType option:selected').text());
+            }
+        });
+
+
+
+        $('.field-validation-valid').parent('div').removeClass('has-error')
+        $('.field-validation-error').parent('div').addClass('has-error')
+
+
+        $("a[rel^='prettyPhoto[gallery]']").prettyPhoto({
+            social_tools: false,
+            deeplinking: false,
+            allow_resize: true,
+        });
+
+
+
+        $('#ifscCode').keypress(function (e) {
+
+            return AlphaNumCheck(e);
+
+        })
+
+        // On keypress event call the following method
+        function AlphaNumCheck(e) {
+            var charCode = (e.which) ? e.which : e.keyCode;
+            if (charCode == 8) return true;
+
+            var keynum;
+            var keychar;
+            var charcheck = /[a-zA-Z0-9]/;
+            if (window.event) // IE
+            {
+                keynum = e.keyCode;
+            }
+            else {
+                if (e.which) // Netscape/Firefox/Opera
+                {
+                    keynum = e.which;
+                }
+                else return true;
+            }
+
+            keychar = String.fromCharCode(keynum);
+            return charcheck.test(keychar);
+        }
+
+
+        function readURL(input, imagePreviewId) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#' + imagePreviewId).attr('src', e.target.result).parents("a[rel^='prettyPhoto[gallery]']").attr('href', e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+
+        $('#bankAccountNumber').keypress(function (e) {
+
+            return isInteger(e, this, 20);
+        })
+
+        $('#phoneNumber').keypress(function (e) {
+
+            return isInteger(e, this, 15);
+        })
+
+        $('#microCode').keypress(function (e) {
+
+            return isInteger(e, this, 10);
+        })
+
+        $('#Letterhead_BankAccount').change(function () {
+
+            if (IsValidImage(this)) {
+                readURL(this, 'sLetterhead_BankAccount_image_upload_preview');
+                $('#sLetterhead_BankAccount_image_upload_preview').show();
+                $('#sLetterhead_BankAccount_pdf_upload_preview').hide();
+            } else if (IsValidPdf(this)) {
+                $('#sLetterhead_BankAccount_image_upload_preview').hide();
+                return true;
+            }
+            else {
+                alert('Only pdf or images with extensions ( jpg , jpeg , gif and png )  are allowed !');
+                $(this).val(null);
+            }
+
+        });
+
+        $('#CancelledCheque').change(function () {
+            if (IsValidImage(this)) {
+                readURL(this, 'CancelledCheque_image_upload_preview');
+                $('#CancelledCheque_image_upload_preview').show();
+                $('#CancelledCheque_pdf_upload_preview').hide();
+            }
+            else if (IsValidPdf(this)) {
+                $('#CancelledCheque_image_upload_preview').hide();
+                return true;
+            }
+            else {
+                alert('Only pdf or images with extensions ( jpg , jpeg , gif and png )  are allowed !');
+                $(this).val(null);
+            }
+        });
+
+        $('#PanCard').change(function () {
+            if (IsValidImage(this)) {
+                readURL(this, 'PanCard_image_upload_preview');
+                $('#PanCard_image_upload_preview').show();
+                $('#PanCard_pdf_upload_preview').hide();
+            } else if (IsValidPdf(this)) {
+                $('#PanCard_image_upload_preview').hide();
+                return true;
+            }
+            else {
+                alert('Only pdf or images with extensions ( jpg , jpeg , gif and png )  are allowed !');
+                $(this).val(null);
+            }
+        });
+
+
+        function IsValidImage(fileUploadId) {
+            var ext = $(fileUploadId).val().split('.').pop().toLowerCase();
+            if ($.inArray(ext, ['gif', 'png', 'jpg', 'jpeg']) == -1) {
+                return false;
+            }
+            return true;
+        }
+
+        function IsValidPdf(fileUploadId) {
+            var ext = $(fileUploadId).val().split('.').pop().toLowerCase();
+            if ($.inArray(ext, ['pdf']) == -1) {
+                return false;
+            }
+            return true;
+        }
+
+
+    });
+</script>
+<script>
+    var txtOnlyDecimalAllowed = document.getElementsByClassName('txtOnlyDecimalAllowed');
+
+    for (var i = 0; i < txtOnlyDecimalAllowed.length; i++) {
+
+        txtOnlyDecimalAllowed[i].addEventListener('input', function (prev) {
+            return function (evt) {
+                if (!/^\d{0,5}(?:\.\d{0,3})?$/.test(this.value)) {
+                    this.value = prev;
+                }
+                else {
+                    prev = this.value;
+                }
+            };
+        }(txtOnlyDecimalAllowed[i].value), false);
+
+    }
+</script>

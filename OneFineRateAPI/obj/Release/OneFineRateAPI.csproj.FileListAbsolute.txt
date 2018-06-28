@@ -1,0 +1,71 @@
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAPI\bin\OneFineRateAPI.dll.config
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAPI\bin\OneFineRateAPI.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAPI\bin\OneFineRateAPI.pdb
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAPI\bin\Newtonsoft.Json.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAPI\bin\OneFineRateBLL.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAPI\bin\System.Net.Http.Formatting.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAPI\bin\System.Web.Http.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAPI\bin\System.Web.Http.WebHost.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAPI\bin\OneFineRateAppUtil.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAPI\bin\OneFineRate.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAPI\bin\EntityFramework.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAPI\bin\OneFineRateBLL.pdb
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAPI\bin\Newtonsoft.Json.xml
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAPI\bin\System.Net.Http.Formatting.xml
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAPI\bin\System.Web.Http.xml
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAPI\bin\System.Web.Http.WebHost.xml
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAPI\bin\OneFineRateAppUtil.pdb
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAPI\bin\OneFineRate.pdb
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAPI\bin\EntityFramework.xml
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAPI\obj\Release\OneFineRateAPI.csprojResolveAssemblyReference.cache
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAPI\obj\Release\OneFineRateAPI.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAPI\obj\Release\OneFineRateAPI.pdb
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\OneFineRateAPI.dll.config
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\OneFineRateAPI.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\OneFineRateAPI.pdb
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\OneFineRateAppUtil.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\OneFineRateBLL.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\System.Web.Mvc.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\Microsoft.WindowsAzure.StorageClient.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\OneFineRate.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\EntityFramework.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\OneFineRateAppUtil.pdb
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\OneFineRateBLL.pdb
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\System.Web.Mvc.xml
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\OneFineRate.pdb
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\obj\Release\OneFineRateAPI.csprojResolveAssemblyReference.cache
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\obj\Release\OneFineRateAPI.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\obj\Release\OneFineRateAPI.pdb
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\EntityFramework.xml
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\Microsoft.AspNet.Scaffolding.EntityFramework.12.0.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\Microsoft.IdentityModel.Extensions.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\Microsoft.AspNet.Scaffolding.12.0.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\EnvDTE.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\EnvDTE80.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\Microsoft.Web.Infrastructure.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\Microsoft.VisualStudio.TextTemplating.Interfaces.11.0.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\Microsoft.VisualStudio.TextTemplating.Interfaces.10.0.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\Microsoft.VisualStudio.TextManager.Interop.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\Microsoft.VisualStudio.Shell.Interop.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\Microsoft.VisualStudio.ComponentModelHost.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\stdole.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\Microsoft.VisualStudio.OLE.Interop.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\Microsoft.VisualStudio.Shell.Interop.8.0.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\Microsoft.VisualStudio.Shell.Interop.9.0.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\Microsoft.VisualStudio.ProjectAggregator.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\Microsoft.VisualStudio.VSHelp.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\Microsoft.VisualStudio.TextManager.Interop.8.0.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\Microsoft.MSXML.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\OneFineRateAppUtil.dll.config
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\OneFineRateBLL.dll.config
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\Microsoft.AspNet.Scaffolding.EntityFramework.12.0.xml
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\OneFineRate.dll.config
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\Microsoft.AspNet.Scaffolding.12.0.xml
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\obj\Release\OneFineRateAPI.csproj.CoreCompileInputs.cache
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\bin\Microsoft.WindowsAzure.Configuration.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\MailKit.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\MimeKit.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\BouncyCastle.Crypto.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\MailKit.xml
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\MimeKit.xml
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAPI\bin\Microsoft.WindowsAzure.Configuration.dll

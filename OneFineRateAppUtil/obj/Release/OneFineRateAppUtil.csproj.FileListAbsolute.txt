@@ -1,0 +1,82 @@
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\OneFineRateAppUtil.dll.config
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\OneFineRateAppUtil.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\OneFineRateAppUtil.pdb
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\obj\Release\OneFineRateAppUtil.csprojResolveAssemblyReference.cache
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\obj\Release\OneFineRateAppUtil.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\obj\Release\OneFineRateAppUtil.pdb
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\Microsoft.AspNet.Identity.Core.xml
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\Microsoft.AspNet.Identity.Owin.xml
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\Microsoft.Azure.KeyVault.Core.xml
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\Microsoft.Data.Edm.xml
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\Microsoft.Data.OData.xml
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\Microsoft.Data.Services.Client.xml
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\Microsoft.Owin.xml
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\Microsoft.Owin.Host.SystemWeb.xml
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\Microsoft.Owin.Security.xml
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\Microsoft.Owin.Security.Cookies.xml
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\Microsoft.Owin.Security.OAuth.xml
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\Newtonsoft.Json.xml
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\System.Spatial.xml
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\de\Microsoft.Data.Edm.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\es\Microsoft.Data.Edm.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\fr\Microsoft.Data.Edm.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\it\Microsoft.Data.Edm.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\ja\Microsoft.Data.Edm.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\ko\Microsoft.Data.Edm.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\ru\Microsoft.Data.Edm.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\zh-Hans\Microsoft.Data.Edm.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\zh-Hant\Microsoft.Data.Edm.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\de\Microsoft.Data.OData.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\es\Microsoft.Data.OData.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\fr\Microsoft.Data.OData.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\it\Microsoft.Data.OData.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\ja\Microsoft.Data.OData.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\ko\Microsoft.Data.OData.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\ru\Microsoft.Data.OData.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\zh-Hans\Microsoft.Data.OData.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\zh-Hant\Microsoft.Data.OData.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\de\Microsoft.Data.Services.Client.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\es\Microsoft.Data.Services.Client.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\fr\Microsoft.Data.Services.Client.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\it\Microsoft.Data.Services.Client.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\ja\Microsoft.Data.Services.Client.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\ko\Microsoft.Data.Services.Client.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\ru\Microsoft.Data.Services.Client.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\zh-Hans\Microsoft.Data.Services.Client.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\zh-Hant\Microsoft.Data.Services.Client.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\de\System.Spatial.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\es\System.Spatial.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\fr\System.Spatial.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\it\System.Spatial.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\ja\System.Spatial.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\ko\System.Spatial.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\ru\System.Spatial.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\zh-Hans\System.Spatial.resources.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateAppUtil\bin\zh-Hant\System.Spatial.resources.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAppUtil\bin\OneFineRateAppUtil.dll.config
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAppUtil\bin\OneFineRateAppUtil.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAppUtil\bin\OneFineRateAppUtil.pdb
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAppUtil\obj\Release\OneFineRateAppUtil.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAppUtil\obj\Release\OneFineRateAppUtil.pdb
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAppUtil\obj\Release\OneFineRateAppUtil.csprojResolveAssemblyReference.cache
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAppUtil\obj\Release\OneFineRateAppUtil.csproj.CoreCompileInputs.cache
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAppUtil\bin\BouncyCastle.Crypto.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAppUtil\bin\MailKit.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAppUtil\bin\MimeKit.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAppUtil\bin\MailKit.xml
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAppUtil\bin\MimeKit.xml
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateAppUtil\bin\bin\Microsoft.WindowsAzure.Configuration.dll
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRateAppUtil\bin\bin\Microsoft.WindowsAzure.Configuration.dll
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRateAppUtil\bin\OneFineRateAppUtil.dll.config
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRateAppUtil\bin\OneFineRateAppUtil.dll
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRateAppUtil\bin\OneFineRateAppUtil.pdb
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRateAppUtil\bin\BouncyCastle.Crypto.dll
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRateAppUtil\bin\MailKit.dll
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRateAppUtil\bin\MimeKit.dll
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRateAppUtil\bin\MailKit.xml
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRateAppUtil\bin\MimeKit.xml
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRateAppUtil\obj\Release\OneFineRateAppUtil.csprojAssemblyReference.cache
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRateAppUtil\obj\Release\OneFineRateAppUtil.csproj.CoreCompileInputs.cache
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRateAppUtil\obj\Release\OneFineRateAppUtil.csproj.CopyComplete
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRateAppUtil\obj\Release\OneFineRateAppUtil.dll
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRateAppUtil\obj\Release\OneFineRateAppUtil.pdb

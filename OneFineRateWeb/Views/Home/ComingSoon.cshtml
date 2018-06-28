@@ -1,0 +1,104 @@
+﻿@{
+    Layout = null;
+}
+<html>
+<head>
+    <title>OFR - Coming Soon</title>
+    <link rel="shortcut icon" href="~/images/favicon.ico" />
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/ComingSoon.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <link href="~/Content/toastr.css" rel="stylesheet" />
+    <script src="~/js/toastr.min.js"></script>
+    </head>
+<body>
+    <br/>
+<div class="container">
+    <div class="row mob-margintop40">
+        <div class="col-md-9 col-xs-6"><img style="height: 50px;" src="~/images/logolarge.jpg" class="img-responsive"></div>
+        <div class="col-md-3 col-xs-6 text-right"><img src="images/coming.jpg" class="img-responsive"></div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 col-xs-12 text-center" style="margin-top:54px;">
+            <img src="images/that.jpg" >
+        </div>
+        <div class="col-md-1">&nbsp;</div>
+        <div class="col-md-7 col-xs-12">
+            <div id="divvideobuy" style="background: none; ">
+                <iframe src="@(TempData["VideoUrl"].ToString()+"?rel=0")" frameborder="0" allowfullscreen="true" width="100%" height="360" style="z-index:999;border:5px solid white"></iframe>
+                <div class="videotxt"> Watch the video to see how <span class="yellowtxt">OneFineRate</span> works</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid margintop20">
+    <div class="row">
+        <div class="yellowbg" style="padding:10px 20px 0px 20px;">
+            <form id="SubmitQuery">
+                <div class="row">
+                    <div class="col-md-1">&nbsp;</div>
+                    <div class="col-md-11 formtext" >Please fill in your details for further information and partnership opportunities  </div>
+                    <div class="col-md-1">&nbsp;</div>
+                    <div class="col-md-2 ">
+                        <div class="form-group">
+
+                            <input type="text" class="form-control" id="name" placeholder="Name" name="Name">
+                        </div>
+                    </div>
+                    <div class="col-md-2 ">
+                        <div class="form-group">
+                            <input type="email" class="form-control" id="email" placeholder="Official Email Address" name="Email">
+                        </div>
+
+                    </div>
+                    <div class="col-md-2 ">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="organization" placeholder="Organization" name="Organization">
+                        </div>
+                    </div>
+                    <div class="col-md-2 ">
+                        <div class="form-group">
+
+                            <input type="number" id="contactNumber" maxlength="10" class="form-control" placeholder="Contact Number" name="PhoneNumber">
+                        </div>
+                    </div>
+                    <div class="col-md-2 ">
+                        <button type="submit" class="btnsubmit">SUBMIT</button>
+                    </div>
+                    <div class="col-md-1">&nbsp;</div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        @*<div class="col-md-2 yellowtxt">
+            About Us
+        </div>*@
+        <div class="col-md-12 text-center footerlink">
+            <span class="yellowtxt">Don’t like filling forms?</span> Contact Akshat Saxena - Mob: +91 9971199840 - Email: <a href="mailto:hotelpartners@onefinerate.com">hotelpartners@onefinerate.com </a>
+        </div>
+    </div>
+</div>
+    <script>
+        $("#SubmitQuery").submit(function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: "POST",
+                url: "/Home/SubmitQuery",
+                data: $("#SubmitQuery").serialize(),
+                success: function (result) {
+                    if (result == true)
+                    {
+                        toastr.success("Your Query has been successfully submitted");
+                    }
+                    else {
+                        toastr.error("Error");
+                    }
+                }
+            });
+        });
+   </script>
+</body>
+</html>

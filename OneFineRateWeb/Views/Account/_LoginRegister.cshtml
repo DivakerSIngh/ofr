@@ -1,0 +1,23 @@
+﻿
+
+<ul class="nav nav-tabs" role="tablist">
+    <li id="signInTab" role="presentation" class="active" style="width:50%; text-align:center;"><a href="#signin" aria-controls="Sign In" role="tab"  data-toggle="tab">Already a member?</a></li>
+    <li id="signUpTab" role="presentation" style="width:50%;text-align:center;"><a href="#signup" aria-controls="Sign Up" role="tab"  data-toggle="tab">Become a member</a></li>
+    <li id="manageBookingTab" role="presentation" style="width:50%;display:none;text-align:center;"><a href="#manageMyBooking" aria-controls="Manage Booking" role="tab" class="mangeboking" data-toggle="tab">Manage Booking</a></li>
+    <li id="forgotPasswordTab" role="presentation" style="width:100%;display:none;text-align:center;"><a href="#forgot" aria-controls="Forgot Password" role="tab" class="mangeboking" data-toggle="tab">Forgot Password</a></li>
+</ul>
+<div class="model-body ">
+
+    <div class="tab-content">
+
+        @{Html.RenderAction("Login", "Account");}
+
+        @{Html.RenderAction("Register", "Account");}
+
+        @{Html.RenderAction("ManageBookingPopup", "Account");}
+
+        @{Html.RenderAction("ForgotPassword", "Account");}
+
+    </div>
+
+</div>

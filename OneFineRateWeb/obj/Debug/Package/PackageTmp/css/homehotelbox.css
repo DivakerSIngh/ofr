@@ -1,0 +1,196 @@
+@font-face {
+    font-family: MyFont;
+   	src: url('../fonts/MYRIADPROREGULAR.eot');
+	src: local('MYRIADPROREGULAR'), url('../fonts/MYRIADPROREGULAR.woff') format('woff'), url('../fonts/MYRIADPROREGULAR.ttf') format('truetype');
+    }	
+.blueboldtextsmall{color:#2a75ac; font-size: 20px; margin-top:10px;}
+.homepnlbg{background-color:#f1f1f1;}
+.property-box {
+    position: relative;
+    display: block;
+    border-radius: 2px;
+    border: solid #d1cbcb 1px;
+    margin: 10px 0;
+/*	width:264px;*/
+min-height:387px;
+background-color:#fff !important;
+}
+
+#propertyListings .property-box .img-con, #feturedPropertyBlock .property-box .img-con {
+    text-align: center;
+}
+.property-box.propertySearch-box .img-con {
+    height: auto;
+}
+.property-box .img-con {
+    clear: both;
+    margin: 0px;
+    padding: 0px;
+ /*   height: 220px;*/
+    overflow: hidden;
+	
+	  
+}
+#propertyListings .property-box .img-con img, #feturedPropertyBlock .property-box .img-con img {
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
+   /* max-width: 100%;
+    width: auto;
+    height: 236px;*/
+}
+.property-box .img-con img {
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+    float: left;
+}
+.img-con {
+    position: relative;
+	overflow:hidden;
+}
+.property-box.propertySearch-box .name-con {
+    padding: 15px;
+}
+.property-box .name-con {
+    position: relative;
+    clear: both;
+    margin: 0;
+    padding: 15px 50px 15px 15px;
+    overflow: hidden;
+    height: 140px;
+}
+.name-con {
+    display: inline-block;
+    vertical-align: middle;
+    color: #e57b52;
+    width: 100%;
+    font-size: 18px;
+}
+.property-box .price-con {
+    clear: both;
+    margin: 0px;
+    font-size: 18px;
+    padding: 0 15px 20px 15px;
+    color: #5cb8eb;
+    text-transform: capitalize;
+    text-align: left;
+}
+.property-box .place-bid-con {
+    clear: both;
+    overflow: hidden;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    text-align: center;
+}
+.badgeProperty {
+    position: absolute;
+    top: 0px;
+    left: 0;
+    width: 100%;
+    background: #dd4a4a;
+    color: #ffffff;
+    font-size: 16px;
+    text-align: center;
+    text-transform: uppercase;
+    padding: 6px 5px;
+}
+
+
+
+.hoteltitles {   
+ 
+     width: 100%;
+    padding: 10px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    font-size: 20px;
+    font-weight: normal;
+    font-style:normal;
+    line-height: 1;
+    max-height: 86px;
+    position: absolute;
+    overflow: hidden;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    color: white;
+    background: rgba(0,0,0,0.5);
+}
+	.lineheight24{line-height:17px;}
+	.margintop-8{margin-top:-8px;}
+	p.first2{color:#707070; margin-top:20px !important;  text-align:justify;  }
+	p.next2{color:#707070; margin-top:6px !important; text-align:justify;  padding:0px;}
+
+
+/*horizontal*/
+.property-box1 {
+    position: relative;
+    display: block;
+    border-radius: 2px;
+    border: solid #d1cbcb 1px;
+    margin: 8px 0;
+/*	width:264px;*/
+min-height:178px;
+background-color:#fff !important;
+}
+
+#propertyListings1 .property-box1 .img-con1, #feturedPropertyBlock1 .property-box1 .img-con1 {
+    text-align: center;
+}
+.property-box1.propertySearch-box1 .img-con1 {
+    height: auto;
+	
+}
+.property-box1 .img-con1 {
+    clear: both;
+    margin: 0px;
+	
+    padding: 0px;
+ /*   height: 220px;*/
+    overflow: hidden;  
+    /*margin-left:-15px;*/ /*image can view full in web but in mobile right side space visible*/
+}
+
+#propertyListings1 .property-box1 .img-con1 img, #feturedPropertyBlock1 .property-box1 .img-con1 img {
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
+    max-width: 100%;
+    width: auto;
+    height: 236px;
+}
+.property-box1 .img-con1 img {
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+    float: left;
+}
+.property-box1.propertySearch-box1 .name-con {
+    padding: 15px;
+}
+.property-box1 .name-con {
+    position: relative;
+    clear: both;
+    margin: 0;
+    padding: 15px 50px 15px 15px;
+    overflow: hidden;
+    height: 140px;
+}
+.property-box1 .price-con {
+    clear: both;
+    margin: 0px;
+    font-size: 18px;
+    padding: 0 15px 20px 15px;
+    color: #5cb8eb;
+    text-transform: capitalize;
+    text-align: left;
+}
+.property-box1 .place-bid-con {
+    clear: both;
+    overflow: hidden;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    text-align: center;
+}

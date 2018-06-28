@@ -1,0 +1,27 @@
+﻿ .ofrday {
+            background-color: lightgray;
+            opacity: 0.5;
+        }
+
+        .selected {
+            background-color: lightgreen;
+        }
+
+        .month {background-color: aliceblue; width:175px;
+        }
+
+        .weeks {
+        }
+
+        .days {background-color: dimgrey; color:#fff;   text-align:center;
+        }
+
+        .day {
+    
+        }
+        .less-than-five {
+              background-color: yellow;
+        }
+.zero {
+            background-color:red;
+}

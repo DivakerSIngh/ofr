@@ -1,0 +1,984 @@
+﻿@model OneFineRateBLL.Entities.BookingGuestDetails
+@using OneFineRateAppUtil
+
+@{
+    ViewBag.Title = "GuestInformation";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+
+<style>
+    .ptype {
+        width: 100% !important;
+    }
+
+    #frmBooking .select2 {
+        width: 50% !important;
+        float: left !important;
+    }
+
+    .select2-container--default .select2-selection--single {
+        height: 34px;
+    }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 33px;
+        }
+
+    @@media only screen and (max-device-width: 375px) {
+        .select2 {
+            width: 100% !important;
+            float: left !important;
+        }
+
+        .gphone {
+            width: 100% !important;
+        }
+
+        .gphoneo {
+            width: 100% !important;
+        }
+    }
+
+    @@media only screen and (max-device-width: 480px) {
+        .select2 {
+            width: 100% !important;
+            float: left !important;
+        }
+
+        .gphone {
+            width: 100% !important;
+        }
+
+        .gphoneo {
+            width: 100% !important;
+        }
+    }
+
+    @@media only screen and (max-device-width: 568px) {
+        .select2 {
+            width: 100% !important;
+            float: left !important;
+        }
+
+        .gphone {
+            width: 100% !important;
+        }
+
+        .gphoneo {
+            width: 100% !important;
+        }
+    }
+</style>
+
+
+@using (Html.BeginForm("GuestInformation", "BookingTG", FormMethod.Post, new { id = Request.Browser.IsMobileDevice ? "frmBooking_Mobile" : "frmBooking", role = "form" }))
+{
+    string grandTotal = string.Empty;
+
+    @Html.HiddenFor(m => Model.sPropertyName)
+    @Html.HiddenFor(m => Model.sPropertyAddress)
+    @Html.HiddenFor(m => Model.iStarCategory)
+
+    @Html.HiddenFor(m => Model.objBooking.iBookingId)
+    @Html.HiddenFor(m => Model.objBooking.iPropId)
+    @Html.HiddenFor(m => Model.objBooking.iCustomerId)
+    @Html.HiddenFor(m => Model.objBooking.iGuestId)
+    @Html.HiddenFor(m => Model.objBooking.iCountryOffset)
+    @Html.HiddenFor(m => Model.objBooking.sCountryTimeZone)
+    @Html.HiddenFor(m => Model.objBooking.dtCheckIn)
+    @Html.HiddenFor(m => Model.objBooking.dtChekOut)
+    @Html.HiddenFor(m => Model.objBooking.dtReservationDate)
+    @Html.HiddenFor(m => Model.objBooking.cBookingType)
+    @Html.HiddenFor(m => Model.objBooking.iNegotiateAttempts)
+    @Html.HiddenFor(m => Model.objBooking.sPromoCode)
+    @Html.HiddenFor(m => Model.objBooking.bPromoDiscount)
+    @Html.HiddenFor(m => Model.objBooking.bPromoAmenity)
+    @Html.HiddenFor(m => Model.objBooking.sTitleOFR)
+    @Html.HiddenFor(m => Model.objBooking.sFirstNameOFR)
+    @Html.HiddenFor(m => Model.objBooking.sLastNameOFR)
+    @Html.HiddenFor(m => Model.objBooking.sEmailOFR)
+    @Html.HiddenFor(m => Model.objBooking.sMobileOFR)
+    @Html.HiddenFor(m => Model.objBooking.dtActionDate)
+    @Html.HiddenFor(m => Model.objBooking.iActionBy)
+    @Html.HiddenFor(m => Model.objBooking.BookingStatus)
+    @Html.HiddenFor(m => Model.objBooking.PaymentStatus)
+    @Html.HiddenFor(m => Model.objBooking.ActualBookingType)
+    @Html.HiddenFor(m => Model.objBooking.dTotalNegotiateAmount)
+    @Html.HiddenFor(m => Model.objBooking.dAdvNegotiateAmount)
+    @Html.HiddenFor(m => Model.objBooking.dBidAmount)
+    @Html.HiddenFor(m => Model.objBooking.dTotalAmount)
+    @Html.HiddenFor(m => Model.objBooking.dTotalComm)
+    @Html.HiddenFor(m => Model.objBooking.dTaxes)
+    @Html.HiddenFor(m => Model.objBooking.dTaxesForHotel)
+    @Html.HiddenFor(m => Model.objBooking.dTotalExtraBedAmount)
+    @Html.HiddenFor(m => Model.objBooking.dDiscountedBidPrice)
+    @Html.HiddenFor(m => Model.objBooking.dCustomerPayable)
+    @Html.HiddenFor(m => Model.objBooking.bIsFeedBackEmailSent)
+    @Html.HiddenFor(m => Model.objBooking.bIsCustSmsSent)
+    @Html.HiddenFor(m => Model.objBooking.bIsHotelSmsSent)
+    @Html.HiddenFor(m => Model.objBooking.iCounterOffer)
+    @Html.HiddenFor(m => Model.objBooking.iLinkedBookingId)
+    @Html.HiddenFor(m => Model.objBooking.bInvBlocked)
+    @Html.HiddenFor(m => Model.objBooking.sExtra1)
+    @Html.HiddenFor(m => Model.objBooking.dccPrice)
+    @Html.HiddenFor(m => Model.objBooking.dccDiscount)
+    @Html.HiddenFor(m => Model.objBooking.dSafeguardComm)
+    @Html.HiddenFor(m => Model.objBooking.ccType)
+    @Html.HiddenFor(m => Model.objBooking.dTotalCommOriginal)
+    @Html.HiddenFor(m => Model.objBooking.dTaxesOriginal)
+    @Html.HiddenFor(m => Model.objBooking.sProvisionalBookingIdTG)
+    @Html.HiddenFor(m => Model.objBooking.sProvisionalTrxnTypeTG)
+    @Html.HiddenFor(m => Model.objBooking.sFinalTrxnTypeTG)
+    @Html.HiddenFor(m => Model.objBooking.sFinalBookingIdTG)
+    @Html.HiddenFor(m => Model.objBooking.bSyncToChannelMgr)
+    @Html.HiddenFor(m => Model.objBooking.dtSyncToChannelMgr)
+    @Html.HiddenFor(m => Model.objBooking.cSyncStatus)
+    @Html.HiddenFor(m => Model.objBooking.iBidStarCategory)
+    @Html.HiddenFor(m => Model.objBooking.sBidType)
+    @Html.HiddenFor(m => Model.objBooking.sIDs)
+    @Html.HiddenFor(m => Model.objBooking.dRefundAmount)
+    @Html.HiddenFor(m => Model.objBooking.cRefundStatus)
+    @Html.HiddenFor(m => Model.objBooking.cAmendStatus)
+    @Html.HiddenFor(m => Model.objBooking.sPaymentMode)
+    @Html.HiddenFor(m => Model.objBooking.sOAuth)
+    @Html.HiddenFor(m => Model.objBooking.sExtra2)
+    @Html.HiddenFor(m => Model.objBooking.sExtra3)
+    @Html.HiddenFor(m => Model.objBooking.sExtra4)
+    @Html.HiddenFor(m => Model.objBooking.sCurrencyCode)
+
+    @Html.HiddenFor(m => Model.objBooking.dServiceCharge)
+    @Html.HiddenFor(m => Model.objBooking.dGSTOnServiceCharge)
+    @Html.HiddenFor(m => Model.objBooking.dGSTServiceType)
+    @Html.HiddenFor(m => Model.objBooking.dGSTValue)
+
+    @Html.HiddenFor(m => Model.GuestData, new { id = "hdnJson" })
+
+    for (int hdni = 0; hdni < Model.lsttblBookDetails.Count; hdni++)
+    {
+        @Html.HiddenFor(m => Model.lsttblBookDetails[hdni].iBookingDetailsID)
+        @Html.HiddenFor(m => Model.lsttblBookDetails[hdni].iBookingId)
+        @Html.HiddenFor(m => Model.lsttblBookDetails[hdni].iRoomId)
+        @Html.HiddenFor(m => Model.lsttblBookDetails[hdni].iRPId)
+        @Html.HiddenFor(m => Model.lsttblBookDetails[hdni].iRooms)
+    }
+
+    <div class="container">
+        <div class="col-md-12 alert alert-success margintop10">
+            <h3 class="mar-padd0">
+                You are just one step away to get your confirmation. Please fill in the <strong>required information</strong> .
+            </h3>
+        </div>
+    </div>
+
+    <div class="container margintop10" style="border:0px solid red;">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-4 col-xs-12">
+                        <img src='@Model.sRoomImageUrl' onerror="this.src='/images/noImage.jpg'" id="imagePreview" class="imgheight214">
+                    </div>
+                    <div class="col-md-6 col-xs-12">
+                        <h3 class="mar-padd0"><strong>@Model.sPropertyName</strong></h3>
+                        <div class="margintop-5"><img src="~/images/inner-star@(Model.iStarCategory).png" class="srchinner_star"></div>
+                        <address>
+                            @Model.sPropertyAddress
+                            <div class="row margintop10">
+                                <div class="col-md-12 col-xs-12 facilityicon">
+                                    <ul>
+                                        @for (int i = 0; i < Model.lstetblHotelFacilities.Count; i++)
+                                        {
+                                            <li><img src='@Model.lstetblHotelFacilities[i].sImgUrl' id="iconPreview" title="@Model.lstetblHotelFacilities[i].sHotelFacilites" style="height: 20px; width: 20px"></li>
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                            <hr>
+                        </address>
+                        <div class="row margintop-10">
+                            <div class="col-md-12">
+                                <div class="row margintop-10">
+                                    <div class="col-md-5 col-xs-5">Check In</div>
+                                    <div class="col-md-1 col-xs-1">:</div>
+                                    <div class="col-md-6 col-xs-6 "><strong>@Model.scheckIn</strong></div>
+
+                                    <div class="col-md-5 col-xs-5">Check Out</div>
+                                    <div class="col-md-1 col-xs-1">:</div>
+                                    <div class="col-md-6 col-xs-6"><strong>@Model.scheckOut</strong></div>
+
+                                    <div class="col-md-5 col-xs-5">Room(s)</div>
+                                    <div class="col-md-1 col-xs-1">:</div>
+                                    <div class="col-md-6 col-xs-6"><strong>@Model.iNoOfRooms</strong></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-xs-12">
+                <div class="row ">
+                    <div class="col-md-12">
+                        <h4 class="center">Total Summary </h4>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-5 col-xs-5 pull-left">Rooms Rate</div>
+                            <div class="col-md-1 col-xs-1">:</div>
+
+                            <div class="col-md-6  col-xs-5"><strong>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.objBooking.dTotalAmount) * ViewBag.dExchangeRate)</strong></div>
+                            @{grandTotal = clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.objBooking.dTotalAmount + Model.objBooking.dTotalExtraBedAmount + Model.objBooking.dTaxes + Model.objBooking.dServiceCharge + Model.objBooking.dGSTOnServiceCharge) * ViewBag.dExchangeRate);}
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-5  col-xs-5">Extra Bed Charges </div>
+                            <div class="col-md-1 col-xs-1">:</div>
+                            <div class="col-md-6  col-xs-5"><strong>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.objBooking.dTotalExtraBedAmount * ViewBag.dExchangeRate)) </strong></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-5  col-xs-5">Taxes and Service Fees </div>
+                            <div class="col-md-1 col-xs-1">:</div>
+                            <div class="col-md-6  col-xs-5"><strong>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal((Model.objBooking.dTaxes + Model.objBooking.dServiceCharge + Model.objBooking.dGSTOnServiceCharge) * ViewBag.dExchangeRate))</strong></div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-5  col-xs-5">Total</div>
+                            <div class="col-md-1  col-xs-1">:</div>
+                            <div class="col-md-6  col-xs-5"><strong>@Model.Symbol @grandTotal</strong></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container  margintop30">
+        <div class=" greybg-lighter">
+            <h4 id="checkur">
+                Are you the guest?
+                <span class="paddingleft10">
+                    @Html.RadioButtonFor(model => model.objBooking.bSelfTravelling, true, new { @class = "radio-inline", @checked = "checked" })
+                    <label for="Yes">Yes</label>
+                    @Html.RadioButtonFor(model => model.objBooking.bSelfTravelling, false, new { @class = "radio-inline" })
+                    <label for="No">No</label>
+                </span>
+            </h4>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="margintop30">
+            <div class="tablebluebg">Guest Information</div>
+
+            <div id="errorContainer"></div>
+
+            @{ int countIndex = 0;}
+
+            @if (Request.Browser.IsMobileDevice)
+            {
+                <style>
+                    .select2-dropdown {
+                        min-width: 200px !important;
+                    }
+                </style>
+
+                <div class="table-responsive table-bordered padding15 lightgrybg " id="tblmainrooms_mobile">
+
+                    @for (int k = 0; k < Model.lsttblBookDetails.Count; k++)
+                    {
+                        var occupancy = Model.lsttblBookDetails[k].iOccupancy;
+
+                        <div id="container@(countIndex + 1)">
+
+                            <div class="newtr room-mobile" id="container_room@(countIndex + 1)">
+
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        Room
+                                    </div>
+                                    <div class="col-xs-8 form-group">
+                                        <label>Room @(countIndex + 1) - @Model.lsttblBookDetails[k].sRoomName</label>
+                                        @Html.HiddenFor(m => Model.lsttblBookDetails[k].iBookingDetailsID, new { @class = "hdnBookingDetailId" })
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        Guest Name
+                                    </div>
+                                    <div class="col-xs-8 form-group">
+                                        <input type="text" id="gname_@(countIndex + 1)" name="gname_@(countIndex + 1)" class="form-control gname" value="@Model.objBooking.sFirstNameOFR @Model.objBooking.sLastNameOFR" maxlength="50" placeholder="Name" />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        Mail Id
+                                    </div>
+                                    <div class="col-xs-8 form-group">
+                                        <input id="gemail_@(countIndex + 1)" name="gemail_@(countIndex + 1)" type="email" class="form-control gemail" value="@Model.objBooking.sEmailOFR" maxlength="100" placeholder="Email" />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        Mobile
+                                    </div>
+                                    <div class="col-xs-8 form-group">
+                                        @Html.DropDownListFor(model => model.lsttblBookDetails[k].sCountryPhoneCode, new SelectList(Model.CountryCodePhoneList, "sCode", "sFrontendCode", !string.IsNullOrEmpty(Model.lsttblBookDetails[k].sCountryPhoneCode) ? Model.lsttblBookDetails[k].sCountryPhoneCode : "+91"), new { style = "width:100%; float:left", id = "countryCodeType" + (countIndex + 1), maxlength = "20", @class = "form-control ddlCountryCodeGuest" })
+                                        <input type="text" id="gphone_@(countIndex + 1)" name="gphone_@(countIndex + 1)" style="float:left" pattern=" ^[\-\+]?\d+$" class="form-control gphone" value="@Model.objBooking.sMobileOFR" maxlength="10" placeholder="Phone No." />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-4"> </div>
+                                    <div class="col-xs-4">
+                                        <a style="cursor:pointer" id="ancroom@(countIndex + 1)"
+                                           rid="@(Model.lsttblBookDetails[k].iBookingDetailsID)"
+                                           roomcount="@(countIndex + 1)"
+                                           occupancy="@occupancy"
+                                           container="container@(countIndex + 1)"
+                                           rname="@Model.lsttblBookDetails[k].sRoomName"
+                                           onclick="return AddGuest_Mobile(this);" class="showpointer">
+                                            Add guest
+                                        </a>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <a data-formid="container_room@(countIndex + 1)" onclick="return ResetForm(this)" class="showpointer clean text-danger">Clear</a>
+                                        <a data-formid="container_room@(countIndex + 1)" onclick="return RestoreForm(this)" style="display:none" class="showpointer text-primary">Undo</a>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-12"> <hr /> </div>
+                                </div>
+                            </div>
+                        </div>
+                        countIndex++;
+                    }
+
+                </div>
+            }
+            else
+            {
+                <div class=" table-responsive  table-bordered  padding15 lightgrybg">
+                    <table class="table  table-bordered table-hover" id="tblmainrooms">
+                        <thead>
+                            <tr>
+                                <th style="width:15%;">Room</th>
+                                <th style="width:20%;"> Guest Name<span class="red">*</span></th>
+                                <th style="width:20%;">Mail Id<span class="red">*</span>	</th>
+                                <th style="width:29%;">Mobile<span class="red">*</span></th>
+                                <th style="width:16%;">Add Accompanying Guest</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @for (int k = 0; k < Model.lsttblBookDetails.Count; k++)
+                            {
+                                var occupancy = Model.lsttblBookDetails[k].iOccupancy;
+
+                                <tr class="newtr room@(countIndex + 1)">
+
+                                    <td>
+                                        <label>Room @(countIndex + 1) <br /> @Model.lsttblBookDetails[k].sRoomName</label>
+                                        @Html.HiddenFor(m => Model.lsttblBookDetails[k].iBookingDetailsID, new { @class = "hdnBookingDetailId" })
+                                    </td>
+                                    <td><input type="text" class="form-control gname mwidth130" value="@Model.objBooking.sFirstNameOFR @Model.objBooking.sLastNameOFR" maxlength="50" placeholder="Name"></td>
+                                    <td><input type="email" class="form-control gemail mwidth130" value="@Model.objBooking.sEmailOFR" maxlength="100" placeholder="Email"></td>
+                                    <td>
+                                        @Html.DropDownListFor(model => model.sCountryPhoneCode, new SelectList(Model.CountryCodePhoneList, "sCode", "sFrontendCode", Model.lsttblBookDetails[k].sCountryPhoneCode), new { data_live_search = "true", style = "float:left", id = "countryCodeType" + (countIndex + 1), maxlength = "20", @class = "form-control ddlCountryCodeGuest" })
+
+                                        <input type="text" style="width:50%; float:left" pattern=" ^[\-\+]?\d+$" class="form-control gphone mwidth130" value="@Model.objBooking.sMobileOFR" maxlength="10" placeholder="Phone No.">
+
+                                    </td>
+
+                                    <td id="tddefault@(countIndex + 1)">
+                                        <div class="margintop10"><a id="ancroom@(countIndex + 1)" rid="@(Model.lsttblBookDetails[k].iBookingDetailsID)" roomcount="@(countIndex + 1)" occupancy="@occupancy" rname="@Model.lsttblBookDetails[k].sRoomName" onclick="return AddGuest(this);" class="showpointer">Add Accompanying Guest</a></div>
+                                        <div class="margintop10"><a class="clean showpointer">Cancel</a></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="6" id="divRoom@(countIndex + 1)"></td>
+                                </tr>
+                                countIndex++;
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            }
+            <div class="redtext">*Confirmation letter will be sent to the contact details provided above.</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="col-md-12 center margintop20">
+            <button type="submit" class="btn btn-primary  btn-lg">Show My Confirmation</button>
+        </div>
+    </div>
+    <br />
+                }
+
+<script>
+
+    if (!document.referrer) {
+        if (typeof history.pushState === 'function') {
+            history.pushState('b', null, null);
+            window.onpopstate = function () {
+                history.pushState('b', null, null);
+                return false;
+            }
+        }
+    }
+    else {
+        if (typeof history.pushState === 'function') {
+            history.pushState('b', null, null);
+            var previousUrl = document.referrer.toString().toLowerCase();
+            window.onpopstate = function () {
+                history.pushState('b', null, null);
+                return false;
+            }
+        }
+        else {
+            var ignoreHashChange = true;
+            window.onhashchange = function () {
+                if (!ignoreHashChange) {
+                    ignoreHashChange = true;
+                    window.location.hash = Math.random();
+                    return false;
+                }
+                else {
+                    ignoreHashChange = false;
+                    return false;
+                }
+            };
+        }
+    }
+
+    function isEmail(email) {
+        var regex = /^([a-zA-Z0-9_.+-])+\@@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+        return regex.test(email);
+    }
+
+    function validatePhone(txtPhone) {
+        var filter = /^[0-9-+]+$/;
+        if (filter.test(txtPhone)) {
+            if (txtPhone.length != 10) {
+                return false;
+            }
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+
+</script>
+
+@section scripts{
+
+    <script src="~/js/jquery.validate.js"></script>
+    <script src="~/Scripts/additional-methods.js"></script>
+
+    <script type="text/javascript">
+
+    $(function () {
+
+        $('#frmBooking').validate({});
+        $('#frmBooking_Mobile').validate({});
+
+
+        $("input[name^='gemail_']").each(function () {
+
+            $(this).validate({
+                rules: {
+                    required: true,
+                    email: true
+                },
+                messages: {
+                    required: "Please enter Mail Id.",
+                    email: "Please enter valid Mail Id."
+                },
+                errorContainer: $('#errorContainer'),
+            });
+        });
+
+
+        $("input[name^='gname_']").each(function () {
+
+            $(this).validate({
+                rules: {
+                    required: true
+                },
+                messages: {
+                    required: "Please enter guest name."
+                },
+                errorContainer: $('#errorContainer'),
+            });
+        });
+
+
+        $("input[name^='gphone_']").each(function () {
+
+            $(this).validate({
+                rules: {
+                    required: true,
+                    phoneIndia: true
+                },
+                messages: {
+                    required: "Please enter Mobile Number.",
+                    phoneIndia: "Please enter valid Mobile Number."
+                },
+                errorContainer: $('#errorContainer'),
+            });
+        });
+
+
+    var d = new Date();
+    var dCheckIn = '';
+    var dCheckOut = '';
+    var newroomcount = '';
+    var Data = [];
+
+    $('#frmBooking').submit(function (e) {
+
+        if ($(this).valid()) {
+
+        $("#tblmainrooms tr.newtr").each(function () {
+
+                var BookingDetailId = $(this).find("input:hidden.hdnBookingDetailId").val();
+                var gname = $(this).find("input:text.gname").val();
+                var gemail = $(this).find("input.gemail").val();
+                var gphone = $(this).find("input:text.gphone").val();
+                var ptype = $(this).find('select.ptypedefault option:selected').val();
+
+                if (gname.trim() != ''
+                    && gemail.trim() != ''
+                    && gphone.trim() != ''
+                    && isEmail(gemail.trim())
+                    && validatePhone(gphone.trim())) {
+
+                    Data.push({
+                        BookingDetailId: BookingDetailId,
+                    gname: gname,
+                    gemail: gemail,
+                    gphone: gphone,
+                    ptype: ptype
+                    });
+                }
+                else {
+
+                    Data = [];
+
+                    e.preventDefault();
+
+                    toastr.clear();
+
+                    var $this = $(this);
+
+                    if (gname.trim() == '') {
+                        toastr.error('Please enter the guest name.');
+                    $this.find("input:text.gname").focus();
+                    }
+
+                    else if (gemail.trim() == '') {
+
+                        toastr.error('Please enter the email address.');
+                    $this.find(".gemail").focus();
+                    }
+
+                    else if (!isEmail(gemail.trim())) {
+                        toastr.error('Please enter a valid email address.');
+                    $this.find(".gemail").focus();
+                    }
+
+
+                    else if (gphone.trim() == '') {
+                        toastr.error('Please enter the mobile number.');
+                    $this.find("input:text.gphone").focus();
+                    }
+
+                    else if (!validatePhone(gphone.trim())) {
+                        toastr.error('Please enter a valid phone number.');
+                    $this.find("input:text.gphone").focus();
+                    }
+
+                    return false;
+                }
+            });
+
+        $("#hdnJson").val(JSON.stringify(Data));
+
+        return true;
+        }
+
+        e.preventDefault();
+
+    });
+
+
+    $('#frmBooking_Mobile').submit(function (e) {
+
+        if ($(this).valid()) {
+
+            $("#tblmainrooms_mobile .newtr").each(function () {
+
+                var BookingDetailId = $(this).find("input:hidden.hdnBookingDetailId").val();
+                var gname = $(this).find("input:text.gname").val();
+                var gemail = $(this).find("input.gemail").val();
+                var gphone = $(this).find("input:text.gphone").val();
+                var ptype = $(this).find('select.ptypedefault option:selected').val();
+
+                if (gname.trim() != ''
+                    && gemail.trim() != ''
+                    && gphone.trim() != ''
+                    && isEmail(gemail.trim())
+                    && validatePhone(gphone.trim())) {
+
+                    Data.push({
+                        BookingDetailId: BookingDetailId,
+                        gname: gname,
+                        gemail: gemail,
+                        gphone: gphone,
+                        ptype: ptype
+                    });
+                }
+                else {
+
+                    Data = [];
+
+                    e.preventDefault();
+
+                    toastr.clear();
+
+                    var $this = $(this);
+
+                    if (gname.trim() == '') {
+                        toastr.error('Please enter the guest name.');
+                        $this.find("input:text.gname").focus();
+                    }
+
+                    else if (gemail.trim() == '') {
+
+                        toastr.error('Please enter the email address.');
+                        $this.find(".gemail").focus();
+                    }
+
+                    else if (!isEmail(gemail.trim())) {
+                        toastr.error('Please enter a valid email address.');
+                        $this.find(".gemail").focus();
+                    }
+
+
+                    else if (gphone.trim() == '') {
+                        toastr.error('Please enter the mobile number.');
+                        $this.find("input:text.gphone").focus();
+                    }
+
+                    else if (!validatePhone(gphone.trim())) {
+                        toastr.error('Please enter a valid phone number.');
+                        $this.find("input:text.gphone").focus();
+                    }
+
+                    return false;
+                }
+            });
+
+            $("#hdnJson").val(JSON.stringify(Data));
+
+            return true;
+        }
+
+        e.preventDefault();
+
+    });
+
+    $('.clean').click(function (e) {
+
+        e.preventDefault();
+
+        $($(this).parent().parent().parent()[0].cells).each(function () {
+            $(this).find("input").val('');
+            $(this).find("input").val('');
+            $(this).find("input").val('');
+            $(this).find('select').val('+91').change();
+            $('.ddlCountryCodeGuest').select2();
+        });
+    });
+
+
+
+    var pickup = '@Model.objBooking.spref_pickup';
+
+    if (pickup == "Yes") {
+        $('#tblpickup').show();
+    }
+
+    $('#divpickup input[type="radio"]').click(function () {
+        if (this.value == "No" || this.value == "NA")
+            $('#tblpickup').hide();
+        else
+            $('#tblpickup').show();
+    });
+
+    $('#checkur input[type="radio"]').click(function () {
+        if (this.value == 'False') {
+            $("#tblmainrooms tr.newtr").each(function () {
+                $(this).find("input.gname").val('');
+                $(this).find("input.gemail").val('');
+                $(this).find("input.gphone").val('');
+                $(this).find('select.ptype').prop('selectedIndex', 0);
+            });
+        }
+    });
+
+    $(document).on('keypress', '.gphone', function (e) {
+
+        var cursorPosition = $(this).getCursorPosition();
+
+        if ((this.value.length == 0 || cursorPosition == 0) && e.which == 48) {
+
+            return false;
+        }
+    });
+
+    $('.ddlCountryCodeGuest').select2();
+
+    });
+    function AddGuest(obj) {
+
+        var roomcount = $(obj).attr('roomcount');
+        var rid = $(obj).attr('rid');
+        var occupancy = $(obj).attr('occupancy');
+        var rname = $(obj).attr('rname');
+        var ptypevalue = $('#ptype' + roomcount + '').val();
+
+        var selectCountryCodeType = $('#countryCodeType' + roomcount + ' :selected').val();
+        var selectCountryCodeText = $('#countryCodeType' + roomcount + ' :selected').text();
+
+        newroomcount = roomcount + 1;
+
+        var totalguest = $('#tblmainrooms tr.room' + roomcount + '').length;
+        var guestcount = totalguest + 1;
+        if (totalguest >= occupancy) {
+            toastr.warning('More name cannot be added.')
+            return false;
+        }
+        var myval = '';
+        var tableRoomId = "tblRoom" + guestcount;
+        var txtGNameId = "gnameo_" + roomcount + '' + guestcount;
+        var txtGEmailId = "gemailo_" + roomcount + '' + guestcount;
+        var txtGPhoneNo = "gphoneo_" + roomcount + '' + guestcount;
+        myval += '<table  class="table  table-bordered table-hover" id="tblRoom' + roomcount + '"><tbody>';
+        myval += '<tr class="newtr room' + roomcount + '">';
+        myval += '<td style="width:10%;"><label>Room ' + roomcount + '<br/>' + rname + '</label><input type="hidden" value="' + rid + '" class="hdnBookingDetailId" /></td>';
+        myval += '<td  style="width:13%;"><div class="form-group"><input id="' + txtGNameId + '" name="' + txtGNameId + '" type="text" class="form-control gname mwidth130" maxlength="50" placeholder="Name" ></div></td>';
+        myval += '<td  style="width:14%;"><div class="form-group"><input id="' + txtGEmailId + '"  name="' + txtGEmailId + '" type="email" class="form-control gemail mwidth130" maxlength="100" placeholder="Email" ></div></td>';
+        myval += '<td  style="width:20%;"><div class="form-group">' +
+            '<select disabled style="width:50%; float:left" class="form-control"><option value="' + selectCountryCodeType + '" selected>' + selectCountryCodeText + '</option></select>' +
+            '<input id="' + txtGPhoneNo + '" name="' + txtGPhoneNo + '" type="text" style="width:50%; float:left" pattern="^[\-\+]?\d+$" class="form-control gphone mwidth130" maxlength="10" placeholder="Phone No." ></div></td>';
+        myval += '<td  style="width:10%;">';
+        myval += '<div class="margintop10"><a class="delete1 showpointer" href="#">Delete</a></div>';
+        myval += '</td>';
+        myval += '</tr>';
+        myval += '</tbody></table>';
+
+        $('#divRoom' + roomcount + '').append("" + myval + "");
+        var $row = $("#tblmainrooms tr.newtr.room" + roomcount + ":first");
+
+        $($row).find('select.ddlCountryCodeNego  option').clone().appendTo($("#" + tableRoomId + " tr.room" + roomcount).find('.ptypedefault'));
+        $("#" + tableRoomId + " tr.room" + roomcount).find('.ptypedefault').select2();
+        $("#" + tableRoomId + " tr.room" + roomcount).find('.ptypedefault').val(selectCountryCodeType).change();
+        $('.delete1').click(function (e) {
+            e.preventDefault();
+            $(this).closest('table').remove();
+        });
+
+    }
+
+
+    // #region Mobile
+
+    function DeleteGuest_Mobile(button) {
+
+        var divId = $(button).data('divid');
+
+        $('#' + divId).remove();
+    }
+
+    function AddGuest_Mobile(objRoom) {
+
+        var roomcount = $(objRoom).attr('roomcount');
+        var rid = $(objRoom).attr('rid');
+        var occupancy = $(objRoom).attr('occupancy');
+        var rname = $(objRoom).attr('rname');
+        var newGuestTemplateContainer = $(objRoom).attr('container');
+
+        var selectCountryCodeType = $('#countryCodeType' + roomcount + ' :selected').val();
+        var selectCountryCodeText = $('#countryCodeType' + roomcount + ' :selected').text();
+
+        var totalguest = $(`#${newGuestTemplateContainer} .room-mobile`).length;
+        if (totalguest >= occupancy) {
+            toastr.warning('More name cannot be added.')
+            return false;
+        }
+
+        roomcount = parseInt(roomcount) + 1;
+
+        var guestTemplate = `<div class="newtr room-mobile" id="appended-room-${roomcount}">
+
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    Room
+                                </div>
+                                <div class="col-xs-8 form-group">
+                                    <label>Room ${roomcount-1} - ${rname}</label>
+                                    <input class="hdnBookingDetailId" type="hidden" value="${rid}">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    Guest Name
+                                </div>
+                                <div class="col-xs-8 form-group">
+                                    <input type="text" id="guestname${roomcount}" class="form-control gname" value="" maxlength="50" placeholder="Name">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    Mail Id
+                                </div>
+                                <div class="col-xs-8 form-group">
+                                    <input type="email" id="guestemail${roomcount}" class="form-control gemail" value="" maxlength="100" placeholder="Email">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    Mobile
+                                </div>
+                                <div class="col-xs-8 form-group">
+                                    <select disabled style="float:left" class="form-control">
+                                       <option value="${selectCountryCodeType}" selected>${selectCountryCodeText}</option>
+                                     </select>
+                                    <input type="text" id="guestphone${roomcount}" style="float:left" pattern=" ^[\-\+]?\d+$" class="form-control gphone" value="" maxlength="10" placeholder="Phone No.">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xs-4"> </div>
+                                <div class="col-xs-4"><a class="showpointer clean text-danger" href="javascript:void(0)" data-divid="appended-room-${roomcount}" onclick="DeleteGuest_Mobile(this)">Delete</a></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12"> <hr> </div>
+                            </div>
+                        </div>`;
+
+        $(`#${newGuestTemplateContainer}`).append(guestTemplate);
+
+        $(`#guestdetail${roomcount}`).focus();
+
+        //$(`#${newGuestTemplateContainer} .ddlCountryCodeGuest`).select2();
+
+        $(`#guestname${roomcount}`).validate({
+            rules: {
+                required: true
+            },
+            messages: {
+                required: "Please enter Guest Name.",
+            },
+            errorContainer: $('#errorContainer')
+        });
+
+        $(`#guestemail${roomcount}`).validate({
+            rules: {
+                email: true
+            },
+            messages: {
+                email: "Please enter valid Mail Id."
+            },
+            errorContainer: $('#errorContainer')
+        });
+
+        $(`#guestphone${roomcount}`).validate({
+            rules: {
+                phoneIndia: true
+            },
+            messages: {
+                phoneIndia: "Please enter valid Mobile Number."
+            },
+            errorContainer: $('#errorContainer')
+        });
+    }
+
+    function ResetForm(elem) {
+
+        var form = $(elem).data('formid');
+
+        $('#' + form).find(':input').each(function (i, elem) {
+            var input = $(elem);
+            input.data('initialState', input.val());
+            input.val('');
+        });
+
+        $('#' + form).find('select').val($('#' + form).find('select option:first').val()).change();
+
+        $(elem).hide();
+        $(elem).next('a').show();
+    }
+
+    function RestoreForm(elem) {
+
+        var form = $(elem).data('formid');
+
+        $('#' + form).find(':input').each(function (i, elem) {
+            var input = $(elem);
+            input.val(input.data('initialState'));
+        });
+
+        $('#' + form).find('select').change();
+
+        $(elem).hide();
+        $(elem).prev('a').show();
+    }
+
+    // #endregion Mobile
+
+    </script>
+
+    <script type="text/javascript">
+
+    window.onbeforeunload = function (event) {
+        var message = 'Important: Please click on \'Save\' button to leave this page.';
+        if (typeof event == 'undefined') {
+            event = window.event;
+        }
+        if (event) {
+            event.returnValue = message;
+        }
+        return message;
+    };
+
+    $("a").click(function () {
+        window.onbeforeunload = null;
+    });
+
+    $(function () {
+        $('input[type="submit"]').submit(function () {
+
+            window.onbeforeunload = null;
+        });
+        $('form').submit(function () {
+
+            window.onbeforeunload = null;
+        });
+    });
+
+    </script>
+
+}

@@ -1,0 +1,819 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+@*<link href="~/css/jquery-ui.css" rel="stylesheet" />*@
+<script src="~/js/Jquery1.10.3.js"></script>
+<script src="~/js/jquery.validate.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script src="~/js/jquery-ui.js"></script>
+<script type="text/javaScript">
+
+    var dates = [];
+    function makeCalendar(dateFrom, dateTo, controlId, sDates, yDates, ddays) {
+        ddays = (ddays == undefined) ? [] : ddays;
+        var bg = "#FFFFE1",
+        fs = 2,
+        flg = 0,
+        M = new Array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"),
+        D = new Array("Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"),
+        pdy, pmo, pyr, yr, bgn, mo, dy, d, ld, pos, ctr;
+        function calendarWork() {
+            var html = "";
+            var df = dateFrom.split("/"),
+                dt = dateTo.split("/");
+            pdy = new Date(df[2], df[0] - 1, df[1]),
+            pdt = new Date(dt[2], dt[0] - 1, dt[1]),
+            pmo = pdy.getMonth();    // present month
+            pyr = pdy.getYear();     // present year
+            var tempsDates = sDates,
+            tempyDates = yDates;
+            if (pyr < 2000)
+                pyr = pyr + 1900;
+            //html += '<TABLE BORDER=0 class="table"><TR>';
+            html += '<div class="col-md-2">';
+
+            var months;
+            if (((pdt.getYear() + 1900) - pyr) > 0) {
+                months = 12 - pdy.getMonth() + pdt.getMonth();
+            } else {
+                months = pdt.getMonth() - pdy.getMonth();
+            }
+            for (var m = 0; m <= months; m++) {
+                //html += '</TD><TD VALIGN=TOP>';
+                if (m > 0) {
+                    html += '</div><div class="col-md-2">';
+                }
+                yr = pyr; // last month's year
+                mo = pmo + m;
+                if (mo > 11) {
+                    mo = mo - 12;
+                    yr = yr + 1;
+                }
+                bgn = new Date(M[mo] + " 1," + yr);
+                var selectDate = {
+                    green: [],
+                    yellow: []
+                };
+                for (var k = 0; k < tempsDates.length; k++) {
+                    var sd = new Date(tempsDates[k]);
+
+                    if (sd.getMonth() === mo && (sd.getYear() + 1900) === yr) {
+                        selectDate.green.push(sd.getDate());
+                    }
+                }
+                for (var k = 0; k < tempyDates.length; k++) {
+                    var sd = new Date(tempyDates[k]);
+
+                    if (sd.getMonth() === mo && (sd.getYear() + 1900) === yr) {
+                        selectDate.yellow.push(sd.getDate());
+                    }
+                }
+
+
+                if (months === 0) {
+                    html += getCalendar(selectDate, pdy.getDate(), 'beforeafter', pdy.getDate(), pdt.getDate());
+                } else {
+                    if (yr === pyr && mo === pmo) {
+                        html += getCalendar(selectDate, pdy.getDate(), 'before');
+                    } else if (yr === (pdt.getYear() + 1900) && mo === pdt.getMonth()) {
+                        html += getCalendar(selectDate, pdt.getDate(), 'after');
+                    } else {
+                        html += getCalendar(selectDate);
+                    }
+                }
+
+            }
+            //html += '</TD></TR></TABLE>';
+            html += '</div>';
+            document.getElementById(controlId).innerHTML = html;
+            var prependZero = function (number) {
+                return number < 10 ? '0' + number : number;
+            },
+            days = document.getElementsByClassName("day");
+            for (var i = 0, j = days.length; i < j; i++) {
+                days[i].addEventListener('click', function (e) {
+                    var x = e.target.parentElement.parentElement.parentElement.title.split('-'),
+                    month = parseInt(x[0], 10),
+                    day = parseInt(e.target.innerHTML, 10),
+                    year = parseInt(x[1], 10),
+                    date = prependZero(month) + '/' + prependZero(day) + '/' + year;
+                    if (e.target.style.backgroundColor == 'lightgreen') {
+                        e.target.style.backgroundColor = '';
+                        if (dates.length > 0) {
+                            var index = dates.indexOf(date)
+                            if (index > -1) {
+                                dates.splice(index, 1);
+                                document.getElementById('SavedDates').value = dates.join('$');
+
+                            }
+                        }
+
+                    } else {
+                        var d1 = dateFrom.split("/"),
+                        d2 = dateTo.split("/"),
+                        from = new Date(d1[2], d1[0] - 1, d1[1]),
+                        to = new Date(d2[2], d2[0] - 1, d2[1]),
+                        check = new Date(year, month - 1, day);
+                        if (check >= from && check <= to) {
+                            e.target.style.backgroundColor = 'lightgreen';
+                            dates.push(date);
+                            document.getElementById('SavedDates').value = dates.join('$');
+                        }
+                    }
+
+                }, false);
+            }
+        }
+
+        function getCalendar(sds, dd, mode, before, after) {
+            var html = "";
+            dy = bgn.getDay();
+            yr = eval(yr);
+            d = "312831303130313130313031";
+            if (yr / 4 == Math.floor(yr / 4)) {
+                d = d.substring(0, 2) + "29" + d.substring(4, d.length);
+            }
+            pos = (mo * 2);
+            ld = eval(d.substring(pos, pos + 2));
+            html += "<TABLE class='month' title= '" + (mo + 1) + '-' + yr + "' BORDER=1" + " BGCOLOR='" + bg + "'><TR><TD ALIGN=CENTER COLSPAN=7>" + "<FONT SIZE=" + fs + ">" + M[mo] + " " + yr + "</FONT></TD></TR><TR><TR class='weeks'>";
+            for (var i = 0; i < 7; i++) {
+                html += "<TD class='days'>" + D[i] + "</TD>";
+            }
+            html += "</TR><TR>";
+            ctr = 0;
+
+
+
+            var x = ld;
+            if (dy > 4 && ld > 30) {
+                x--;
+            }
+            if (dy > 5 && ld > 29) {
+                x -= 1;
+            }
+
+            var checkClass = function (y, selDate) {
+                var cls = '';
+                if (selDate) {
+                    cls = ' ofrday';
+                } else {
+                    if (sds.green.indexOf(y) != -1) {
+                        cls = 'selected day';
+                    }
+                    else if (sds.yellow.indexOf(y) != -1) {
+                        cls = 'less-than-five day';
+                    }
+                    else if (mode) {
+                        if (mode == 'before' && y < dd) {
+                            cls += ' ofrday';
+                        } else if (mode === 'after' && y > dd) {
+                            cls += ' ofrday';
+                        }
+                        else if (mode === 'beforeafter' && (y < before || y > after)) {
+                            cls += ' ofrday';
+                        }
+                        else {
+                            cls += 'zero day';
+                        }
+                    } else {
+                        cls += 'zero day';
+                    }
+                }
+                var y1 = y < 10 ? "0" + y : y;
+                var mo1 = (mo + 1) < 10 ? "0" + (mo + 1) : (mo + 1);
+                var tempid = y1 + "-" + mo1 + "-" + yr;
+                html += "<TD id=" + tempid + " class='" + cls + "'>" + y + "</TD>";
+            },
+            fillHtml1 = function (i1, selDate) {
+                if (i1 < dy) {
+
+                    if (dy > 4 && ld > 30 && x < ld) {
+                        if (x <= ld) {
+                            x++;
+                            checkClass(x, selDate);
+                        }
+                    }
+                    else if (dy > 5 && ld > 29 && x < ld) {
+                        if (x <= ld) {
+                            x++;
+                            checkClass(x, selDate);
+                        }
+                    } else {
+                        html += "<TD></TD>";
+                    }
+                }
+                else {
+                    ctr++;
+                    checkClass(ctr, selDate);
+                }
+            },
+            fillHtml2 = function (selDate) {
+                ctr++;
+                if (ctr > ld) {
+                    html += "<TD>" + " </TD>";
+                }
+                else {
+                    checkClass(ctr, selDate);
+                }
+            };
+
+
+
+            for (var i = 0; i < 7; i++) {
+                if (ddays.indexOf(i) != -1) {
+                    fillHtml1(i, true);
+                } else {
+                    fillHtml1(i, false);
+                }
+            }
+            html += "</TR><TR>";
+            var rows = 0;
+            while (rows < 4) {
+                for (var i = 0; i < 7; i++) {
+                    if (ddays.indexOf(i) != -1) {
+                        fillHtml2(true);
+                    }
+                    else {
+                        fillHtml2(false);
+                    }
+                }
+                html += "</TR><TR>";
+
+                rows++;
+            }
+            html += "</TR></TABLE>";
+            return html;
+        }
+
+        calendarWork();
+    }
+
+    function ReadyForCalendar() {
+        var FromDate, ToDate;
+        var NoOfMonths = parseInt($("input[name='months']:checked").val());
+        var date = new Date();
+        var firstDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        var lastDay = "";
+        var Y = date.getFullYear();
+        var M = date.getMonth();
+        if (NoOfMonths + M > 11) {
+            lastDay = new Date(Y + 1, M + NoOfMonths - 12, 0);
+        }
+        else {
+            lastDay = new Date(Y, M + NoOfMonths, 0);
+        }
+
+        // Set last date for calendars
+
+        var d = new Date();
+        $('#FromDate').removeClass('hasDatepicker').datepicker({
+            startDate: d,
+            minDate: d,
+            autoclose: true,
+            maxDate: lastDay,
+            dateFormat: 'dd/mm/yy'
+        });
+
+        $('#ToDate').removeClass('hasDatepicker').datepicker({
+            startDate: d,
+            minDate: d,
+            autoclose: true,
+            maxDate: lastDay,
+            dateFormat: 'dd/mm/yy'
+        });
+
+        //End
+
+        var firstDate = (firstDay.getMonth() + 1) + '/' + firstDay.getDate() + '/' + firstDay.getFullYear();
+        var lastDate = (lastDay.getMonth() + 1) + '/' + lastDay.getDate() + '/' + lastDay.getFullYear();
+
+        var OffDays = [], SelectedDates = [];
+
+        $("input[name='Date']:not(:checked)").each(function () {
+            OffDays.push(parseInt($(this).val()));
+        });
+
+        if ($('#FromDate').val() == '' && $('#ToDate').val() != '') {
+            toastr.warning('Please provide Start Date');
+            return;
+        }
+
+        if ($('#FromDate').val() != '' && $('#ToDate').val() == '') {
+            toastr.warning('Please provide End Date');
+            return;
+        }
+
+        if ($('#FromDate').val() != '' && $('#ToDate').val() != '') {
+            var FD = $('#FromDate').val().split("/");
+            var TD = $('#ToDate').val().split("/");
+
+            FromDate = new Date(FD[2], FD[1] - 1, FD[0]);
+            ToDate = new Date(TD[2], TD[1] - 1, TD[0]);
+
+            if ((FromDate < firstDay && ToDate < firstDay) || (FromDate > lastDay && ToDate > lastDay)) {
+                toastr.warning('Dates are out of range');
+                return;
+            }
+
+            if (FromDate >= ToDate) {
+                toastr.warning('End Date should be greater than Start Date');
+                return;
+            }
+
+            if (FromDate < firstDay) {
+                FromDate = firstDay;
+            }
+
+            if (ToDate > lastDay) {
+                ToDate = lastDay;
+            }
+        }
+        dates.length = 0;
+        makeCalendar(firstDate, lastDate, 'calendarControl', SelectedDates, [], OffDays);
+
+        //SelectedDates.push(FromDate);
+        while (FromDate <= ToDate) {
+            var y1 = FromDate.getDate() < 10 ? "0" + FromDate.getDate() : FromDate.getDate();
+            var mo1 = (FromDate.getMonth() + 1) < 10 ? "0" + (FromDate.getMonth() + 1) : (FromDate.getMonth() + 1);
+            var tempid = y1 + "-" + mo1 + "-" + FromDate.getFullYear();
+            FromDate = new Date(FromDate.getFullYear(), FromDate.getMonth(), FromDate.getDate() + 1);
+            var l = document.getElementById(tempid);
+            l.click();
+        }
+    }
+
+    function validate(obj, max, min) {
+        if (!obj.checkValidity()) {
+            toastr.warning('Value can only be between ' + min + ' and ' + max);
+            obj.focus();
+            return false;
+        }
+        return true;
+    }
+
+    function checkMain(cb) {
+        if (!cb.checked) {
+            $("input[name=" + cb.value + "]").each(function () {
+                $(this).prop("checked", cb.checked);
+            });
+        }
+    }
+
+    function checkAll(cb) {
+        $("input[name=" + cb.name + "]").each(function () {
+            $(this).prop("checked", cb.checked);
+        });
+
+        $("input[value=" + cb.name + "]").prop("checked", true);
+    }
+
+    function RoomCheck(cb) {
+        $("input[value=" + cb.name + "]").prop("checked", true);
+    }
+
+    $(document).ready(function () {
+
+        var date = new Date();
+        var firstDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        var lastDay = "";
+        var Y = date.getFullYear();
+        var M = date.getMonth();
+        if (6 + M > 11) {
+            lastDay = new Date(Y + 1, M + 6 - 12, 0);
+        }
+        else {
+            lastDay = new Date(Y, M + 6, 0);
+        }
+
+        // Set last date for calendars
+
+        var d = new Date();
+        $('#FromDate').datepicker({
+            startDate: d,
+            minDate: d,
+            autoclose: true,
+            maxDate: lastDay,
+            dateFormat: 'dd/mm/yy'
+        });
+
+        $('#ToDate').datepicker({
+            startDate: d,
+            minDate: d,
+            autoclose: true,
+            maxDate: lastDay,
+            dateFormat: 'dd/mm/yy'
+        });
+
+        $("input[name='months']").change(function () {
+            ReadyForCalendar();
+        });
+
+        ReadyForCalendar();
+
+        GetRoomRatePlan();
+
+        $("input[id='chkPriceChange']").change(function () {
+            var chk = $(this).prop("checked");
+            if (chk) {
+                $("#Rates").show();
+            }
+            else {
+                $("#Rates").hide();
+            }
+            GetRoomRatePlan();
+        });
+        $("#Rates").hide();
+    });
+
+    function GetRoomRatePlan() {
+        values = {
+            OnlyBase: $("#chkPriceChange").prop("checked")
+        }
+        var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("GetRoomAndRatePlan")", values));
+        var html = "";
+        var AllRooms = Data.msg.split(';');
+        for (var i = 0; i < AllRooms.length ; i++) {
+            var RoomAndPlanSplitter = AllRooms[i].split('#');
+            var RoomName = RoomAndPlanSplitter[0].split('$');
+            html += "<div class=\"col-md-3\"><input type=\"checkbox\" name=\"MainSelect\" id=\"" + RoomName[0] + "\" value=\"" + RoomName[1] + "\" onchange=\"checkMain(this);\">&nbsp;" + RoomName[1] + "</div>";
+            html += "<div class=\"col-md-9\"><div class=\"col-md-3\"> <input type=\"checkbox\" name=\"" + RoomName[1] + "\" id=\"Select_" + i + "\" onchange=\"checkAll(this);\">&nbsp;<b>Select All</b> &nbsp;</div>";
+
+            var Plans = RoomAndPlanSplitter[1].split(',');
+            for (var j = 0; j < Plans.length; j++) {
+                var PlanName = Plans[j].split('$');
+                html += "<div class=\"col-md-3\"> <input type=\"checkbox\" name=\"" + RoomName[1] + "\" id=\"" + PlanName[0] + "\" onchange=\"RoomCheck(this);\">&nbsp;" + PlanName[1] + " &nbsp;</div>";
+            }
+            html += "</div><hr />";
+
+        }
+        $('#RoomsAndRates').html("");
+        $('#RoomsAndRates').html(html);
+    }
+
+    function save() {
+
+        if (parseInt($('#Max').val().trim()) != 'NaN' && (parseInt($('#Max').val().trim()) < 0 || parseInt($('#Max').val().trim()) > 100)) {
+            return false;
+        }
+
+        if (parseInt($('#Min').val().trim()) != 'NaN' && (parseInt($('#Min').val().trim()) < 0 || parseInt($('#Min').val().trim()) > 100)) {
+            return false;
+        }
+
+        if (parseInt($('#CutOff').val().trim()) != 'NaN' && (parseInt($('#CutOff').val().trim()) < 0 || parseInt($('#CutOff').val().trim()) > 100)) {
+            return false;
+        }
+
+        if (parseInt($('#Inv').val().trim()) != 'NaN' && (parseInt($('#Inv').val().trim()) < 0 || parseInt($('#Inv').val().trim()) > 999)) {
+            return false;
+        }
+
+        if (dates.length == 0) {
+            toastr.error('Please select a date from calendar.');
+            return;
+        }
+        else {
+            var chk = $("#chkPriceChange").prop("checked");
+            if (chk && ($('#Inv').val().trim() == "" && $('#StopSell').val().trim() == "" && $('#CutOff').val().trim() == "" && $('#CloseOut').val().trim() == "" && $('#Min').val().trim() == "" && $('#Max').val().trim() == "" && $('#CTA').val().trim() == "" && $('#CTD').val().trim() == "" && $('#single').val().trim() == "" && $('#double').val().trim() == "" && $('#triple').val().trim() == "" && $('#quad').val().trim() == "" && $('#quin').val().trim() == "")) {
+                toastr.error('Please provide a text field value.');
+                return;
+            }
+            else if (!chk && ($('#Inv').val().trim() == "" && $('#StopSell').val().trim() == "" && $('#CutOff').val().trim() == "" && $('#CloseOut').val().trim() == "" && $('#Min').val().trim() == "" && $('#Max').val().trim() == "" && $('#CTA').val().trim() == "" && $('#CTD').val().trim() == "")) {
+                toastr.error('Please provide a text field value.');
+                return;
+            }
+
+            if ($('#Min').val().trim() == "" && $('#Max').val().trim() != "") {
+                toastr.error('Please provide min value as well.');
+                return;
+            }
+
+            if ($('#Min').val().trim() != "" && $('#Max').val().trim() == "") {
+                toastr.error('Please provide max value as well.');
+                return;
+            }
+
+            if ($('#Min').val().trim() != "" && $('#Max').val().trim() != "" && parseInt($('#Min').val().trim()) >= parseInt($('#Max').val().trim())) {
+                toastr.error('Min value should be less than max value.');
+                return;
+            }
+
+            var roomid = [], roomname = [], plan = [];
+            $("input:checkbox[name=MainSelect]:checked").each(function () {
+                roomid.push($(this).attr("id"));
+                roomname.push($(this).attr("value"));
+            });
+
+            if (roomid.length == 0 && ($('#Inv').val().trim() != "" || $('#StopSell').val().trim() != "" || $('#CutOff').val().trim() != "")) {
+                toastr.error('No room type selected.');
+                return;
+            }
+            for (var i = 0; i < roomid.length; i++) {
+                $("input:checkbox[name=" + roomname[i] + "]:checked").each(function () {
+                    if ($(this).attr("id").toLowerCase().indexOf("select") < 0)
+                        plan.push(roomid[i] + "-" + $(this).attr("id"));
+                });
+            }
+            if (plan.length == 0 && ($('#CloseOut').val().trim() != "" || $('#Min').val().trim() != "" || $('#Max').val().trim() != "" || $('#CTA').val().trim() != "" || $('#CTD').val().trim() != "" || $('#single').val().trim() != "" || $('#double').val().trim() != "" || $('#triple').val().trim() != "" || $('#quad').val().trim() != "" || $('#quin').val().trim() != "")) {
+                toastr.error('No rate plan selected.');
+                return;
+            }
+
+            var values = {
+                dates: dates.join('$'),
+                roomid: roomid.join(),
+                plan: plan.join(),
+                Inv: $('#Inv').val().trim(),
+                StopSell: $('#StopSell').val().trim(),
+                CutOff: $('#CutOff').val().trim(),
+                CloseOut: $('#CloseOut').val().trim(),
+                Min: $('#Min').val().trim(),
+                Max: $('#Max').val().trim(),
+                CTA: $('#CTA').val().trim(),
+                CTD: $('#CTD').val().trim(),
+                single: chk == true ? $('#single').val().trim() : "",
+                doble: chk == true ? $('#double').val().trim() : "",
+                triple: chk == true ? $('#triple').val().trim() : "",
+                quad: chk == true ? $('#quad').val().trim() : "",
+                quin: chk == true ? $('#quin').val().trim() : ""
+            };
+            var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("SaveInventory")", values));
+            if (Data != null) {
+                if (Data.st == '1') {
+                    $('#UpdateUsers').modal({
+                        show: 'true'
+                    });
+                    return false;
+                }
+                else if (Data.st == '2') {
+
+                    $("#table tr:not(:first)").remove();
+
+
+                    var JS = $.parseJSON(Data.msg);
+                    var table = document.getElementById("table");
+                    for (var i = 0; i < JS.length; i++) {
+                        var row = table.insertRow(i + 1);
+                        var cell1 = row.insertCell(0);
+                        var cell2 = row.insertCell(1);
+                        var cell3 = row.insertCell(2);
+                        cell1.innerHTML = JS[i].sRatePlan;
+                        cell2.innerHTML = JS[i].dtValidFrom;
+                        cell3.innerHTML = JS[i].dtValidTo;
+                    }                    
+
+                    $('#FailDiv').modal({
+                        show: 'true'
+                    });
+                    return false;
+                }
+                else if (Data.st == '0') {
+                    toastr.error(Data.msg);
+                    return false;
+                }
+            }
+        }
+    }
+
+    function Overview() {
+        var StartDate = $('#FromDate').val();
+        window.location.href = '/BulkUpdate/GoToOverview?StartDate=' + StartDate;
+    }
+</script>
+
+<div class="container margintop20">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4><b>Bulk Update </b></h4>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-8 lightblue">
+
+                    Select the dates for your update:<br>
+                    <strong>(A)</strong> Use the start and end dates then click Select Period OR <strong>(B)</strong> Click dates directly within the calendar.
+
+                </div>
+                <div class="col-md-4 lightgreybg paddingbottom10">
+                    <strong>View</strong> <br>
+                    <input type="radio" name="months" value="6" class="radio-inline" checked>
+                    6 Months
+                    <input type="radio" name="months" value="12" class="radio-inline" unchecked>
+                    12 Months
+                </div>
+                <!--Rate & Availability overview section Start-->
+                <div class="col-md-12">
+                    <h4>Rate & Availability Overview</h4>
+                    <hr>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="col-xs-3">
+                        Start Date
+                        <input type="text" id="FromDate" onkeyup="this.value=''" name="textfield" class="form-control col-xs-4">
+                    </div>
+                    <div class="col-xs-3">
+                        End Date
+                        <input type="text" id="ToDate" name="textfield" onkeyup="this.value=''" class="form-control col-xs-4">
+                    </div>
+                </div>
+                <div class="col-md-6 margintop10">
+                    <strong> Include: </strong>
+                    <input type="checkbox" name="Date" value="1" class="checkbox-inline" checked="checked">
+                    MON
+                    <input type="checkbox" name="Date" value="2" class="checkbox-inline" checked="checked">
+                    TUE
+                    <input type="checkbox" name="Date" value="3" class="checkbox-inline" checked="checked">
+                    WED
+                    <input type="checkbox" name="Date" value="4" class="checkbox-inline" checked="checked">
+                    THU
+                    <input type="checkbox" name="Date" value="5" class="checkbox-inline" checked="checked">
+                    FRI
+                    <input type="checkbox" name="Date" value="6" class="checkbox-inline" checked="checked">
+                    SAT
+                    <input type="checkbox" name="Date" value="0" class="checkbox-inline" checked="checked">
+                    SUN
+                </div>
+                <div class="col-md-3  margintop10">
+                    <button type="submit" class="btn btn-primary" onclick="ReadyForCalendar();">Select Period</button>
+                </div>
+                <div class="col-md-3  margintop10">
+                    <input type="checkbox" id="chkPriceChange" /> Allow Price Change
+                </div>
+                <div class="col-md-12 margintop10">
+                    <div id="calendarControl">
+                    </div>
+                    <p><strong>Product Selection:</strong> All selected items will be updated with the value(s) entered below.</p>
+                </div>
+                <!--Rate & Availability overview section End-->
+            </div>
+            <!--Rate Plam Name section End-->
+
+            <div class="marginbottom20">
+                <div class="col-md-12 lightgreybg border paddingbottom10">
+                    <div class="col-md-3">
+                        <h5>ROOM TYPE</h5>
+                    </div>
+                    <div class="col-md-9">
+                        <h5>RATE PLAN</h5>
+                    </div>
+                </div>
+                <div id="RoomsAndRates" class="col-md-12 lightgreybg border "></div>
+            </div>
+            <!--Rate Plan Name section End-->
+            <div class="clearfix"></div>
+            <div class="lightgreybg border margintop35">
+
+
+                <div class="col-md-12">
+                    <h4> BULK EDIT</h4>
+                </div>
+                <div class="col-md-12">
+                    <h5> ROOM TYPE INFORMATION</h5>
+                </div>
+                <div class="col-md-10 greylight border">
+                    <div class="col-xs-2">
+                        Total Inv. Available
+                        <input id="Inv" type="number" name="textfield" class="form-control" max="999" min="0" onblur="return validate(this,999,0);">
+                    </div>
+                    <div class="col-xs-2">
+                        Stop Sell
+                        <select id="StopSell" class="form-control">
+                            <option value="">&nbsp;</option>
+                            <option value="On">On </option>
+                            <option value="Off">Off </option>
+                        </select>
+                    </div>
+                    <div class="col-xs-2">
+                        Cut Off
+                        <input id="CutOff" type="number" name="textfield" class="form-control" max="100" min="0" onblur="return validate(this,100,0);">
+                    </div>
+                </div>
+
+
+
+                <div class="col-md-12">
+                    <h5>RATE PLAN INFORMATION</h5>
+                </div>
+                <div class="col-md-12 greylight border ">
+                    <div class="row">
+                        <div class="col-xs-2">
+                            Close Out
+                            <select id="CloseOut" class="form-control">
+                                <option value="">&nbsp;</option>
+                                <option value="On">On </option>
+                                <option value="Off">Off </option>
+                            </select>
+                        </div>
+                        <div class="col-xs-2">
+                            Min Night
+                            <input id="Min" type="number" name="textfield" class="form-control" max="100" min="0" onblur="return validate(this,100,0);">
+                        </div>
+                        <div class="col-xs-2">
+                            Max Night
+                            <input id="Max" type="number" name="textfield" class="form-control" max="100" min="0" onblur="return validate(this,100,0);">
+                        </div>
+                        <div class="col-xs-2">
+                            CTA
+                            <select id="CTA" class="form-control">
+                                <option value="">&nbsp;</option>
+                                <option value="On">On </option>
+                                <option value="Off">Off </option>
+                            </select>
+                        </div>
+                        <div class="col-xs-2">
+                            CTD
+                            <select id="CTD" class="form-control">
+                                <option value="">&nbsp;</option>
+                                <option value="On">On </option>
+                                <option value="Off">Off </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row" id="Rates">
+                        <div class="col-xs-2">
+                            Single Rate
+                            <input id="single" type="text" name="textfield" class="form-control">
+                        </div>
+                        <div class="col-xs-2">
+                            Double Rate
+                            <input id="double" type="text" name="textfield" class="form-control">
+                        </div>
+                        <div class="col-xs-2">
+                            Triple Rate
+                            <input id="triple" type="text" name="textfield" class="form-control">
+                        </div>
+                        <div class="col-xs-2">
+                            Quadruple Rate
+                            <input id="quad" type="text" name="textfield" class="form-control">
+                        </div>
+                        <div class="col-xs-2">
+                            Quintuple Rate
+                            <input id="quin" type="text" name="textfield" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row pull-right  marginbottom20">
+    <div class="col-xs-12">
+        <input name="" type="button" class="btn btn-primary" value="Save" onclick="save()">
+        @*<input name="" type="button" class="btn btn-danger" value="CANCEL">*@
+        <input type="hidden" id="SavedDates">
+    </div>
+</div>
+
+<form id="frmUsersUpdate">
+    <div id="UpdateUsers" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Success</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        The data has been saved successfully.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnUpdate" class="btn btn-primary" onclick="$('.close').click();">Stay here</button>
+                    <button type="button" id="btnCancel" class="btn btn-primary" onclick="Overview()">Go to Rates page</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+<form id="frmUsersFail">
+    <div id="FailDiv" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">FAILURE</h4>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        The dates have been provided beyond the validity of the following rate plan(s).  
+                    </div>
+                    <div class="row" id="tables">
+                        <table id="table" border="1" style="width: 100%;text-align: center;">
+                            <tr>
+                                <th style="text-align: center;">Rate Plan</th>
+                                <th style="text-align: center;">Valid From</th>
+                                <th style="text-align: center;">Valid To</th>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>

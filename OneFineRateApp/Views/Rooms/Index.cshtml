@@ -1,0 +1,143 @@
+﻿@model OneFineRateBLL.Entities.etblPropertyRoomMap
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutProperty.cshtml";
+}
+<script src="~/js/Jquery1.10.3.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.9.0/jquery.validate.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        bindgrid();
+    });
+
+    function OpenPopUp() {
+        var url = '@Url.Action("AddNewRoom")';
+        $("#AddRoom").load(url);
+        $('#AddRoom').modal({
+            show: 'true',
+            backdrop: 'static',
+            keyboard: false
+        });
+    }
+    function EditData(Id) {
+        var url = '@Url.Action("Edit")' + "/" + Id;
+        $("#AddRoom").load(url);
+        $('#AddRoom').modal({
+            show: 'true'
+        });
+    }
+    function UpdateAction(Id, Mode) {
+
+        bootbox.confirm("Are you sure?", function (result) {
+            
+            if (result == true) {
+                AjaxCallWithDataMVC_Async("@Url.Action("UpdateStatus")", { Id: Id, Mode: Mode }, function (d) {
+                    var data = $.parseJSON(d);
+                     if (data != null) {
+                            if (data.st == 1) {
+                                toastr.success(data.msg);
+                                bindgrid();
+                            }
+                            else {
+                                toastr.error(data.msg);
+                            }
+                        }
+                    })
+            }
+        });
+    }
+    function GetResult(data) {
+        if (data.st == '1') {
+            toastr.success(data.msg);
+            bindgrid();
+            $('.close').click();
+        }
+        else {
+            toastr.error(data.msg);
+        }
+    }
+    // bind list
+    function bindgrid() {
+
+        try {
+            var aoColumns =
+                [
+                 { "sTitle": "Room Name", "mData": "sRoomName" },
+                 { "sTitle": "Room Type", "mData": "sRoomType" },
+                 {
+                     "sTitle": "Size", "mData": "dSizeSqft", "bSortable": false,
+                     "mRender": function (data, type, full) {
+                         var myval = '';
+                         myval += full.dSizeSqft + 'Sq/Ft <br/>';
+                         myval += full.dSizeMtr + 'Sq/Mtr';
+                         return myval;
+                     }
+                 },
+                // { "sTitle": "Max. Occupancy", "mData": "iMaxOccupancy" },
+                  //{ "sTitle": "Max. Children", "mData": "iMaxChildren" },
+                  {
+                      "sTitle": "Max. Occupancy", "mData": "iMaxOccupancy",
+                      "mRender": function (data, type, full) {
+                          return '<span style="margin-left: 50px;">' + data + '</span>'
+                      }
+                  },
+                 {
+                     "sTitle": "Status", "mData": "bActive", "bSortable": false,
+                     "mRender": function (data, type, full) {
+                         if (full.bActive == true)
+                             return 'Live'
+                         else
+                             return 'Disable'
+                     }
+                 },
+                  {
+                      "sTitle": "Action", "mData": "iPropId", "bSortable": false,
+                      "mRender": function (data, type, full) {
+                          var url = '@Url.Action("RoomAmenties")' + "?id=" + full.iRoomId + '&name=' + full.sRoomName;
+                          var html = ''
+                          var html = "<a onclick=\"EditData('" + full.iRoomId + "');\" class=\"btn btn-success btn-xs  \"> Edit </a>&nbsp";
+                          html += "<a href='" + url + "' class=\"btn btn-warning  btn-xs  \"> Edit Amenities </a>&nbsp";
+                          if (full.bActive == false)
+                              html += "<a onclick=\"UpdateAction('" + full.iRoomId + "',true);\" class=\"btn btn-primary btn-xs   \"> Enable </a>&nbsp";
+                          else
+                              html += "<a onclick=\"UpdateAction('" + full.iRoomId + "',false);\" class=\"btn btn-danger btn-xs   \"> Disable </a>&nbsp";
+                          return html;
+                      }
+                  }
+                ];
+            DatatableServerSide("#tblData", aoColumns, "/Services/Service.asmx/GetAllPropertyRooms?Id=@Convert.ToInt32(Session["PropId"])");
+            $('.dataTables_filter input').attr('title', 'Type here to search in the Room Name & Room Type Column');
+        }
+        catch (e) {
+
+        }
+
+    }
+</script>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        Room Summary <span style="text-align:right; float:right;">
+            <a href="@Url.Action("CommonAmenties")" class="btn btn-primary">Amenities common to all rooms</a>
+            <button type="button" class="btn btn-warning" onclick="OpenPopUp();"><i class="fa fa-plus"></i> Add Room</button>
+        </span>
+    </div>
+    <div class="panel-body">
+
+
+
+
+        <div class="table-responsive">
+            <table class="display table-bordered" id="tblData"></table>
+
+        </div>
+        <!-- End  table -->
+    </div>
+</div>
+<!-- Add Room -->
+<div id="AddRoom" class="modal fade" role="dialog">
+
+</div>

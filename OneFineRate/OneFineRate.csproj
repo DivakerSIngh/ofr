@@ -1,0 +1,1461 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{32D39257-5529-4EF8-A50D-5B3C57F1A686}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>OneFineRate</RootNamespace>
+    <AssemblyName>OneFineRate</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <UseGlobalApplicationHostFile />
+    <Use64BitIISExpress />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App.config">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="C__MigrationHistory.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IP2LOCATION.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OneFineRateModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>OneFineRateModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OneFineRateModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OneFineRateModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>OneFineRateModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="spGetetbllocalityList_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_helpdiagramdefinition_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_helpdiagrams_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sysdiagram.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblAccessbilityM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblAccomodationM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblActiveAmendID.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblAdditionalCommision.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblAdditionalCommision_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblAffiliationM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblAmenityHeaderMapTG.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblAmenityM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblAmenityM_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblAnonymousRecentViewsTx.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblApplicabilityM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblAwardM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBankDetailM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBankDetailM_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBannerM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBannerM_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBasicPropertyAmenitiesTGSpecific_Tmp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBasicPropertyImgTGSpecific_Tmp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBasicPropertyInfoTGSearch_Tmp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBasicPropertyInfoTGSpecific_Tmp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBasicPropertyPOITGSpecific_Tmp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBidCountsTx.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBIDRoomAdultsTx.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBidSettingsM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBlackListedDomain.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBookedBidAmenity.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBookedDayWiseSeparateTaxAmountDetail.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBookedDayWiseTaxAmountDetail.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBookedDayWiseTaxAmountDetailsAmend.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBookedDayWiseTaxAmountDetails_Mod.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBookedDayWiseTaxAmountDetails_Mod_Log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBookingAmedTx.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBookingCancellationPolicyAmendMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBookingCancellationPolicyMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBookingDetailsAmendTx.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBookingDetailsTx.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBookingErrorTx.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBookingGuestAmendMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBookingGuestMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBookingNegotiationTx.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBookingTrakerTx.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBookingTripAdvisorReviewTx.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBookingTx.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBookingTx_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBuildingCharacteristicsM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblCarouselM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblChainM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblChainMTG.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblChainMTG_Tmp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblChainM_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblChangeHistory.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblChangeHistoryBankAdditionalCommision.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblChangeHistoryBankDetail.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblChangeHistoryBasicDetailsProperty.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblChangeHistoryCompetitorSet.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblChangeHistoryDining.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblChangeHistoryPhoto.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblChangeHistoryPIRoom.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblChangeHistoryPolicy.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblChangeHistoryPropertyAmenty.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblChangeHistoryPropertyPromotionMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblChangeHistoryPropertyRatePlanMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblChangeHistoryRate.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblChangeHistoryRecreation.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblChangeHistoryRoom.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblChangeHistorySpa.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblChangeHistoryTax.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblChannelMgrBookingTracker.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblChannelMgrBookingTx.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblChannelMgrM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblChannelMgrTracker.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblCityM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblCitySearchM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblConserveCommissionM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblCorporateCompanyM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblCorporateDiscountLinkingTx.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblCorporateDomainMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblCountryCodePhoneM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblCountryM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblCrediCardM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblCurrencyM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblCustomerLoyaltyBookingsMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblCustomerM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblCustomerPointsHistoryTx.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblCustomerPointsMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardBookingOverview.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardBookingOverviewComp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardGuestNegotiation.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardGuestNegotiationComp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardGuestResponse.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardGuestResponseComp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardLeadPerc.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardLeadPercComp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardLeadRevenuePerc.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardLeadRevenuePercComp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardLeadRevenueValue.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardLeadRevenueValueComp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardLeadValue.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardLeadValueComp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardLengthPerc.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardLengthPercComp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardLengthRevenuePerc.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardLengthRevenuePercComp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardLengthRevenueValue.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardLengthRevenueValueComp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardLengthValue.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardLengthValueComp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardPerformanceRate.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardPerformanceRevenue.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardPerformanceValue.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardRoomProductivityRevenueValue.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardRoomProductivityValue.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardRoomsPerc.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardRoomsPercComp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardRoomsRevenuePerc.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardRoomsRevenuePercComp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardRoomsRevenueValue.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardRoomsRevenueValueComp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardRoomsValue.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardRoomsValueComp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardWeekPerc.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardWeekPercComp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardWeekRevenuePerc.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardWeekRevenuePercComp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardWeekRevenueValue.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardWeekRevenueValueComp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardWeekValue.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDashBoardWeekValueComp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDaywiseBookingRateTx.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblEmailSettingsM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblErrorLog.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblExchangeRatesM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblGolfM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblGroupM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblGroupMenuM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblGroupMenuM_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblGroupM_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblHotelAmenityM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblHotelCommonServiceM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblHotelConvenienceM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblHotelFacilitesRankM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblHotelLeisureM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblHotelMeetingM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblHotelParkingM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblHotelPartnerM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblHotelRoomAmenityAdditionalM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblHotelRoomAmenityBathRoomM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblHotelRoomAmenityBeddingM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblHotelRoomAmenityM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblIndianLocalityCordinate.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblItemNameM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblLandActivitiesM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblLanguageM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblLocalityM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblLocalityM_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblLocalitySearchM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblLookUp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblLookUpExtraBed.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblLoyalityAmenityMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblLoyalityAmenityMap_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblLoyalityPointsM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblLoyalityPointsM_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblMacroAreaM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblMacroAreaM_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblMacroAreaSearchM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblMasterTax.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblMasterTaxMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblMasterTaxMap_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblMasterTaxStateMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblMasterTaxStateMap_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblMasterTax_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblMealCodesRG.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblMenuM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblMyWishListTx.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblNegotiationActionRecord.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblOfferReviewTrackerTx.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblOFRPropertyM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblOnsiteRecreationFacilitiesM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblOriginalBookingPrice.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPastSaving.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPhotoCategoryM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPhotoSubCategoryM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPolygon.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPromoCodeM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPromoCodeM_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPromoM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPromotionalHotelsM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPromotionalHotelsM_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropConserveCommissionMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyAmenitiesMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyAmenitiesMap_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyAreaDataTG.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyBasicBiddingMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyBasicBiddingMapCorp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyBiddingRateM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyBidUpgradeM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyCancellationPolicyMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyChannelMgrMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyCompetitorSet.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyCompetitorSet_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyDiningMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyDiningMap_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyFacilityMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyFacilityTG.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyFacilityTG_Tmp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyImageUrlTG.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyImageUrlTG_Tmp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyLeadTimeBiddingMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyLeadTimeBiddingMapCorp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyLocalityMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyLocalityMap_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyLOSBiddingMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyLOSBiddingMapCorp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyMTest.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyMTG_Tmp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyM_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyParkingMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyParkingMap_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyPhotoMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyPhotoMap_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyPolicyMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyPolicyMap_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyPrimaryPhotoMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyPromoMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyPromoRateMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyPromoRateMap_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyPromotionAmenityMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyPromotionCancellationMainMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyPromotionCancellationMainMap_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyPromotionCancellationMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyPromotionMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyPromotionMap_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyPromotionRoomTypeMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyRankTx.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyRatePlanAmenityMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyRatePlanCancellationMainMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyRatePlanCancellationMainMap_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyRatePlanCancellationMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyRatePlanMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyRatePlanMap_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyRatePlanRoomTypeMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyRatePlanRoomTypeMap_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyRecreationMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyRecreationMap_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyReviewTG.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyReviewTG_Tmp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyRoomAmentiesMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyRoomDescriptionTG.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyRoomDescriptionTG_Tmp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyRoomInventory.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyRoomInventory_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyRoomLevelAmenityTG.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyRoomLevelAmenityTG_Tmp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyRoomMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyRoomMap_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyRoomRatePlanInventoryMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyRoomRatePlanInventoryMap_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyRoomsBiddingMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyRoomsBiddingMapCorp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyRoomTaxMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyRoomTypeRoomAmentiesMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertySpaMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertySpaMap_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyTaxesMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyTaxesMap_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyTaxMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyTaxMap_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyTopAttrationTG.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyTopAttrationTG_Tmp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyTripAdvisorAwardsM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyTripAdvisorM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyWeekendBiddingMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPropertyWeekendBiddingMapCorp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPurchaseHistory.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblRankManagement.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblRankManagement_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblRatePlanCancelPenaltyDescTGSearch_Tmp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblRatePlanCancelPenaltyDescTGSpecific_Tmp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblRatePlanCancelPenaltyTGSearch_Tmp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblRatePlanCancelPenaltyTGSpecific_Tmp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblRatePlanM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblRatePlanM_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblRatePlanTGSearch_Tmp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblRatePlanTGSpecific_Tmp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblRecentSavingsTx.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblRecentViewsTx.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblRoomAccessibilityM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblRoomFacilityDropDownM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblRoomOutdoorViewM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblRoomRateRangeM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblRoomRateTaxTGSpecific_Tmp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblRoomRateTGsearch_Tmp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblRoomRateTGSpecific_Tmp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblRoomTypeM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblRoomTypeTGSearch_Tmp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblRoomTypeTGSpecific_Tmp.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblServiceChargeM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblServiceChargeM_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblSettingM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblSettingsM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblStarCategoryM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblStateM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblSyncBookingToChannelMgrTracker.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblTaxChangeForBookingTx.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblTaxM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblTaxM_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblTGAmenitiesMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblTopSellingHotelsForTag.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblTripAdvisorReview.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblUserFeedbackTripAdvisor.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblUserGroupM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblUserM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblUserM_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblUserPropertyMap.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblUserPropertyMap_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblVideoUrlM.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblVideoUrlM_log.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblViewForConversion.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblWebsiteGuestUserMaster.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblWebsiteUserClaim.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblWebsiteUserLogin.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblWebsiteUserMater.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblWebsiteUserRoleMaster.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspAddDeleteBlackListDomain_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspBookingInsightsRoomsProductivityDashBoard_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspBookingList_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspCancelBooking_TG_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspChangeHistoryPromotions_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspChangeHistoryPropertyInformation_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspChangeHistoryPropertyPromotionMap_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspChangeHistoryPropertyRatePlanMap_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspChangeHistory_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspDeleteBlackListDomain_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspDeleteCorporateCompany_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspEnableDisableMasterTax_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetAeaLocalityForBid_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetAllLoyalityPointsCustomerData_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetAllPropertyForBooking_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetAllPropertyImagesWithHotelCount_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetAllUsers_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetAmenitiesByName_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetAwardLogByPropId_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetBestPossibleRatesForDashBoard_Temp_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetBiddingDumpByProp_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetBidLoadRateList_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetBidLoadRateUpgradeList_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetBookingDetailsByBookingIdPhoneEmail_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetBookingDetailsByBookingId_ForNotificationsRM_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetBookingDetailsByBookingId_ForNotifications_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetBookingDetailsByBookingId_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetBookingDetailsById_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetBookingDetails_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetBookingGuestRoomDetails_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetBookingsForTaxChangeForEmail_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetBookingsForTripAdvisorReview_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetBookingsToSyncWithChannelMgr_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetControllerActionByUserId_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetCountryCode_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetCustomerRewardPointData_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetExchangeRates_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetExpiringPointsToSendReminder_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetGuestBookingsByBookingId_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetHomeMenuByUserId_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetHotelDetailsbyID_TG_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetHotelFacilitiesByHeaderTG_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetLocalitiesWithIpropId_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetMacroAreas_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetMasterLog_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetMasterTaxMappingsToExport_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetMenuForMapping_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetMinIncomeListToExport_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetNegotiationInsightsDashBoard_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetOfferReviewDetailsbyID_TG_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetOfferReviewRoomRatePlans_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetOFRHotelARIForChannelMgr_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetOFRhotelsForChannelMgr_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetPendingNegotiationByCust_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetPhotoSubCategoryByCatId_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetPromoDiscount_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetPromotionalHotels_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetPropertiesAndChainByConserveCommission_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetPropertiesAndChainByPromoCode_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetPropertiesAndChainByUserForShow_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetPropertiesAndChainByUser_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetPropertiesByUser_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetPropertInfoDDForCH_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetPropertyData_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetPropertyMenuByUserId_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetPropertyPhotosTG_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetPropertyTaxByRoomType_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetRankManagement_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetRatePlanByName_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetRatePlanForMapping_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetRecentSavings_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetRoomDetailsTG_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetRoomDetails_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetRoomUpgrade_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetSearchText_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetSharingInformationByBookingId_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetTaxByName_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetTripAdvisorRating_TG_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetUnfinishedBalanceToBePaidData_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetUnfinishedHotelNotSelected_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetUnfinishedTransactionNegotiationByBookingId_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetUserHotelMapping_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspGetWishListByCustomerId_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspHotelResNotif_Old_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspMasterDumpRpt_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspMenuSelectByUserId_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspPerformanceOverviewDashBoard_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspPromotionsListByID_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspRewardPoints_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspSaveBidHotelUpgradeFromUnfinished_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspSaveBidHotelUpgradeFromUnfinished_Test_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspSaveBidHotelUpgrade_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspSaveBidHotel_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspSaveBidHotel_Test_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspSaveNewBookingFromOldBooking_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspSaveNewBookingFromOldBooking_Test_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspSaveRatesForRoomRatePlans_Ph_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspTripAdvisorMonthlyReport_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspUpdateHotelASSForMaximojoChannelMgr_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspUpdateLoyaltyBookingStatus_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="uspUpdateNegotiationByHotel_Result.cs">
+      <DependentUpon>OneFineRateModel.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OneFineRateAppUtil\OneFineRateAppUtil.csproj">
+      <Project>{b122cc70-553f-4f8f-a0a5-0e1afa42797a}</Project>
+      <Name>OneFineRateAppUtil</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Web.Config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="packages.config" />
+    <EntityDeploy Include="OneFineRateModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>OneFineRateModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="OneFineRateModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>OneFineRateModel.edmx</DependentUpon>
+      <LastGenOutput>OneFineRateModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="OneFineRateModel.edmx.diagram">
+      <DependentUpon>OneFineRateModel.edmx</DependentUpon>
+    </Content>
+    <Content Include="OneFineRateModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>OneFineRateModel.edmx</DependentUpon>
+      <LastGenOutput>OneFineRateModel.cs</LastGenOutput>
+    </Content>
+    <None Include="Web.Debug.Config">
+      <DependentUpon>Web.Config</DependentUpon>
+    </None>
+    <None Include="Web.Release.Config">
+      <DependentUpon>Web.Config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>55827</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:55827/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

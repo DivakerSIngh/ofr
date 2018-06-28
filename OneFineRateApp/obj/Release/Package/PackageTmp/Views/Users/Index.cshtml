@@ -1,0 +1,518 @@
+﻿@{
+    ViewBag.Title = "User Management";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+
+<link href="~/css/highCheckTree.css" rel="stylesheet" />
+<script src="~/js/highchecktree.js"></script>
+<script type="text/javascript">
+
+
+    $(document).ready(function () {
+
+        var grps = AjaxCallWithDataGET("/Services/Service.asmx/GetGroupForUserMap");
+        var groups = $.parseJSON(grps.d);
+
+        var chkData = "";
+
+        for (var i = 0; i < groups.length; i++) {
+            chkData += "<input type=\"checkbox\" name=\"Groups\" value=\"" + groups[i].id + "\" />  " + groups[i].name + "<br />";
+        }
+        $("#chkdiv").html(chkData);
+
+
+        bindgrid(); //binding datatable
+
+        //Inserting data through Ajax
+        document.getElementById('frmUsers').onsubmit = function (e) {
+            e.preventDefault();
+            var f = document.getElementById('frmUsers');
+            if (f.checkValidity()) {
+                document.getElementById('Progress').style.display = 'block';
+
+                var groupnames = "";
+
+                $("input[name='Groups']:checked").each(function () {
+                    groupnames += $(this).val() + ",";
+                });
+
+                if (groupnames == "") {
+                    toastr.info("Please select a group");
+                    return false;
+                }
+
+                var values = {
+                    //    Usersname: $("#txtUsername").val(),
+                    firstname: $("#txtFirstName").val(),
+                    lastname: $("#txtLastName").val(),
+                    emailID: $("#txtEmailId").val(),
+                    contact: $("#txtContact").val(),
+                    Active: $("#chkActive").is(':checked'),
+                    Groups: groupnames
+                };
+                var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("AddUsers")", values));
+                if (Data != null) {
+                    if (Data.st == '1') {
+                        bindgrid();
+                        resetform('frmUsers');
+                        $('.close').click();
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1000)
+                        toastr.success(Data.msg);
+                        return false;
+                    }
+                    else if (Data.st == '0') {
+                        toastr.error(Data.msg);
+                        return false;
+                    }
+                }
+
+            }
+        }
+
+        //Updating data through Ajax
+        document.getElementById('frmUsersUpdate').onsubmit = function (e) {
+            e.preventDefault();
+            var f = document.getElementById('frmUsersUpdate');
+            if (f.checkValidity()) {
+                document.getElementById('Progress').style.display = 'block';
+
+                var groupnames = "";
+
+                $("input[name='Groupsup']:checked").each(function () {
+                    groupnames += $(this).val() + ",";
+                });
+
+                if (groupnames == "") {
+                    toastr.info("Please select a group");
+                    return false;
+                }
+
+                var values = {
+                    //   Usersname: $("#txtUsernameup").val(),
+                    firstname: $("#txtFirstNameup").val(),
+                    lastname: $("#txtLastNameup").val(),
+                    emailID: $("#txtEmailIdup").val(),
+                    contact: $("#txtContactup").val(),
+                    Active: $("#chkActiveup").is(':checked'),
+                    id: $('#hdnId').val(),
+                    Groups: groupnames
+                };
+
+
+                var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("UpdateUsers")", values));
+                if (Data != null) {
+                    if (Data.st == '1') {
+                        bindgrid();
+                        resetform('frmUsersUpdate');
+                        $('.close').click();
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1000)
+                        toastr.success(Data.msg);
+                        return true;
+                    }
+                    else if (Data.st == '0') {
+                        toastr.error(Data.msg);
+                        return false;
+                    }
+                }
+
+            }
+        }
+
+        //Pop up cancel button click event
+        $('#btnCancel').click(function () {
+            resetform('frmUsers');
+            $('.close').click();
+        });
+    });
+
+    // Delete data from list
+    function DeleteData(id) {
+        bootbox.confirm("Are you sure?", function (result) {
+            if (result == true) {
+                document.getElementById('Progress').style.display = 'block';
+
+                var values = { id: id };
+                var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("DeleteUsers")", values));
+                if (Data != null) {
+                    if (Data.st == '1') {
+                        bindgrid();
+                        $('.close').click();
+                        toastr.success(Data.msg);
+                        return true;
+                    }
+                    else if (Data.st == '0') {
+                        toastr.error(Data.msg);
+                        return false;
+                    }
+
+                }
+            }
+        });
+    }
+
+    function EditHotelMapping(id) {
+        var values = { id: id };
+        AjaxCallWithDataMVC("@Url.Action("EditHotelMapping")", values);
+    }
+
+    // bind list
+    function bindgrid() {
+
+        try {
+            var aoColumns =
+                [
+                // { "sTitle": "UserName", "mData": "sUserName" },
+                 { "sTitle": "Email", "mData": "sEmail" },
+                 { "sTitle": "Name", "mData": "sFirstName" },
+                  { "sTitle": "Groups", "mData": "sGroup" },
+                 //{ "sTitle": "First Name", "mData": "sFirstName" },
+                 //{ "sTitle": "Last Name", "mData": "sLastName", "bSortable": false },
+                 //{ "sTitle": "Contact", "mData": "sContact", "bSortable": false },
+                 { "sTitle": "Status", "mData": "cStatus" },
+                 {
+                     "sTitle": "Created Date", "mData": "dtCreatedOn", "bSortable": false,
+                     "mRender": function (data, type, full) {
+                         return getNorDateTime(data);
+                     }
+                 },
+                 {
+                     "sTitle": "Modify Date", "mData": "dtActionDate", "bSortable": false,
+                     "mRender": function (data, type, full) {
+                         return getNorDateTime(data);
+                     }
+                 },
+                 { "sTitle": "Modified By", "mData": "ModifiedBy", "bSortable": false },
+                 {
+                     "sTitle": "Hotel Count", "mData": "HotelCount", "bSortable": false,
+                     "mRender": function (data, type, full) {
+                         var html = '<a href="#" onclick="ShowMappedHotels(' + encodeURIComponent(full.iUserId) + ')" style="color:black;">' + data + '</a>';
+                         return html;
+                     }
+                 },
+                 {
+                     "sTitle": "Edit", "mData": "iUserId", "bSortable": false,
+                     "mRender": function (data, type, full) {
+
+                         console.log(full);
+                         var html = '<button type="button" onclick="EditData(this)"; ename=' + encodeURIComponent(full.sUserName) + ' eid=' + encodeURIComponent(full.iUserId) + ' efName=' + encodeURIComponent(full.sFirstName) + ' elName=' + encodeURIComponent(full.sLastName) + ' eEmail=' + encodeURIComponent(full.sEmail) + ' eContact=' + encodeURIComponent(full.sContact) + ' eStatus=' + encodeURIComponent(full.cStatus) + ' class=" btn btn-warning btn-xs margintop10">Edit</button>&nbsp';
+                         html += '<a href="/UserHotelMap/index?id=' + data + '&fname=' + encodeURIComponent(full.sFirstName) + '&lname=' + encodeURIComponent(full.sLastName) + '"><input type="button" value="Map Hotels"  class=" btn btn-primary btn-xs margintop10"/></a>';
+                         html += '<button type="button" onclick="ResetPassword(this)" eid=' + encodeURIComponent(full.iUserId) + ' eEmail=' + encodeURIComponent(full.sEmail) + ' class="btn btn-default btn-xs margintop10">Reset Password</button>';
+                         // html += '<button type="button" onclick="EditHotelMapping(' + data + ')";  class="btn btn-danger">Map Hotels</button>';
+                         // html += '<button type="button" onclick="DeleteData(' + data + ')";  class="btn btn-danger">Delete</button>';
+                         return html;
+                     }
+                 }
+
+
+                ];
+            DatatableServerSide("#tblData", aoColumns, "/Services/Service.asmx/GetAllUsers");
+            // DatatableServerSide("#tblData", aoColumns, "http://localhost/OneFineRateApp/Services/Service.asmx/GetAllUsers");
+            //DatatableServerSide("#tblData", aoColumns, "OFRApi/ExtranetSrv.svc/GetAllRecords1?id=1");
+        }
+        catch (e) {
+
+        }
+
+    }
+
+
+    function ResetPassword(obj) {
+
+        if (confirm('Are you sure you want to reset to default password ?')) {
+            var values = { userId: decodeURIComponent($(obj).attr('eid')), email: decodeURIComponent($(obj).attr('eEmail')) };
+
+            $.post("@Url.Action("ResetPasswordDefault", "Users")", values).done(function (data) {
+
+                if (data == 'True') {
+                    toastr.success('Password successfully reset to default !');
+                }
+            })
+
+        }
+
+
+        //AjaxCallWithDataMVC("@Url.Action("ResetPasswordDefault", "Users")", values);
+    }
+
+
+    //fill form on click edit in the list
+    function EditData(obj) {
+        $('#hdnId').val(decodeURIComponent($(obj).attr('eid')));
+        // $("#txtUsernameup").val(decodeURIComponent($(obj).attr('ename')));
+        $("#txtFirstNameup").val(decodeURIComponent($(obj).attr('efName')));
+        $("#txtLastNameup").val(decodeURIComponent($(obj).attr('elName')));
+        $("#txtEmailIdup").val(decodeURIComponent($(obj).attr('eEmail')));
+        $("#txtContactup").val(decodeURIComponent($(obj).attr('eContact')));
+        if (decodeURIComponent($(obj).attr('eStatus')) == "Live")
+            $("#chkActiveup").prop("checked", true);
+        else
+            $("#chkActiveup").prop("checked", false);
+
+
+        $('input[name="Groupsup"]').prop("checked", false);
+
+        var grps = AjaxCallWithDataGET("/Services/Service.asmx/GetGroupForUserMap");
+        var groups = $.parseJSON(grps.d);
+
+        var chkDataUp = "";
+        $("#chkdivup").html(chkDataUp);
+        for (var i = 0; i < groups.length; i++) {
+            chkDataUp += "<input type=\"checkbox\" name=\"Groupsup\" value=\"" + groups[i].id + "\" />  " + groups[i].name + "<br />";
+        }
+        $("#chkdivup").html(chkDataUp);
+
+
+        var grps = AjaxCallWithDataGET("/Services/Service.asmx/GetUserMappedGroups?id=" + decodeURIComponent($(obj).attr('eid')));
+        var groups = $.parseJSON(grps.d);
+
+        for (var i = 0; i < groups.length; i++) {
+            $('input[name="Groupsup"][value="' + groups[i].id + '"]').prop("checked", true);
+        }
+
+        $('#UpdateUsers').modal({
+            show: 'true'
+        });
+
+    }
+
+    function ShowMappedHotels(id) {
+
+        var mns = AjaxCallWithDataGET("/Services/Service.asmx/GetUserMappedHotelsForShow?id=" + id);
+        var menus = $.parseJSON(mns.d);
+        var chkData = "", PrevParent = "", onlyHotelsWithoutChain = true;
+
+        var mockData = [], children = [];
+        var parentitem;
+        for (var i = 0; i < menus.length; i++) {
+            if (menus[i].parent != "") {
+                onlyHotelsWithoutChain = false;
+                if (PrevParent == menus[i].parent) {
+
+                    children.push({ "item": { "id": "" + menus[i].id, "label": menus[i].name, checked: menus[i].checked == 0 ? false : true } });
+                }
+                else {
+                    if (PrevParent != "") {
+                        mockData.push({ "item": { "id": "Parent" + i, "label": PrevParent, checked: false }, children: children });
+                    }
+                    children = [];
+                    children.push({ "item": { "id": "" + menus[i].id, "label": menus[i].name, checked: menus[i].checked == 0 ? false : true } });
+                    PrevParent = menus[i].parent;
+                }
+            }
+            else {
+                mockData.push({ "item": { "id": "" + menus[i].id, "label": menus[i].name, checked: menus[i].checked == 0 ? false : true } });
+            }
+        }
+        if (!onlyHotelsWithoutChain)
+            mockData.push({ "item": { "id": "Parent" + menus.length + 1, "label": PrevParent, checked: false }, children: children });
+
+        var chkData = "";
+        $("#chkdivMap").html(chkData);
+
+        $('#chkdivMap').highCheckTree({
+            data: mockData,
+            ReadOnly: true
+        });
+
+        $('#chkdivMap > .checktree li .checkbox').css('cursor', 'text');
+
+        $(".expanded").click();
+
+
+        $('#UsersMapping').modal({
+            show: 'true'
+        });
+
+    }
+
+</script>
+@*<form id="list">*@
+<div class="container margintop20">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-md-6">
+                    <h4 class="panel-title">
+                        Users
+                    </h4>
+                </div>
+                <div class="col-md-6">
+                    <button type="button" class="pull-right btn btn-warning" data-toggle="modal" data-target="#AddNewUsers"><i class="fa fa-plus"></i> Add Users </button>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+
+            <div class="table-responsive margintop20">
+                <table class="table table-striped table-bordered table-hover display" id="tblData"></table>
+            </div>
+            <!-- End  table -->
+        </div>
+    </div>
+    <!-- container div END bottom -->
+</div>
+@*</form>*@
+<!-- Add Policy -->
+<form id="frmUsers">
+    <div id="AddNewUsers" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-titAdd "><i class="fa fa-users"></i> users</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        @*<div class="col-xs-4">
+                                Username
+                            </div>
+                            <div class="col-xs-8">
+                                @Html.TextBox("txtUsername", null, new { @class = "form-control", oninvalid = "setCustomValidity('No special characters allowed')", onchange = "try{setCustomValidity('')}catch(e){}", pattern = "[A-Za-z0-9@._]+", maxlength = "50", required = true })
+                            </div>*@
+                        <div class="col-xs-3" style="width:20%;">
+                            <span class="mandatory">*</span>  Email ID
+                        </div>
+                        <div class="col-xs-9">
+                            @Html.TextBox("txtEmailId", null, new { @class = "form-control", oninvalid = "setCustomValidity('Please provide correct Email ID')", onchange = "try{setCustomValidity('')}catch(e){}", pattern = "^[a-zA-Z0-9_\\.-]+@([a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$", maxlength = "50", required = true })
+                        </div>
+                        <div class="col-xs-3 margintop10" style="width:20%;">
+                            <span class="mandatory">*</span>  Contact
+                        </div>
+                        <div class="col-xs-9 margintop10">
+                            @Html.TextBox("txtContact", null, new { @class = "form-control", oninvalid = "setCustomValidity('Please enter valid contact number')", onchange = "try{setCustomValidity('')}catch(e){}", pattern = "[0-9]+", maxlength = "15", minlength = "10", required = true })
+                        </div>
+                        <div class="col-xs-3 margintop10" style="width:20%;">
+                            <span class="mandatory">*</span>  First Name
+                        </div>
+                        <div class="col-xs-9 margintop10">
+                            @Html.TextBox("txtFirstName", null, new { @class = "form-control", oninvalid = "setCustomValidity('Please enter only alphabets')", onchange = "try{setCustomValidity('')}catch(e){}", pattern = "^[a-zA-Z]+[a-zA-Z ]*$", maxlength = "50", required = true })
+                        </div>
+                        <div class="col-xs-3 margintop10" style="width:20%;">
+                            <span class="mandatory">*</span>  Last Name
+                        </div>
+                        <div class="col-xs-9 margintop10">
+                            @Html.TextBox("txtLastName", null, new { @class = "form-control", oninvalid = "setCustomValidity('Please enter only alphabets')", onchange = "try{setCustomValidity('')}catch(e){}", pattern = "^[a-zA-Z]+[a-zA-Z ]*$", maxlength = "50", required = true })
+                        </div>
+
+                        <div class="col-xs-3 margintop10" style="width:20%;">
+                            Active
+                        </div>
+                        <div class="col-xs-9 margintop10">
+                            @Html.CheckBox("chkActive")
+                        </div>
+                        <div class="col-xs-3" style="width:20%;">
+                            Group
+                        </div>
+                        <div id="chkdiv" class="col-xs-9">
+                            @*<input type="checkbox" name="Groups" value="" /> <br />*@
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="btnSubmit" class="btn btn-primary">Save</button>
+                    <button type="button" id="btnCancel" class="btn btn-danger">Cancel</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+<!-- Update Countries -->
+<form id="frmUsersUpdate">
+    @Html.Hidden("hdnId")
+    <div id="UpdateUsers" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Update User</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        @*<div class="col-xs-4">
+                                Username
+                            </div>
+                            <div class="col-xs-8">
+                                @Html.TextBox("txtUsernameup", null, new { @class = "form-control", oninvalid = "setCustomValidity('No special characters allowed')", onchange = "try{setCustomValidity('')}catch(e){}", pattern = "[A-Za-z0-9@._]+", maxlength = "50", required = true, disabled = "true" })
+                            </div>*@
+                        <div class="col-xs-3" style="width:20%;">
+                            <span class="mandatory">*</span>  Email ID
+                        </div>
+                        <div class="col-xs-9">
+                            @Html.TextBox("txtEmailIdup", null, new { @class = "form-control", oninvalid = "setCustomValidity('Please provide correct Email ID')", onchange = "try{setCustomValidity('')}catch(e){}", pattern = "^[a-zA-Z0-9_\\.-]+@([a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$", maxlength = "50", required = true, disabled = "true" })
+                        </div>
+
+                        <div class="col-xs-3 margintop10" style="width:20%;">
+                            <span class="mandatory">*</span>  First Name
+                        </div>
+                        <div class="col-xs-9 margintop10">
+                            @Html.TextBox("txtFirstNameup", null, new { @class = "form-control", oninvalid = "setCustomValidity('Please enter only alphabets')", onchange = "try{setCustomValidity('')}catch(e){}", pattern = "^[a-zA-Z]+[a-zA-Z ]*$", maxlength = "50", required = true })
+                        </div>
+
+                        <div class="col-xs-9 margintop10" style="width:20%;">
+                            <span class="mandatory">*</span>  Last Name
+                        </div>
+                        <div class="col-xs-9 margintop10">
+                            @Html.TextBox("txtLastNameup", null, new { @class = "form-control", oninvalid = "setCustomValidity('Please enter only alphabets')", onchange = "try{setCustomValidity('')}catch(e){}", pattern = "^[a-zA-Z]+[a-zA-Z ]*$", maxlength = "50", required = true })
+                        </div>
+                        <div class="col-xs-3 margintop10" style="width:20%;">
+                            <span class="mandatory">*</span>  Contact
+                        </div>
+                        <div class="col-xs-9 margintop10">
+                            @Html.TextBox("txtContactup", null, new { @class = "form-control", oninvalid = "setCustomValidity('Please enter valid contact number')", onchange = "try{setCustomValidity('')}catch(e){}", pattern = "[0-9]+", maxlength = "15", minlength = "10", required = true })
+                        </div>
+                        <div class="col-xs-3 margintop10" style="width:20%;">
+                            <label>  Active</label>
+                        </div>
+                        <div class="col-xs-9 margintop10">
+                            @Html.CheckBox("chkActiveup")
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 margintop10" style="width:20%;">
+                            Group
+                        </div>
+                        <div class="col-xs-9 margintop10">
+                            <div id="chkdivup">@*<input type="checkbox" name="Groups" value="" /> <br />*@</div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="btnUpdate" class="btn btn-primary">Update</button>
+                    <button type="button" id="btnCancel" class="btn btn-danger" onclick="$('.close').click();">Cancel</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+<!-- Show Mapping -->
+<form id="frmUsersMapping">
+    <div id="UsersMapping" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Mapped Hotels and Chains</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div id="chkdivMap" class="col-xs-12"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="btnUpdate" class="btn btn-primary" onclick="$('.close').click();">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+

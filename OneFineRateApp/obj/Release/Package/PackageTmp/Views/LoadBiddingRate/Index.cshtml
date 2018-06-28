@@ -1,0 +1,427 @@
+﻿@model OneFineRateBLL.Entities.etblPropertyBiddingRateM
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+<style>
+    .Red {
+        color: #FF0000;
+        font-size: 14px;
+    }
+</style>
+
+<script src="~/js/Jquery1.10.3.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script src="~/js/jquery-ui.js"></script>
+@*//Scripts for validation server side through ajax call*@
+@System.Web.Optimization.Scripts.Render("~/bundles/validation")
+<script type="text/javascript">
+    $(document).ready(function () {
+        var d = new Date();
+
+
+        var ThreeYearDate = new Date();
+        var a = ThreeYearDate.getFullYear();
+        ThreeYearDate.setFullYear(a + 3);
+
+        $('#datefrom').datepicker({
+            startDate: d,
+            minDate: d,
+            maxDate: ThreeYearDate,
+            autoclose: true,
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true,
+            onClose: function (selectedDate) {
+                $("#dateto").datepicker("option", "minDate", selectedDate);
+            }
+        })
+
+        $('#dateto').datepicker({
+            startDate: d,
+            minDate: d,
+            maxDate: ThreeYearDate,
+            autoclose: true,
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true//,
+            //onClose: function (selectedDate) {
+            //    $("#datefrom").datepicker("option", "maxDate", selectedDate);
+            //}
+        })
+        //On Room selection
+        $("#ddlRoom").change(function () {
+            var ddlsource = "#ddlRoom";
+            var ddltarget = "#ddlrateplan";
+            if ($(ddlsource).val() != '') {
+                var url = '@Url.Action("BindRatePlans")';
+                $.getJSON(url, { id: $(ddlsource).val() }, function (data) {
+                    $(ddltarget).empty();
+                    $.each(data.suggestions, function (index, optionData) {
+                        $(ddltarget).append("<option value='" + optionData.Id + "'>" + optionData.Name + "</option>");
+                    });
+                    if (data.suggestions.length > 0) {
+                        $('#s2id_ddlrateplan').find('span.select2-chosen').text(data.suggestions[0].Name);
+                        $('#s2id_ddlrateplan').find('a').removeClass("select2-default");
+
+                    }
+                    else
+                        $('#s2id_ddlrateplan').find('span.select2-chosen').text("");
+
+                    setTimeout(function () {
+                        GetUpgradeRooms();
+                    }, 200);
+                });
+            }
+            else {
+                $(ddltarget).empty();
+            }
+        });
+
+        $("#ddlrateplan").change(function () {
+            GetUpgradeRooms();
+        });
+
+        function GetUpgradeRooms() {
+            var ddlRoom = "#ddlRoom";
+            var ddlRP = "#ddlrateplan";
+            var values = {
+                Room: $(ddlRoom).val(),
+                rateplan: $(ddlRP).val()
+            }
+            var Data = AjaxCallWithDataMVC("@Url.Action("GetUpgradeRooms")", values);
+            var Rooms = Data.suggestions;
+
+            var htmlbtb = "";
+            var htmldisc = "";
+            $('#BarToBar').html(htmlbtb);
+            $('#WishRate').html(htmldisc);
+            for (var i = 0; i < Rooms.length; i++) {
+                htmlbtb += "<div class=\"col-xs-8 col-md-3 margintop10 proom\">";
+                htmlbtb += "<input type=\"checkbox\" name=\"BTB\" value=\"" + Rooms[i].Roomid + "\" disabled> " + Rooms[i].Name;
+                htmlbtb += "</div>";
+
+                htmldisc += "<div class=\"col-xs-8 col-md-3 margintop10 proom\">";
+                htmldisc += Rooms[i].Name + "<span class=\"blue\">(" + Rooms[i].Currency + ")</span>";
+                htmldisc += "<input type=\"text\" name=\"DISC_" + Rooms[i].Roomid + "\" placeholder=\"" + Rooms[i].Currency + "\" pattern=\"[0-9]+([\\.,][0-9]+)?\" class=\"form-control cprice\" oninvalid=\"setCustomValidity('Only integers/decimals are allowed ')\" onchange=\"    try { setCustomValidity('') } catch (e) { }\" onblur=\"return validateUpgradeRate(this, 1);\" disabled >";
+                htmldisc += "</div>";
+            }
+            $('#BarToBar').html(htmlbtb);
+            $('#WishRate').html(htmldisc);
+            $("input[name='Upgrade']:checked").prop("checked", false);
+            $('.cprice').keypress(function (event) {
+                return isInteger(event, this, 9)
+            });
+        }
+
+        $("input[name='Upgrade']").change(function () {
+            var Upgrade = $("input[name='Upgrade']:checked").val();
+            if (Upgrade != "Wish") {
+                $("input[name*='DISC']").each(function () {
+                    //$(this).prop("checked", false);
+                    //$(this).prop("disabled", true);
+
+                    //$("input:text[name='DISC_" + $(this).attr("value") + "']").attr('disabled', true);
+                    //$("input:text[name='DISC_" + $(this).attr("value") + "']").val("");
+
+                    $(this).attr('disabled', true);
+                    $(this).val("");
+                });
+
+                $("input[name='BTB']").each(function () {
+                    $(this).prop("disabled", false);
+                });
+            }
+            else {
+                $("input[name='BTB']").each(function () {
+                    $(this).prop("checked", false);
+                    $(this).prop("disabled", true);
+
+                    //$("input:text[name='BTB_" + $(this).attr("value") + "']").attr('disabled', true);
+                    //$("input:text[name='BTB_" + $(this).attr("value") + "']").val("");
+                });
+
+                $("input[name*='DISC']").each(function () {
+                    $(this).prop("disabled", false);
+                });
+            }
+        });
+
+        bindgrid();
+
+        $("#ui-datepicker-div").hide();
+    });
+
+    function RefreshAndStay() {
+        window.location.href = "/LoadBiddingRate";
+    }
+
+    function Overview() {
+        // var StartDate = $('#FromDate').val();
+        window.location.href = '/LoadBiddingRate/GoToOverview';
+    }
+
+    //function checkChange(cb) {
+    //    $("input:text[name='" + cb.name + "_" + cb.value + "']").attr('disabled', !cb.checked);
+    //    $("input:text[name='" + cb.name + "_" + cb.value + "']").val("");
+    //}
+
+    //get  result on button Save click
+    function GetResult(data) {
+        if (data.st == '1') {
+            //toastr.success(data.msg);
+            //bindgrid();
+            //setTimeout(function () {
+            //    window.location.href = "/LoadBiddingRate";
+            //}, 2000);
+            $('#UpdateUsers').modal({
+                show: 'true'
+            });
+        }
+        else {
+            toastr.error(data.msg);
+        }
+    }
+    //Fetch data on button click before calling controller
+    function FetchData() {
+        var Data = [];
+        var Upgrade = $("input[name='Upgrade']:checked").val();
+        if (Upgrade == "BTB") {
+
+            $("input[name='BTB']:checked").each(function () {
+                Data.push({
+                    roomid: $(this).attr("value"),
+                    value: -1
+                });
+            });
+        }
+        else {
+
+            $("input[name*='DISC']").each(function () {
+                var value = $(this).val();
+                var ID = $(this).attr("name");
+                ID = ID.substring(5);
+                //if (parseInt(value) > 0) {
+                Data.push({
+                    roomid: ID,
+                    value: value
+                });
+                //}
+            });
+        }
+        $("#hdnJson").val(JSON.stringify(Data));
+        return true;
+    }
+
+    function bindgrid() {
+        $('#BidRateList').hide();
+
+        try {
+            var Data = AjaxCallWithDataMVC("@Url.Action("GetBidLoadRateList")");
+
+            if (Data != null) {
+                $("#tblData tr:not(:first)").remove();
+
+                var JS = $.parseJSON(Data);
+                var table = document.getElementById("tblData");
+                for (var i = 0; i < JS.length; i++) {
+                    if (JS[i].sRoomName != null && JS[i].sRoomName != '') {
+                        var row = table.insertRow(i + 1);
+                        var cell1 = row.insertCell(0);
+                        var cell2 = row.insertCell(1);
+                        var cell3 = row.insertCell(2);
+                        var cell4 = row.insertCell(3);
+                        var cell5 = row.insertCell(4);
+                        cell1.innerHTML = JS[i].sRoomName;
+                        cell2.innerHTML = JS[i].sRatePlan;
+                        cell3.innerHTML = JS[i].ValidFrom;
+                        cell4.innerHTML = JS[i].ValidTo;
+                        cell5.innerHTML = JS[i].UpgradeAvailable == 0 ? '<span class="Red"> No room upgrades </span>' : '<button type="button" onclick="ViewUpgrade(\'' + JS[i].ValidFrom + '\',\'' + JS[i].ValidTo + '\');" class="btn btn-success">View</button>&nbsp';
+                    }
+                }
+            }
+
+            $('#BidRateList').show();
+        }
+        catch (e) {
+        }
+    }
+
+    function ViewUpgrade(validfrom, validto) {
+        var option = {
+            ValidFrom: validfrom,
+            ValidTo: validto
+        }
+        var Data = AjaxCallWithDataMVC("@Url.Action("GetBidLoadRateUpgradeList")", option);
+
+        $("#table tr:not(:first)").remove();
+
+        var JS = $.parseJSON(Data);
+        var table = document.getElementById("table");
+        for (var i = 0; i < JS.length; i++) {
+            var row = table.insertRow(i + 1);
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            var cell3 = row.insertCell(2);
+            var cell4 = row.insertCell(3);
+            var cell5 = row.insertCell(4);
+            cell1.innerHTML = JS[i].sRoomName;
+            cell2.innerHTML = JS[i].dUpgradeCharge;
+            cell3.innerHTML = JS[i].sUpgradeType;
+            cell4.innerHTML = JS[i].ValidFrom;
+            cell5.innerHTML = JS[i].ValidTo;
+        }
+
+        $('#UpgradesDiv').modal({
+            show: 'true'
+        });
+        return false;
+    }
+
+</script>
+@using (Ajax.BeginForm("AddUpdate", "LoadBiddingRate", new AjaxOptions() { InsertionMode = InsertionMode.Replace, HttpMethod = "POST", OnSuccess = "GetResult" }))
+{
+    @Html.HiddenFor(x => x.selectedRoomPrices, new { id = "hdnJson" })
+    <div class="container margintop20">
+        <div class="row panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title"> Bid Room / Rate Setup  </h4>
+            </div>
+            <div class="panel-body">
+
+                <!-- Bidding rate section1-->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h4>Choose your Room Type & link to an existing Rate Plan for Bidding.</h4>
+                    </div>
+                    <div class="col-xs-4">
+                        Room Name
+                        @Html.DropDownListFor(m => m.iRoomId, new SelectList(OneFineRateBLL.BL_tblPropertyRoomMap.GetAllPropertyRoomNames(Convert.ToInt32(Session["PropId"])), "Id", "Name"), "", new { @class = "form-control", required = "true", id = "ddlRoom" })
+                        @Html.ValidationMessageFor(m => m.iRoomId, "", new { @class = "red" })
+                    </div>
+                    <div class="col-xs-4">
+                        Rate Plan
+                        @Html.DropDownListFor(m => m.iRPId, new SelectList(OneFineRateBLL.BL_tblPropertyRoomMap.GetAllPropertyRoomNames(0), "Id", "Name"), "", new { @class = "form-control", required = "true", id = "ddlrateplan" })
+                        @Html.ValidationMessageFor(m => m.iRPId, "", new { @class = "red" })
+                    </div>
+                </div>
+                <div class="row margintop10">
+                    <div class="col-xs-2">
+                        From
+                        @Html.TextBoxFor(u => u.datefrom, new { @class = "form-control width65", onkeyup = "this.value=''", required = "true" })
+                        <div class="col-xs-4">@Html.ValidationMessageFor(m => m.datefrom, "", new { @class = "red" })</div>
+                    </div>
+                    <div class="col-xs-2">
+                        To
+                        @Html.TextBoxFor(u => u.dateto, new { @class = "form-control width65", onkeyup = "this.value=''", required = "true" })
+                        <div class="col-xs-4"> @Html.ValidationMessageFor(m => m.dateto, "", new { @class = "red" })</div>
+                    </div>
+
+                </div>
+                <div class="row ">
+
+
+                </div>
+                <!-- Upgrade Charges  -->
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>Upgrade Charges</h4>
+                        <hr>
+                    </div>
+                    <div id="divprices">
+                        <div class="col-md-12">
+                            <input type="radio" name="Upgrade" value="BTB"> BAR-TO-BAR
+                            <br>
+                            <div id="BarToBar">
+
+                            </div>
+                        </div>
+                        <div class="col-md-12" style="margin-top: 40px;">
+                            <input type="radio" name="Upgrade" value="Wish"> WISH RATE
+                            <br>
+                            <div id="WishRate">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Upgrade Charges completed-->
+            </div>
+            <!-- Panel group div END  -->
+        </div>
+        <div class="row pull-right">
+            <div class="col-xs-12 padding10">
+                <input type="submit" class="btn btn-primary" onclick="return FetchData();" value="Save">
+            </div>
+        </div>
+    </div>
+}
+
+<div class="container panel-body" id="BidRateList" style="display:none;">
+
+    <div class="table-responsive margintop20">
+        <table class=" table table-striped table-bordered table-hover display" id="tblData" style="text-align:center;">
+            <tr>
+                <th style="text-align: center;">Room Name</th>
+                <th style="text-align: center;">Rate Plan</th>
+                <th style="text-align: center;">Valid From</th>
+                <th style="text-align: center;">Valid To</th>
+                <th style="text-align: center;">Room Upgrades</th>
+            </tr>
+        </table>
+    </div>
+
+</div>
+
+<form id="frmUpgrades">
+    <div id="UpgradesDiv" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">UPGRADES</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row table-responsive" id="tables">
+                        <table id="table" class=" table table-striped table-bordered table-hover">
+                            <tr>
+                                <th style="text-align: center;">Room Name</th>
+                                <th style="text-align: center;">Upgrade Charge</th>
+                                <th style="text-align: center;">Upgrade Type</th>
+                                <th style="text-align: center;">Valid From</th>
+                                <th style="text-align: center;">Valid To</th>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+
+<form id="frmStayOrGo">
+    <div id="UpdateUsers" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" style="display:none" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Success</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row" style="margin-left:5px;margin-right:5px;">
+                        Bidding room and rate plan have been saved successfully. To provide discounts for these rates, please go to Bidding -> Bulk Update, or click "Provide discounts" below
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnUpdate" class="btn btn-primary" onclick="RefreshAndStay()">Stay here</button>
+                    <button type="button" id="btnCancel" class="btn btn-primary" onclick="Overview()">Provide discounts</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>

@@ -1,0 +1,49 @@
+﻿@model OneFineRateBLL.Entities.etblPropertyTaxMap
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutProperty.cshtml";
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        bindgrid();
+    });
+    // bind list
+    function bindgrid() {
+
+        try {
+            var aoColumns =
+                [
+                   {
+                       "sTitle": "Stay From", "mData": "dtStayFrom", "bSortable": false
+                   },
+                 {
+                     "sTitle": "Stay To", "mData": "dtStayTo", "bSortable": false
+                  },
+                 { "sTitle": "Rate Plan", "mData": "RatePlan", "bSortable": false },
+                   { "sTitle": "Taxes", "mData": "Tax", "bSortable": false },
+                 { "sTitle": "Status", "mData": "cStatus", "bSortable": false}
+                ];
+            DatatableServerSide("#tblData", aoColumns, "/Services/Service.asmx/GetPropertyTaxes");
+        }
+        catch (e) {
+
+        }
+
+    }
+</script>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4 class="panel-title">
+            <strong> Taxes and Feeds</strong>
+        </h4>
+    </div>
+    <div class="panel-body">
+        
+        <div class="table-responsive margintop20">
+            <table class="display" id="tblData"></table>
+        </div>
+        <!-- End  table -->
+    </div>
+</div>
+

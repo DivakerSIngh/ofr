@@ -1,0 +1,768 @@
+﻿@model OneFineRateBLL.Entities.eBookingModify
+@using OneFineRateAppUtil
+@{
+    ViewBag.Title = "Modify Confirmation";
+}
+<style>
+    #divwhole_temp {
+        width: 290px;
+        display: none;
+        border: 1px solid #d1d1d1;
+        background-color: #fff;
+        position: absolute;
+        top: 70px;
+        right: 15%;
+        height: 550px;
+        overflow: auto;
+        color: #000;
+        z-index: 10;
+    }
+
+    .childli {
+        float: left;
+        width: 104px;
+        margin-right: 14px;
+        margin-top: 10px;
+    }
+
+    #overview {
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    #divwhole_temp {
+        overflow-x: hidden;
+        overflow-y: auto;
+        max-height: 350px;
+    }
+
+    .lightBlue {
+        background-color: lightblue;
+    }
+</style>
+
+<div class="thirdsection margintop20">
+
+    @if (Model.BookingStatus == "expire")
+    {
+        <div class="container">
+            <div class="row">
+                <div class="confbluehdg">
+                    <strong class="fontsize18a">This Booking is Expired ! </strong>
+                </div>
+                <div class="col-xs-8">
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <img src="@Model.sImgUrl" class="imgheight150" />
+                        </div>
+                        <div class="col-xs-8">
+                            <h4 style="font-weight:bold;">@Model.HotelName</h4>
+                            <img src="~/images/inner-star@(Model.StarCategoryId).png" /><br />
+                            @Model.StreetAddress <br />
+                            @Model.Address
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 width20percent"><strong>Booking Date/ Time </strong></div>
+                        <div class="col-xs-1" style="width:1% !important;">:</div>
+                        <div class="col-xs-3 width20percent">@Model.ReservationDate</div>
+                        <div class="col-xs-2"><strong>Booking Id </strong></div>
+                        <div class="col-xs-1" style="width:1% !important;">:</div>
+                        <div class="col-xs-3 width20percent">@Model.BookingId</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 width20percent"><strong>Your Reservation  </strong></div>
+                        <div class="col-xs-1" style="width:1% !important;">:</div>
+                        <div class="col-xs-3 width20percent">@Model.Reservation</div>
+                        <div class="col-xs-2"><strong>Status </strong></div>
+                        <div class="col-xs-1" style="width:1% !important;">:</div>
+                        <div class="col-xs-4 ">@Model.BookingStatus</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 width20percent"><strong>Check-In Date  </strong></div>
+                        <div class="col-xs-1" style="width:1% !important;">:</div>
+                        <div class="col-xs-3 width20percent">@Model.CheckIn</div>
+                        <div class="col-xs-2"><strong>Check-Out Date</strong></div>
+                        <div class="col-xs-1" style="width:1% !important;">:</div>
+                        <div class="col-xs-4 ">@Model.ChekOut</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 width20percent"><strong>Booked By </strong></div>
+                        <div class="col-xs-1" style="width:1% !important;">:</div>
+                        <div class="col-xs-3 width20percent">@Model.Booker</div>
+                        <div class="col-xs-2"><strong>E-mail Id  </strong></div>
+                        <div class="col-xs-1" style="width:1% !important;">:</div>
+                        <div class="col-xs-4 ">@Model.EmailOFR</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 width20percent"><strong>Contact No</strong></div>
+                        <div class="col-xs-1" style="width:1% !important;">:</div>
+                        <div class="col-xs-3 width20percent">@Model.MobileOFR</div>
+                    </div>
+                </div>
+                <div class="col-xs-4">
+                    <div class="row">
+                        <div class="margintop10 border1" style="width:100%;">
+                            <div id="googleMap" style=" width:100%;height:150px;"></div>
+                        </div>
+                    </div>
+
+                    @if (Model.cBookingType == "R")
+                    {
+                        <div class="row">
+                            <div class="col-xs-9"><h4>RATE INFORMATION </h4></div>
+                            <div class="col-xs-3"></div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-xs-7">Offer Price Per Room/ Night</div>
+                            <div class="col-xs-1">:</div>
+                            <div class="col-xs-4">@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.AvgAmount * ViewBag.dExchangeRate))</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-7">Extra Bed Charges</div>
+                            <div class="col-xs-1">:</div>
+                            <div class="col-xs-4">@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.ExtraBedAmount * ViewBag.dExchangeRate))</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-7">Subtotal</div>
+                            <div class="col-xs-1">:</div>
+                            <div class="col-xs-4">@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.TotalAmount * ViewBag.dExchangeRate) + Convert.ToDecimal(Model.dExtraBedCharges * ViewBag.dExchangeRate))</div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-7">Taxes and Service Fees </div>
+                            <div class="col-xs-1">:</div>
+                            <div class="col-xs-4">@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.Tax * ViewBag.dExchangeRate))</div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-xs-7"><b>Total Charges </b></div>
+                            <div class="col-xs-1">:</div>
+                            <div class="col-xs-4"><b>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.SubTotal * ViewBag.dExchangeRate))</b></div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row">
+                            <div class="col-xs-7"><strong>Total Amount</strong></div>
+                            <div class="col-xs-1">:</div>
+                            <div class="col-xs-4">@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dCounterOffer * ViewBag.dExchangeRate))</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-7">Taxes and Service Fees </div>
+                            <div class="col-xs-1">:</div>
+                            <div class="col-xs-4">@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.Tax * ViewBag.dExchangeRate))</div>
+                        </div>
+
+                        <hr />
+                        <div class="row">
+                            <div class="col-xs-7"><b>Total Charges </b></div>
+                            <div class="col-xs-1">:</div>
+                            <div class="col-xs-4"><b>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dSubTotalCounter * ViewBag.dExchangeRate))</b></div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="container">
+            <div class="row">
+                <div class="confbluehdg">
+                    <strong class="fontsize18a">Booking (Modify)</strong>
+                </div>
+                <div class="col-xs-8">
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <img src="@Model.sImgUrl" class="imgheight150" />
+                        </div>
+                        <div class="col-xs-8">
+                            <h4 style="font-weight:bold;">@Model.HotelName</h4>
+                            <img src="~/images/inner-star@(Model.StarCategoryId).png" /><br />
+                            @Model.StreetAddress <br />
+                            @Model.Address
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 width20percent"><strong>Booking Date/ Time </strong></div>
+                        <div class="col-xs-1" style="width:1% !important;">:</div>
+                        <div class="col-xs-3 width20percent">@Model.ReservationDate</div>
+                        <div class="col-xs-2"><strong>Booking Id </strong></div>
+                        <div class="col-xs-1" style="width:1% !important;">:</div>
+                        <div class="col-xs-3 width20percent">@Model.BookingId</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 width20percent"><strong>Your Reservation  </strong></div>
+                        <div class="col-xs-1" style="width:1% !important;">:</div>
+                        <div class="col-xs-3 width20percent">@Model.Reservation</div>
+                        <div class="col-xs-2"><strong>Status </strong></div>
+                        <div class="col-xs-1" style="width:1% !important;">:</div>
+                        <div class="col-xs-4 ">@Model.BookingStatus</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 width20percent"><strong>Check-In Date  </strong></div>
+                        <div class="col-xs-1" style="width:1% !important;">:</div>
+                        <div class="col-xs-3 width20percent">@Model.CheckIn</div>
+                        <div class="col-xs-2"><strong>Check-Out Date</strong></div>
+                        <div class="col-xs-1" style="width:1% !important;">:</div>
+                        <div class="col-xs-4 ">@Model.ChekOut</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 width20percent"><strong>Booked By </strong></div>
+                        <div class="col-xs-1" style="width:1% !important;">:</div>
+                        <div class="col-xs-3 width20percent">@Model.Booker</div>
+                        <div class="col-xs-2"><strong>E-mail Id  </strong></div>
+                        <div class="col-xs-1" style="width:1% !important;">:</div>
+                        <div class="col-xs-4 ">@Model.EmailOFR</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 width20percent"><strong>Contact No</strong></div>
+                        <div class="col-xs-1" style="width:1% !important;">:</div>
+                        <div class="col-xs-3 width20percent">@Model.MobileOFR</div>
+                    </div>
+                </div>
+                <div class="col-xs-4">
+                    <div class="row">
+                        <div class="margintop10 border1" style="width:100%;">
+                            <div id="googleMap" style=" width:100%;height:150px;"></div>
+                        </div>
+                    </div>
+
+                    @if (Model.cBookingType == "R")
+                    {
+                        <div class="row">
+                            <div class="col-xs-9"><h4>RATE INFORMATION </h4></div>
+                            <div class="col-xs-3"></div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-xs-7">Offer Price Per Room/ Night</div>
+                            <div class="col-xs-1">:</div>
+                            <div class="col-xs-4">@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.AvgAmount) * ViewBag.dExchangeRate)</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-7">Extra Bed Charges</div>
+                            <div class="col-xs-1">:</div>
+                            <div class="col-xs-4">@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.ExtraBedAmount) * ViewBag.dExchangeRate)</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-7">Subtotal</div>
+                            <div class="col-xs-1">:</div>
+                            <div class="col-xs-4">@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated((Convert.ToDecimal(Model.TotalAmount) + Convert.ToDecimal(Model.dExtraBedCharges)) * ViewBag.dExchangeRate)</div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-7">Taxes and Service Fees </div>
+                            <div class="col-xs-1">:</div>
+                            <div class="col-xs-4">@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.Tax) * ViewBag.dExchangeRate)</div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-xs-7"><b>Total Charges </b></div>
+                            <div class="col-xs-1">:</div>
+                            <div class="col-xs-4"><b>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.SubTotal) * ViewBag.dExchangeRate)</b></div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+
+
+            @if (Model.cBookingStatus != "NC")
+            {
+                <div class="table-responsive margintop20">
+                    <div class="tablebluebg ">Guest Information</div>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                @*<th style="width:5%;text-align:center"><input type="checkbox" id="chkSelectAll" /></th>*@
+                                <th style="width:10%;">Room</th>
+                                <th style="width:10%;">Room Type</th>
+                                <th style="width:10%;">Per Night Rate</th>
+                                <th style="width:10%;">Guest Name</th>
+                                <th style="width:5%;">Adults</th>
+                                <th style="width:10%;">Bed Preference</th>
+                                <th style="width:8%;">Extra Bed</th>
+                                <th style="width:16%;">Cancellation Policy</th>
+                                <th style="width:17%;">Inclusion</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.BookingRoomDetails != null && Model.BookingRoomDetails.Count > 0)
+                            {
+
+                                for (int i = 0; i < Model.BookingRoomDetails.Count; i++)
+                                {
+                                    <tr>
+                                        @*<td style="text-align:center"><input type="checkbox" data-index="@i" data-bookingdetailid="@Model.BookingRoomDetails[i].iBookingDetailsId" class="chkSelectRoom" /></td>*@
+                                        <td>@Model.BookingRoomDetails[i].RoomNo</td>
+                                        <td><a href="javascript:void(0)" onclick="OpenPopUp()">@Model.BookingRoomDetails[i].RoomName</a></td>
+                                        <td>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.BookingRoomDetails[i].RoomRate * ViewBag.dExchangeRate))</td>
+                                        <td>@Model.BookingRoomDetails[i].GuestName</td>
+                                        <td>@Model.BookingRoomDetails[i].Occupancy</td>
+                                        <td>@Model.BookingRoomDetails[i].BedPrefer</td>
+                                        <td>@Model.BookingRoomDetails[i].ExtraBed</td>
+                                        <td>
+                                            @Html.Raw(HttpUtility.HtmlDecode(Model.BookingRoomDetails[i].PolicyName))
+                                        </td>
+                                        @{
+                                    string rateInclusions = Model.BookingRoomDetails[i].AmenityRatePlan.Replace("|", "<br/>");
+                                        }
+                                        <td>@Html.Raw(rateInclusions)</td>
+
+
+                                        <div class="modal fade" id="popupCancelConfirmation@(i)">
+                                            <div class="modal-dialog">
+
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                        <h4 class="modal-title">Are you sure you want to cancel this room?</h4>
+                                                    </div>
+                                                    <div class="modal-body" style="height:350px">
+                                                        <div class="row">
+                                                            <div class="col-md-4">Room :</div>
+                                                            <div class="col-md-8">@Model.BookingRoomDetails[i].RoomNo</div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-4">Room Name :</div>
+                                                            <div class="col-md-8">@Model.BookingRoomDetails[i].RoomName</div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-4">Room Rate Per Night :</div>
+                                                            <div class="col-md-8">@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.BookingRoomDetails[i].RoomRate * ViewBag.dExchangeRate))</div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-4">Guest Name :</div>
+                                                            <div class="col-md-8">@Model.BookingRoomDetails[i].GuestName</div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-4">Occupancy :</div>
+                                                            <div class="col-md-8">@Model.BookingRoomDetails[i].Occupancy</div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-4">Bed Prefer :</div>
+                                                            <div class="col-md-8">@Model.BookingRoomDetails[i].BedPrefer</div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-4">Extra Bed :</div>
+                                                            <div class="col-md-8">@Model.BookingRoomDetails[i].ExtraBed</div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-4">Amount to be duduct :</div>
+                                                            <div class="col-md-8" id="chanrgableAmount@(i)"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" data-formid="frmCancelConfirmation@(i)" data-dismiss="modal" class="btn btn-danger btnPopupConfirmCancel">Yes</button>
+                                                        <button type="button" data-dismiss="modal" class="btn btn-primary">No</button>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="row" style="margin-left:1px">
+                    <a href="@Url.Action("UpdateGuestInformation", "BookingTG", new { bookingId = OneFineRateAppUtil.clsUtils.Encode(Model.BookingId) })" type="button" class="btn btn-info">MODIFY INFORMATIONS</a>
+                    <button type="button" class="btn btn-danger" id="btnCancelRoom">CANCEL</button>
+                </div>
+
+
+                            // hidden form for cancel booking
+                            <form action="/BookingTG/CancelBooking" style="display:none" id="frmCancelBooking" type="post">
+                                @Html.Hidden("bookingId", OneFineRateAppUtil.clsUtils.Encode(Model.BookingId))
+                                <input type="submit" id="btnCancelRoomForm" />
+                            </form>
+
+                // Popup for cancel full booking
+                <div class="modal fade" id="popupCancelFullBooking">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                <h4 class="modal-title">Are you sure you want to cancel this booking ?</h4>
+                            </div>
+                            <div class="modal-body" style="height:350px">
+                                <div class="row">
+                                    <div class="col-md-4">Cancellation Confirmation :</div>
+                                    <div class="col-md-8" id="div_cancelBookingInformation"></div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" data-dismiss="modal" class="btn btn-danger btnPopupConfirmCancel">Yes</button>
+                                <button type="button" data-dismiss="modal" class="btn btn-primary">No</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+
+        <script>
+
+            $(function(){
+
+                $('.chkSelectRoom').change(function() {
+
+                    if ($('.chkSelectRoom:checked').length == $('.chkSelectRoom').length) {
+                        $('.chkSelectRoom').closest('tr').addClass('lightBlue');
+                        $('#chkSelectAll').prop('checked',true);
+                    }
+                    else
+                    {
+                        $('#chkSelectAll').prop('checked',false);
+
+                        if($(this).prop('checked')==true)
+                        {
+                            $(this).closest('tr').addClass('lightBlue');
+                        }
+                        else
+                        {
+                            $(this).closest('tr').removeClass('lightBlue');
+                        }
+                    }
+                });
+
+                $('.chkSelectRoom').change();
+
+                $('#chkSelectAll').click(function() {
+
+                    $('.chkSelectRoom').prop('checked', this.checked);
+                    if(this.checked==true)
+                    {
+                        $('.chkSelectRoom').closest('tr').addClass('lightBlue');
+                    }
+                    else
+                    {
+                        $('.chkSelectRoom').closest('tr').removeClass('lightBlue');
+                    }
+                });
+
+                $('#btnCancelRoom').click(function(){
+
+                    //if($('.chkSelectRoom:checked').length==0)
+                    //{
+                    //    toastr.error('Please select at least one room to cancel');
+                    //    return false;
+                    //}
+
+                    //startSpinning();
+
+                    $.ajax({
+                        url: "/BookingTG/GetCancellationCharge?bookingId=@Model.BookingId",
+                        cache: false,
+                        success: function(data){
+
+                            //stopSpinning();
+
+                            if(data.status==true)
+                            {
+                                $('#div_cancelBookingInformation').html(data.cancelBookingInformation);
+
+                                $('#popupCancelFullBooking').modal({
+                                    show: 'true'
+                                });
+                            }
+                            else
+                            {
+                                toastr.error(data.msg);
+                            }
+                        },
+                        error: function(error)
+                        {
+                           // stopSpinning();
+                        },
+                        always:function()
+                        {
+                            //stopSpinning();
+                        }
+                    });
+
+                });
+
+                $(".btnPopupConfirmCancel").click(function() {
+                    $('#btnCancelRoomForm').click();
+                });
+            });
+
+        </script>
+    }
+
+
+</div>
+<br />
+<br />
+
+@{
+    var roomDetail = Model.DefaultRoomDetail;
+}
+
+<div id="RoomDetails" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="hoteltitles">@roomDetail.RoomName</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-md-5">
+
+                        <div class="col-md-12 col-xs-12">
+                            <img src="@roomDetail.sRoomImageUrl" onerror="this.src='/images/noImage.jpg';" style="height:200px; width:250px;">
+                        </div>
+
+                    </div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-6">
+                        <div class="col-md-12 col-xs-12">
+                            <table class="table-striped table-bordered">
+                                <tr>
+                                    <td class="paddingleft5"><b>Room occupancy policy</b></td>
+                                </tr>
+                                <tr>
+                                    <td class="paddingleft5">
+                                        <div class="col-md-12 col-xs-12">
+                                            <div class="col-md-8 col-xs-8">Max Adult</div>
+                                            <div class="col-md-1 col-xs-1">:</div>
+                                            <div class="col-md-2 col-xs-2">@roomDetail.Adult</div>
+                                        </div>
+
+                                        <div class="col-md-12 col-xs-12">
+                                            <div class="col-md-8 col-xs-8">Max Child </div>
+                                            <div class="col-md-1 col-xs-1">:</div>
+                                            <div class="col-md-2 col-xs-2">@roomDetail.Children</div>
+                                        </div>
+                                    </td>                                    
+                                </tr>
+
+                            </table>
+                        </div>
+                        <div style="width:100%" class="col-md-12 col-xs-12 pull-right">
+
+                            <span class="red">*</span>
+
+                            @if (roomDetail.dExtraBedRate.HasValue)
+                            {
+                                if (roomDetail.dExtraBedRate.Value > 0)
+                                {
+                                    <span>
+                                        Extra Bed Charge: <strong>@Model.Symbol @OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(roomDetail.dExtraBedRate.Value)</strong>
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span>
+                                        No Extra Bed.
+                                    </span>
+                                }
+                            }
+                            else
+                            {
+                                <span>
+                                    No Extra Bed.
+                                </span>
+                            }
+
+                        </div>
+                        <div class="col-md-12 col-xs-12">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 col-sm-12  col-xs-12">
+
+                        <div class="col-md-12 col-sm-12  col-xs-12">
+                            <b>Room Features</b>
+                        </div>
+                        @if (roomDetail.RoomAmenities != null)
+                        {
+                            foreach (var roomAmenity in roomDetail.RoomAmenities)
+                            {
+                                <div class="col-md-3">
+                                    <ul class="nomargin ">
+                                        <li style="list-style:disc !important; padding:0px;">@roomAmenity.sRoomFacilites</li>
+                                    </ul>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="mapDivPopup">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">@Model.HotelName</h4>
+            </div>
+            <div class="modal-body" id="popupMapDiv" style="height:450px;overflow:hidden">
+
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBA8k8_YKEbkfECgXpF6FKdMkMA1jS1qAQ"></script>
+<script src="~/Scripts/Jquery.googleMapLebel.js"></script>
+<script type="text/javascript">
+
+    function OpenPopUp() {
+
+        $('#RoomDetails').modal({
+            show: 'true'
+        });
+
+        @*var url = '@Url.Action("RoomInformation", "OfferReviewTG")?sVendorId=@Model.sVendorId&sRoomTypeId=' + roomId;
+
+        startSpinning();
+
+        $.ajax({
+            url: url,
+            cache: false,
+            type: "GET",
+            dataType: "html",
+            success: function (data, textStatus, XMLHttpRequest) {
+                $("#RoomDetails").html(data);
+                stopSpinning();
+                $('#RoomDetails').modal({
+                    show: 'true'
+                });
+            },
+            error:function(){
+                stopSpinning();
+            },
+            always: function(){
+
+                //stopSpinning();
+            }
+        });*@
+    }
+
+    var popupMap;
+
+    var myLatlng = new google.maps.LatLng(@Model.dLatitude, @Model.dLongitude);
+
+    var myOptions = {
+        zoom: 17,
+        center: myLatlng,
+        zoomControl: true,
+        clickableIcons: false
+    };
+
+    var mapLabel = new MapLabel({
+        text: '@Model.HotelName',
+        position: myLatlng,
+        map: popupMap,
+        fontSize: 20,
+        fontColor:'#A52A2A',
+        align: 'Left'
+    });
+
+    function initialize() {
+
+        var map = new google.maps.Map(document.getElementById('googleMap'), myOptions);
+        popupMap = new google.maps.Map(document.getElementById("popupMapDiv"),myOptions);
+
+        var centerControlDiv = document.createElement('div');
+        var centerControl = new CenterControl(centerControlDiv, map);
+
+        centerControlDiv.index = 1;
+        map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
+
+        var marker = new google.maps.Marker({
+            position: myLatlng
+        });
+
+        var marker2 = new google.maps.Marker({
+            position: myLatlng
+        });
+
+        marker.setMap(map);
+
+        mapLabel.set('position', myLatlng);
+
+        marker2.bindTo('map', mapLabel);
+        marker2.bindTo('position', mapLabel);
+        marker2.setDraggable(false);
+        marker2.setMap(popupMap);
+
+    }
+
+    google.maps.event.addDomListener(window, 'load', initialize);
+    google.maps.event.addDomListener(window, "resize", resizingMap());
+
+    function CenterControl(controlDiv, map) {
+
+        var controlUI = document.createElement('div');
+        controlUI.style.backgroundColor = '#fff';
+        controlUI.style.border = '2px solid #fff';
+        controlUI.style.borderRadius = '3px';
+        controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+        controlUI.style.cursor = 'pointer';
+        controlUI.style.marginBottom = '0px';
+        controlUI.style.textAlign = 'center';
+        controlUI.title = 'Click to View larger Map';
+        controlDiv.appendChild(controlUI);
+
+        var controlText = document.createElement('div');
+        controlText.style.color = '#337ab7';
+        controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+        controlText.style.fontSize = '10px';
+        controlText.style.lineHeight = '20px';
+        controlText.style.paddingLeft = '5px';
+        controlText.style.paddingRight = '5px';
+        controlText.innerHTML = 'View larger Map';
+        controlUI.appendChild(controlText);
+
+        controlUI.addEventListener('click', function() {
+
+            $('#mapDivPopup').modal({
+                show: 'true'
+            });
+        });
+    }
+
+
+    $('#mapDivPopup').on('show.bs.modal', function() {
+        resizeMap();
+    })
+
+    function resizeMap() {
+        if(typeof popupMap =="undefined") return;
+        setTimeout( function(){resizingMap();} , 400);
+    }
+
+    function resizingMap() {
+        if(typeof popupMap =="undefined") return;
+        var center = popupMap.getCenter();
+        google.maps.event.trigger(popupMap, "resize");
+        popupMap.setCenter(center);
+    }
+
+
+</script>
+
+
+

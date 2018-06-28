@@ -1,0 +1,151 @@
+﻿@using OneFineRateWeb.Models
+@{
+    Layout = null;
+}
+
+
+@model RegisterViewModel
+
+<style>
+    #signup .bootstrap-select {
+        /*width: 40% !important;*/
+        float: left !important;
+        margin-top: 10px;
+    }
+
+    .dropdown-menu {
+        max-height: 293px;
+        overflow: hidden;
+        min-height: 134px;
+        width: 250%;
+    }
+</style>
+
+
+<div role="tabpanel" class="tab-pane" id="signup">
+
+    <div id="divError">
+      
+    </div>
+    <div class="col-md-12 margintop10">
+        @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
+    </div>
+    <div class="col-md-12 marginbottom20">
+        <hr class="divider or_class_div" />
+    </div>
+
+
+    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { id = "registerForm", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="col-md-12 margintop-10">
+
+            @Html.HiddenFor(m => m.IsCorporateRequested, new { @class = "hdnCorporateRequested" })
+
+            <div id="registerErrorContainer">
+
+            </div>
+
+            @*<div class="col-md-12">
+                <br />
+        
+            </div>*@
+            <div class="row">
+                <div class="col-md-3 col-xs-12">
+
+                    @Html.DropDownListFor(m => m.Title, new List<SelectListItem> {
+                    new SelectListItem { Value = "Mr.", Text = "Mr." },
+                    new SelectListItem { Value = "Ms.", Text = "Ms." } },
+                    "Title", new { style = "width:100%", @class = "form-control margintop10", required = "true" })
+
+                    @*@Html.DropDownListFor(m => m.Title, new List<SelectListItem> {
+                   new SelectListItem { Value = "Mr.", Text = "Mr.", Selected = Model.Title == "Mr." },
+                   new SelectListItem { Value = "Mrs.", Text = "Mrs.", Selected = Model.Title == "Mrs." },
+                   new SelectListItem { Value = "Ms.", Text = "Ms.", Selected = Model.Title == "Ms." },
+                   new SelectListItem { Value = "Dr.", Text = "Dr.", Selected = Model.Title == "Dr." },
+                   new SelectListItem { Value = "Prof.", Text = "Prof.", Selected = Model.Title == "Prof." }},
+                "Title", new { style = "width:125%", @class = "form-control margintop10", required = "true" })*@
+                    @Html.ValidationMessageFor(model => model.Title, "", new { @class = "red" })
+                </div>
+                <div class="col-md-4 col-xs-12">
+                    @Html.TextBoxFor(m => m.FirstName, new { placeholder = "First Name", maxlength = "50", @class = "form-control margintop10" })
+                    @Html.ValidationMessageFor(m => m.FirstName, "", new { @class = "red" })
+                </div>
+                <div class="col-md-5 col-xs-12">
+                    @Html.TextBoxFor(m => m.LastName, new { placeholder = "Last Name", maxlength = "50", @class = "form-control margintop10" })
+                    @Html.ValidationMessageFor(m => m.LastName, "", new { @class = "red" })
+                </div>
+            </div>
+            <div class="row">
+
+
+                <div class="col-md-12  col-xs-12">
+                    @Html.TextBoxFor(m => m.CompanyName, new { placeholder = "Company Name", maxlength = "200", @class = "form-control margintop10" })
+                    @Html.ValidationMessageFor(m => m.CompanyName, "", new { @class = "red" })
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 col-xs-4">@Html.DropDownListFor(model => model.sCountryCode, new SelectList(Model.CountryCodePhoneList, "sCode", "sFrontendCode", "+91"), new { data_live_search = "true", style = " float:left;margin-top:10px", id = "ddlCountryCode", @class = "form-control selectpicker" })</div>
+                <div class="col-md-9  col-xs-8">
+
+
+
+                    @Html.TextBoxFor(m => m.Phone, new { style = " float:left !important;", id = "txtMobileNo", placeholder = "Mobile Number", maxlength = "12", pattern = @"^[\-\+]?\d+$", oninvalid = "setCustomValidity('Please enter valid mobile number.')", onchange = "try{setCustomValidity('')}catch(e){}", @class = "form-control margintop10" })
+                    @*<small class="red">One Time Password will be sent</small>
+                <div class="clear clearfix"></div>*@
+                    @Html.ValidationMessageFor(m => m.Phone, "", new { @class = "red" })
+                </div>
+                </div>
+                @*<div class="clearfix"></div>*@
+                <div class="row">
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(m => m.Email, new { placeholder = "Email Id", maxlength = "100", @class = "form-control margintop10 ignoreWhenCorporate" })
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "red" })
+                    </div>
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(m => m.CorporateEmail, new { placeholder = "Corporate email (Optional)", maxlength = "100", @class = "form-control margintop10", id = "txtCorporateEmail" })
+                        @Html.ValidationMessageFor(m => m.CorporateEmail, "", new { @class = "red" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        @Html.PasswordFor(m => m.Password, new { placeholder = "Password, Must be 6 character long", maxlength = "50", @class = "form-control margintop10", id = "registerPassword" })
+                        @*<small class="red">Must be 6 character long.</small><div class="clearfix"></div>*@
+                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "red" })
+                    </div>
+                    <div class="col-md-6">
+                        @Html.PasswordFor(m => m.ConfirmPassword, new { placeholder = "Confirm Password", maxlength = "50", @class = "form-control margintop10 marginbottom10" })
+                        @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "red" })
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <a href="Javascript:void()" style="margin-top:10px" id="lnkReferralCode">Have Referral Code ?</a>
+                </div> <div class="col-md-12">
+                    @Html.TextBoxFor(m => m.RefereeCode, new { placeholder = "Referral Code", maxlength = "10", id = "txtReferralCode", style = "display:none", @class = "form-control margintop10" })
+                    @Html.ValidationMessageFor(m => m.RefereeCode, "", new { @class = "red" })
+                </div>
+                <div class="col-md-12">
+                    <div class="modal-footer noborder">
+                        <div class="row form-inline">
+                            <div class="col-md-12 text-center">
+                                <button type="submit" id="btnSignUp" class="col-md-12 btn btn-filter">Register</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    }
+
+</div>
+
+
+<script>
+
+    $(function () {
+        $('#ddlCountryCode').selectpicker();
+    })
+
+    
+
+</script>

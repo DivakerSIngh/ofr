@@ -1,0 +1,386 @@
+﻿@model OneFineRateBLL.Entities.eBiddingSearch
+@using OneFineRateAppUtil
+@{
+    ViewBag.Title = "Bidding";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    decimal HotelTax = 0;
+}
+
+<script type="text/javascript">
+
+    $.removeCookie('scrhBidDetails'); //for removing cookie
+    var proBid = [];
+    proBid.push();
+    $.cookie("scrhBidDetails", proBid, { expires: 2, path: '/' });
+
+    function OpenHP() {
+        $('#divHotelPolicy').modal({
+            show: 'true'
+        });
+    }
+    function Opentc() {
+
+        $('#divTC').modal({
+            show: 'true'
+        });
+    }
+    function OpenPP() {
+        $('#divprivacupolicy').modal({
+            show: 'true'
+        });
+    }
+    function OpenTaxes() {
+        $('#divTaxes').modal({
+            show: 'true'
+        });
+    }
+
+    //$(function () {
+    //    $('#chkAgree').click(function () {
+    //        if ($(this).is(':checked')) {
+    //            $('#btnProceed').removeAttr('disabled');
+    //            $('#btnNotNow').removeAttr('disabled');
+    //        } else {
+    //            $('#btnProceed').attr('disabled', 'disabled');
+    //            $('#btnNotNow').attr('disabled', 'disabled');
+    //        }
+    //    });
+    //});
+
+</script>
+
+<!-- Taxes pop up -->
+<div id="divTaxes" style="display:none;">
+    <p>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td>Hotel Taxes</td>
+                    <td>:</td>
+                    <td>@Model.Symbol  @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.sHotelTax))</td>
+                </tr>
+
+                @if (!string.IsNullOrEmpty(Model.sOFRServiceCharge))
+                {
+                <tr>
+                    <td>OFR Service charge</td>
+                    <td>:</td>
+                    <td>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.sOFRServiceCharge))</td>
+                </tr>
+                <tr>
+                    <td>GST on OFR Service charge (@Model.sTaxOnServiceCharge_Per)</td>
+                    <td>:</td>
+                    <td>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.sTaxOnServiceCharge_Val))</td>
+                </tr>
+                }
+            </tbody>
+
+        </table>
+    </p>
+
+</div>
+
+
+
+@using (Html.BeginForm("PayNow", "Bidding", FormMethod.Post, new { id = "frmPaynow" }))
+{
+
+    <div class="row">
+        <div class="col-md-12 infobg">
+            <div class=" container">
+                <h4 class="bold">Additional savings for the hotels that are meeting your bid. @Html.Raw(Model.TopMessage != null ? Model.TopMessage.Replace(".", ".<br/>") : Model.TopMessage)</h4>
+
+                <ul class="nomargin">
+
+                    @if (Model.lstHotelData != null)
+                    {
+                        for (int i = 0; i < Model.lstHotelData.Count; i++)
+                        {
+                            <li style="list-style-type:disc !important;">
+                                @Model.lstHotelData[i].Name
+                                @Html.HiddenFor(m => m.lstHotelData[i].Name)
+                            </li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container-wrapper">
+        @*<div class="container">
+
+            </div>*@
+
+        <div class="thirdsection margintop10">
+            <div class="container" style="border:0px solid red;">
+
+                <div class="col-md-12 paddingtop-bottom15">
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="margintop-10"><img src="~/images/inner-star@(Model.sStarRating).png"></div>
+                                    @{
+                                        var myval = "";
+                                        if (Model.lstLocalities != null)
+                                        {
+                                            for (int i = 0; i < Model.lstLocalities.Count; i++)
+                                            {
+                                                myval += Model.lstLocalities[i].Name + ",";
+                                                @Html.HiddenFor(m => m.lstLocalities[i].Name)
+                                            }
+                                        }
+                                        myval = myval.TrimEnd(',');
+                                        <div>@myval </div>
+                                    }
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.Label("Name :", new { id = "lblname" })
+                                    <strong>@Html.DisplayFor(model => model.sUserFirstName) @Html.DisplayFor(model => model.sUserLastName)</strong>
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.Label("Email :", new { id = "lblemail" })
+                                    <strong>@Html.DisplayFor(model => model.sUserEmail)</strong>
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.Label("Phone :", new { id = "lblPhone" })
+                                    <strong>@Html.DisplayFor(model => model.sUserMobileNo)</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!--next section-->
+        </div>
+        <!--2nd row row end-->
+        <!--3rd row row start-->
+        <div class="container">
+            <div class="col-md-12 margintop30">
+                <div class="tablebluebg">Stay Summary of @Model.iNights Night(s) from @Html.Raw(Model.sCheckIn_Display) to @Html.Raw(Model.sCheckOut_Display) </div>
+                <div class=" table-responsive">
+                    <table class="table lightgrybg table-bordered table-hover">
+
+                        <thead>
+                            <tr>
+                                <th>ROOM</th>
+                                <th>ADULTS</th>
+                                <th>CHILDREN</th>
+                                <th>PRICE/ NIGHT</th>
+                                <th class="width100">NIGHT(S)</th>
+                                <th>TOTAL PRICE</th>
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>@Model.iRooms</td>
+                                <td>@Model.iAdults</td>
+                                <td>@Model.iChildrens</td>
+                                <td>@Model.Symbol @(clsUtils.ConvertNumberToCommaSeprated(Math.Round(Model.dBidPrice)))</td>
+                                <td>@Model.iNights</td>
+                                <td>@Model.Symbol @(clsUtils.ConvertNumberToCommaSeprated(Math.Round(Convert.ToDecimal(Model.dTotalPrice)))) </td>
+
+                            </tr>
+
+
+                            <tr class="noborder">
+
+                                <td colspan="5">
+                                    <span class="pull-right">
+                                        @*<a onclick="OpenTaxes();" style="cursor:pointer;" data-toggle="popover" title="Taxes" data-trigger="hover" data-placement="bottom" data-content=" Please read carefully.">Taxes and other service charge:</a>*@
+                                        <a title="Taxes" href="javascript:void(0);" data-placement="left" data-id="divTaxes" rel="popover" data-content=" Please read carefully.">Taxes and other service charge:</a>
+                                    </span>
+                                </td>
+                                <td>@Model.Symbol @(clsUtils.ConvertNumberToCommaSeprated(Math.Round(Convert.ToDecimal(Model.dTaxes) + Convert.ToDecimal(Model.sOFRServiceChargeIncludingTax))))</td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td class="noborder" colspan="5"><strong class="pull-right">Grand Total: </strong></td>
+                                <td class="noborder"><strong class="pull-left" id="spTotalAmt">@Model.Symbol @(clsUtils.ConvertNumberToCommaSeprated(Math.Round(Convert.ToDecimal(Model.dGrandTotal) + Convert.ToDecimal(Model.sOFRServiceChargeIncludingTax))))</strong></td>
+
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="container">
+            <div class="col-md-12 margintop30">
+                <div class="tablebluebg">Important Information</div>
+                <div class=" table-responsive table-bordered padding10 lightgrybg">
+                    <p>
+                        <span style="color:red"> • No amount will be charged if your bid is not accepted. However, full amount is payable post acceptance of the bid.</span><br />
+                        <span style="color:red">• Please note that the transaction is non-cancellable, non-refundable, non-transferrable and non-amendable post the full payment and the selection of the hotel.</span><br />
+                        • Reservation is guaranteed for arrival on the confirmed date of check-in only. If you do not check-in on the first day of your reservation, the remainder of the stay will be deemed canceled too. No refund will be applicable.<br />
+                        • The reservation holder must present a valid photo ID and credit card at the time of check-in.<br />
+                        • Requests for bed types (King, Queen, 2 Doubles, etc.) including preferences like early check in, late check out, smoking room etc. are strictly at the discretion of the hotel and subject to availability and are not to be understood as guaranteed.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container" id="fill">
+        <div class="col-md-12  form-inline">
+            <div class="form-group">
+                <input type="checkbox" class="checkbox" id="chkAgree"> <label style="cursor:pointer" for="chkAgree">
+                    I have read, accept and agree to abide by Onefinerate.com's
+                    <a onclick="Opentc();" class="showpointer" data-toggle="popover" title="Terms and Conditions" data-trigger="hover" data-placement="bottom" data-content=" Please read Terms and Conditions carefully.">Terms and Conditions,</a>
+                    <a onclick="OpenPP();" class="showpointer" data-toggle="popover" title="Privacy Policy" data-trigger="hover" data-placement="bottom" data-content=" Please read Privacy Policy carefully.">Privacy Policy</a>
+                    and <a onclick="OpenHP();" class="showpointer" data-toggle="popover" title="Hotel Policy" data-trigger="hover" data-placement="bottom" data-content=" Please read Hotel Policy carefully.">Hotel Policy</a>
+                </label>
+            </div>
+        </div>
+    </div>
+    <!-- Terms and conditions pop up -->
+                                        <div id="divTC" class="modal fade" role="dialog">
+                                            <div class="modal-dialog">
+                                                <!-- Modal content-->
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                        <h4 class="modal-title">Terms and Conditions</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>This page states the Terms and Conditions under which you (Visitor) may visit this web site. Please read this page carefully. If you do not accept the Terms and Conditions stated here, we would request you to exit this site. FPHL or any of its business divisions and / or its subsidiaries, associate companies or subsidiaries to subsidiaries or such other investment companies (in India or abroad) reserve their respective rights to revise these Terms and Conditions at any time by updating this posting. You should visit this page periodically to re-appraise yourself of the Terms and Conditions, because they are binding on all users of this web site.</p>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+    <!-- Privacy Policy pop up -->
+                                        <div id="divprivacupolicy" class="modal fade" role="dialog">
+                                            <div class="modal-dialog">
+                                                <!-- Modal content-->
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                        <h4 class="modal-title">Privacy Policy</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>Our policy outlines the type of personal information we collect and receive, the circumstances in which we collect or receive personal information, the policies and procedures we have established outlining its use and storage, and for sharing certain types of personal information in certain limited circumstances, the procedures you should follow if you have any questions or requests in respect of your personal information or our policies and procedures and the person to whom such questions or requests should be directed, and the means by which to communicate with that person.</p>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+    <!-- Hotel policy pop up -->
+                                        <div id="divHotelPolicy" class="modal fade" role="dialog">
+                                            <div class="modal-dialog">
+                                                <!-- Modal content-->
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                        <h4 class="modal-title">Hotel Policy</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>Reservation must be amended/cancelled 72 hours prior to the planned date of arrival. Reservations cancelled within 72 hours of the arrival date will incur a cancellation charge of one night. Peak Season cancellation must be done at least 7 days prior to arrival date to qualify for no cancellation charge. For group of 5 rooms or more confirmation for the reservation would only be given on the basis of a valid credit card. In case of a no-show or cancellation/amendment of the conference/group (in part or full), within 15 days or less from the date of check-in, a retention charge will be levied. In addition, should any participants check-out early, retention will be charged for those nights booked, now being released due to the early check-out.</p>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+
+                                        @Html.HiddenFor(m => m.Tax)
+                                        @Html.HiddenFor(m => m.Amount)
+                                        @Html.HiddenFor(m => m.dBidPrice)
+                                        @Html.HiddenFor(m => m.dGrandTotal)
+                                        @Html.HiddenFor(m => m.dMaxRange)
+                                        @Html.HiddenFor(m => m.dMinRange)
+                                        @Html.HiddenFor(m => m.dTaxes)
+                                        @Html.HiddenFor(m => m.dTotalPrice)
+                                        @Html.HiddenFor(m => m.iAdults)
+                                        @Html.HiddenFor(m => m.iBiddingCount)
+                                        @Html.HiddenFor(m => m.iChildrens)
+                                        @Html.HiddenFor(m => m.iGuestId)
+                                        @Html.HiddenFor(m => m.iNights)
+                                        @Html.HiddenFor(m => m.iRooms)
+                                        @Html.HiddenFor(m => m.iUserId)
+                                        @Html.HiddenFor(m => m.Message)
+                                        @Html.HiddenFor(m => m.sActionType)
+                                        @Html.HiddenFor(m => m.sCheckIn)
+                                        @Html.HiddenFor(m => m.sCheckOut)
+                                        @Html.HiddenFor(m => m.SelectedPrefrences)
+                                        @Html.HiddenFor(m => m.sJsonLocality)
+                                        @Html.HiddenFor(m => m.sJsonRoomData)
+                                        @Html.HiddenFor(m => m.sLocalityData)
+                                        @Html.HiddenFor(m => m.sLocalityType)
+                                        @Html.HiddenFor(m => m.sPrefrencesItems)
+                                        @Html.HiddenFor(m => m.sSearchId)
+                                        @Html.HiddenFor(m => m.sSearchName)
+                                        @Html.HiddenFor(m => m.sSearchType)
+                                        @Html.HiddenFor(m => m.sSelectedAreaId)
+                                        @Html.HiddenFor(m => m.sStarRating)
+                                        @Html.HiddenFor(m => m.Status)
+                                        @Html.HiddenFor(m => m.sUserEmail)
+                                        @Html.HiddenFor(m => m.sUserFirstName)
+                                        @Html.HiddenFor(m => m.sUserLastName)
+                                        @Html.HiddenFor(m => m.sUserMobileNo)
+                                        @Html.HiddenFor(m => m.sUserTitle)
+                                        @Html.HiddenFor(m => m.Symbol)
+                                        @Html.HiddenFor(m => m.sOFRServiceCharge)
+                                        @Html.HiddenFor(m => m.sOFRServiceChargeIncludingTax)
+                                        @Html.HiddenFor(m => m.sTaxOnServiceCharge_Val)
+                                        @Html.HiddenFor(m => m.cGstValueType)
+                                        @Html.HiddenFor(m => m.dGSTValue)
+
+                                        <div class="container">
+                                            <div class="col-md-12 center margintop10">
+                                                <button type="button" id="btnModify" name="buttonType" class="btn btn-inactive  btn-lg">Modify Search</button>
+                                                <button type="submit" id="btnProceed" name="buttonType" class="btn btn-primary  btn-lg marginleft8">Pay Now</button>
+                                            </div>
+                                        </div>
+                                        }
+<div class="marginbottom10">&nbsp;</div>
+
+
+<script>
+
+    var popover = $("[rel='popover']").popover({
+        trigger: 'hover',
+
+        html: 'true'
+    }).on('show.bs.popover', function () {
+        popover.attr('data-content', $('#' + $(this).data('id')).html());
+    }).on('click', function () {
+        return false;
+    });
+    $(function () {
+
+        $('#frmPaynow').submit(function (e) {
+
+            if ($('#chkAgree').is(':checked')) {
+
+                return true;
+            }
+            else {
+                e.preventDefault()
+                toastr.warning('Please accept terms and conditions.')
+            }
+
+        });
+
+        $('#btnModify').click(function () {
+
+            window.location.href = '@Request.UrlReferrer'
+
+        });
+
+    });
+
+    function CallPage() {
+        var path = '@Html.Raw(TempData["URL"])';
+        window.location.href = path;
+    }
+</script>

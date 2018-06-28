@@ -1,0 +1,518 @@
+﻿@model OneFineRateBLL.Entities.PropDetailsM
+@using OneFineRateAppUtil
+@{
+    ViewBag.Title = "Review";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    decimal HotelTax = 0;
+}
+
+@if (Model != null)
+{
+    <div class="container-wrapper">
+
+        <input type="hidden" value="@Model.TempDataPropDetails" id="hdnUniqueSessionId" name="UniqueSessionId" />
+
+        <div class="thirdsection margintop10">
+
+            <div class="container" style="padding-left:0px !important; padding-right:0px !important;">
+                <div class="col-md-8 paddingtop-bottom15">
+                    <div class="row">
+                        <div class="col-md-4 col-xs-12">
+
+                            <img class="imgheight114" src='@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()@Model.sImageUrlTG' onerror="this.src='@Url.Content("~/images/noimage.jpg")'" id="imagePreview">
+
+                        </div>
+                        <div class="col-md-5 col-xs-12">
+                            <h3 class="mar-padd0">@Model.sPropertyName</h3>
+                            <div class="margintop-10"> <img src="~/images/inner-star@(Model.iStarCategory).png"></div>
+                            <address>
+                                @Model.sPropertyAddress
+                                <div class="row">
+                                    <div class="col-md-5 col-xs-12 reviwfacilityicon">
+                                        <ul>
+                                            @for (int i = 0; i < Model.lstetblHotelFacilities.Count; i++)
+                                            {
+                                                <li><img src='@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()@Model.lstetblHotelFacilities[i].sImgUrl' id="iconPreview" title="@Model.lstetblHotelFacilities[i].sHotelFacilites" style="height: 20px; width: 20px"></li>
+                                            }
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-7 col-xs-12 reviwfacilityicon">
+                                        @if (!string.IsNullOrEmpty(Model.RatingImageUrl))
+                                        {
+                                            <img src="@Model.RatingImageUrl" /><br />
+                                        }
+                                        @if (!string.IsNullOrEmpty(Model.sTripAdvisorRankingString))
+                                        {
+                                            <em class="green">
+                                                @Model.sTripAdvisorRankingString
+                                            </em>
+                                        }
+                                    </div>
+                                </div>
+                            </address>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container margintop30">
+
+            <div class="tablebluebg">Stay Summary from @Html.Raw(Model.sCheckInDate_Display) to @Html.Raw(Model.sCheckOutDate_Display) - @Model.iTotalDays Night(s) </div>
+            <div class=" table-responsive">
+                <table class="table lightgrybg table-bordered table-hover">
+
+
+                    <thead>
+                        <tr>
+                            <th>ROOM TYPE</th>
+                            <th>ADULTS</th>
+                            <th>CHILDREN</th>
+                            <th>RATE/ NIGHT</th>
+                            <th>EXTRA BED/ NIGHT</th>
+                            <th class="width100">NIGHT(S)</th>
+                            <th>TOTAL PRICE</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @{int CountIndex = 0;}
+
+                        @for (int i = 0; i < Model.lstetblRooms.Count; i++)
+                        {
+
+                            for (int j = 0; j < Model.lstetblRooms[i].lstRatePlan.Count; j++)
+                            {
+
+                                for (int lstOcc = 0; lstOcc < Model.lstetblRooms[i].lstRatePlan[j].lstetblOccupancy.Count; lstOcc++)
+                                {
+                                    if (Model.lstetblRooms[i].lstRatePlan[j].lstetblOccupancy[lstOcc].iNoOfRooms != 0)
+                                    {
+                                        for (int k = 0; k < Model.lstetblRooms[i].lstRatePlan[j].lstetblOccupancy[lstOcc].iNoOfRooms; k++)
+                                        {
+                                            <tr>
+                                                @{
+                                                    var ExtraBedNumber = @Model.lstetblRooms[i].lstRatePlan[j].lstetblOccupancy[lstOcc].ExtraBeds;
+                                                    var ExtraBedCharges = @Model.lstetblRooms[i].ExtraBedCharges;
+                                                    var ExtraCharges = ExtraBedNumber * ExtraBedCharges;
+                                                    var Price = @Model.lstetblRooms[i].lstRatePlan[j].lstetblOccupancy[lstOcc].dPrice;
+                                                    var Days = Convert.ToInt32(Model.iTotalDays);
+                                                    var totalrooms = @Model.lstetblRooms[i].lstRatePlan[j].lstetblOccupancy[lstOcc].iNoOfRooms;
+                                                    HotelTax += Model.lstetblRooms[i].lstRatePlan[j].lstetblOccupancy[lstOcc].dTaxesForHotel;
+                                                    var TotalPrice = (Price + ExtraCharges) * Days;
+                                                    ExtraBedCharges = ExtraCharges;
+                                                }
+
+                                                <td><a href="javascript:void(0)" onclick="OpenPopUp('@Model.iPropId','@Model.lstetblRooms[i].iRoomId')">@Model.lstetblRooms[i].sRoomName</a></td>
+                                                <td>@Model.lstetblRooms[i].lstRatePlan[j].lstetblOccupancy[lstOcc].iAdults</td>
+                                                <td>@Model.lstetblRooms[i].lstRatePlan[j].lstetblOccupancy[lstOcc].iChildrens</td>
+                                                <td>
+                                                    @{string RatePrice = OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Price);}
+                                                    @RatePrice
+                                                    &nbsp;
+                                                    @{List<string> lst = new List<string>(); }
+                                                    @for (int lstCancellation = 0; lstCancellation < Model.lstetblRooms[i].lstRatePlan[j].lstCancellationPolcy.Count; lstCancellation++)
+                                                    {
+                                                        lst.Add(Model.lstetblRooms[i].lstRatePlan[j].lstCancellationPolcy[lstCancellation].CancellationMsg);
+                                                    }
+                                                </td>
+                                                <td>
+                                                    @{string EXPrice = OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(ExtraBedCharges); }
+                                                    @EXPrice
+                                                </td>
+                                                <td>@Model.iTotalDays</td>
+                                                <td>
+                                                    @Model.Symbol
+                                                    @{string TPrice = OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(TotalPrice);}
+                                                    @TPrice
+                                                </td>
+                                            </tr>
+
+                                            <tr class="noborder">
+                                                <td><span class="pull-left">I am Important-Read Me : </span></td>
+                                                <td colspan="6">
+                                                    <a href="javascript:void(0);" title="Policies" style="padding:5px" data-id="divRinclusion@(CountIndex)" rel="popover">
+                                                        <img src="@Url.Content("~/images/info.png")">
+                                                    </a>
+                                                </td>
+
+                                                @{var id = string.Format(@"{0}{1}", "divRinclusion", CountIndex);}
+
+                                                <div style="display:none" id="@id">
+
+                                                    <h4 class="modal-title">Rate Inclusions</h4>
+
+                                                    <p>
+                                                        @Html.Raw(Model.lstetblRooms[i].lstRatePlan[j].RateInclusion.TrimEnd('\r', '\n').Replace(Environment.NewLine, "<br/>").Replace("\"", "\'").Replace("|", "<br/>"))
+                                                    </p>
+                                                    @if (Model.sActionType != "N")
+                                                    {
+                                                        <h4 class="modal-title">Cancellation:</h4>
+
+                                                        <p>
+                                                            @{
+                                                                System.Text.StringBuilder CancelStringBuilder = new System.Text.StringBuilder();
+                                                                var lstnew = lst.Distinct().ToList();
+                                                                if (lstnew.Count > 0)
+                                                                {
+                                                                    foreach (var item in lstnew)
+                                                                    {
+                                                                        CancelStringBuilder.Append(item.Replace(".", ","));
+                                                                        CancelStringBuilder.Append("| ");
+                                                                    }
+                                                                }
+
+                                                                if (CancelStringBuilder.ToString().Trim().ToLower().Contains("refundable"))
+                                                                {
+                                                                    <span style="color:red;">@Html.Raw(CancelStringBuilder.ToString().Replace(",", ".").Replace("|", ".<br/>"))</span>
+                                                                }
+                                                                else
+                                                                {
+                                                                    @Html.Raw(CancelStringBuilder.ToString().Replace(",", ".").Replace("|", ".<br/>"))
+                                                                }
+                                                            }
+                                                        </p>
+                                                                }
+                                                    <h4 class="modal-title">Rate Information</h4>
+                                                    <p>
+                                                        <div>
+                                                            <div style="float:left;width:300px">
+                                                                <div style="float:left;width:150px">
+                                                                    Stay Date
+                                                                </div>
+                                                                <div style="float:left;width:150px">
+                                                                    Price
+                                                                </div>
+                                                            </div>
+
+                                                            @for (int l1 = 0; l1 < Model.lstTaxesDateWise_OfferReview.Count; l1++)
+                                                            {
+                                                                if (Model.lstetblRooms[i].lstRatePlan[j].lstetblOccupancy[lstOcc].iRoomId == Model.lstTaxesDateWise_OfferReview[l1].RoomID
+                                                                    && Model.lstetblRooms[i].lstRatePlan[j].lstetblOccupancy[lstOcc].blsPromo == Model.lstTaxesDateWise_OfferReview[l1].bIsPromo
+                                                                    && Model.lstetblRooms[i].lstRatePlan[j].lstetblOccupancy[lstOcc].RPID == Model.lstTaxesDateWise_OfferReview[l1].RPID
+                                                                    && Model.lstetblRooms[i].lstRatePlan[j].lstetblOccupancy[lstOcc].iOccupancy == Model.lstTaxesDateWise_OfferReview[l1].iOccupancy
+                                                                    )
+                                                                {
+                                                                    <div style="float:left; width:300px">
+                                                                        <div style="float:left;width:150px">
+                                                                            @Model.lstTaxesDateWise_OfferReview[l1].dtDate.ToString("dd MMM,yyyy")
+                                                                        </div>
+                                                                        <div style="float:left;width:150px">
+                                                                            @Model.Symbol  @(clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.lstTaxesDateWise_OfferReview[l1].dBasePrice)))
+                                                                        </div>
+                                                                    </div>
+                                                                }
+                                                            }
+                                                        </div>
+
+                                                    </p>
+
+                                                </div>
+
+                                            </tr>
+
+                                                                                    CountIndex++;
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+
+                        <tr class="noborder">
+                            <td colspan="6"><span class="pull-right">Points Redeemed: </span></td>
+                            <td> @Model.sTotalPoints</td>
+                        </tr>
+                        <tr class="noborder">
+                            <td colspan="6">
+                                <span class="pull-right">
+                                    <a title="Taxes and Service Payable" href="javascript:void(0);" data-placement="left" data-id="divTaxes" rel="popover">
+                                        Taxes and  service Payable:
+                                    </a>
+                                </span>
+                            </td>
+                            <td> @Model.Symbol @Model.sSummaryTaxes_display</td>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+
+        </div>
+        <div id="divTaxes" style="display:none">
+            <p>
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td>Hotel Taxes</td>
+                            <td>:</td>
+                            <td>@Model.Symbol @(clsUtils.ConvertNumberToCommaSeprated(Math.Round(HotelTax)))</td>
+                        </tr>
+
+                        @if (Model.TaxCharges != null && Model.TaxCharges.dOFRServiceCharge > 0)
+                        {
+                            <tr>
+                                <td>OFR Service charge</td>
+                                <td>:</td>
+                                <td>@Model.Symbol @(clsUtils.ConvertNumberToCommaSeprated(Math.Round(Model.TaxCharges.dOFRServiceCharge)))</td>
+                            </tr>
+
+                            if (Model.TaxCharges.cGstValueType == "p")
+                            {
+                                <tr>
+                                    <td>GST on OFR Service charge (@Model.TaxCharges.dGstValue%)</td>
+                                    <td>:</td>
+                                    <td>@Model.Symbol @(clsUtils.ConvertNumberToCommaSeprated(Math.Round(Model.TaxCharges.TaxOnServiceCharge)))</td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td>GST on OFR Service charge</td>
+                                    <td>:</td>
+                                    <td>@Model.Symbol @(clsUtils.ConvertNumberToCommaSeprated(Math.Round(Model.TaxCharges.TaxOnServiceCharge)))</td>
+                                </tr>
+                            }
+                        }
+
+                    </tbody>
+
+                </table>
+            </p>
+        </div>
+
+        <script>
+            var popover = $("[rel='popover']").popover({
+                trigger: 'hover',
+
+                html: 'true'
+            }).on('show.bs.popover', function () {
+                popover.attr('data-content', $('#' + $(this).data('id')).html());
+            }).on('click', function () {
+                return false;
+            });
+
+        </script>
+
+
+        <style>
+            li {
+                list-style-type: disc !important;
+            }
+        </style>
+
+        <div class="container margintop30">
+            <div class="tablebluebg">Important Information</div>
+            <div class=" table-responsive table-bordered padding10 lightgrybg">
+                <ul>
+                    <li>
+                        Requests for bed types (King, Queen, 2 Doubles, etc.) including preferences like early check in, late check out, smoking room etc. are strictly at the discretion of the hotel and subject to availability and are not to be understood as guaranteed.
+                    </li>
+                    <li>
+                        Reservation is guaranteed for arrival on the confirmed date of check-in only. If you do not check-in on the first day of your reservation, the remainder of the stay will be deemed canceled too. No refund will be applicable.
+                    </li>
+                    <li>
+                        This reservation and the rate is governed by the Hotel’s cancellation policy.
+                    </li>
+                    <li>
+                        The reservation holder must present a valid Credit Card/ Debit Card at the time of check-in.
+                    </li>
+                    <li>
+                        According to government regulations, it is mandatory to present a valid Photo ID at check in by every person above the age of 18 staying at the hotel. A Driver's License, Voter's Card, Aadhar Card and Passport are all acceptable as identity proof. PLEASE NOTE PAN cards are not a valid ID. Without a valid photo ID with address, no guest will be allowed to check in.
+                    </li>
+                    <li>
+                        The primary guest checking in to the hotel must be at least 18 years of age.
+                    </li>
+                    <li>
+                        The inclusion of an extra bed with a booking is facilitated with a folding cot or a mattress.
+                    </li>
+                    <li>
+                        A booking cannot be canceled on or after the check in date and time mentioned in the Hotel Confirmation Voucher.
+                    </li>
+                    <li>
+                        The hotel reserves the right of admission. Accommodation can be denied to guests posing as a ' couple' if suitable proof of identification is not presented at check-in. OneFineRate will not be responsible for any check-in denied by the hotel due to the aforesaid reason.
+                    </li>
+                    <li>
+                        The hotel reserves the right of admission for local residents. Accommodation can be denied to guests residing in the same city. OneFineRate will not be responsible for any check-in denied by the hotel due to the aforesaid reason.
+                    </li>
+                    <li>
+                        For any update to a booking, cancellation/modification charges are applicable as per hotel policy
+                    </li>
+                    <li>
+                        All distances (Airport/Station etc.) are approximate and actual driving distances may vary based on the route taken.
+                    </li>
+                    <li>
+                        Hotels may charge a mandatory meal surcharge on festive periods e.g. Christmas, New Year's Eve etc.  All additional charges (including mandatory meal surcharges) need to be cleared directly at the hotel.
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="container" id="fill">
+            <div class="form-inline">
+                <div class="form-group">
+                    <input type="checkbox" class="checkbox" id="chkAgree">
+                    <label for="chkAgree" style="cursor:pointer">
+                        I have read, accepted and agree to OneFineRate's
+                        <a class="showpointer" href="#" onclick="Opentc();">Terms and Conditions</a>
+                        <a class="showpointer" href="#" onclick="OpenPP();">and Privacy Policy.</a>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <!-- Terms and conditions pop up -->
+        <div id="divTC" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Terms and Conditions</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>This page states the Terms and Conditions under which you (Visitor) may visit this web site. Please read this page carefully. If you do not accept the Terms and Conditions stated here, we would request you to exit this site. FPHL or any of its business divisions and / or its subsidiaries, associate companies or subsidiaries to subsidiaries or such other investment companies (in India or abroad) reserve their respective rights to revise these Terms and Conditions at any time by updating this posting. You should visit this page periodically to re-appraise yourself of the Terms and Conditions, because they are binding on all users of this web site.</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Privacy Policy pop up -->
+        <div id="divprivacupolicy" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Privacy Policy</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Our policy outlines the type of personal information we collect and receive, the circumstances in which we collect or receive personal information, the policies and procedures we have established outlining its use and storage, and for sharing certain types of personal information in certain limited circumstances, the procedures you should follow if you have any questions or requests in respect of your personal information or our policies and procedures and the person to whom such questions or requests should be directed, and the means by which to communicate with that person.</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        .<!-- Hotel policy pop up -->
+        <div id="divHotelPolicy" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Hotel Policy</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Reservation must be amended/cancelled 72 hours prior to the planned date of arrival. Reservations cancelled within 72 hours of the arrival date will incur a cancellation charge of one night. Peak Season cancellation must be done at least 7 days prior to arrival date to qualify for no cancellation charge. For group of 5 rooms or more confirmation for the reservation would only be given on the basis of a valid credit card. In case of a no-show or cancellation/amendment of the conference/group (in part or full), within 15 days or less from the date of check-in, a retention charge will be levied. In addition, should any participants check-out early, retention will be charged for those nights booked, now being released due to the early check-out.</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        @if (User.Identity.IsAuthenticated)
+        {
+            var countryCodeList = OneFineRateBLL.BL_Country.GetAllCountryPhoneCodes();
+            Model.CountryCodePhoneList = countryCodeList;
+
+            @Html.Partial("_UserInformation", Model)
+        }
+
+        <div class="marginbottom10">&nbsp;</div>
+
+        <div id="RoomDetails" class="modal fade" role="dialog">
+
+        </div>
+    </div>
+
+
+    <link href="~/Content/horizontalSlider.css" rel="stylesheet" />
+
+    <script src="~/Scripts/horizontalSlider.js"></script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('[data-toggle="popover"]').popover();
+
+            var popOverSettings = {
+                placement: 'bottom',
+                container: 'body',
+                html: true,
+                selector: '[rel="popover"]',
+                content: function () {
+
+                }
+            }
+
+            $('body').popover(popOverSettings);
+        });
+
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        });
+
+
+    function OpenHP() {
+        $('#divHotelPolicy').modal({
+            show: 'true'
+        });
+    }
+    function Opentc() {
+
+        $('#divTC').modal({
+            show: 'true'
+        });
+    }
+    function OpenPP() {
+        $('#divprivacupolicy').modal({
+            show: 'true'
+        });
+    }
+    function OpenTaxes() {
+        $('#divTaxes').modal({
+            show: 'true'
+        });
+           }
+
+    $(function () {
+
+        $('#chkAgree').click(function () {
+            if ($(this).is(':checked')) {
+                $('#btnRegisteredUserLogin').removeAttr('disabled');
+                $('#btnGuestUserLogin').removeAttr('disabled');
+            } else {
+                $('#btnRegisteredUserLogin').attr('disabled', 'disabled');
+                $('#btnGuestUserLogin').attr('disabled', 'disabled');
+            }
+        });
+    });
+
+    function ReplaceNumberWithCommas(yourNumber) {
+        //Seperates the components of the number
+        yourNumber = Math.round(yourNumber);
+        var n = yourNumber.toString().split(".");
+        //Comma-fies the first part
+        n[0] = n[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        //Combines the two sections
+        return n.join(".");
+    }
+
+    function OpenPopUp(propid, roomid) {
+
+        var url = '@Url.Action("RoomInfo", "OfferReview")?propid=' + propid + '&roomid=' + roomid;
+        //startSpinning();
+        $("#RoomDetails").load(url, function () {
+            // stopSpinning();
+        });
+        $('#RoomDetails').modal({
+            show: 'true'
+        });
+    }
+
+    </script>
+
+                                                                }
+                                                                else
+                                                                {
+                                                                    <h1>Sorry! An Error Occurred. Kindly try after some time.</h1>
+                                                                }

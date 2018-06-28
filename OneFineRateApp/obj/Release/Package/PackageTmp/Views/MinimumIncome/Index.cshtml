@@ -1,0 +1,423 @@
+﻿@model OneFineRateBLL.Entities.eMinimumIncome
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+
+<link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css" rel="stylesheet" />
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
+
+<style>
+    .dataTables_filter {
+        display: none !important
+    }
+    .dataTables_length {
+        display: none !important
+    }
+    .fg-toolbar:first-of-type {
+        height: 40px;
+    }
+
+</style>
+
+<div class="container margintop20">
+    <div class="row panel panel-default">
+        <div class="container panel-heading">
+            <div class="col-md-6">
+                <h4 class="panel-title">
+                    Minimum Income Management
+                </h4>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="com-md-12">
+                <div class="col-md-3">
+                    <label>Star Category</label>
+                    <div class="clearfix"></div>
+                    <input type="checkbox" class="starCategory" name="iStarCategoryId" id="iStarCategoryId1" value="1"> <label for="iStarCategoryId1" style="padding-right:15px;"> 1</label>
+                    <input type="checkbox" class="starCategory" name="iStarCategoryId" id="iStarCategoryId2" value="2"> <label for="iStarCategoryId2" style="padding-right:15px;"> 2</label>
+                    <input type="checkbox" class="starCategory" name="iStarCategoryId" id="iStarCategoryId3" value="3"> <label for="iStarCategoryId3" style="padding-right:15px;"> 3</label>
+                    <input type="checkbox" class="starCategory" name="iStarCategoryId" id="iStarCategoryId4" value="4"> <label for="iStarCategoryId4" style="padding-right:15px;"> 4</label>
+                    <input type="checkbox" class="starCategory" name="iStarCategoryId" id="iStarCategoryId5" value="5"> <label for="iStarCategoryId5" style="padding-right:15px;"> 5</label>
+                </div>
+                <div class="col-md-4">
+                    <label>Hotel Name</label>
+
+                    @Html.TextBoxFor(model => model.iPropId, new { @class = "form-control", id = "txtSearchHotel", placeholder = "Search Hotel..." })
+
+                    @Html.Hidden("hdnSelectedPropId")
+                    @*@Html.DropDownListFor(model => model.iPropId, Enumerable.Empty<SelectListItem>(), "Select Property", new { @class = "form-control", id = "ddlProperty" })*@
+
+
+                    @*@Html.DropDownListFor(model => model.iPropId, new SelectList(OneFineRateBLL.BL_tblPropertyM.GetAllPropertyNameList(), "iPropId", "sName"), "Select Property", new { @class = "form-control", id = "ddlProperty" })*@
+                </div>
+                <div class="col-md-2">
+                    <label>State</label>
+                    @*@Html.DropDownListFor(model => model.iStateId, new SelectList(OneFineRateBLL.BL_Country.GetStatesByCountryId(1), "iStateId", "sState"), "Select State", new { @class = "form-control", id = "ddlState" })*@
+                    @Html.ListBoxFor(model => model.iStateId, new SelectList(OneFineRateBLL.BL_Country.GetStatesByCountryId(1), "iStateId", "sState"), new
+                    {
+                       @class = "form-control notSelect2",
+                       data_actions_box = "true",
+                       data_live_search = "true",
+                       multiple = "",
+                       title = "All States",
+                       id = "ddlState"
+                   })
+                </div>
+                <div class="col-md-2">
+                    <label>City</label>
+                    @Html.DropDownListFor(model => model.iCityId, Enumerable.Empty<SelectListItem>(), "All Cities", new { @class = "form-control", id = "ddlCity" })
+                    @*@Html.ListBoxFor(model => model.iCityId, new SelectList(Enumerable.Empty<SelectListItem>(), "iCityId", "sCity"), new
+                    {
+                        @class = "form-control notSelect2",
+                        data_actions_box = "true",
+                        data_live_search = "true",
+                        multiple = "",
+                        title = "-Select City-",
+                        id = "ddlCity"
+                   })*@
+                </div>
+                <div class="col-md-1">
+                    <br />
+                    <input type="button" value="Search" id="btnSearch" class="btn btn-primary" />
+                </div>
+            </div>
+            <div class="clearfix"></div>
+           
+            <div class="col-md-3">
+                <button id="exportToExcel" class="btn btn-primary">
+                    <i class="fa fa-file-excel-o"></i> Export to Excel
+                </button>
+            </div>
+            <div class="col-md-4">
+                <button id="btnResetSearch" class="btn btn-warning">
+                    Clear Filters
+                </button>
+            </div>
+
+            <div class="col-md-4">
+                <input type="text" class="form-control" name="minimumAmount" maxlength="6" placeholder="Minimum income" id="txtMinimumIncome" />
+            </div>
+            <div class="col-md-1">
+                <input type="button" class="btn btn-primary" id="btnSaveMinimumAmount" value="&nbsp; Save &nbsp" />
+            </div>
+
+            <div class="col-md-12">
+                <div class="table-responsive margintop20">
+
+                    <table id="tblMinimumIncome" style="width:100% !important" class="table table-bordered table-hover table-striped"></table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+
+
+    <script type="text/javascript">
+
+
+        $(function () {
+
+
+            $('#ddlState').selectpicker();
+
+            //$('#ddlCity').selectpicker();
+
+            $("#txtSearchHotel").select2({
+                minimumInputLength: 1,
+                tags: [],
+                escapeMarkup: function (markup) {
+                    return markup;
+                },
+                templateResult: function (data) {
+                    return data.html;
+                },
+                templateSelection: function (data) {
+                    return data.text;
+                },
+                ajax: {
+                    url: "/MinimumIncome/GetHotelSearchData",
+                    dataType: 'json',
+                    type: "GET",
+                    params: {
+                        global: false,
+                    },
+                    quietMillis: 100,
+
+                    data: function (term) {
+                        return {
+                            hotelSearchTxt: term
+                        };
+                    },
+                    results: function (data) {
+
+                        return {
+                            results: $.map(data.hotelList, function (item) {
+
+                                return {
+                                    text: item.Name,
+                                    id: item.Id
+                                }
+                            })
+                        };
+                    }
+                }
+            }).on("change", function (e) {
+                $('#hdnSelectedPropId').val(e.val);
+            });
+
+            BindMinimumIncomeHotelList();
+
+            var $table = $("#tblMinimumIncome").dataTable();
+
+            //$("#txtSearchHotel").autocomplete({
+            //    source: function (request, response) {
+            //        $.ajax({
+            //            url: "/MinimumIncome/GetHotelSearchData",
+            //            type: "GET",
+            //            dataType: "json",
+            //            data: { hotelSearchTxt: request.term },
+            //            success: function (data) {
+            //                response($.map(data.hotelList, function (item) {
+            //                    return { label: item.Name, value: item.Id };
+            //                }))
+
+            //            }
+            //        })
+            //    },
+            //    select: function (event, ui) {
+
+            //        $("#txtSearchHotel").val(ui.item.label);
+            //        $('#hdnSelectedPropId').val(ui.item.value);
+            //        event.preventDefault();
+            //    },
+            //    focus: function (event, ui) {
+            //        event.preventDefault();
+            //        // $("#txtSearchHotel").val(ui.item.label);
+            //        return false;
+            //    }
+            //});
+
+
+
+            $('#btnSearch').click(function () {
+                $table.fnDraw();
+            });
+
+            $('#btnResetSearch').click(function () {
+                
+                $('#hdnSelectedPropId').val('');
+
+                $("#ddlState").val([]);
+                $("#ddlState").selectpicker("refresh");
+
+                $("#ddlCity").val("").trigger("change.select2");
+                $(".starCategory").prop('checked', false);
+                $('li.select2-search-choice').remove();
+                $('#txtMinimumIncome').val('');
+                $table.fnDraw();
+            });
+
+
+            $("#ddlState").change(function () {
+
+                var ddlCity = "#ddlCity";
+                var val = $(this).val();
+                
+                if (val.length == 1) {
+
+                    var url = '@Url.Content("/")' + "Property/BindCity";
+
+                    $.ajax({
+                        url: url,
+                        data: { id: val[0] },
+                        global: false,
+                        success: function (data) {
+
+                            cleardropdown($(ddlCity));
+                            $.each(data.suggestions, function (index, optionData) {
+                                $(ddlCity).append("<option value='" + optionData.iCityId + "'>" + optionData.sCity + "</option>");
+                            });
+                        }
+                    });
+                }
+                else {
+                    cleardropdown($(ddlCity));
+                }
+            });
+
+            $("#txtMinimumIncome").keydown(function (event) {
+
+                if (event.shiftKey == true) {
+                    event.preventDefault();
+                }
+
+                if ((event.keyCode >= 48 && event.keyCode <= 57)
+                    || (event.keyCode >= 96 && event.keyCode <= 105)
+                    || event.keyCode == 8 || event.keyCode == 9
+                    || event.keyCode == 37 || event.keyCode == 39
+                    || event.keyCode == 46 || event.keyCode == 190) {
+
+                } else {
+                    event.preventDefault();
+                }
+
+                if ($(this).val().indexOf('.') !== -1 && event.keyCode == 190)
+                    event.preventDefault();
+            });
+
+
+            $('#btnSaveMinimumAmount').click(function () {
+
+                toastr.clear($('.toast'));
+
+                var selectedProperties = $(".chkSelectPropId:checkbox:checked");
+
+                if (!selectedProperties.length) {
+                    toastr.error('Please select at least one property to set the minimum income.');
+                    return false;
+                }
+
+                var selectedPropertyIds = selectedProperties.map(function () {
+                    return this.value;
+                }).get().join(",");
+
+                var minimumIncome = $('#txtMinimumIncome').val();
+
+                if (!minimumIncome) {
+                    toastr.error('Please enter a valid amount for minimum income.');
+                    return false;
+                }
+
+                $.post('@Url.Action("SaveMinimumIncome")?selectedPropertyIds=' + selectedPropertyIds + '&minimumIncome=' + minimumIncome).done(function (data) {
+
+                    if (data.status == false) {
+                        toastr.error(data.message);
+                    }
+                    else if (data.status == true) {
+
+                        //$('#btnResetSearch').click();
+
+                        //$('#hdnSelectedPropId').val('');
+
+                        //$("#ddlState").val([]);
+                        //$("#ddlState").selectpicker("refresh");
+
+                        //$("#ddlCity").val("").trigger("change.select2");
+                        //$(".starCategory").prop('checked', false);
+                        //$('li.select2-search-choice').remove();
+                        $('#txtMinimumIncome').val('');                        
+
+                        $table.fnDraw();
+                        toastr.success(data.message);
+                    }
+                });
+            });
+
+            $(document).on('click', '.chkSelectAll', function () {
+
+                var isThisChecked = $(this).prop('checked');
+
+                $('.chkSelectPropId').prop('checked', isThisChecked);
+            });
+
+
+            $(document).on('click', '.chkSelectPropId', function () {
+
+                var selectedCheckedProperties = $(".chkSelectPropId:checkbox:checked");
+
+                var selectedProperties = $(".chkSelectPropId:checkbox");
+
+                if (selectedCheckedProperties.length === selectedProperties.length) {
+
+                    $('.chkSelectAll').prop('checked', true);
+                }
+                else {
+
+                    $('.chkSelectAll').prop('checked', false);
+                }
+            });
+
+
+            $('#exportToExcel').click(function () {
+
+                toastr.clear($('.toast'));
+
+                var selectedProperties = $(".chkSelectPropId:checkbox");
+
+                if (!selectedProperties.length) {
+                    toastr.error('No data available to export.');
+                    return false;
+                }
+
+                var selectedPropertyIds = selectedProperties.map(function () {
+                    return this.value;
+                }).get().join(",");
+
+                location.href = '@Url.Action("ExportToExcel")?propertyIds=' + selectedPropertyIds;
+            });
+        });
+
+        function cleardropdown(vardropdown) {
+            $(vardropdown).empty();
+            var option = $("<option />");
+            option.attr("value", "").text("All Cities");
+            $(vardropdown).append(option);
+            $(vardropdown).select2("val", "");
+        };
+
+        function BindMinimumIncomeHotelList() {
+
+            try {
+                var aoColumns =
+                    [
+                        {
+                            "sTitle": '<input type="checkbox" class="chkSelectAll"/>', "mData": "iPropId", "sClass": "text-center", "bSortable": false,
+                            "mRender": function (data, type, full) {
+
+                                var html = '<input type="checkbox"  value=' + data + ' class="chkSelectPropId"/>&nbsp';
+
+                                //if (full.dMinIncome > 0) {
+                                //    html = '<input type="checkbox" checked value=' + data + ' class="chkSelectPropId"/>&nbsp';
+                                //}
+
+                                return html;
+                            }
+                        },
+
+                        { "sTitle": "Hotel Name", "mData": "sHotelName" },
+
+                        {
+                            "sTitle": "Min. Income", "mData": "dMinIncome", "bSortable": false,
+
+                            "mRender": function (data, type, full) {
+
+                                return parseFloat(data).toFixed(2);
+                            }
+                        },
+
+                        { "sTitle": "Star Category", "mData": "iStarCategoryId", "bSortable": false },
+
+                        { "sTitle": "State", "mData": "sState" },
+
+                        { "sTitle": "City", "mData": "sCity" },
+
+                        { "sTitle": "Action Date", "mData": "dtActionDate", "bSortable": false, },
+
+                        { "sTitle": "Action By", "mData": "sActionBy", "bSortable": false }
+                    ];
+
+                DatatableServerSideMimimumIncome("#tblMinimumIncome", aoColumns, "/Services/Service.asmx/GetHotelsForMimimumIncomeSetup");
+            }
+            catch (e) {
+
+                console.error(e);
+            }
+        }
+
+    </script>
+}

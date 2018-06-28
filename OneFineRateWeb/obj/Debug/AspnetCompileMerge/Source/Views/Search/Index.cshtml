@@ -1,0 +1,1329 @@
+﻿@using MvcCheckBoxList.Model
+@model OneFineRateBLL.Entities.eWebSiteSearchPage
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<script>
+    var isUserAuthenticated = @Json.Encode(User.Identity.IsAuthenticated);
+</script>
+
+<script src="~/js/jquery-ui.js"></script>
+<script src="~/js/bootstrap-number-input.js"></script>
+<link href="~/css/jquery-ui.css" rel="stylesheet" />
+<script src="//maps.googleapis.com/maps/api/js?key=AIzaSyBA8k8_YKEbkfECgXpF6FKdMkMA1jS1qAQ"></script>
+
+<style>
+    /*.star-choice li {
+        cursor: pointer;
+    }*/
+
+
+    .hotelfacilitydiv table tr td label {
+        margin-left: 5px;
+        margin-top: 0px !important;
+    }
+
+    .roomfacilitydiv table tr td label {
+        margin-left: 5px;
+        margin-top: 0px !important;
+    }
+
+    #ui-datepicker-div {
+        z-index: 999 !important;
+    }
+
+    .scrollFix {
+        line-height: 1.35;
+        overflow: hidden;
+        white-space: nowrap;
+        height: 100%;
+    }
+
+    .disabledDiv {
+        pointer-events: none;
+        opacity: 0.5;
+    }
+
+    .waitMe_container .waitMe .waitMe_text {
+        font-size: 20px;
+    }
+
+    .waitMe_container .waitMe_progress.rotation > div {
+        height: 40px !important;
+        width: 40px !important;
+    }
+    /*.child {
+        width: 40px !important;
+    }*/
+    .ui-menu {
+        width: 360px;
+    }
+
+    .ui-widget.ui-widget-content li {
+        border: 0px !important;
+    }
+</style>
+<script>
+    $(document).ready(function(){
+        $("#learnmore").click(function(){
+            $("#lrndata").toggle();
+        });
+    });
+</script>
+@Html.Partial("~/Views/Home/pSearchBar.cshtml")
+
+<input type="hidden" value="500" id="hdnLowerPrice">
+
+<input type="hidden" value="50000" id="hdnUpperPrice">
+<input type="hidden" value="" />
+<div id="loaderContainer">
+    <div class="container">
+        <div class="row" style="margin-left: 0%; margin-right:0%;">
+            <div class="col-md-10 srchcaptionbg">
+                <h4 class="bold nomarginbtm"> Save up to 50% on a hotel  by Negotiating!</h4>
+                Negotiate with the hotels to lock in <span class=" font17">BIG</span> savings  within minutes.
+                @*<h4 class="bold nomarginbtm">Unable to find a Hotel of your choice and would like to Negotiate or Bid?<a href="/">Click Here</a></h4>*@
+                @*<br />*@
+            </div>
+            <div class="col-md-2 srchlrnmore" id="learnmore">Learn More</div>
+            <div class="col-md-12 col-xs-12 text-center learnblock" id="lrndata" style="display:none;">
+
+
+
+                <div class="col-md-3 paddingtop15">
+                    <img src="~/images/big-discount.png" class="img-res text-center" /><h4 class="popuphead">BIG DISCOUNTS</h4>
+                    <hr />
+                    <div class="lineheight16">
+                        We negotiate rates upto 50%  for you.
+                    </div>
+                </div>
+                <div class="col-md-1"></div>
+                <div class=" col-md-3 paddingtop15">
+                    <img src="~/images/whatcatch.png" class="img-res text-center" /><h4 class="popuphead">WHAT's THE CATCH</h4> <hr /><div class="lineheight16">With prices this low, hotel wants to be sure that you are travelling.</div>
+                </div>
+                <div class="col-md-1"></div>
+                <div class="col-md-3 paddingtop15">
+                    <img src="~/images/how.png" class="img-res" /> <h4 class="popuphead">HOW ?</h4> <hr /><div class="lineheight16"> Just pay INR 500 was a signup fees and if your negotiation is successful, you pay the balance. If not, then we refund it back to you.</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="blue_header_bar">
+
+        @using (Html.BeginForm("Index", "Search", FormMethod.Post, new { id = "frmPartialSeach" }))
+        {
+            <div class="container marginbottom6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>Filters</h4><hr>
+                    </div>
+
+                    <div class="row ">
+                        <div class="col-md-12 ">
+                            <div class="col-lg-6 col-md-12 col-sm-12  col-xs-12   ">
+                                <div class="form-group">
+                                    <label>Search by Hotel </label>
+                                    <input type="text" id="txtHotelName" class="form-control " placeholder="Hotel Name">
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-12 col-sm-12  col-xs-12 ">
+                                <div class="form-group">
+                                    <label>Search by Location </label>
+                                    <input type="text" id="txtlocality" class="form-control  marginbottom10" placeholder="Location Name">
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <hr class="marginleftright15" />
+
+                    <div class="row col-md-12">
+                        <div class="col-lg-3 col-md-6 col-xs-10 " style="border:0px solid red;">
+                            <div class="rowxcc">
+                                <label>Star Choice/Category</label>
+
+                                <ul class="star-choice">
+                                    <li><img class="starChoice" data-id="1" data-startype="n" src="@Url.Content("~/images/1Star-n.png")" /></li>
+                                    <li><img class="starChoice" data-id="2" data-startype="n" src="@Url.Content("~/images/2Star-n.png")" /></li>
+                                    <li><img class="starChoice" data-id="3" data-startype="n" src="@Url.Content("~/images/3Star-n.png")" /></li>
+                                    <li><img class="starChoice" data-id="4" data-startype="n" src="@Url.Content("~/images/4Star-n.png")" /></li>
+                                    <li><img class="starChoice" data-id="5" data-startype="n" src="@Url.Content("~/images/5Star-n.png")" /></li>
+                                </ul>
+
+
+                                @*<div id="star-range"></div>*@
+                                <!-- <input type="text" id="star" class=" noborder"> -->
+
+                            </div>
+                        </div>
+                        <div class="col-lg-3  col-md-6 col-xs-10 ">
+
+                            <div class="slider-range">
+                                <label>Room rate per night</label>
+                                <div id="slider-range"></div>
+                                <input type="text" id="amount" class="noborder font12" readonly>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 border">
+                            <div class="row form-inline">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <label>&nbsp;</label><br />
+                                    <div class="btn-group">
+                                        <button type="button" class="form-control btn btn-default"> Hotel Facilities </button>
+                                        <button class="form-control btn btn-default  dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <span class="caret"></span>
+                                        </button>
+                                        <div class="dropdown-menu hotelfacilitydiv">
+                                            @{ var putCheckBoxesIntoTable = new HtmlListInfo(HtmlTag.table, 3, new { style = "width:100%;" }, TextLayout.Default, TemplateIsUsed.No); }
+                                            @Html.CheckBoxListFor(m => m.SelectedHotelFacility, m => m.HotelFacilityItems,
+                                            group => group.Value,
+                                            group => group.Text,
+                                            m => m.Selected,
+                                            putCheckBoxesIntoTable)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <label>&nbsp;</label><br />
+                                    <div class="btn-group">
+                                        <button type="button" class="form-control btn btn-default"> Room Facilities </button>
+                                        <button class="form-control btn btn-default  dropdown-toggle marginbottom10" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <span class="caret"></span>
+                                        </button>
+                                        <div class="dropdown-menu roomfacilitydiv">
+                                            @Html.CheckBoxListFor(m => m.SelectedRoomFacility, m => m.RoomFacilityItems,
+                                            group => group.Value,
+                                            group => group.Text,
+                                            m => m.Selected,
+                                            putCheckBoxesIntoTable)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 nopadding" style="border:0px solid red; ">
+                            @*<div class="col-md-12">*@
+                            <label class="form-inline margintop10">
+                                <input type="checkbox" value="Special Deal" id="specialDeal" class="checkbox"> Special Deal
+                            </label><br />
+                            <button type="button" id="applyFilter" data-button_name="@Model.sRequestType" class="btn btn-primary marginbottom10 ">Apply Filter</button>
+                            <button type="button" id="clearFilter" class="btn btn-primary marginbottom10  ">Clear Filter</button>
+                            @*</div>*@
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        }
+        <!--next section-end here-->
+    </div>
+
+    <div class="container" id="searchListContainer">
+
+        @{ Html.RenderPartial("_HotelList");}
+
+    </div>
+
+    <script>
+
+        var enableScrollEffect = true;
+
+        // Update Range Slider with current ofr hotels price value while loading travelguru hotels
+
+        $(function(){
+
+            var priceListJson = [];
+
+            var MIN=500*@Model.dExchangeRate;
+            var MAX=50000*@Model.dExchangeRate;
+
+            $('.lazy').each(function(index,element){
+
+                if($(this).data('price') != undefined && $(this).data('price') != NaN)
+                {
+                    var priceObj= {};
+                    priceObj.dPrice= parseFloat($(this).data('price'));
+                    priceListJson.push(priceObj);
+                }
+            });
+
+            MAX =  Math.round(Math.max.apply(Math,priceListJson.map(function(o){return o.dPrice;})));
+            MIN =  Math.round(Math.min.apply(Math,priceListJson.map(function(o){return o.dPrice;})));
+
+            if (MIN == Infinity || MAX == Infinity || MIN == -Infinity || MAX == -Infinity)
+            {
+                MIN= 500*@Model.dExchangeRate;
+
+                MAX= 50000*@Model.dExchangeRate;
+            }
+
+            $('#hdnLowerPrice').val(MIN);
+            $('#hdnUpperPrice').val(MAX);
+            debugger;
+            $("#slider-range").slider({
+                range: true,
+                min: parseInt(500*@Model.dExchangeRate),
+                max: parseInt(50000*@Model.dExchangeRate),
+                values: [MIN,MAX],
+                slide: function (event, ui) {
+
+                    $("#amount").val('@Model.sCurrencySymbol' + ui.values[0] + ' - @Model.sCurrencySymbol' + ui.values[1]);
+
+                    $('#hdnUpperPrice').val(ui.values[1].toString());
+                    $('#hdnLowerPrice').val(ui.values[0].toString());
+                }
+            });
+
+            $("#amount").val('@Model.sCurrencySymbol'+ $("#slider-range").slider("values", 0 ) + " - @Model.sCurrencySymbol" + $("#slider-range").slider("values", 1 ));
+        });
+    </script>
+
+</div>
+
+<script type="text/javascript">
+
+
+    var minrange = 0, maxrange = 0;
+    var starChoices = [];
+    var iLocalitySearchedID = 0;
+    var initialPriceListJson = [];
+
+
+    $.fn.isOnScreen = function () {
+        var viewport = {};
+        viewport.top = $(window).scrollTop();
+        viewport.bottom = viewport.top + $(window).height();
+        var bounds = {};
+        bounds.top = this.offset().top;
+        bounds.bottom = bounds.top + this.outerHeight();
+        return ((bounds.top <= viewport.bottom) && (bounds.bottom >= viewport.top));
+    };
+
+    $(function () {
+
+        $('img[src=""]').hide();
+
+        var $doc = $(document);
+        var $win = $(window);
+
+        var data_Increment = 5;
+
+        $(window).scroll(function () {
+
+            if(enableScrollEffect)
+            {
+                if ($doc.height() - $win.height() - $(this).scrollTop() <= 500) {
+
+                    $('.lazy:hidden:lt(' + data_Increment + ')').fadeIn();
+                }
+            }
+        });
+
+
+        $('.starChoice').click(function () {
+
+            var $this = $(this);
+            var id = $this.attr('data-id');
+            var starType = $this.attr('data-startype');
+
+            switch (id) {
+                case '1':
+                    {
+                        ChangeStarType(starType, $this, 1);
+                        break;
+                    };
+                case '2':
+                    {
+                        ChangeStarType(starType, $this, 2);
+
+                        break;
+                    }
+                case '3':
+                    {
+                        ChangeStarType(starType, $this, 3);
+                        break;
+                    }
+                case '4':
+                    {
+                        ChangeStarType(starType, $this, 4);
+                        break;
+                    }
+                case '5':
+                    {
+                        ChangeStarType(starType, $this, 5);
+                        break;
+                    }
+            }
+
+            function ChangeStarType(starType, element, starNumber) {
+                try {
+
+                    if (starType == 'n') {
+                        element.attr('src', '../images/' + starNumber + 'Star-h.png');
+                        element.attr('data-starType', 'h');
+                    }
+                    else if (starType == 'h') {
+                        element.attr('src', '../images/' + starNumber + 'Star-n.png');
+                        element.attr('data-starType', 'n');
+                    }
+
+                } catch (e) {
+
+                }
+            }
+
+        });
+
+
+        $('#applyFilter').click(function (e) {
+
+            e.preventDefault();
+
+            $('.bodyClickHide').hide();
+
+
+            if ($('#hdnSelectedLocalityID').val() == "" || $('#hdnSelectedLocalityID').val() == undefined) {
+                toastr.warning('Please select the Destination City.');
+                return false;
+            }
+
+            if ($('#txtstayfrom').val() == "" || $('#txtstayfrom').val() == undefined) {
+                toastr.warning('Please select your Check In date.');
+                return false;
+            }
+            if ($('#txtstayto').val() == "" || $('#txtstayto').val() == undefined) {
+                toastr.warning('Please select your Check Out date.');
+                return false;
+            }
+
+            FetchRoomDetailsFromSearch();
+
+            if ($("#hdnJson").val() == "" || $("#hdnJson").val() == undefined) {
+                toastr.warning('Please select rooms.');
+                return false;
+            }
+
+            starChoices=[];
+            $('.starChoice').each(function (element, index) {
+
+                var $this = $(this);
+                if ($this.attr('data-startype') == 'h') {
+                    var thisStarId = $this.attr('data-id');
+                    starChoices.push(thisStarId)
+                }
+            });
+
+            var values = {
+                cid: iLocalitySearchedID != 0 ? 0 : $('#hdnSelectedLocalityID').val(),
+                ctype: iLocalitySearchedID != 0 ? 0 : $('#hdnSelectedType').val(),
+                iFilterLocality: iLocalitySearchedID == 0 ? 0 : iLocalitySearchedID,
+                iAreaType: iLocalitySearchedID == 0 ? 0 : 7,
+                cname: iLocalitySearchedID == 0 ? $('#txtlocname').val() : 'Loc',
+                sCheckIn: $('#txtstayfrom').val(),
+                sCheckOut: $('#txtstayto').val(),
+                sRoomData: $("#hdnJson").val(),
+                sSelectedHotelFacility: GetSelectedHotelFacilities().toString(),
+                sSelectedRoomFacility: GetSelectedRoomFacilities().toString(),
+                dMaxPrice: $('#hdnUpperPrice').val(),
+                dMinPrice: $('#hdnLowerPrice').val(),
+                sStarRating: starChoices.toString(),
+                isSpecialDeal: $("#specialDeal").is(':checked'),
+                sRequestType: '@Model.sRequestType'
+            };
+
+            //debugger;
+
+            GetPartialsView('@Url.Action("GetHotelListPartial", "Search")',values,function(htmlData){
+
+                $('#searchListContainer').html(htmlData);
+
+                //stopSpinning();
+
+                //Load travelguru hotels in background
+                Get_TG_Hotel_PartialView(values,function(partialViewHtml){
+
+                    $('#hotelListContainer').append(partialViewHtml);
+
+                    $('.lazy').filter(function (index) {
+
+                        if ($(this).isOnScreen()) {
+                            $(this).show();
+                        }
+                    });
+                });
+            });
+
+        });
+
+        function GetHotelsBYSearchParam(params,searchingByHotelName) {
+
+            try {
+
+                GetPartialsView('@Url.Action("GetHotelListPartial", "Search")',params,function(htmlData){
+
+                    $('#searchListContainer').html(htmlData);
+                    $('#hotelMapViewContainer').hide();
+                    //stopSpinning();
+
+                    var priceListJson = [];
+
+                    $('.lazy').each(function(index,element){
+
+                        if($(this).data('price') != undefined && $(this).data('price') != NaN)
+                        {
+                            var priceObj= {};
+                            priceObj.dPrice= parseFloat($(this).data('price'));
+                            priceListJson.push(priceObj);
+                        }
+                    });
+
+                    MAX =  Math.round(Math.max.apply(Math,priceListJson.map(function(o){return o.dPrice;})));
+                    MIN =  Math.round(Math.min.apply(Math,priceListJson.map(function(o){return o.dPrice;})));
+
+                    $("#slider-range").slider("option", "values",[MIN, MAX]);
+                    $("#amount").val('@Model.sCurrencySymbol'+ $("#slider-range").slider("values", 0) + " - @Model.sCurrencySymbol" + $("#slider-range").slider("values", 1));
+
+                    debugger;
+
+                    //Load travelguru hotels in background
+                    Get_TG_Hotel_PartialView(params,function(partialViewHtml){
+
+                        $('#hotelListContainer').append(partialViewHtml);
+
+                        //$('.lazy').filter(function (index) {
+
+                        //    if ($(this).isOnScreen()) {
+                        //        $(this).show();
+                        //    }
+                        //});
+                    });
+
+                    //if(searchingByHotelName == true)
+                    //{
+                    //    $('#show_Waiting_Div_While_Loading_More_Hotels').hide();
+
+                    //    GetMapPartialsView({},function(mapHtml){
+
+                    //        $('#searchListContainer').append(mapHtml);
+                    //        $('#hotelMapViewContainer').hide();
+                    //    });
+                    //}
+                    //else{
+
+                    //    //Load travelguru hotels in background
+                    //    Get_TG_Hotel_PartialView(params,function(partialViewHtml){
+
+                    //        $('#hotelListContainer').append(partialViewHtml);
+
+                    //        $('.lazy').filter(function (index) {
+
+                    //            if ($(this).isOnScreen()) {
+                    //                $(this).show();
+                    //            }
+                    //        });
+
+                    //    });
+                    //}
+                });
+
+            } catch (e) {
+
+                $('#hotelFilterHeaderDiv').hide();
+                $('#hotelListContainer').html('<div class="col-md-12 lazy  marginbottom20"><div class="row border1 margintop10 boxshadow margin0">An Error occured !</div></div>');
+                //stopSpinning();
+            }
+        }
+
+        function GetHotelsByLocalitySearchParam(params) {
+
+            try {
+
+                GetPartialsView('@Url.Action("GetHotelListPartial", "Search")',params,function(htmlData){
+
+                    $('#searchListContainer').html(htmlData);
+                    $('#hotelMapViewContainer').hide();
+                    //stopSpinning();
+
+                    var priceListJson = [];
+                    var MIN=500;
+                    var MAX=50000;
+
+                    $('.lazy').each(function(index,element){
+
+                        if($(this).data('price') != undefined && $(this).data('price') != NaN)
+                        {
+                            var priceObj= {};
+                            priceObj.dPrice= parseFloat($(this).data('price'));
+                            priceListJson.push(priceObj);
+                        }
+                    });
+
+                    MAX =  Math.round(Math.max.apply(Math,priceListJson.map(function(o){return o.dPrice;})));
+                    MIN =  Math.round(Math.min.apply(Math,priceListJson.map(function(o){return o.dPrice;})));
+
+                    $("#slider-range").slider("option", "values",[MIN, MAX]);
+                    $("#amount").val('@Model.sCurrencySymbol'+ $("#slider-range").slider("values", 0) + " - @Model.sCurrencySymbol" + $("#slider-range").slider("values", 1));
+
+                    // Load travelguru Hotels in background
+                    Get_TG_Hotel_PartialView(params,function(partialViewHtml){
+
+                        $('#hotelListContainer').append(partialViewHtml);
+
+                        $('.lazy').filter(function (index) {
+
+                            if ($(this).isOnScreen()) {
+                                $(this).show();
+                            }
+                        });
+                    });
+                });
+
+
+            } catch (e) {
+
+                $('#hotelFilterHeaderDiv').hide();
+                $('#hotelListContainer').html('<div class="col-md-12 lazy  marginbottom20"><div class="row border1 margintop10 boxshadow margin0">An Error occured !</div></div>');
+                //stopSpinning();
+            }
+        }
+
+
+        function GetPartialsView(url, data, callback) {
+
+            if (data && url) {
+                //startSpinning();
+                try {
+                    $.ajax({
+                        type: "GET",
+                        url: url,
+                        data: data,
+                        async: true,
+                        success: function (response) {
+                            callback(response);
+                        },
+                        error: function (error) {
+
+                            $('#hotelFilterHeaderDiv').hide();
+                            $('#hotelListContainer').html('<div class="col-md-12 lazy  marginbottom20"><div class="row border1 margintop10 boxshadow margin0">We couldn\'t find Hotel matching your preferences!</div></div>');
+                            //stopSpinning();
+                        }
+                    }).always(function () {
+                        //stopSpinning();
+                    });
+                }
+                catch (e) {
+                    toastr.error(e.message, '', toasterOptions)
+                    //stopSpinning();
+                }
+            }
+        }
+
+
+        function GetSelectedHotelFacilities() {
+
+            var hotelFacilities = [];
+            $.each($("input[name='SelectedHotelFacility']:checked"), function () {
+                hotelFacilities.push($(this).val());
+            });
+
+            return hotelFacilities;
+        };
+
+        function GetSelectedRoomFacilities() {
+
+            var roomFacilities = [];
+            $.each($("input[name='SelectedRoomFacility']:checked"), function () {
+                roomFacilities.push($(this).val());
+            });
+
+            return roomFacilities;
+        };
+
+        function GetSelectedStarCategory() {
+
+            var starCategories = [];
+            $.each($("input[name='StarCategory']:selected"), function () {
+                starCategories.push($(this).val());
+            });
+
+            return starCategories;
+        };
+
+        function GetSliderVaues() {
+            var min = $("#slider-range").slider("option", "min");
+            var max = $("#slider-range").slider("option", "max");
+        }
+
+
+        $("#star").val("Star " + $("#star-range").slider("values", 0) +" - Star " + $("#star-range").slider("values", 1));
+
+        $('#clearFilter').click(function (e) {
+            $('#frmsearch').submit();
+        });
+
+        var dataListIdsCashed = [];
+
+        var d = new Date();
+        var searchId = $('#hdnSelectedLocalityID').val();
+        //bind autocomplete event on hotel names textbox on load
+        $("#txtHotelName").catcomplete({
+            source: function (request, response) {
+                // response([{ category: "Searching Hotels...", loading: true }]);
+                $.ajax({
+                    url: '@Url.Action("GetHotelNames")',
+                    contentType: "application/json; charset=utf-8",
+                    data: { txt: request.term, PlaceId: searchId, Type: SearchType,sRequestType : '@Model.sRequestType' },
+                    dataType: "json",
+                    type: "GET",
+                    //global: false,
+                    success: function (data) {
+
+                        if (!data.length) {
+
+                            var result = [
+                             {
+                                 value: response.term,
+                                 category: "Hotel not found! Negotiate or Bid",
+                                 href:'/Home/Index'
+                             }
+                            ];
+                            response(result);
+                        }
+                        else
+                        {
+
+                            var dataIdList = $(".propertyIdDiv").map(function() {
+                                return $(this).data("id");
+                            }).get();
+
+                            var filterData =[];
+
+                            if(dataListIdsCashed.length == 0)
+                            {
+                                dataListIdsCashed = dataIdList;
+                            }
+
+                            dataListIdsCashed.filter(function(id) {
+
+                                var  index = data.findIndex(x => x.Id==id);
+
+                                if(index != -1)
+                                    filterData.push(data[index]);
+                            });
+
+                            response($.map(filterData, function (item) {
+
+                                return {
+                                    label: item.Name,
+                                    category: "Hotels",
+                                    value: item.Id
+                                }
+                            }));
+                        }
+                    }
+                });
+            },
+            minLength: 1,
+            select: function (event, ui) {
+                //added by kuldeep
+                if (ui.item.href!=undefined) {
+                    window.location.href=ui.item.href;
+                    $(".overlay").show();
+                    return;
+                }
+                    //
+                else{
+                    //Set autocomplete element to display the label
+                    $("#txtHotelName").val(ui.item.label);
+                    event.preventDefault();
+
+                    var newValues = {
+
+                        sHotelSearch: $('#txtHotelName').val(),
+                        sCheckIn: $('#txtstayfrom').val(),
+                        sCheckOut: $('#txtstayto').val(),
+                        sRoomData: $("#hdnJson").val(),
+                        sRequestType: '@Model.sRequestType'
+                    };
+
+                    GetHotelsBYSearchParam(newValues,true);
+
+                    //$('.propertyIdDiv').hide().filter(function () {
+                    //    return $(this).data('id') == ui.item.value
+                    //}).show();
+
+                    //$('.property_ul_li').hide().filter(function () {
+                    //    return $(this).data('id') == ui.item.value
+                    //}).show();
+
+                    //$('#clickable'+ui.item.value).click();
+
+                    //enableScrollEffect = false;
+                }
+            },
+            focus: function (event, ui) {
+                event.preventDefault();
+                $("#txtHotelName").val(ui.item.label);
+                return false;
+            }
+
+        });
+
+
+        $( "#txtHotelName" ).focus(function() {
+            $("#txtHotelName").val('');
+        });
+
+        //bind autocomplete event on hotel names textbox on load
+        $("#txtlocality").catcomplete({
+            source: function (request, response) {
+                // response([{ category: "Searching Localities...", loading: true }]);
+                $.ajax({
+                    url: '@Url.Action("GetLocalityNames")',
+                    contentType: "application/json; charset=utf-8",
+                    data: { txt: request.term, PlaceId: searchId, Type: SearchType,sRequestType : '@Model.sRequestType' },
+                    dataType: "json",
+                    type: "GET",
+                    async: true,
+                    success: function (data) {
+                        if (!data.length) {
+
+                            var result = [
+                             {
+                                 value: response.term,
+                                 category: "No result Found!"
+                             }
+                            ];
+                            response(result);
+                        }
+                        else
+                        {
+                            response($.map(data, function (item) {
+                                return {
+                                    label: item.Name,
+                                    category: "Locality",
+                                    value: item.Id
+                                }
+                            }));
+                        }
+                    }
+                });
+            },
+            minLength: 1,
+            select: function (event, ui) {
+                //Set autocomplete element to display the label
+                $("#txtlocality").val(ui.item.label);
+                iLocalitySearchedID = ui.item.value;
+                event.preventDefault();
+
+                starChoices=[];
+                $('.starChoice').each(function (element, index) {
+
+                    var $this = $(this);
+                    if ($this.attr('data-startype') == 'h') {
+                        var thisStarId = $this.attr('data-id');
+                        starChoices.push(thisStarId)
+                    }
+                });
+
+                var values = {
+                    iFilterLocality: iLocalitySearchedID,
+                    iAreaType: 7,
+                    cname: 'Loc',
+                    sCheckIn: $('#txtstayfrom').val(),
+                    sCheckOut: $('#txtstayto').val(),
+                    sRoomData: $("#hdnJson").val(),
+                    sSelectedHotelFacility: GetSelectedHotelFacilities().toString(),
+                    sSelectedRoomFacility: GetSelectedRoomFacilities().toString(),
+                    dMaxPrice: 0,
+                    dMinPrice: 0,
+                    sStarRating: starChoices.toString(),
+                    isSpecialDeal: $("#specialDeal").is(':checked'),
+                    sRequestType: '@Model.sRequestType'
+                };
+
+                GetHotelsByLocalitySearchParam(values);
+
+
+            },
+            focus: function (event, ui) {
+                event.preventDefault();
+                $("#txtlocality").val(ui.item.label);
+                return false;
+            }
+
+        });
+
+
+        $( "#txtlocality" ).focus(function() {
+            $("#txtlocality").val('');
+            iLocalitySearchedID = 0;
+
+            //$("#slider-range").slider({
+            //    range: true,
+            //    min: minrange,
+            //    max: maxrange,
+            //    values: [minrange, maxrange],
+            //    slide: function (event, ui) {
+            //        $("#amount").val("Rs " + ui.values[0] + " - Rs " + ui.values[1]);
+
+            //        $('#hdnUpperPrice').val(ui.values[1].toString());
+            //        $('#hdnLowerPrice').val(ui.values[0].toString());
+            //    }
+            //});
+            //$("#amount").val("Rs " + $("#slider-range").slider("values", 0) + " - Rs " + $("#slider-range").slider("values", 1));
+
+            //$('#hdnUpperPrice').val(maxrange);
+            //$('#hdnLowerPrice').val(minrange);
+        });
+
+        $('.hotelfacilitydiv').on('click', function (e) {
+            e.stopPropagation();
+        });
+        $('.roomfacilitydiv').on('click', function (e) {
+            e.stopPropagation();
+        });
+
+    });
+
+
+
+
+    // Call this function to lazy load and append travel guru hotels into the container.
+
+    function Get_TG_Hotel_PartialView(data,callback) {
+
+
+        $('#frmPartialSeach').waitMe({
+            effect : 'rotation',
+            text : 'We are searching more hotels...',
+            bg : 'rgba(255,255,255,0.7)',
+            color : '#0f204b',
+            //maxSize : '30',
+            sizeW: '300px',
+            sizeH: '300px',
+            textPos : 'horizontal',
+            fontSize : '18px'
+        });
+
+        $("#hotelFilterHeaderDiv").addClass("disabledDiv");
+
+        $('#show_Waiting_Div_While_Loading_More_Hotels').waitMe({
+            effect : 'rotation',
+            text : '',
+            bg : 'rgba(255,255,255,0.7)',
+            color : '#0f204b'
+        });
+
+
+        try {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetTGHotelListPartial", "Search")',
+                data: data,
+                async: true,
+                success: function (htmlData) {
+
+                    $('#frmPartialSeach').waitMe('hide');
+                    $("#hotelFilterHeaderDiv").removeClass("disabledDiv");
+                    $('#show_Waiting_Div_While_Loading_More_Hotels').hide();
+
+                    callback(htmlData);
+                },
+                error: function (error) {
+
+                }
+            }).always(function () {
+
+                GetMapPartialsView({},function(mapHtml){
+
+                    $('#searchListContainer').append(mapHtml);
+                    $('#hotelMapViewContainer').hide();
+                });
+
+            });
+        }
+        catch (e) {
+
+        }
+
+        $('.overlay').hide();
+    }
+
+    function GetMapPartialsView(data, callback) {
+
+        if (data) {
+
+            try {
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetMapViewPartial")',
+                    data: data,
+                    async: true,
+                    success: function (response) {
+                        callback(response);
+                    },
+                    error: function (error) {
+
+                    }
+                }).always(function () {
+
+                });
+            }
+            catch (e) {
+
+            }
+        }
+
+        $('.overlay').hide();
+    }
+
+
+    $(function(){
+
+        //debugger;
+
+        var hotelFacilities_TG = [];
+        $.each($("input[name='SelectedHotelFacility']:checked"), function () {
+            hotelFacilities_TG.push($(this).val());
+        });
+
+        var roomFacilities_TG = [];
+        $.each($("input[name='SelectedRoomFacility']:checked"), function () {
+            hotelFacilities_TG.push($(this).val());
+        });
+
+        var paramsTG = {
+            cid: iLocalitySearchedID != 0 ? 0 : $('#hdnSelectedLocalityID').val(),
+            ctype: iLocalitySearchedID != 0 ? 0 : $('#hdnSelectedType').val(),
+            iFilterLocality: iLocalitySearchedID == 0 ? 0 : iLocalitySearchedID,
+            iAreaType: iLocalitySearchedID == 0 ? 0 : 7,
+            cname: iLocalitySearchedID == 0 ? $('#txtlocname').val() : 'Loc',
+            sCheckIn: $('#txtstayfrom').val(),
+            sCheckOut: $('#txtstayto').val(),
+            sRoomData: $("#hdnJson").val(),
+            sSelectedHotelFacility: hotelFacilities_TG.toString(),
+            sSelectedRoomFacility: roomFacilities_TG.toString(),
+            dMaxPrice: 0,
+            dMinPrice: 0,
+            sStarRating: starChoices.toString(),
+            isSpecialDeal: $("#specialDeal").is(':checked'),
+            sRequestType: '@Model.sRequestType'
+        };
+
+        Get_TG_Hotel_PartialView(paramsTG,function(partialViewHtml){
+
+            $('#hotelListContainer').append(partialViewHtml);
+
+            $('.lazy').filter(function (index) {
+
+                if ($(this).isOnScreen()) {
+                    $(this).show();
+                }
+            });
+
+            //GetMapPartialsView({},function(mapHtml){
+
+            //    $('#searchListContainer').append(mapHtml);
+            //    $('#hotelMapViewContainer').hide();
+            //});
+        });
+
+    });
+
+
+</script>
+
+
+<script src="~/js/jquery.shortenNew.js"></script>
+
+<script type="text/javascript">
+
+
+    $(function () {
+
+        var $doc = $(document);
+        var $win = $(window);
+
+
+        $(window).scroll(function () {
+
+            if ($doc.height() - $win.height() - $(this).scrollTop() <= 500) {
+
+                $('div.lazy:hidden:lt(5)').fadeIn();
+            }
+        });
+
+
+        var isPriceAccending = true;
+        var isStarCategoryAccending = true;
+        var isTripAdvisorRatingAccending = true;
+
+        $(document).on('click', '#sortByPrice', function (e) {
+
+            e.preventDefault();
+
+            $('.sorting').removeClass('active');
+            $(this).addClass('active');
+
+            try {
+
+                if (isPriceAccending === true) {
+
+                    tinysort('div.lazy',{attr:'data-price',order:'desc'});
+
+                    $('div.lazy:lt(4)').show();
+                    $('div.lazy:gt(4)').hide();
+
+                    isPriceAccending = false;
+                }
+                else {
+
+                    tinysort('div.lazy',{attr:'data-price',order:'asc'});
+
+                    $('div.lazy:lt(4)').show();
+                    $('div.lazy:gt(4)').hide();
+
+                    isPriceAccending = true;
+                }
+
+            }
+            catch (e) {
+                alert('An error occured!');
+            }
+
+        });
+
+        $(document).on('click', '#sortByStarCategory', function (e) {
+
+            e.preventDefault();
+
+            $('.sorting').removeClass('active');
+            $(this).addClass('active');
+
+            if (isStarCategoryAccending === true) {
+
+                tinysort('div.lazy',{attr:'data-star',order:'desc'});
+
+                $('div.lazy:lt(4)').show();
+                $('div.lazy:gt(4)').hide();
+
+                isStarCategoryAccending = false;
+            }
+            else {
+
+                tinysort('div.lazy',{attr:'data-star',order:'asc'});
+
+                $('div.lazy:lt(4)').show();
+                $('div.lazy:gt(4)').hide();
+
+                isStarCategoryAccending = true;
+            }
+
+        });
+
+        $(document).on('click', '#sortByTripAdvisorRating', function (e) {
+
+            e.preventDefault();
+
+            $('.sorting').removeClass('active');
+            $(this).addClass('active');
+
+            if (isTripAdvisorRatingAccending === true) {
+
+                tinysort('div.lazy',{attr:'data-tripadvisor',order:'desc'});
+
+                $('div.lazy:lt(4)').show();
+                $('div.lazy:gt(4)').hide();
+
+                isTripAdvisorRatingAccending = false;
+            }
+            else {
+
+                tinysort('div.lazy',{attr:'data-tripadvisor',order:'asc'});
+
+                $('div.lazy:lt(4)').show();
+                $('div.lazy:gt(4)').hide();
+
+                isTripAdvisorRatingAccending = true;
+            }
+
+        });
+
+        $(document).on('click', '.tg_bookNow', function (e) {
+
+            e.preventDefault();
+            var button = $(this);
+
+            var values = {
+
+                Id: $(this).data('propertyid'),
+                Slocation: $('#txtlocname').val(),
+                CIn: $('#txtstayfrom').val(),
+                COut: $('#txtstayto').val(),
+                sRoomData: $("#hdnJson").val(),
+                venderId: $(this).data('vendorid'),
+                sRequestType: 'buy'
+            };
+
+            var searchInformationForGA = 'Hotel : '+ button.data('propertyname') +', Place : ' + values.Slocation + ', Checkin : ' + values.CIn + ', Checkout : ' + values.COut;
+
+            var completeInfo = 'IP Address :' + ipAddress + ', Place Details : ' + placeDetail + ', Url : ' + window.location.href + 'User Search Hotel :' + searchInformationForGA;
+
+            ga('send', {
+                hitType: 'event',
+                eventCategory: 'Search Hotel',
+                eventAction: completeInfo,
+                eventLabel: 'Page View'
+            });
+
+            $('.overlay').hide();
+
+            window.open("/OfferReviewTG?Id=" + values.venderId + "&Slocation=" + values.Slocation + "&CIn=" + values.CIn + "&COut=" + values.COut + "&sRoomData=" + values.sRoomData + "&iVendorId=" + values.venderId + "&sRequestType=" + values.sRequestType);
+        });
+
+        $(document).on('click', '.bookNow', function (e) {
+
+            e.preventDefault();
+            var button = $(this);
+
+            //debugger;
+            var param = { Id: button.data('propertyid'),type:'R'};
+            AjaxCallWithDataMVC_Async("@Url.Action("UpdateConversionViews")", param,function(d){});
+
+            var values = {
+
+                Id: button.data('propertyid'),
+                Slocation: $('#txtlocname').val(),
+                CIn: $('#txtstayfrom').val(),
+                COut: $('#txtstayto').val(),
+                sRoomData: $("#hdnJson").val(),
+                sRequestType: 'buy'
+            };
+
+            var searchInformationForGA = 'Hotel : '+ button.data('propertyname') +', Place : ' + values.Slocation + ', Checkin : ' + values.CIn + ', Checkout : ' + values.COut;
+
+            var completeInfo = 'IP Address :' + ipAddress + ', Place Details : ' + placeDetail + ', Url : ' + window.location.href + 'User Search Hotel :' + searchInformationForGA;
+
+            ga('send', {
+                hitType: 'event',
+                eventCategory: 'Search Hotel',
+                eventAction: completeInfo,
+                eventLabel: 'Page View'
+            });
+
+            $('.overlay').hide();
+            window.open("/OfferReview?Id=" + values.Id + "&Slocation=" + values.Slocation + "&CIn=" + values.CIn + "&COut=" + values.COut + "&sRoomData=" + values.sRoomData + "&sRequestType=" + values.sRequestType);
+        });
+
+        $(document).on('click', '.negotiate', function (e) {
+
+            e.preventDefault();
+            var button = $(this);
+
+            var param = { Id: button.data('propertyid'),type:'N'};
+            AjaxCallWithDataMVC_Async("@Url.Action("UpdateConversionViews")", param,function(d){});
+
+            var values = {
+
+                Id: button.data('propertyid'),
+                Slocation: $('#txtlocname').val(),
+                CIn: $('#txtstayfrom').val(),
+                COut: $('#txtstayto').val(),
+                sRoomData: $("#hdnJson").val(),
+                sRequestType: 'negotiate'
+            };
+
+            var searchInformationForGA = 'Hotel : '+ button.data('propertyname') +', Place : ' + values.Slocation + ', Checkin : ' + values.CIn + ', Checkout : ' + values.COut;
+
+
+            var completeInfo = 'IP Address :' + ipAddress + ', Place Details : ' + placeDetail + ', Url : ' + window.location.href + 'User Search Hotel :' + searchInformationForGA;
+
+            ga('send', {
+                hitType: 'event',
+                eventCategory: 'Search Hotel',
+                eventAction: completeInfo,
+                eventLabel: 'Page View'
+            });
+
+            $('.overlay').hide();
+            window.open("/OfferReview?Id=" + values.Id + "&Slocation=" + values.Slocation + "&CIn=" + values.CIn + "&COut=" + values.COut + "&sRoomData=" + values.sRoomData+"&sRequestType=" + values.sRequestType);
+        });
+
+        $(document).on('click', '.iconFavourite', function (e) {
+
+            e.preventDefault();
+            var $this = $(this);
+            var iconType = $this.data('icontype');
+
+            switch(iconType)
+            {
+
+                case 'ficon_red': {
+
+                    var iPropId = $this.data('propertyid');
+
+                    $this.css('color','black');
+                    $this.data('icontype','ficon_black');
+                    toastr.info('Removed from wishlist !')
+                    ToggleFavorite(iPropId,function(data){
+
+                        if(data===false)
+                        {
+                            $this.css('color','red');
+                            $this.data('icontype','ficon_red');
+                            toastr.error('An error occured!');
+                        }
+
+                    });
+                    break;
+                };
+                case 'ficon_black': {
+
+                    var iPropId = $this.data('propertyid');
+                    $this.css('color','red');
+                    $this.data('icontype','ficon_red');
+                    toastr.info('Added to wishlist !')
+                    ToggleFavorite(iPropId,function(data){
+                        if(data===false)
+                        {
+                            $this.css('color','black');
+                            $this.data('icontype','ficon_black');
+                            toastr.error('An error occured!');
+                        }
+                    });
+                    break;
+                };
+            }
+
+        });
+
+    });
+
+
+    function ToggleFavorite(iPropId,callback)
+    {
+        $.ajax({
+            url: '@Url.Action("ToggleFavorite","Search")',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({ iPropId: iPropId }),
+            dataType: "json",
+            type: "POST",
+            success: function (data) {
+                callback(data);
+            },
+            error:function(){
+                callback(false)
+            }
+        });
+    }
+
+</script>

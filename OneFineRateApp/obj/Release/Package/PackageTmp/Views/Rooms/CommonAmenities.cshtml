@@ -1,0 +1,174 @@
+﻿@using MvcCheckBoxList.Model;
+@model OneFineRateBLL.Entities.etblPropertyRoomAmentiesMap
+
+@{
+    ViewBag.Title = "CommonAmenities";
+    Layout = "~/Views/Shared/_LayoutProperty.cshtml";
+}
+<style>
+    label {
+        padding-left: 5px !important;
+         padding-right : 5px !important
+    }
+
+    .tableTdAlignment td{
+        width:30%
+    }
+    .WidthRadio {
+        width: 255px;
+    }
+</style>
+
+<script src="~/js/Jquery1.10.3.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.9.0/jquery.validate.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script type="text/javascript">
+    function GetResult(data) {
+        if (data.st == '1') {
+            toastr.success(data.msg);
+            setInterval(
+                function () { window.location.href = "/Rooms"; }
+            ,2000);
+            
+        }
+        else {
+            toastr.error(data.msg);
+        }
+    }
+</script>
+@using (Ajax.BeginForm("ModifyCommonAmenities", "Rooms", new AjaxOptions() { InsertionMode = InsertionMode.Replace, UpdateTargetId = "targetid", HttpMethod = "POST", OnSuccess = "GetResult" }))
+{
+    @Html.HiddenFor(u => u.iPropId)
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+
+                    Amenities common to All Rooms
+
+                </h4>
+            </div>
+            <div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="subheadcolor">
+                                <h4>Basic Room Amenities </h4>
+                            </div>
+                            <hr />
+                        </div>
+
+                        @*<div class="col-xs-4">
+                                <input name="radiobutton" type="radio" value="radiobutton" checked>
+                                Wifi Access in Public Area Chargable
+                            </div>
+                            <div class="col-xs-6">
+                                <input name="radiobutton" type="radio" value="radiobutton">
+                                Wifi Access in Public Area Free
+                            </div>*@
+                        <div class="col-xs-12">
+                            @{
+    foreach (var item in Model.RoomAnenitiesRadio)
+    {
+        @Html.RadioButtonFor(m => m.iBasicAmentiesRadio, item.iHotelRoomAmenityId)
+                                @Html.Label(item.sRoomAmenity, new { @class = "WidthRadio" })
+    }
+                            }
+
+
+                            @*<div class="col-xs-4">
+                                <input name="" type="checkbox" value=""> Air Conditioning*@
+                        </div>
+
+                    </div>
+
+                  
+
+                    @{ var putCheckBoxesIntoTable = new HtmlListInfo(HtmlTag.table, 3, new { @class = "tableTdAlignment", style = "width:100%;" }); }
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            @Html.CheckBoxListFor(m => m.SelectedBasicRoomAmenities, m => m.BasicRoomAmenitiesItems,
+                            group => group.Value,
+                            group => group.Text,
+                            m => m.Selected,
+                            putCheckBoxesIntoTable)
+
+                        </div>
+                    </div>
+
+
+                    <!-- Basic room ends -->
+                    <!-- Additional start-->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="subheadcolor"><h4>Additional Amenities</h4></div>
+                            <hr />
+                            @Html.CheckBoxListFor(m => m.SelectedAdditionalAmenities, m => m.AdditionalAmenitiesItems,
+                            group => group.Value,
+                            group => group.Text,
+                            m => m.Selected,
+                                     putCheckBoxesIntoTable)
+                            @*<div class="col-xs-4">
+                                    <input name="" type="checkbox" value=""> House Keeping
+                                </div>*@
+                        </div>
+                    </div>
+
+                    <!-- Bathroom start-->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="subheadcolor"><h4>Bathroom Amenities</h4></div>
+                            <hr />
+
+                            @Html.CheckBoxListFor(m => m.SelectedBathroomAmenities, m => m.BathroomAmenitiesItems,
+                            group => group.Value,
+                            group => group.Text,
+                            m => m.Selected,
+                                     putCheckBoxesIntoTable)
+                            @*<div class="col-xs-4">
+                                    <input name="" type="checkbox" value=""> Rainfall Showerhead
+                                </div>*@
+                        </div>
+
+                    </div>
+
+                    <!-- Bedding start-->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="subheadcolor"><h4>Bedding and Linens</h4></div>
+                            <hr />
+
+                            @Html.CheckBoxListFor(m => m.SelectedBeddingandLinens, m => m.BeddingandLinensItems,
+                            group => group.Value,
+                            group => group.Text,
+                            m => m.Selected,
+                                     putCheckBoxesIntoTable)
+
+                            @*<div class="col-xs-4">
+                                    <input name="" type="checkbox" value=""> Premium linens
+                                </div>*@
+                        </div>
+                    </div>
+
+                    <hr />
+                </div>
+
+            </div>
+
+           
+        </div>
+        <!-- Panel 1 div END  -->
+
+
+    </div>
+    <div class="row marginbottom10" style="text-align:right; padding-right:10px;">
+        <div class="col-xs-12">
+            <input type="submit" class="btn btn-primary" value="Save">
+            <a href="@Url.Action("Index","Rooms")" class="btn btn-danger">Cancel</a>
+        </div>
+    </div>
+    <div id="targetid"></div>
+    <!-- Panel group div END  -->
+}

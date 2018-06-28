@@ -1,0 +1,522 @@
+﻿@model OneFineRateBLL.Entities.NegotiationEmailTempleteModel
+@using OneFineRateAppUtil
+@using System.Configuration
+@{
+    Layout = null;
+
+    if (Model != null)
+    {
+       
+        <style>
+            .table {
+                font-size: 12px;
+                font-family: Arial;
+            }
+             .table th {
+                    background-color: #d1d1d1;
+                    text-align: left;
+                }
+            p {
+                font-size: 12px;
+                font-family: Arial;
+            }
+
+            ul li {
+                font-size: 12px;
+                font-family: Arial;
+            }
+            .hotelname {
+                color: #2a75ac;
+                font-size: 20px;
+                font-weight: 600;
+            }
+        </style>
+
+        if (Model.IsRevenueManagerFormat)
+        {
+            <table style="width:900px; border:4px solid #0f204b;" border="0" cellspacing="0" cellpadding="0" class="table">
+                <tbody>
+                    <tr>
+                        <td colspan="2" valign="top" align="center">
+                            <img src="@ConfigurationManager.AppSettings["OFRBaseUrl"].ToString()images/logoNew.png" alt="OneFineRate Logo" height="72" />
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="background-color:#fecb00; color:#000; padding:5px; font-size:22px;"> 
+                        You have received a new negotiation enquiry.</td>
+                    </tr>
+                    <tr>
+                        <td style="line-height:20px; height:20px;"></td>
+                    </tr>
+
+                    <tr>
+                        <td style="width:600px;" valign="top">
+                            <table border="0" cellspacing="0" cellpadding="5" class="table" style="padding-left:5px;">
+                                <tbody>
+                                    <tr>
+                                        <td style="width:30%;"><strong>BOOKING DATE AND TIME </strong></td>
+                                        <td style="width:1%;">:</td>
+                                        <td>@Model.BookingModify.ReservationDate</td>
+                                    </tr>
+                                    @*<tr>
+                                        <td><strong>BOOKING ID</strong></td>
+                                        <td>:</td>
+                                        <td>@Model.BookingModify.BookingId</td>
+                                    </tr>*@
+                                    <tr>
+                                        <td style="width:30%;"><strong>RESERVATION</strong></td>
+                                        <td>:</td>
+                                        <td>@Model.BookingModify.Reservation</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width:30%;"><strong>CHECK IN DATE</strong></td>
+                                        <td>:</td>
+                                        <td>@Model.BookingModify.CheckIn</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width:30%;"><strong>CHECK OUT DATE</strong> </td>
+                                        <td>:</td>
+                                        <td>@Model.BookingModify.ChekOut</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width:30%;"><strong>NO OF ROOMS.</strong> </td>
+                                        <td>:</td>
+                                        <td>@Model.BookingModify.NoOfRooms</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="line-height:20px; height:20px;" colspan="3"></td>
+                                    </tr>
+                                    <tr>
+                  @{string url = System.Configuration.ConfigurationManager.AppSettings["OFRExtranetBaseUrl"] + "Account/Login?sPropId=" + clsUtils.Encode(Model.BookingModify.PropId.ToString());}
+                                        <td colspan="3"><h3>PLEASE <a href="@url">CLICK HERE</a> TO OPEN IT ON EXTRANET</h3></td>
+                                    </tr>                                   
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        }
+        else
+        {
+
+            <table style="width:900px; border:4px solid #0f204b;" border="0" cellspacing="0" cellpadding="0" class="table">
+                <tbody>
+                    <tr>
+                        <td colspan="2" valign="top" align="center">
+                            <img src="@ConfigurationManager.AppSettings["OFRBaseUrl"].ToString()images/logoNew.png" onerror="this.src='@Url.Content("~/images/noimage.jpg")'" alt="OneFineRate Logo" height="72" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="background-color:#fecb00; color:#000; padding:5px; font-size:22px;">
+                            <strong>@Model.Status</strong>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="line-height:20px; height:20px;"></td>
+                    </tr>
+
+                    <tr>
+                        <td style="width:600px;" valign="top">
+                            <table border="0" cellspacing="0" cellpadding="0" class="table" style="padding-left:5px;">
+                                <tbody>
+                                    <tr>
+                                        <td width="18%" rowspan="2" valign="top">
+                                            <img src="@Model.BookingModify.sImgUrl" alt="Image" height="100" width="200" style=" border: 2px solid #0f204b !important;">
+                                        </td>
+                                        <td width="2%" valign="top">&nbsp;</td>
+                                        <td valign="top">
+                                            <span class="hotelname">
+                                                @Model.BookingModify.HotelName
+                                            </span><br />
+                                            @{string ofrUrl = System.Configuration.ConfigurationManager.AppSettings["OFRBaseUrl"];}
+                                            <img src="@ofrUrl/images/inner-star@(Model.BookingModify.StarCategoryId).png"><br />
+                                            <address>
+                                                @Model.BookingModify.Address
+                                            </address>
+                                            @if (!string.IsNullOrEmpty(Model.BookingModify.RatingImageUrl))
+                                            {
+                                                <img src="@Model.BookingModify.RatingImageUrl" onerror="this.src='@Url.Content("~/images/noimage.jpg")'"><br/>
+                                            }
+                                            @if (!string.IsNullOrEmpty(Model.BookingModify.RatingString))
+                                            {
+                                                <em style="color:green">
+                                                    @Model.BookingModify.RatingString
+                                                </em>
+                                            }
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3">
+                                            <table class="table" cellpadding="5">
+                                                <tbody>
+                                                    <tr>
+                                                        <td><strong>Payment Status </strong></td>
+                                                        <td>:</td>
+                                                        <td>@Model.BookingModify.BookingStatus</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Booking Id</strong></td>
+                                                        <td>:</td>
+                                                        <td>@Model.BookingModify.BookingId</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>No Of Nights/ Rooms</strong></td>
+                                                        <td>:</td>
+                                                        <td>@Model.BookingModify.Reservation</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Check In Date</strong></td>
+                                                        <td>:</td>
+                                                        <td>@Model.BookingModify.CheckIn</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Check Out Date</strong> </td>
+                                                        <td>:</td>
+                                                        <td>@Model.BookingModify.ChekOut</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Booked By</strong> </td>
+                                                        <td>:</td>
+                                                        <td>@Model.BookingModify.Booker (@Model.BookingModify.EmailOFR)</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+
+                        @if (Model.IsNegotiationAcceptedBySystem)
+                        {
+                            <td style="width:300px;" valign="top">
+                                <h3>Rate information</h3>
+                                <hr style="border: 1px solid #000000 !important;">
+                                <table border="0" cellspacing="0" cellpadding="5" class="table" style="width:100%;font-weight:bold;">
+                                    <tbody>
+
+                                        <tr>
+                                            <td colspan="2"><strong>Rate information</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Negotiation:</strong></td>
+                                            <td>@Model.BookingModify.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.BookingModify.dTotalNegotiateAmount))</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Tax and Service Fees :</strong></td>
+                                            <td>@Model.BookingModify.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.BookingModify.sExtra2) + Convert.ToDecimal(Model.BookingModify.dOfrServiceCharge) + Convert.ToDecimal(Model.BookingModify.dOfrGSTONServiceCharge))</td>
+                                        </tr>
+
+                                        <tr>
+                                            <td><strong>Total Charges:</strong></td>
+                                            <td>@Model.BookingModify.Symbol @(clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.BookingModify.dTotalNegotiateAmount) + Convert.ToDecimal(Model.BookingModify.sExtra2) + Convert.ToDecimal(Model.BookingModify.dOfrServiceCharge) + Convert.ToDecimal(Model.BookingModify.dOfrGSTONServiceCharge)))</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        }
+                        else
+                        {
+                              <td style="width:300px;" valign="top">
+                                <table border="0" cellspacing="0" cellpadding="5" class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="2">
+
+                                                @{
+                            string baseMapUrl = "http://maps.googleapis.com/maps/api/staticmap?center=";
+                            string dbMapDataUrl = Model.BookingModify.dLatitude + "," + Model.BookingModify.dLongitude;
+                            string fullMapUrl = baseMapUrl + dbMapDataUrl + "&zoom=13&scale=false&size=300x200&maptype=roadmap&key=AIzaSyBA8k8_YKEbkfECgXpF6FKdMkMA1jS1qAQ&format=png&visual_refresh=true&markers=size:mid%7Ccolor:0xff0000%7Clabel:1%7C" + dbMapDataUrl;
+
+                                                }
+
+                                                <a href="@Model.BookingModify.slargeMapURL">
+                                                    <img width="300" src="@fullMapUrl" alt="Map">
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2"><strong>Rate information</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Negotiation :</strong></td>
+                                            <td>@Model.BookingModify.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.BookingModify.dTotalNegotiateAmount))</td>
+                                        </tr>
+
+                                        <tr>
+                                            <td><strong>Tax and Service Fees :</strong></td>
+                                            <td>@Model.BookingModify.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.BookingModify.sExtra2) + Convert.ToDecimal(Model.BookingModify.dOfrServiceCharge) + Convert.ToDecimal(Model.BookingModify.dOfrGSTONServiceCharge))</td>
+                                        </tr>
+                                       
+                                        <tr>
+                                            <td><strong>Total Charges:</strong></td>
+                                            <td>@Model.BookingModify.Symbol @(clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.BookingModify.dTotalNegotiateAmount) + Convert.ToDecimal(Model.BookingModify.sExtra2) + Convert.ToDecimal(Model.BookingModify.dOfrServiceCharge) + Convert.ToDecimal(Model.BookingModify.dOfrGSTONServiceCharge)))</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        }
+
+                    </tr>
+
+                    <tr>
+                        <td colspan="2" style="background-color:#0f204b; color:#fff; padding:5px;">
+                            <h4 style=" margin:0px;">Please Note :</h4>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <table border="0" cellspacing="0" cellpadding="0" class="table">
+                                <tbody>
+
+                                    @if (Model.BookingModify.cBookingStatus == "NC" && Model.BookingModify.cBookingType == "N")
+                                    {
+                                    <tr></tr>
+                                    <tr>
+                                        <td style="padding:5px;">
+                                            <span>
+                                                For us to negotiate on your behalf, you need to deposit a signing amount of INR 500. This will be adjusted against the reservation, if your offer is accepted.
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:5px;"><span>Please allow us approximately 3 hours [Business hours- IST 0900 to 1800 hrs/GMT+05:30 hrs] to get you the rate of your choice.</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:5px;">
+                                            <span>
+                                                If your negotiation is not accepted, INR 500 will be refunded within 24 hours if paid through PAYu wallet or 3-4 business days if paid through any other payment method as per banking norms.
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:5px;">
+                                            <span>
+                                                If your offer is accepted, please pay the balance reservation amount within 3hours of receiving the confirmation.
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:5px;">
+                                            <span>
+                                                In case, your negotiation is successful and the balance reservation amount is not paid, you will forfeit the advance of INR 500.
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:5px;">
+                                            <span><strong>Rooms purchased through the OFR negotiation option cannot be cancelled, modified, transferred or refunded.</strong></span>
+                                        </td>
+                                    </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="background-color:#0f204b; color:#fff; padding:5px;"><h4 style=" margin:0px;">House Rules</h4></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="border: 1px solid #D1D1D1;">
+                            <table class=" table">
+                                <tbody>
+
+                                    @if (!String.IsNullOrEmpty(Model.BookingModify.sCheckInMM))
+                                    {
+                                        <tr>
+                                            <td valign="top"><b>Check-In</b></td>
+                                            <td valign="top">:</td>
+                                            <td valign="top">
+
+                                                @if (Model.BookingModify.b24HrsCheckIn == true)
+                                                {
+                                                    <div>
+                                                        24 hours Check-In is Available.Early Check-In is @if (Model.BookingModify.bEarlyCheckInChargeable == true)
+                                                        { <text>Chargeable</text> }
+                                                        else
+                                                        {<text>Not Chargeable</text>}
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div>
+                                                        From @Html.DisplayFor(m => m.BookingModify.sCheckInHH):@Html.DisplayFor(m => m.BookingModify.sCheckInMM). Early Check-In is @if (Model.BookingModify.bEarlyCheckInChargeable == true)
+                                                        { <text>Chargeable</text> }
+                                                        else
+                                                        {<text>Not Chargeable</text>}
+                                                    </div>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+
+
+
+                                    @if (!String.IsNullOrEmpty(Model.BookingModify.sCheckoutMM))
+                                    {
+                                        <tr>
+                                            <td valign="top"><b>Check-out</b></td>
+                                            <td valign="top">:	</td>
+                                            <td valign="top">
+                                                @if (Model.BookingModify.b24HrsCheckout == true)
+                                                {
+                                                    <div>
+                                                        24 hours Check-Out is Available. Late Check-Out is @if (Model.BookingModify.bEarlyCheckoutChargeable == true)
+                                                        { <label>Chargeable</label> }
+                                                        else
+                                                        {<label>Not Chargeable</label>}
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div>
+                                                        Until @Html.DisplayFor(m => m.BookingModify.sCheckoutHH):@Html.DisplayFor(m => m.BookingModify.sCheckoutMM). hrs @clsUtils.GetTimeType(Model.BookingModify.sCheckoutHH)Late Check-Out is @if (Model.BookingModify.bEarlyCheckoutChargeable == true)
+                                                        { <label>Chargeable</label> }
+                                                        else
+                                                        {<label>Not Chargeable</label>}
+                                                    </div>
+                                                }
+
+                                            </td>
+                                        </tr>
+                                    }
+
+
+                                    <tr>
+                                        <td valign="top"><b>Cancellation</b></td>
+                                        <td valign="top">:	</td>
+                                        <td valign="top">Cancellation policies vary according to room rate and package.</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td valign="top"><b>Children and Extra Beds</b></td>
+                                        <td valign="top">:	</td>
+                                        <td valign="top" colspan="2">
+                                            <ul style="list-style-type:none" class="mar-padd0">
+
+                                                <li> All children are welcome</li>
+                                                <li>
+                                                    Children upto @Html.DisplayFor(m => m.BookingModify.iComplimentaryStayAge) years stay for free. Extra cot/ bed may be chargeable
+                                                </li>
+
+                                                <li>
+                                                    Extrabed required for children from @Html.DisplayFor(m => m.BookingModify.iExtraBedRequiredFrom) years
+                                                </li>
+                                                <li>
+                                                    Extra child or an adult using an Extrabed will be charged at  @Model.BookingModify.Symbol @Html.DisplayFor(m => m.BookingModify.dExtraBedCharges) excluding taxes
+                                                </li>
+                                                <li>
+                                                @Html.Raw(Model.BookingModify.iMinCheckInAge) years is Minimum age of check in
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td valign="top"><b>Other Polices</b></td>
+                                        <td valign="top">:</td>
+                                        <td valign="top">
+
+                                            @if (Model.BookingModify.bVisitorsAllowed == true)
+                                            {
+                                                <p>Visitors are allowed.</p>
+                                            }
+
+                                            @if (Model.BookingModify.bAlcoholAllowedOnsite == true)
+                                            {
+                                                <p>Alcohol allowed onsite</p>
+                                            }
+
+                                            @if (Model.BookingModify.bAlcoholServedOnsite == true)
+                                            {
+                                                <p>Alcohol Served onsite</p>
+                                            }
+
+                                            @if (Model.BookingModify.bPetsAllowed == true)
+                                            {
+                                                <p>Pets are not allowed.</p>
+                                            }
+
+                                            @if (Model.BookingModify.bPartiesAllowed == true)
+                                            {
+                                                <p>Stag/ bachelor and hen/ bachelorette parties are allowed.</p>
+                                            }
+
+                                        </td>
+
+                                    </tr>
+
+                                    @if (Model.BookingModify.lstCreditCards != null && Model.BookingModify.lstCreditCards.Count > 0)
+                                    {
+                                        <tr>
+                                            <td valign="top"><b>Cards accepted at this property</b> </td>
+                                            <td valign="top">:</td>
+                                            <td valign="top">
+                                                @foreach (var item in Model.BookingModify.lstCreditCards)
+                                                {
+                                                    <img src="@item.sImg.Replace(" "," ")">
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="background-color:#0f204b; color:#fff; padding:5px;">
+                            <h4 style=" margin:0px;">Important Information</h4>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <table style="border:1px solid #D1D1D1;">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="2">
+                                            <ul>
+                                                <li>Requests for bed types, early check in, late check out, smoking room etc cannot be guaranteed. These requests must be made directly to the hotel confirmed and are subject to availability.</li>
+                                                <li><strong>Reservation is guaranteed for arrival on the check-in date only.</strong> To avoid cancellation of your reservation due to a no show please alert the hotel xx days/ hours in advance to claim a refund.</li>
+                                                <li>The reservation holder must present a valid credit card at check-in. </li>
+                                                <li>According to government regulations, it is mandatory to present a valid Photo ID at check in by every person above the age of 18 staying at the hotel. A Drivers License, Voters Card, Passport are all acceptable as identity proof, however, please note PAN cards are not a valid ID. Without a valid ID no guest will be allowed to check in. </li>
+                                                <li>The inclusion of an extra bed with a booking is facilitated with a folding cot or a mattress.</li>
+                                                <li>A booking cannot be cancelled on or after the check in date and time mentioned in the Hotel Confirmation Voucher.</li>
+                                                <li>
+                                                    The hotel reserves the right of admission. Accommodation can be denied to guests posing as a ' couple' if suitable proof of identification is not presented at check-in. OneFineRate will not be responsible for any check-in denied by the hotel due to the aforesaid reason.
+                                                </li>
+                                                <li>
+                                                    All distances (Airport/Station etc.) are approximate and actual driving distances may vary based on the route taken.
+                                                </li>
+                                                <li>
+                                                    Hotels may charge a mandatory meal surcharge on festive periods e.g. Christmas, New Year's Eve etc... All additional charges (including mandatory meal surcharges) need to be cleared directly at the hotel.
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        }
+
+    }
+}

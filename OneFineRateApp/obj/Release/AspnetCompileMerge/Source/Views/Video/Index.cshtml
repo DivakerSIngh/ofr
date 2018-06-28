@@ -1,0 +1,77 @@
+﻿@model OneFineRateBLL.Entities.eVideo
+@{
+    ViewBag.Title = "Video";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        try{
+            var v = @Html.Raw(Json.Encode(TempData["Error"]));
+            if(v != null){
+                toastr.error(v);
+            }
+
+            //Inserting data through Ajax
+            document.getElementById('frmVideo').onsubmit = function (e) {
+                e.preventDefault();
+                var f = document.getElementById('frmVideo');
+                if (f.checkValidity()) {
+                    if ($("#sVideoUrl").val() == "") {
+                        toastr.info("Please enter Video Url.");
+                        return false;
+                    }
+
+                    var values = {
+                        sVideoUrl: $("#sVideoUrl").val(),
+                        Id: $("#Id").val()
+                    };
+
+                    var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("UpdateVideo")", values));
+                    if (Data != null) {                        
+                        if (Data.st == '1') {
+
+                            $('.close').click();
+                            toastr.success(Data.msg);
+                            return false;
+                        }
+                        else if (Data.st == '0') {
+                            toastr.error(Data.msg);
+                            return false;
+                        }
+                    }
+
+                }
+            }
+
+        }
+        catch(e){};
+    });
+</script>
+<form id="frmVideo">
+    <div class="container margintop20">
+        <div class="panel panel-default">
+            <div class="container panel-heading">
+                <div class="col-md-6">
+                    <h4 class="panel-title">
+                        <strong>Video Management</strong>
+                    </h4>
+                </div>
+            </div>
+            <div class="panel-body">
+
+                <div class="table-responsive margintop20">
+                    <label>      Video URL   </label>
+                    @Html.TextBoxFor(m => m.sVideoUrl, new { @class = "form-control", placeholder = "Video URL", oninvalid = "setCustomValidity('Please enter video URL')", onchange = "try{setCustomValidity('')}catch(e){}", pattern = @"^http(s?)\:\/\/[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([=a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%\$#_]*)?$", maxlength = "200", required = true })
+                    @Html.HiddenFor(m => m.Id)
+                </div>
+                <!-- End  table -->
+            </div>
+            <!-- container div END bottom -->
+            <div class="modal-footer">
+                <button type="submit" id="btnSubmit" class="btn btn-primary">SAVE</button>
+            </div>
+        </div>
+    </div>
+
+</form>

@@ -1,0 +1,979 @@
+﻿@model OneFineRateBLL.Entities.etblChangeHistory
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+<script src="~/js/Jquery1.10.3.js"></script>
+@*<link href="~/css/jquery-ui.css" rel="stylesheet" />*@
+
+<div class="row">
+    <div class="col-xs-12">
+
+        <div class="panel-group">
+            <div class="panel panel-default margintop10">
+                <div class="panel-group ">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-10">
+                                    <h4 class="panel-title">
+                                        Change History
+                                    </h4>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xs-1 " style="width:5%;">From</div>
+                            <div class="col-xs-2" style="width:12%;">
+                                @Html.TextBoxFor(m => m.dtActionDateFrom, new { Value = Model.dtActionDateFrom.ToString(), type = "text", @class = "form-control ", required = "true", name = "ActionDateFrom", onkeyup = "this.value=''", id = "ActionDateFrom" })
+                            </div>
+                            <div class="col-xs-1" style="width:5%;">To </div>
+                            <div class="col-xs-2">
+                                @Html.TextBoxFor(m => m.dtActionDateTo, new { Value = Model.dtActionDateTo.ToString(), type = "text", @class = "form-control width60", required = "true", name = "ActionDateTo", onkeyup = "this.value=''", id = "ActionDateTo" })
+                            </div>
+                            <div class="col-xs-2">Hotel Name</div>
+                            <div class="col-xs-4">
+                                @Html.DropDownListFor(x => x.iPropId, Model.PropertyList, new { @class = "form-control", @id = "PropId", @onchange = "GetAllDetails()" })
+                            </div>
+                        </div>
+                        <div class="row margintop20">
+                            <div class="col-xs-1" style="width:5%;">&nbsp;</div>
+                            <div class="col-xs-2">
+                                @Html.RadioButton("SearchOn", "R", new { onclick = "ShowHideDiv()", required = "true" }) <span>&nbsp;&nbsp;Room and Rate</span>
+                            </div>
+                            <div class="col-xs-2">
+                                @Html.RadioButton("SearchOn", "I", new { onclick = "ShowHideDiv()", required = "true" })<span>&nbsp;&nbsp;Property Information</span>
+                            </div>
+                            <div class="col-xs-2">
+                                @Html.RadioButton("SearchOn", "B", new { onclick = "ShowHideDiv()", required = "true" })<span>&nbsp;&nbsp;Bookings</span>
+                            </div>
+                            <div class="col-xs-2">
+                                @Html.RadioButton("SearchOn", "Promotion", new { onclick = "ShowHideDiv()", required = "true" })<span>&nbsp;&nbsp;Promotions</span>
+                            </div>
+                            <div class="col-xs-2">
+                                @Html.RadioButton("SearchOn", "RatePlan", new { onclick = "ShowHideDiv()", required = "true" })<span>&nbsp;&nbsp;Rate Plans</span>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="panel-group">
+
+                                    <div id="divRoomRate" style="display:none;">
+                                        <div class="panel panel-default margintop10">
+                                            <div class="panel-body">
+                                                <div class="row" id="RatePlansDiv" style="display:none;">
+                                                    <div class="col-xs-2 " style="width:12%;">Room Type</div>
+                                                    <div class="col-xs-4">
+                                                        @Html.DropDownListFor(m => m.iRoomTypeId, new SelectList(Enumerable.Empty<SelectListItem>(), "Id", "Name"), "Select", new { @class = "form-control", required = "true", id = "RoomType", name = "RoomType", onchange = "FillRatePlan()" })
+                                                    </div>
+                                                    <div class="col-xs-2">Rate Plan/ Promotion</div>
+                                                    <div class="col-xs-4">
+                                                        @Html.DropDownListFor(m => m.iRPId, new SelectList(Enumerable.Empty<SelectListItem>(), "Id", "Name"), "Select", new { @class = "form-control", required = "true", id = "RatePlan", name = "RatePlan" })
+                                                    </div>
+                                                </div>
+                                                <div class="row margintop10">
+                                                    <div class="col-xs-2 " style="width:12%;">Effective From</div>
+                                                    <div class="col-xs-2" style="width:13%;">
+                                                        @Html.TextBoxFor(m => m.dtEffectiveDateFrom, new { Value = Model.dtEffectiveDateFrom.ToString(), type = "text", @class = "form-control ", required = "true", name = "EffectiveDateFrom", id = "EffectiveDateFrom", onkeyup = "this.value=''" })
+                                                    </div>
+                                                    <div class="col-xs-2" style="width:9%;">Effective To</div>
+                                                    <div class="col-xs-2" style="width:13%;">
+                                                        @Html.TextBoxFor(m => m.dtEffectiveDateTo, new { Value = Model.dtEffectiveDateTo.ToString(), type = "text", @class = "form-control", required = "true", name = "EffectiveDateTo", onkeyup = "this.value=''", id = "EffectiveDateTo" })
+                                                    </div>
+                                                </div>
+                                                @*<div class="row margintop10">
+
+
+                                                        <div class="col-xs-2 " style="width:10%;">&nbsp;</div>
+                                                        <div class="col-xs-2">
+                                                            &nbsp;
+                                                        </div>
+                                                    </div>*@
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="divPropertyInformation" style="display:none;">
+                                        <div class="panel panel-default margintop10" id="PropertyInfos" style="display:none;">
+                                            <div class="panel-body">
+                                                <div class="row">
+                                                    <div class="col-xs-2 " style="width:10%;">Page Name</div>
+                                                    <div class="col-xs-3">
+                                                        @Html.DropDownListFor(m => m.iPageId, new SelectList(Enumerable.Empty<SelectListItem>(), "Select", "Id", "Name"), "", new { @class = "form-control", required = "true", id = "PageName", name = "PageName" })
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="divBookings" style="display:none;">
+                                        <div class="panel panel-default margintop10">
+                                            <div class="panel-body">
+                                                <div class="row">
+                                                    <div class="col-xs-2 " style="width:10%;">Booking Id</div>
+                                                    <div class="col-xs-2">
+                                                        @Html.TextBoxFor(m => m.iBookingId, new { type = "text", @class = "form-control", required = "true", name = "BookingId", id = "BookingId", maxlength = 5 })
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="divPromotions" style="display:none;">
+                                        <div class="panel panel-default margintop10">
+                                            <div class="panel-body">
+                                                <div class="row">
+                                                    <div class="col-xs-2" style="width:12%;">Promotion Name</div>
+                                                    <div class="col-xs-3">
+                                                        @Html.DropDownListFor(m => m.iPromotionTypeId, new SelectList(OneFineRateBLL.BL_tblChangeHistory.GetPromotionTypeForDD(), "Id", "Name"), "", new { @class = "form-control", required = "true", id = "PromotionType", name = "PromotionType" })
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                        <div class="row pull-right" id="divAction" style="display:none">
+                            <div class="col-xs-12">
+                                <input name="" id="btnSubmit" type="button" onclick="Fillgrid()" class="btn btn-primary" value="Search">
+                                <input id="GetExcelData" type="button" onclick="GetExcel()" class="btn btn-warning" value="Get Excel" />
+                                <input name="" type="button" class="btn btn-danger" onclick="window.location = '../PropertyChangeHistory';" value="Cancel">
+                            </div>
+                        </div>
+                        <div class="col-xs-12 margintop10" id="divgrid1">
+                            <div class="table-responsive margintop20">
+                                <table class="table table-striped table-bordered table-hover display" id="tblData1"></table>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 margintop10" id="divgrid2">
+                            <div class="table-responsive margintop20">
+                                <table class="table table-striped table-bordered table-hover display" id="tblData2"></table>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 margintop10" id="divgrid3">
+                            <div class="table-responsive margintop20">
+                                <table class="table table-striped table-bordered table-hover display" id="tblData3"></table>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 margintop10" id="divgrid4">
+                            <div class="table-responsive margintop20">
+                                <table class="table table-striped table-bordered table-hover display" id="tblData4"></table>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 margintop10" id="divgrid5">
+                            <div class="table-responsive margintop20">
+                                <table class="table table-striped table-bordered table-hover display" id="tblData5"></table>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 margintop10" id="divgrid6">
+                            <div class="table-responsive margintop20">
+                                <table class="table table-striped table-bordered table-hover display" id="tblData6"></table>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 margintop10" id="divgrid7">
+                            <div class="table-responsive margintop20">
+                                <table class="table table-striped table-bordered table-hover display" id="tblData7"></table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    //PropId, chkradio, dtfrom, dtto, dteffectivefrom, dteffectiveto, id
+    function GetExcel() {
+        var chkradio = $("input[name=SearchOn]:checked").val();
+        var PropId = $('#PropId').val();
+        var dtFrom = $('#ActionDateFrom').val();
+        var dtTo = $('#ActionDateTo').val();
+        var roomtype = $('#RoomType').val();
+        var ratePlan = $('#RatePlan').val();
+        if (chkradio == 'R') {
+            var dtEffectiveFrom = $('#EffectiveDateFrom').val();
+            var dtEffectiveTo = $('#EffectiveDateTo').val();
+            if (PropId != 0) {
+                location.href = '@Url.Action("GetHistoryChangeDataExcel")?PropId=' + PropId + '&chkradio=' + chkradio + '&dtfrom=' + dtFrom + '&dtto=' + dtTo + '&dteffectivefrom=' + dtEffectiveFrom + '&dteffectiveto=' + dtEffectiveTo + '&roomType=' + roomtype + '&ratePlan=' + ratePlan;
+            }
+            else{
+                location.href = '@Url.Action("GetHistoryChangeDataExcel")?PropId=' + PropId + '&chkradio=' + chkradio + '&dtfrom=' + dtFrom + '&dtto=' + dtTo + '&dteffectivefrom=' + dtEffectiveFrom + '&dteffectiveto=' + dtEffectiveTo;
+            }
+        }
+        else if (chkradio == 'I') {
+                location.href = '@Url.Action("GetHistoryChangeDataExcel")?PropId=' + PropId + '&chkradio=' + chkradio + '&dtfrom=' + dtFrom + '&dtto=' + dtTo;
+        }
+        else if (chkradio == 'B') {
+                location.href = '@Url.Action("GetHistoryChangeDataExcel")?PropId=' + PropId + '&chkradio=' + chkradio + '&dtfrom=' + dtFrom + '&dtto=' + dtTo;
+        }
+        else if (chkradio == 'RatePlan') {
+                location.href = '@Url.Action("GetHistoryChangeDataExcel")?PropId=' + PropId + '&chkradio=' + chkradio + '&dtfrom=' + dtFrom + '&dtto=' + dtTo;
+        }
+    }
+
+
+    $('#BookingId').change(function () {
+        var intRegex = /^\d+$/;
+        var floatRegex = /^((\d+(\.\d *)?)|((\d*\.)?\d+))$/;
+
+        var str = $('#BookingId').val();
+        if (intRegex.test(str) || floatRegex.test(str)) {
+
+        }
+        else { alert('Invalid Booking Id'); }
+    });
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+
+    function GetAllDetails() {
+        var chkradio = $("input[name=SearchOn]:checked").val();
+        var PropId = $('#PropId').val();
+        if (chkradio == 'R') {
+            if (PropId == 0) {
+                $('#RatePlansDiv').hide();
+                $('#RoomType').empty();
+                $('#RatePlan').empty();
+            }
+            else {
+                $.get('/ChangeHistory/GetRoomType?PropId=' + PropId, function (datas) {
+                    var html = '<option>Select</option>';
+                    $.each(datas, function (i, data) {
+                        html += '<option value=' + data.Id + '>' + data.Name + '</option>';
+                    });
+                    $('#RoomType').empty();
+                    $('#RoomType').append(html);
+                    $('#RoomType').select2('destroy');
+                    $('#RoomType').select2();
+                });
+                $('#RatePlansDiv').show();
+            }
+        }
+        else if (chkradio == 'I') {
+                $.get('/ChangeHistory/GetPageName?PropId=' + PropId, function (datas) {
+                    var html = '<option>Select</option>';
+                    $.each(datas, function (i, data) {
+                        html += '<option value=' + data.Id + '>' + data.Name + '</option>';
+                    });
+                    $('#PageName').empty();
+                    $('#PageName').append(html);
+                    $('#PageName').select2('destroy');
+                    $('#PageName').select2();
+                });
+                $('#PropertyInfos').show();
+        }
+        else if (chkradio == 'B') {
+
+        }
+        else if (chkradio == 'RatePlan') {
+        }
+
+
+
+    }
+
+    function Fillgrid() {
+        var PropId = $("#PropId").val();
+        var chkradio = $("input[name=SearchOn]:checked").val();
+        var dateFrom = $("#ActionDateFrom").datepicker("getDate");
+        var dateTo = $("#ActionDateTo").datepicker("getDate");
+        var dtFrom = $.datepicker.formatDate('mm/dd/yy', dateFrom);
+        var dtTo = $.datepicker.formatDate('mm/dd/yy', dateTo);
+
+        if (dateFrom.getTime() > dateTo.getTime()) {
+            alert("From date should be less than To Date.")
+            return;
+        }
+
+        if (chkradio == 'R') {
+            var roomType = $("#RoomType").val();
+            var ratePlan = $("#RatePlan").val();
+
+            var dateEFrom = $("#EffectiveDateFrom").datepicker("getDate");
+            var dateETo = $("#EffectiveDateTo").datepicker("getDate");
+
+            var dtEffectiveFrom = $.datepicker.formatDate('mm/dd/yy', dateEFrom);
+            var dtEffectiveTo = $.datepicker.formatDate('mm/dd/yy', dateETo);
+
+            if (dateEFrom.getTime() > dateETo.getTime()) {
+                alert("Effective From date should be less than To Effective To date.")
+                return;
+            }
+            $("#divgrid1").show();
+            $("#divgrid2").hide();
+            $("#divgrid3").hide();
+            $("#divgrid4").hide();
+            $("#divgrid5").hide();
+            $("#divgrid6").hide();
+            $("#divgrid7").hide();
+            BindGridRoomRates(PropId,chkradio, dtFrom, dtTo, roomType, ratePlan, dtEffectiveFrom, dtEffectiveTo);
+        }
+
+        if (chkradio == 'I') {
+            var Id = $("#PageName").val();
+            if (Id == '27_TaxesandFees' || Id == '34_BankDetailsAdditionalCommision') {
+                $("#divgrid1").hide();
+                $("#divgrid2").hide();
+                $("#divgrid3").hide();
+                $("#divgrid4").hide();
+                $("#divgrid5").show();
+                $("#divgrid6").hide();
+                $("#divgrid7").hide();
+            }
+            else if (Id == '24_Dining') {
+                $("#divgrid1").hide();
+                $("#divgrid2").hide();
+                $("#divgrid3").hide();
+                $("#divgrid4").hide();
+                $("#divgrid5").hide();
+                $("#divgrid6").show();
+                $("#divgrid7").hide();
+            }
+            else if (Id == '32_Photos') {
+                $("#divgrid1").hide();
+                $("#divgrid2").hide();
+                $("#divgrid3").hide();
+                $("#divgrid4").hide();
+                $("#divgrid5").hide();
+                $("#divgrid6").hide();
+                $("#divgrid7").show();
+            }
+            else {
+                $("#divgrid1").hide();
+                $("#divgrid2").show();
+                $("#divgrid3").hide();
+                $("#divgrid4").hide();
+                $("#divgrid5").hide();
+                $("#divgrid6").hide();
+                $("#divgrid7").hide();
+            }
+            BindGrid(PropId,chkradio, dtFrom, dtTo, Id);
+
+        }
+
+        if (chkradio == 'B') {
+            var Id = $("#BookingId").val();
+            $("#divgrid1").hide();
+            $("#divgrid2").show();
+            $("#divgrid3").hide();
+            $("#divgrid4").hide();
+            $("#divgrid5").hide();
+            $("#divgrid6").hide();
+            $("#divgrid7").hide();
+            BindGrid(PropId,chkradio, dtFrom, dtTo, Id);
+        }
+
+        if (chkradio == 'Promotion') {
+            var Id = $("#PromotionType").val();
+            $("#divgrid1").hide();
+            $("#divgrid2").hide();
+            $("#divgrid3").show();
+            $("#divgrid4").hide();
+            $("#divgrid5").hide();
+            $("#divgrid6").hide();
+            $("#divgrid7").hide();
+            BindGridPromotions(PropId,chkradio, dtFrom, dtTo, Id);
+        }
+        if (chkradio == 'RatePlan') {
+            $("#divgrid1").hide();
+            $("#divgrid2").hide();
+            $("#divgrid3").hide();
+            $("#divgrid4").show();
+            $("#divgrid5").hide();
+            $("#divgrid6").hide();
+            $("#divgrid7").hide();
+            BindGridRatePlan(PropId,chkradio, dtFrom, dtTo);
+        }
+
+    }
+
+    function BindGridRoomRates(PropId,chkradio, dtFrom, dtTo, roomType, ratePlan, dtEffectiveFrom, dtEffectiveTo) {
+        try {
+            var aoColumns =
+                [
+
+                    {
+                        "sTitle": "Hotel Name", "mData": "HotelName", "bSortable": false,
+                    }, {
+                        "sTitle": "City Name", "mData": "CityName", "bSortable": false,
+                    },
+     {
+         "sTitle": "Date & time Of Change", "mData": "dtActionDate", "bSortable": false,
+         "mRender": function (data, type, full) {
+             return getNorDateTime(data);
+         }
+     },
+        {
+            "sTitle": "Effective Date", "mData": "dtEffectiveDate", "bSortable": false,
+            "mRender": function (data, type, full) {
+                return getNorDateTime(data);
+            }
+        },
+         {
+             "sTitle": "Item", "mData": "sItem", "bSortable": false
+         },
+      {
+          "sTitle": "Old", "mData": "sOld", "bSortable": false
+      },
+      {
+          "sTitle": "New", "mData": "sNew", "bSortable": false
+      },
+
+     {
+         "sTitle": "By", "mData": "ActionBy", "bSortable": false
+     }
+
+                ];
+            DatatableServerSide("#tblData1", aoColumns, "/Services/Service.asmx/GetChangeHistoryDataMain" + "?PropId=" + PropId + "&chkradio=" + chkradio + "&dtFrom=" + dtFrom + "&dtTo=" + dtTo + "&roomType=" + roomType + "&ratePlan=" + ratePlan + "&dtEffectiveFrom=" + dtEffectiveFrom + "&dtEffectiveTo=" + dtEffectiveTo);
+            //DatatableServerSide("#tblData", aoColumns, "/Services/Service.asmx/GetChangeHistoryData" + "?chkradio=" + chkradio + "&dtFrom=" + dtFrom + "&dtTo=" + dtTo + "&Id=" + Id);
+            $('.dataTables_filter input').attr('title', 'Type here to search in the Item Column');
+        }
+        catch (e) {
+
+        }
+
+
+    }
+    function BindGrid(PropId,chkradio, dtFrom, dtTo, Id) {
+
+        try {
+
+            if (Id == '27_TaxesandFees' || Id == '34_BankDetailsAdditionalCommision') {
+                var aoColumns =
+                    [{
+                        "sTitle": "Hotel Name", "mData": "HotelName", "bSortable": false,
+                    }, {
+                        "sTitle": "City Name", "mData": "CityName", "bSortable": false,
+                    },{
+                                "sTitle": "Date & time Of Change", "mData": "dtActionDate", "bSortable": false,
+                                "mRender": function (data, type, full) {
+                                    return getNorDateTime(data);
+                                }
+                            },
+                             {
+                                 "sTitle": "ID", "mData": "iPropTaxId", "bSortable": false
+                             },
+                                {
+                                    "sTitle": "Item", "mData": "sItem", "bSortable": false
+                                },
+                                {
+                                    "sTitle": "Old", "mData": "sOld", "bSortable": false,
+                                    "mRender": function (data, type, full) {
+                                        if (full.sItem == "img url") {
+                                            return '<img  src="@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()' + full.sOld + '"  height="100" width="100" >';
+                                        }
+                                        else {
+                                            var returndata = full.sOld== null ? '<label></label>' : '<label>' + full.sOld + '</label>';
+                                            return returndata;
+                                        }
+
+
+                                    }
+                                },
+                                 {
+                                     "sTitle": "New", "mData": "sNew", "bSortable": false,
+                                     "mRender": function (data, type, full) {
+                                         var returndata = full.sNew == null ? '<label></label>' : '<label>' + full.sNew + '</label>';
+                                         return returndata;
+                                     }
+                                 },
+                                 {
+                                     "sTitle": "By", "mData": "ActionBy", "bSortable": false
+                                 }];
+                DatatableServerSide("#tblData5", aoColumns, "/Services/Service.asmx/GetChangeHistoryDataMain" + "?PropId=" + PropId + "&chkradio=" + chkradio + "&dtFrom=" + dtFrom + "&dtTo=" + dtTo + "&Id=" + Id);
+
+            }
+            else if (Id == '24_Dining') {
+                var aoColumns =
+                    [{
+                        "sTitle": "Hotel Name", "mData": "HotelName", "bSortable": false,
+                    }, {
+                        "sTitle": "City Name", "mData": "CityName", "bSortable": false,
+                    },{
+                                "sTitle": "Date & time Of Change", "mData": "dtActionDate", "bSortable": false,
+                                "mRender": function (data, type, full) {
+                                    return getNorDateTime(data);
+                                }
+                            },
+                            {
+                                "sTitle": "Restaurant Name", "mData": "sRestaurantName", "bSortable": false
+                            },
+                                {
+                                    "sTitle": "Item", "mData": "sItem", "bSortable": false
+                                },
+                                {
+                                    "sTitle": "Old", "mData": "sOld", "bSortable": false,
+                                    "mRender": function (data, type, full) {
+                                        if (full.sItem == "img url") {
+                                            return '<img  src="@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()' + full.sOld + '"  height="100" width="100" >';
+                                        }
+                                        else {
+                                            var returndata = full.sOld== null ? '<label></label>' : '<label>' + full.sOld + '</label>';
+                                            return returndata;
+                                        }
+
+
+                                    }
+                                },
+                                 {
+                                     "sTitle": "New", "mData": "sNew", "bSortable": false,
+                                     "mRender": function (data, type, full) {
+                                          var returndata = full.sNew == null ? '<label></label>' : '<label>' + full.sNew + '</label>';
+                                          return returndata;
+                                     }
+                                 },
+                                 {
+                                     "sTitle": "By", "mData": "ActionBy", "bSortable": false
+                                 }];
+                DatatableServerSide("#tblData6", aoColumns, "/Services/Service.asmx/GetChangeHistoryDataMain" + "?PropId=" + PropId + "&chkradio=" + chkradio + "&dtFrom=" + dtFrom + "&dtTo=" + dtTo + "&Id=" + Id);
+            }
+            else if (Id == '32_Photos') {
+                var aoColumns =
+                    [{
+                        "sTitle": "Hotel Name", "mData": "HotelName", "bSortable": false,
+                    }, {
+                        "sTitle": "City Name", "mData": "CityName", "bSortable": false,
+                    },{
+                                "sTitle": "Date & time Of Change", "mData": "dtActionDate", "bSortable": false,
+                                "mRender": function (data, type, full) {
+                                    return getNorDateTime(data);
+                                }
+                            },
+                           {
+                               "sTitle": "Photo", "mData": "", "bSortable": false,
+                               "mRender": function (data, type, full) {
+                                   return '<img  src="@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()' + full.sImgUrl + '"  height="100" width="100" >';
+                               }
+                           },
+                                {
+                                    "sTitle": "Item", "mData": "sItem", "bSortable": false
+                                },
+                                {
+                                    "sTitle": "Old", "mData": "sOld", "bSortable": false,
+                                    "mRender": function (data, type, full) {
+                                        if (full.sItem == "img url") {
+                                            return '<img  src="@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()' + full.sOld + '"  height="100" width="100" >';
+                                        }
+                                        else {
+                                            var returndata = full.sOld== null ? '<label></label>' : '<label>' + full.sOld + '</label>';
+                                            return returndata;
+                                        }
+
+
+                                    }
+                                },
+                                 {
+                                     "sTitle": "New", "mData": "sNew", "bSortable": false,
+                                     "mRender": function (data, type, full) {
+                                         if (full.sItem == "img url") {
+                                             return '<img  src="@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()' + full.sNew + '"  height="100" width="100" >';
+                                         }
+                                         else {
+                                              var returndata = full.sNew == null ? '<label></label>' : '<label>' + full.sNew + '</label>';
+                                              return returndata;
+                                        }
+
+
+                                     }
+                                 },
+                                 {
+                                     "sTitle": "By", "mData": "ActionBy", "bSortable": false
+                                 }];
+                DatatableServerSide("#tblData7", aoColumns, "/Services/Service.asmx/GetChangeHistoryDataMain" + "?PropId=" + PropId + "&chkradio=" + chkradio + "&dtFrom=" + dtFrom + "&dtTo=" + dtTo + "&Id=" + Id);
+            }
+            else {
+                var aoColumns =
+                    [{
+                        "sTitle": "Hotel Name", "mData": "HotelName", "bSortable": false,
+                    }, {
+                        "sTitle": "City Name", "mData": "CityName", "bSortable": false,
+                    },{
+                                 "sTitle": "Date & time Of Change", "mData": "dtActionDate", "bSortable": false,
+                                 "mRender": function (data, type, full) {
+                                     return getNorDateTime(data);
+                                 }
+                             },
+                                 {
+                                     "sTitle": "Item", "mData": "sItem", "bSortable": false
+                                 },
+                                 {
+                                     "sTitle": "Old", "mData": "sOld", "bSortable": false,
+                                     "mRender": function (data, type, full) {
+                                         if (full.sItem == "img url") {
+                                             return '<img  src="@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()' + full.sOld + '"  height="100" width="100" >';
+                                         }
+                                         else {
+                                             var returndata = full.sOld== null ? '<label></label>' : '<label>' + full.sOld + '</label>';
+                                             return returndata;
+                                         }
+
+
+                                     }
+                                 },
+                                  {
+                                      "sTitle": "New", "mData": "sNew", "bSortable": false,
+                                      "mRender": function (data, type, full) {
+                                          if (full.sItem == "img url") {
+                                              return '<img  src="@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()' + full.sNew + '"  height="100" width="100" >';
+                                          }
+                                          else {
+                                               var returndata = full.sNew == null ? '<label></label>' : '<label>' + full.sNew + '</label>';
+                                               return returndata;
+                                          }
+
+
+                                      }
+                                  },
+                                  {
+                                      "sTitle": "By", "mData": "ActionBy", "bSortable": false
+                                  }];
+                DatatableServerSide("#tblData2", aoColumns, "/Services/Service.asmx/GetChangeHistoryDataMain" + "?PropId=" + PropId + "&chkradio=" + chkradio + "&dtFrom=" + dtFrom + "&dtTo=" + dtTo + "&Id=" + Id);
+            }
+
+            $('.dataTables_filter input').attr('title', 'Type here to search in the Item Column');
+        }
+        catch (e) {
+
+        }
+
+
+    }
+
+    function BindGridPromotions(PropId,chkradio, dtFrom, dtTo, Id) {
+
+        try {
+
+            var aoColumns =
+                [{
+                    "sTitle": "Hotel Name", "mData": "HotelName", "bSortable": false,
+                }, {
+                    "sTitle": "City Name", "mData": "CityName", "bSortable": false,
+                },{
+                                "sTitle": "Property Promotion ID", "mData": "iPromotionMapId", "bSortable": false
+                            },
+                                {
+                                    "sTitle": "Date & time Of Change", "mData": "dtActionDate", "bSortable": false,
+                                    "mRender": function (data, type, full) {
+                                        return getNorDateTime(data);
+                                    }
+                                },
+
+                            {
+                                "sTitle": "Promotion ID", "mData": "iPromoId", "bSortable": false, "bVisible": false
+                            },
+
+                                {
+                                    "sTitle": "Item", "mData": "sItem", "bSortable": false
+                                },
+                                {
+                                    "sTitle": "Old", "mData": "sOld", "bSortable": false,
+                                    "mRender": function (data, type, full) {
+                                        if (full.sItem == "img url") {
+                                            return '<img  src="@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()' + full.sOld + '"  height="100" width="100" >';
+                                        }
+                                        else {
+                                            var returndata = full.sOld== null ? '<label></label>' : '<label>' + full.sOld + '</label>';
+                                            return returndata;
+                                        }
+
+
+                                    }
+                                },
+                                 {
+                                     "sTitle": "New", "mData": "sNew", "bSortable": false,
+                                     "mRender": function (data, type, full) {
+                                         if (full.sItem == "img url") {
+                                             return '<img  src="@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()' + full.sNew + '"  height="100" width="100" >';
+                                         }
+                                         else {
+                                              var returndata = full.sNew == null ? '<label></label>' : '<label>' + full.sNew + '</label>';
+                                              return returndata;
+                                        }
+
+
+                                     }
+                                 },
+                                 {
+                                     "sTitle": "By", "mData": "ActionBy", "bSortable": false
+                                 }];
+
+            DatatableServerSide("#tblData3", aoColumns, "/Services/Service.asmx/GetChangeHistoryDataMain" + "?PropId=" + PropId + "&chkradio=" + chkradio + "&dtFrom=" + dtFrom + "&dtTo=" + dtTo + "&Id=" + Id);
+            $('.dataTables_filter input').attr('title', 'Type here to search in the Item Column');
+        }
+        catch (e) {
+
+        }
+
+
+    }
+
+    function BindGridRatePlan(PropId,chkradio, dtFrom, dtTo) {
+
+        try {
+
+            var aoColumns =
+                [{
+                    "sTitle": "Hotel Name", "mData": "HotelName", "bSortable": false,
+                }, {
+                    "sTitle": "City Name", "mData": "CityName", "bSortable": false,
+                },{
+                                "sTitle": "Rate Plan Map ID", "mData": "iRatePlanMapId", "bSortable": false
+                            },
+                                {
+                                    "sTitle": "Date & time Of Change", "mData": "dtActionDate", "bSortable": false,
+                                    "mRender": function (data, type, full) {
+                                        return getNorDateTime(data);
+                                    }
+                                },
+
+                            {
+                                "sTitle": "Promotion ID", "mData": "iPromoId", "bSortable": false, "bVisible": false
+                            },
+
+                                {
+                                    "sTitle": "Item", "mData": "sItem", "bSortable": false
+                                },
+                                {
+                                    "sTitle": "Old", "mData": "sOld", "bSortable": false,
+                                    "mRender": function (data, type, full) {
+                                        if (full.sItem == "img url") {
+                                            return '<img  src="@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()' + full.sOld + '"  height="100" width="100" >';
+                                        }
+                                        else {
+                                            var returndata = full.sOld== null ? '<label></label>' : '<label>' + full.sOld + '</label>';
+                                            return returndata;
+                                        }
+
+
+                                    }
+                                },
+                                 {
+                                     "sTitle": "New", "mData": "sNew", "bSortable": false,
+                                     "mRender": function (data, type, full) {
+                                         if (full.sItem == "img url") {
+                                             return '<img  src="@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()' + full.sNew + '"  height="100" width="100" >';
+                                         }
+                                         else {
+                                             var returndata = full.sNew == null ? '<label></label>' : '<label>' + full.sNew + '</label>';
+                                             return returndata;
+                                         }
+
+
+                                     }
+                                 },
+                                 {
+                                     "sTitle": "By", "mData": "ActionBy", "bSortable": false
+                                 }];
+
+            DatatableServerSide("#tblData4", aoColumns, "/Services/Service.asmx/GetChangeHistoryDataMain" + "?PropId=" + PropId + "&chkradio=" + chkradio + "&dtFrom=" + dtFrom + "&dtTo=" + dtTo);
+            $('.dataTables_filter input').attr('title', 'Type here to search in the Item Column');
+        }
+        catch (e) {
+
+        }
+
+
+    }
+
+
+
+
+</script>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        calendar();
+        ShowHideDiv();
+        $('#EffectiveDateFrom').keyup(function () {
+            return false;
+        });
+
+    })
+    function calendar() {
+        var d = new Date();
+        $('#ActionDateFrom').datepicker({
+            startDate: d,
+            autoclose: true,
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true,
+            onClose: function (selectedDate) {
+                $("#ActionDateTo").datepicker("option", "minDate", selectedDate);
+            }
+        });
+        $('#ActionDateTo').datepicker({
+            startDate: d,
+            autoclose: true,
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true,
+            onClose: function (selectedDate) {
+                $("#ActionDateFrom").datepicker("option", "maxDate", selectedDate);
+            }
+        });
+
+        $('#EffectiveDateFrom').datepicker({
+            startDate: d,
+            autoclose: true,
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true,
+            onClose: function (selectedDate) {
+                $("#EffectiveDateTo").datepicker("option", "minDate", selectedDate);
+            }
+        });
+        $('#EffectiveDateTo').datepicker({
+            startDate: d,
+            autoclose: true,
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true,
+            onClose: function (selectedDate) {
+                $("#EffectiveDateFrom").datepicker("option", "maxDate", selectedDate);
+            }
+        });
+
+
+        $("#ActionDateFrom").each(function () {
+            var selecteddate = $("#ActionDateFrom").datepicker("getDate");
+            var dateString = $.datepicker.formatDate('dd/mm/yy', selecteddate);
+            if (dateString == "01/01/2001") {
+                $("#ActionDateFrom").datepicker('setDate', new Date('dd/mm/yy'));
+            }
+            $('#ActionDateFrom').attr('disable', true)
+
+        });
+        $("#ActionDateTo").each(function () {
+            var selecteddate = $("#ActionDateTo").datepicker("getDate");
+            var dateString = $.datepicker.formatDate('dd/mm/yy', selecteddate);
+            if (dateString == "01/01/2001") {
+                $("#ActionDateTo").datepicker('setDate', new Date('dd/mm/yy'));
+            }
+
+        });
+
+        $("#EffectiveDateFrom").each(function () {
+            var selecteddate = $("#EffectiveDateFrom").datepicker("getDate");
+            var dateString = $.datepicker.formatDate('dd/mm/yy', selecteddate);
+            if (dateString == "01/01/2001") {
+                $("#EffectiveDateFrom").datepicker('setDate', new Date());
+            }
+
+        });
+        $("#EffectiveDateTo").each(function () {
+            var selecteddate = $("#EffectiveDateTo").datepicker("getDate");
+            var dateString = $.datepicker.formatDate('dd/mm/yy', selecteddate);
+            if (dateString == "01/01/2001") {
+                $("#EffectiveDateTo").datepicker('setDate', new Date());
+            }
+
+        });
+        $("#ui-datepicker-div").hide();
+    }
+
+    function ShowHideDiv() {
+        GetAllDetails();
+        $(":radio").click(function () {
+            var Selectedvalue = $(this).val();
+
+            if (Selectedvalue == 'R') {
+                $("#divRoomRate").show();
+                $("#divPropertyInformation").hide();
+                $("#divBookings").hide();
+                $("#divPromotions").hide();
+                $("#divRatePlan").hide();
+            }
+
+            if (Selectedvalue == 'I') {
+                $("#divRoomRate").hide();
+                $("#divPropertyInformation").show();
+                $("#divBookings").hide();
+                $("#divPromotions").hide();
+                $("#divRatePlan").hide();
+            }
+
+            if (Selectedvalue == 'B') {
+                $("#divRoomRate").hide();
+                $("#divPropertyInformation").hide();
+                $("#divBookings").show();
+                $("#divPromotions").hide();
+                $("#divRatePlan").hide();
+            }
+
+
+            if (Selectedvalue == 'Promotion') {
+                $("#divRoomRate").hide();
+                $("#divPropertyInformation").hide();
+                $("#divBookings").hide();
+                $("#divPromotions").show();
+                $("#divRatePlan").hide();
+            }
+
+            if (Selectedvalue == 'RatePlan') {
+                $("#divRoomRate").hide();
+                $("#divPropertyInformation").hide();
+                $("#divBookings").hide();
+                $("#divPromotions").hide();
+                $("#divRatePlan").show();
+            }
+            $("#divgrid1").hide();
+            $("#divgrid2").hide();
+            $("#divgrid3").hide();
+            $("#divgrid4").hide();
+
+            $("#divAction").show();
+        });
+    }
+
+</script>
+
+<script>
+
+    function FillRatePlan() {
+        var iRoomTypeId = $("#RoomType").val();
+        var iPropId = $("#PropId").val();
+        $.ajax({
+            url: "@(Url.Action("FillRatePlan", "ChangeHistory"))",
+            type: "GET",
+            dataType: "JSON",
+            data: { RoomType: iRoomTypeId,PropId: iPropId },
+            success: function (rateplan) {
+                $("#RatePlan").html("");
+                $("#RatePlan").append(
+                   $('<option></option>').val("0").html("Select"));
+                $.each(rateplan, function (i, rp) {
+                    $("#RatePlan").append(
+                    $('<option></option>').val(rp.Id).html(rp.Name));
+                });
+            }
+        });
+        $('#s2id_RatePlan').find('span.select2-chosen').text("");
+
+    }
+
+    $(document).ready(function () {
+        //FillRatePlan();
+    });
+</script>
+

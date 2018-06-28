@@ -1,0 +1,70 @@
+﻿@model OneFineRateBLL.Entities.eDashBoardNotifications
+
+<style>
+    ul.dashboardpndg li
+    {
+        padding-left:3% !important;
+    }
+</style>
+
+<div class="col-md-12 border1" style="overflow:auto; min-height:172px; max-height:172px">
+
+    @if (Model.lstAll == null && Model.lstTwo == null && Model.lstOne == null)
+    {
+        <div class="col-md-12" style="text-align:center"><label style="margin-top:8%">No New Notification.</label> </div>
+    }
+    else
+    {
+        <ul class="dashboardpndgmain">
+
+            @if (Model.lstOne != null)
+            {
+                <li>
+                    Following dates have no inventory left for selling (Click on the dates to upload the inventory):<br />
+                    <ul class="dashboardpndg">
+                        @foreach (var item in Model.lstOne)
+                        {
+                            <li>@Html.Raw(item.sDate)</li>
+                        }
+                    </ul>
+                </li>
+            }
+
+            @if (Model.lstTwo != null)
+            {
+                <li>
+                  	The following dates have no discounts for Public bidding (Click on the dates to upload the discounts):<br />
+                    <ul class="dashboardpndg">
+                        @foreach (var item in Model.lstTwo)
+                        {
+                            <li>@Html.Raw(item.sDate)</li>
+                        }
+                    </ul>
+                </li>
+            }
+
+            @if (Model.lstThree != null)
+            {
+                <li>
+                    The following dates have no discounts  for Corporates (Click on the dates to upload the discounts):<br />
+                    <ul class="dashboardpndg">
+                        @foreach (var item in Model.lstThree)
+                        {
+                            <li>@Html.Raw(item.sDate)</li>
+                        }
+                    </ul>
+                </li>
+            }
+
+            @if (Model.lstAll != null && Model.lstAll.Count > 0)
+            {
+                foreach (var item in Model.lstAll)
+                {
+                    <li>@Html.Raw(item)</li>
+                }
+            }
+
+        </ul>
+    }
+
+</div>

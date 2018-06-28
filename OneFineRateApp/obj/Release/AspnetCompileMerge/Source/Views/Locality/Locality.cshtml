@@ -1,0 +1,368 @@
+﻿@{
+    ViewBag.Title = "Locality";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+
+<script type="text/javascript">
+
+    function SaveLocality() {
+        var f = document.getElementById('frmLocalityArea');
+        if (f.checkValidity()) {
+            var values = {
+                countryid: $("#ddlCountry").val(),
+                stateid: $("#ddlState").val(),
+                cityid: $("#ddlCity").val(),
+                areaid: $("#ddlMacroArea").val(),
+                localityname: $("#txtLocality").val()
+            };
+            var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("AddLocality")", values));
+            if (Data != null) {
+                if (Data.st == '1') {
+                    bindgrid();
+                    resetform('frmLocalityArea');
+                    $('.close').click();
+                    toastr.success(Data.msg);
+                    return true;
+                }
+                else if (Data.st == '0') {
+                    toastr.error(Data.msg);
+                    return false;
+                }
+            }
+        }
+    };
+
+    function UpdateLocality() {
+        var f = document.getElementById('frmLocalityArea');
+        if (f.checkValidity()) {
+            var values = {
+                id: $('#hdnId').val(),
+                countryid: $("#ddlCountry").val(),
+                stateid: $("#ddlState").val(),
+                cityid: $("#ddlCity").val(),
+                areaid: $("#ddlMacroArea").val(),
+                localityname: $("#txtLocality").val()
+            };
+            var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("UpdateLocality")", values));
+            if (Data != null) {
+                if (Data.st == '1') {
+                    bindgrid();
+                    resetform('frmLocalityArea');
+                    $('.close').click();
+                    toastr.success(Data.msg);
+                    return true;
+                }
+                else if (Data.st == '0') {
+                    toastr.error(Data.msg);
+                    return false;
+                }
+            }
+        }
+    };
+
+    $(document).ready(function () {
+
+        //binding datatable
+        bindgrid();
+        //Inserting/Updating data through Ajax
+        document.getElementById('frmLocalityArea').onsubmit = function (e) {
+            e.preventDefault();
+            var action = $("#btnSubmit").html();
+            if (action == "Save") {
+                SaveLocality();
+            }
+            else {
+                UpdateLocality();
+            }
+        };
+        //Pop up cancel button click event
+        $('#btnCancel').click(function () {
+            resetform('frmLocalityArea');
+            $('.close').click();
+        });
+    })
+
+    // Delete data from list
+    function DeleteData(id, status) {
+        bootbox.confirm("Are you sure?", function (result) {
+            console.log(result);
+            if (result == true) {
+                var values = {
+                    id: id,
+                    status: status
+                };
+                var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("DeleteLocality")", values));
+                if (Data != null) {
+                    if (Data.st == '1') {
+                        bindgrid();
+                        $('.close').click();
+                        toastr.success(Data.msg);
+                        return true;
+                    }
+                    else if (Data.st == '0') {
+                        toastr.error(Data.msg);
+                        return false;
+                    }
+
+                }
+            }
+        });
+    };
+
+    // bind list
+    function bindgrid() {
+
+        try {
+            var aoColumns =
+                [
+                 { "sTitle": "Country", "mData": "sCountry" },
+                 { "sTitle": "State", "mData": "sState" },
+                 { "sTitle": "City", "mData": "sCity" },
+                 { "sTitle": "Area", "mData": "sArea" },
+                 { "sTitle": "Locality", "mData": "sLocality" },
+                 { "sTitle": "Status", "mData": "cStatus" },
+                 {
+                     "sTitle": "Created On", "bSortable": false, "mData": "dtActionDate",
+                     "mRender": function (data, type, full) {
+                         return getNorDateTime(data);
+                     }
+                 },
+                 { "sTitle": "Action By", "mData": "iActionBy", "bSortable": false },
+                 {
+                     "sTitle": "Edit", "bSortable": false, "mData": "iCountryId",
+                     "mRender": function (data, type, full) {
+                         var html = '<button type="button" onclick="EditData(this)"; eid=' + full.iLocalityId + ' countryid=' + full.iCountryId + ' stateid=' + full.iStateId + ' cityid=' + full.iCityId + ' areaid=' + full.iAreaId + ' localityname= \"' + full.sLocality + '\"  class="btn btn-warning">Edit</button>&nbsp';
+                         if (full.cStatus == "Live") {
+                             html += '<button type="button" onclick="DeleteData(' + full.iLocalityId + ',\'I\')";  class="btn btn-danger">Disable</button>';
+                         }
+                         else {
+                             html += '<button type="button" onclick="DeleteData(' + full.iLocalityId + ',\'A\')";  class="btn btn-success">Enable</button>';
+                         }
+                         return html;
+                     }
+                 }
+                ];
+            DatatableServerSide("#tblData", aoColumns, "/Services/Service.asmx/GetAllLocalityRecords?id=1");
+        }
+        catch (e) {
+
+        }
+
+    }
+    //fill form on click edit in the list
+    function EditData(obj) {
+        $('#hdnId').val($(obj).attr('eid'));
+        $("#ddlCountry").select2("val", $(obj).attr('countryid'));
+
+        // State Bind
+        cleardropdown($("#ddlState"));
+        var url = '@Url.Content("/")' + "Locality/BindStates";
+        $.getJSON(url, { id: $(obj).attr('countryid') }, function (data) {
+            $.each(data.suggestions, function (index, optionData) {
+                $("#ddlState").append("<option value='" + optionData.iStateId + "'>" + optionData.sState + "</option>");
+            });
+            $("#ddlState").select2("val", $(obj).attr('stateid'));
+        });
+
+        // City Bind
+        cleardropdown($("#ddlCity"));
+        var url = '@Url.Content("/")' + "Locality/BindCity";
+        $.getJSON(url, { id: $(obj).attr('stateid') }, function (data) {
+            $.each(data.suggestions, function (index, optionData) {
+                $("#ddlCity").append("<option value='" + optionData.iCityId + "'>" + optionData.sCity + "</option>");
+            });
+            $("#ddlCity").select2("val", $(obj).attr('cityid'));
+        });
+
+        // Macro Bind
+        cleardropdown($("#ddlMacroArea"));
+        var url = '@Url.Content("/")' + "Locality/BindMacroArea";
+        $.getJSON(url, { id: $(obj).attr('cityid') }, function (data) {
+            $.each(data.suggestions, function (index, optionData) {
+                $("#ddlMacroArea").append("<option value='" + optionData.iAreaId + "'>" + optionData.sArea + "</option>");
+            });
+            $("#ddlMacroArea").select2("val", $(obj).attr('areaid'));
+        });
+
+        $("#txtLocality").val($(obj).attr('localityname'))
+
+        $("#btnSubmit").html("Update");
+        $('#AddLocalityArea').modal({
+            show: 'true'
+        });
+
+    }
+
+
+
+</script>
+
+<script>
+
+    function cleardropdown(vardropdown) {
+        $(vardropdown).empty();
+        var option = $("<option />");
+        option.attr("value", "").text("");
+        $(vardropdown).append(option);
+
+        $(vardropdown).select2("val", "");
+    };
+
+    function addlocality() {
+
+        $("#ddlCountry").select2("val", "");
+        cleardropdown("#ddlState");
+        cleardropdown("#ddlCity");
+        cleardropdown("#ddlMacroArea");
+
+
+        $("#txtLocality").val("");
+
+        $("#btnSubmit").html("Save");
+        $('#AddLocalityArea').modal({
+            show: 'true'
+        });
+
+    };
+
+    $(function () {
+        //On Country selection
+        $("#ddlCountry").change(function () {
+            
+            var ddlsource = "#ddlCountry";
+            var ddltarget = "#ddlState";
+            if ($(ddlsource).val() != '') {
+                var url = '@Url.Content("/")' + "Locality/BindStates";
+                $.getJSON(url, { id: $(ddlsource).val() }, function (data) {
+                    cleardropdown(ddltarget);
+                    cleardropdown("#ddlCity");
+                    cleardropdown("#ddlMacroArea");
+                    $.each(data.suggestions, function (index, optionData) {
+                        $(ddltarget).append("<option value='" + optionData.iStateId + "'>" + optionData.sState + "</option>");
+                    });
+
+                });
+            }
+            else {
+                cleardropdown(ddltarget);
+            }
+        });
+        //On State selection
+        $("#ddlState").change(function () {
+            var ddlsource = "#ddlState";
+            var ddltarget = "#ddlCity";
+            if ($(ddlsource).val() != '') {
+                var url = '@Url.Content("/")' + "Locality/BindCity";
+                $.getJSON(url, { id: $(ddlsource).val() }, function (data) {
+                    cleardropdown(ddltarget);
+                    cleardropdown("#ddlMacroArea");
+                    $.each(data.suggestions, function (index, optionData) {
+                        $(ddltarget).append("<option value='" + optionData.iCityId + "'>" + optionData.sCity + "</option>");
+                    });
+
+                });
+            }
+            else {
+                cleardropdown(ddltarget);
+            }
+        });
+
+        //On City selection
+        $("#ddlCity").change(function () {
+            var ddlsource = "#ddlCity";
+            var ddltarget = "#ddlMacroArea";
+            if ($(ddlsource).val() != '') {
+                var url = '@Url.Content("/")' + "Locality/BindMacroArea";
+                $.getJSON(url, { id: $(ddlsource).val() }, function (data) {
+                    cleardropdown(ddltarget);
+                    $.each(data.suggestions, function (index, optionData) {
+                        $(ddltarget).append("<option value='" + optionData.iAreaId + "'>" + optionData.sArea + "</option>");
+                    });
+
+                });
+            }
+            else {
+                cleardropdown(ddltarget);
+            }
+        });
+    });
+</script>
+
+<div class="container margintop20">
+    <div class="panel panel-default">
+        <div class="container panel-heading">
+            <div class="col-md-6">
+                <h4 class="panel-title">
+                    <strong>Locality</strong>
+                </h4>
+            </div>
+            <div class="col-md-6"><button type="button" class="pull-right btn btn-primary" data-toggle="modal" onclick="addlocality()"><i class="fa fa-plus"></i> Add Locality </button></div>
+
+        </div>
+        <div class="panel-body">
+
+            <div class="table-responsive margintop20">
+                <table class="table table-striped table-bordered table-hover display" id="tblData"></table>
+            </div>
+            <!-- End  table -->
+        </div>
+    </div>
+    <!-- container div END bottom -->
+</div>
+<!-- Add Macro Area -->
+<form id="frmLocalityArea">
+    @Html.Hidden("hdnId");
+    <div id="AddLocalityArea" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Locality</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>   Country </label>
+                            @Html.DropDownList("ddlCountry", new SelectList(OneFineRateBLL.BL_Country.GetAllRecords(), "iCountryId", "sCountry"), "", new { @class = "form-control", oninvalid = "setCustomValidity('Please select country')", onchange = "try{setCustomValidity('')}catch(e){}", required = true })
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <label> State </label>
+                            @Html.DropDownList("ddlState", new SelectList(OneFineRateBLL.BL_tblStateM.GetAllRecordsById(0), "iStateId", "sState"), "", new { @class = "form-control", oninvalid = "setCustomValidity('Please select state')", onchange = "try{setCustomValidity('')}catch(e){}", required = true })
+                        </div>
+
+
+
+                        <div class="col-md-6">
+                            <label>    City </label>
+                            @Html.DropDownList("ddlCity", new SelectList(OneFineRateBLL.BL_tblCityM.GetAllRecordsById(0), "iCityId", "sCity"), "", new { @class = "form-control", oninvalid = "setCustomValidity('Please select city')", onchange = "try{setCustomValidity('')}catch(e){}", required = true })
+                        </div>
+
+
+
+                        <div class="col-md-6">
+                            <label>  Macro Area </label>
+                            @Html.DropDownList("ddlMacroArea", new SelectList(OneFineRateBLL.BL_tblMacroAreaM.GetAllRecordsById(0), "iAreaId", "sArea"), "", new { @class = "form-control", oninvalid = "setCustomValidity('Please select macro area')", onchange = "try{setCustomValidity('')}catch(e){}", required = true })
+                        </div>
+
+
+
+                        <div class="col-md-6">
+                            <label> Locality Name </label>
+                            @Html.TextBox("txtLocality", null, new { @class = "form-control", oninvalid = "setCustomValidity('Please enter only alphabets')", onchange = "try{setCustomValidity('')}catch(e){}", pattern = "^[a-zA-Z]+[a-zA-Z0-9 ]*$", maxlength = "50", required = true })
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="btnSubmit" class="btn btn-primary">Save</button>
+                    <button type="button" id="btnCancel" class="btn btn-danger">Cancel</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>

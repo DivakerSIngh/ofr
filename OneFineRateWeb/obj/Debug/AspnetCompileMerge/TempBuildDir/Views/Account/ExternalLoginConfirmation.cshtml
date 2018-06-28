@@ -1,0 +1,190 @@
+﻿@model OneFineRateWeb.Models.ExternalLoginConfirmationViewModel
+@{
+    ViewBag.Title = "Register";
+}
+
+<style>
+    .error {
+        color: red;
+    }
+</style>
+
+<div class="light_header_bar">
+    <div class="container">
+        <h4 class="msgvertical"><strong>Associate your @ViewBag.LoginProvider account.</strong></h4>
+    </div>
+</div>
+
+<div class="container marginbottom10">
+    <div class="row" id="spinnerContainer">
+        <div class="col-md-12">
+            <strong class="text-danger" id="confirmExternalLoginErrors"></strong>
+            <br />
+            <div class="col-md-10">
+                <p class="text-info">
+                    <b>
+                        You've successfully authenticated with <strong>@ViewBag.LoginProvider</strong>.
+                        Please confirm your below details and click the Register button to finish
+                        logging in.
+                    </b>
+                </p>
+            </div>
+        </div>
+
+        @using (Html.BeginForm("ExternalLoginConfirmation", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { id = "frmConfirmExternalLogin" }))
+        {
+            @Html.AntiForgeryToken()
+
+            @Html.HiddenFor(x => x.FirstName)
+            @Html.HiddenFor(x => x.LastName)
+            @Html.HiddenFor(x => x.ProfilePicUrl)
+            @Html.HiddenFor(x => x.Gender)
+            @Html.HiddenFor(x => x.DateOfBirth)
+
+
+            <div class="col-md-10">
+                <hr />
+                <br />
+                @if (string.IsNullOrEmpty(Model.Title))
+                {
+                    <div class="col-md-2">
+
+                        @Html.DropDownListFor(m => m.Title, new List<SelectListItem> { new SelectListItem { Value = "Mr.", Selected = true, Text = "Mr." }, new SelectListItem { Value = "Ms.", Text = "Ms." } }, "Select Title", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Title, "", new { @class = "red" })
+                    </div>
+                    <div class="clearfix"></div>
+                }
+                else
+                {
+                    <div class="col-md-2">
+                        @Html.DropDownListFor(m => m.Title, new List<SelectListItem> { new SelectListItem { Value = "Mr.", Selected = true, Text = "Mr." }, new SelectListItem { Value = "Ms.", Text = "Ms." } }, "Select Title", new { @class = "form-control", @readonly = "" })
+                        @Html.ValidationMessageFor(model => model.Title, "", new { @class = "red" })
+                    </div>
+                    <div class="clearfix"></div>
+                }
+
+                @if (string.IsNullOrEmpty(Model.DisplayName))
+                {
+                    <div class="col-md-4">
+
+                        @Html.TextBoxFor(m => m.DisplayName, new { @class = "form-control margintop10", placeholder = "Enter your name" })
+                        @Html.ValidationMessageFor(m => m.DisplayName, "", new { @class = "red" })
+                    </div>
+                    <div class="clearfix"></div>
+                }
+                else
+                {
+                    <div class="col-md-4">
+                        @Html.TextBoxFor(m => m.DisplayName, new { @class = "form-control margintop10", placeholder = "Enter your name", @readonly = "" })
+                        @Html.ValidationMessageFor(m => m.DisplayName, "", new { @class = "red" })
+                    </div>
+                    <div class="clearfix"></div>
+                }
+
+                @if (string.IsNullOrEmpty(Model.Email))
+                {
+                    <div class="col-md-4">
+
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control margintop10", placeholder = "Enter your email" })
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "red" })
+                    </div>
+                    <div class="clearfix"></div>
+                }
+                else
+                {
+                    <div class="col-md-4">
+
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control margintop10", placeholder = "Enter your email", @readonly = "" })
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "red" })
+                    </div>
+                    <div class="clearfix"></div>
+                }
+
+
+                @if (string.IsNullOrEmpty(Model.PhoneNumber))
+                {
+                    <div class="col-md-4 margintop10">
+
+                        @Html.DropDownListFor(model => model.sCountryPhoneCode, new SelectList(Model.CountryCodePhoneList, "sCode", "sFrontendCode", "+91"), new { id = "ddlCountryCode", @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.sCountryPhoneCode, "", new { @class = "red" })
+                        @Html.TextBoxFor(m => m.PhoneNumber, new { id = "txtPhoneNumber", @class = "form-control margintop10", maxlength = "10", placeholder = "Enter your phone number" })
+                        @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { @class = "red" })
+                    </div>
+
+                    @Html.HiddenFor(x => x.PhoneVerificationEncoded, new { id = "PhoneVerificationEncoded" });
+                    <div class="clearfix"></div>
+                    <div class="col-md-4">
+                        @Html.TextBoxFor(m => m.PhoneVerificationCode, new { @class = "form-control margintop20", style = "display:none", placeholder = "Enter mobile verification code", title = "Please enter mobile verification code" })
+                        @Html.ValidationMessageFor(m => m.PhoneVerificationCode, "", new { @class = "red" })
+                        <label style="float:right; display:none" id="lblResendOTP" class="text-danger"><a href="javascript:;" id="lnkResendOTP">Resend OTP </a></label>
+                    </div>
+                    <div class="clearfix"></div>
+                }
+
+                <div class="col-md-4">
+                    <a href="Javascript:void(0)" class="margintop10" style="display:none" id="lnkReferralCodeExt">Have Referral Code ?</a><br />
+                    @Html.TextBoxFor(m => m.RefereeCode, new { placeholder = "Referral Code", maxlength = "10", id = "txtReferralCodeExt", style = "display:none", @class = "form-control margintop10" })
+                    @Html.ValidationMessageFor(m => m.RefereeCode, "", new { @class = "red" })
+                </div>
+                <div class="clearfix"></div>
+
+                <div class="col-md-4">
+                    <input type="submit" class="btn btn-default" value="Register" />
+                </div>
+            </div>
+
+        }
+    </div>
+</div>
+<script>
+
+
+    $(function () {
+
+        $('#ddlCountryCode').select2();
+
+        $('#txtPhoneNumber').keypress(function (e) {
+
+            var cursorPosition = document.getElementById('txtPhoneNumber').selectionStart;
+
+            if ((this.value.length == 0 || cursorPosition == 0) && e.which == 48) {
+
+                return false;
+            }
+        });
+
+        @*$('#lnkResendOTP').click(function (e) {
+
+            e.preventDefault();
+
+            $.post('@Url.Action("ResendVerification", "Account")', { phone: $("#txtPhoneNumber").val() },).done(function (data) {
+
+                debugger;
+
+                var toastrOption_prev = toastr.options;
+                toastr.options = {
+                    "positionClass": "toast-top-right"
+                }
+
+                $('#PhoneVerificationEncoded').val(data.encodedCode);
+
+                toastr.success('');
+
+                if (data.status == true) {
+
+                    if (data.codeEncoded) {
+
+                    }
+                    toastr.success(data.message);
+                }
+                else {
+                    toastr.error(data.message);
+                }
+
+                toastr.options = toastrOption_prev;
+
+            });
+        });*@
+    });
+
+</script>

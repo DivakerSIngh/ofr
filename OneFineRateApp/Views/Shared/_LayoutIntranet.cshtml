@@ -1,0 +1,214 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta http-equiv="x-ua-compatible" content="IE=Edge" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>OneFineRate</title>
+    @*-------Styles-----------------*@
+
+    @System.Web.Optimization.Styles.Render("~/bundles/css")
+
+    @*-------Scripts-----------------*@
+
+    @System.Web.Optimization.Scripts.Render("~/bundles/js")
+
+    <style>
+        #ui-datepicker-div {
+            z-index: 9999 !important;
+        }
+    </style>
+    <link href="~/css/font-awesome.css" rel="stylesheet" />
+
+    <script type="text/javascript">
+
+        //window.history.forward();
+        function preventBack() { window.history.forward(1); }
+        $(window).load(function () {
+            $('#dvLoading').fadeOut();
+        });
+
+
+
+        $(function () {
+
+            //Display Result In Toastr Message
+            var success = @((TempData["msg"] != null).ToString().ToLower());
+            if (success == true) {
+                toastr.success('@TempData["msg"]');
+            }
+
+            var error = @((TempData["ERROR"] != null).ToString().ToLower());
+            if (error == true) {
+                toastr.error('@TempData["ERROR"]');
+            }
+
+
+            $("a").click(function () {
+
+                var n = (this.href.toString().indexOf("#"));
+                if (n == -1 && this.href.toString() != "javascript:void(0)")
+                    $('#dvLoading').fadeTo("slow", 0.4);
+                $('#dvLoading').fadeOut();
+            });
+            $("input").click(function () {
+                if (this.type == "button" || this.type == 'submit')
+                    $('#dvLoading').fadeTo("slow", 0.4);
+
+                $('#dvLoading').fadeOut();
+            });
+        });
+
+
+    </script>
+
+    <script src="~/js/bootbox.min.js"></script>
+    <script type="text/javascript">
+        function PageClose() {
+            var n = window.event.screenX - window.screenLeft;
+            var b = n > document.documentElement.scrollWidth - 20;
+            if (b && window.event.clientY < 0 || window.event.altKey) {
+                alert("  is closed and non refresh  ");
+                if ('@Request.IsAuthenticated' == 'True') {
+                    window.location.href = "../Logout/Index";
+                }
+            }
+            else {
+                alert("  is refreshing and non closed  ");
+            }
+        }
+    </script>
+
+    @RenderSection("JavaScript", required: false)
+    <style type="text/css">
+        body {
+            color: #000;
+        }
+    </style>
+
+</head>
+
+@*<body onload="preventBack();" onpageshow="if (event.persisted) preventBack();" onbeforeunload="PageClose();">*@
+<body>
+    <header>
+
+        <div class=" headertoprow">
+            <div class="container">
+
+                @if (ViewBag.HideMenu != true)
+                {
+                    <div class="col-md-12  text-right">
+                        Welcome <strong>  @ViewBag.UserName  </strong><a href="#"></a>&nbsp;
+                        @if (Session["PropId"] != null)
+                    {
+                    <strong>|</strong>  <strong>@Session["PropName"].ToString() &nbsp; @Html.ActionLink("[ Change ]", "MappedHotels", "Property")</strong>
+                    }
+                        <strong>|</strong> @Html.ActionLink("Change Password", "ChangePassword", "Account")&nbsp;<strong>|</strong>&nbsp;
+                        @if (Session["PropId"] != null)
+                    {
+                        switch (Session["CurrCode"].ToString())
+                        {
+                            case "INR":<img src="@Session["Flag"].ToString()" /> <i class="fa fa-inr"></i> @Session["CurrCode"].ToString()
+                                break;
+                            case "USD":<img src="@Session["Flag"].ToString()" /> <i class="fa fa-usd"></i> @Session["CurrCode"].ToString()
+                                break;
+                            case "EUR":<img src="@Session["Flag"].ToString()" /> <i class="fa fa-eur"></i> @Session["CurrCode"].ToString()
+                                break;
+                            case "GBP":<img src="@Session["Flag"].ToString()" /> <i class="fa fa-gbp"></i> @Session["CurrCode"].ToString()
+                                break;
+                            case "AUD":<img src="@Session["Flag"].ToString()" /> <i class="fa fa-dollar"></i> @Session["CurrCode"].ToString()
+                                break;
+                            case "SGD":<img src="@Session["Flag"].ToString()" /> <i class="fa fa-dollar"></i> @Session["CurrCode"].ToString()
+                                break;
+                            case "CNY":<img src="@Session["Flag"].ToString()" /> <i class="fa fa-cny"></i> @Session["CurrCode"].ToString()
+                                break;
+                            case "CAD":<img src="@Session["Flag"].ToString()" /> <i class="fa fa-dollar"></i> @Session["CurrCode"].ToString()
+                                break;
+                            case "JPY":<img src="@Session["Flag"].ToString()" /> <i class="fa fa-jpy"></i> @Session["CurrCode"].ToString()
+                                break;
+                            default:<img src="@Session["Flag"].ToString()" /> @Session["CurrCode"].ToString()
+                                break;
+                        }
+                    <strong>|</strong>
+                    }
+                        &nbsp;@Html.ActionLink("Logout", "LogOut", "Account")
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="mainnavbar">
+            <div class="container">
+                @*<div class="col-md-2 padding10"><a href="@Url.Action("MappedHotels", "Property")"><img src="/images/ofr-logo_blk.png" class="logo" /></a></div>*@
+                <div class="col-md-2 padding10"><a href="@Url.Action("MappedHotels", "Property")"><img src="~/images/logoNew.png" class="logo" /></a></div>
+                @if (Session["MenuType"].ToString() == "2")
+                {
+                    <div class="col-md-10 text-left padding10 text-right">
+                        <a target="_blank" href="@System.Configuration.ConfigurationManager.AppSettings["OFRBaseUrl"].ToString()OfferReview?Id=@OneFineRateAppUtil.clsUtils.Encode(Session["PropId"].ToString())" class="btn btn-info"> View me in OFR</a>
+                    </div>
+                }
+            </div>
+        </div>
+
+    </header>
+
+
+    <!-- HEADER END-->
+
+    <div id="Load" style="display:none;top:50%; position:absolute;left:50%; z-index:10;">
+        <img src="~/img/select2-spinner.gif" />
+    </div>
+    <div class="navbar navbar-inverse set-radius-zero">
+        <div id="dvLoading"></div>
+
+
+        <div id="wrapper_admin">
+
+            <div class="container">
+                <nav>
+                    @ViewBag.Menu
+                </nav>
+
+
+            </div>
+
+        </div>
+    </div>
+
+    <section class="menu-section">
+        <div class="container">
+            <div class="row">
+            </div>
+        </div>
+    </section>
+
+    <div id="content" class="container" style="min-height:435px;">
+        @RenderBody()
+        @RenderSection("scripts", required: false)
+        @RenderSection("DropZoneScripts", required: false)
+        <br style="clear: left" />
+
+    </div>
+    <div id="Progress" class="overlay" style="display:none">
+        <div class="loader" style="top:40%; position:fixed;left:45%; z-index:9999999 !important;"></div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <table width="20%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td valign="top"><a href="#">Contact OFR</a></td>
+                    <td><a href="#">Terms of Use</a></td>
+                    <td><a href="#">FAQ's</a></td>
+                </tr>
+            </table>
+
+
+        </div>
+    </footer>
+    <!-- FOOTER SECTION END-->
+
+</body>
+</html>

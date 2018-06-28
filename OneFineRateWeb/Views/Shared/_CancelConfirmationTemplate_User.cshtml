@@ -1,0 +1,648 @@
+﻿@model OneFineRateBLL.Entities.eBookingModify
+@using OneFineRateAppUtil
+@using System.Configuration
+@{
+    Layout = null;
+
+    if (Model != null)
+    {
+        var Count = 0;
+
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        </head>
+
+        <style>
+            /*table {
+                font-size: 12px;
+                font-family: Arial;
+            }*/
+
+            .table {
+                font-size: 12px;
+                font-family: Arial;
+            }
+
+                .table th {
+                    background-color: #d1d1d1;
+                    text-align: left;
+                }
+
+            p {
+                font-size: 12px;
+                font-family: Arial;
+            }
+
+            ul li {
+                font-size: 12px;
+                font-family: Arial;
+            }
+
+            .hdgbdr {
+                border: 1px solid #000000;
+            }
+
+            .imgbdr {
+                border: 2px solid #5e2e86;
+            }
+
+            .hotelname {
+                color: #2a75ac;
+                font-size: 20px;
+                font-weight: 600;
+            }
+        </style>
+
+        <table style="width:900px; border:4px solid #5e2e86;" border="0" cellspacing="0" cellpadding="0" class="table">
+            <tbody>
+                <tr>
+                    <td colspan="2" valign="top" align="center">
+                        <img src="@ConfigurationManager.AppSettings["OFRBaseUrl"].ToString()images/logoNew.png" onerror="this.src='@Url.Content("~/images/noimage.jpg")'" alt="OneFineRate Logo" height="72" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="background-color:#fecb00; color:#000; padding:5px; font-size:22px;">
+
+                        @if (Model.cBookingStatus == "MD" || Model.cBookingStatus == "MC")
+                        {
+                            <strong>Congratulation @Model.Booker! Your reservation is now modified.</strong>
+                        }
+                        else
+                        {
+                            <strong>Cancellation! Your reservation is now cancelled.</strong>
+                        }
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="line-height:20px; height:20px;"></td>
+                </tr>
+
+                <tr>
+                    <td style="width:600px;" valign="top">
+                        <table border="0" cellspacing="0" cellpadding="0" class="table" style="padding-left:5px;">
+                            <tbody>
+                                <tr>
+                                    <td width="18%" rowspan="2" valign="top">
+                                        <img src="@Model.sImgUrl" alt="Image" height="100" width="200" style="border: 2px solid #5e2e86;">
+                                    </td>
+                                    <td width="2%" valign="top">&nbsp;</td>
+                                    <td valign="top">
+                                        <span class="hotelname">
+                                            @Model.HotelName
+                                        </span><br />
+                                        @{string ofrUrl = System.Configuration.ConfigurationManager.AppSettings["OFRBaseUrl"];}
+                                        <img src="@ofrUrl/images/inner-star@(Model.StarCategoryId).png"><br />
+                                        <address>
+                                            @Model.Address
+                                        </address>
+                                        @if (!string.IsNullOrEmpty(Model.RatingImageUrl))
+                                        {
+                                            <img src="@Model.RatingImageUrl" onerror="this.src='@Url.Content("~/images/noimage.jpg")'">
+                                            <br />
+                                        }
+                                        @if (!string.IsNullOrEmpty(Model.RatingString))
+                                        {
+                                            <em style="color:green">
+                                                @Model.RatingString
+                                            </em>
+                                        }
+                                    </td>
+                                </tr>
+                                <tr></tr>
+                                <tr>
+                                    <td colspan="3">
+                                        <table class="table" cellpadding="5">
+                                            <tbody>
+                                                <tr>
+                                                    <td><strong>STATUS </strong></td>
+                                                    <td>:</td>
+                                                    <td>@Model.BookingStatus</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>BOOKING ID</strong></td>
+                                                    <td>:</td>
+                                                    <td>@Model.BookingId</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>YOUR RESERVATION</strong></td>
+                                                    <td>:</td>
+                                                    <td>@Model.Reservation</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>CHECK IN DATE</strong></td>
+                                                    <td>:</td>
+                                                    <td>@Model.CheckIn</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>CHECK OUT DATE</strong> </td>
+                                                    <td>:</td>
+                                                    <td>@Model.ChekOut</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>BOOKED BY</strong> </td>
+                                                    <td>:</td>
+                                                    <td>@Model.Booker (@Model.EmailOFR)</td>
+                                                </tr>
+                                                <tr>
+                                                    @{  var mobileNo = !string.IsNullOrWhiteSpace(Model.CountryPhoneCode) ? string.Concat(Model.CountryPhoneCode + "-", Model.MobileOFR) : Model.MobileOFR;}
+                                                    <td><strong>Contact No</strong> </td>
+                                                    <td>:</td>
+                                                    <td>@mobileNo</td>
+                                                </tr>
+                                                @if (!string.IsNullOrEmpty(Model.CompanyName))
+                                                {
+                                                    <tr>
+                                                        <td><strong>Company</strong> </td>
+                                                        <td>:</td>
+                                                        <td>@Model.CompanyName</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+
+
+                    <td style="width:300px;" valign="top">
+                        <h3>Rate information</h3>
+                        <hr style="border: 1px solid #000000;">
+
+                        <table border="0" cellspacing="0" cellpadding="5" class="table" style="width:auto; font-weight:bold;">
+
+                            <tbody>
+
+                                <tr>
+                                    <td>Rate Per night</td>
+                                    <td>:</td>
+                                    <td>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.AvgAmount))</td>
+                                </tr>
+
+                                @if (Model.ExtraBedAmount > 0)
+                                {
+                                    <tr>
+                                        <td>Extra Bed Charges</td>
+                                        <td>:</td>
+                                        <td>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.ExtraBedAmount))</td>
+                                    </tr>
+                                }
+
+                                @if (Convert.ToDecimal(Model.TaxPerNight) > 0)
+                                {
+                                    <tr>
+                                        <td>Taxes per Night</td>
+                                        <td>:</td>
+                                        <td>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.TaxPerNight))</td>
+                                    </tr>
+                                }
+
+                                <tr>
+                                    <td>Total Gross charges</td>
+                                    <td>:</td>
+                                    <td>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Model.dCustomerGrossCharges)</td>
+                                </tr>
+
+                                @if (!string.IsNullOrEmpty(Model.dOfrServiceCharge) && Convert.ToDecimal(Model.dOfrServiceCharge) > 0)
+                                {
+                                    <tr>
+                                        <td>OFR Service charge</td>
+                                        <td>:</td>
+                                        <td>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dOfrServiceCharge))</td>
+                                    </tr>
+
+                                    if (Model.GST_Same_State)
+                                    {
+                                        <tr>
+                                            <td>CGST on OFR Service Charge (@Model.SGST_Per) </td>
+                                            <td>:</td>
+                                            <td>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.SGST_Val))</td>
+                                        </tr>
+                                            <tr>
+                                                <td>SGST on OFR Service Charge (@Model.SGST_Per) </td>
+                                                <td>:</td>
+                                                <td>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.SGST_Val))</td>
+                                            </tr>
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td>IGST on Service Charge(@Model.dValue%)</td>
+                                            <td>:</td>
+                                            <td>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dOfrGSTONServiceCharge))</td>
+                                        </tr>
+                                    }
+                                }
+
+                                @if (Model.dDiscountedBidPrice > 0)
+                                {
+                                    <tr>
+                                        <td>OFR Discount </td>
+                                        <td>:</td>
+                                        <td>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dDiscountedBidPrice))</td>
+                                    </tr>
+                                }
+
+                                @if (Model.bPromoDiscount == false && @Model.bPromoAmenity != "")
+                                {
+                                    <tr>
+                                        <td>OFR Discount </td>
+                                        <td>:</td>
+                                        <td>@Model.bPromoAmenity</td>
+                                    </tr>
+                                }
+
+                                <tr>
+                                    <td><b>Total Charges </b></td>
+                                    <td>:</td>
+                                    <td><b>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Model.dCustomerTotalCharges)</b></td>
+                                </tr>
+
+                                @if (!string.IsNullOrEmpty(Model.CancellationCharge) && Convert.ToDecimal(Model.CancellationCharge) > 0)
+                                {
+                                    <tr>
+                                        <td><b>Cancellation Charges </b></td>
+                                        <td>:</td>
+                                        <td><b>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.CancellationCharge))</b></td>
+                                    </tr>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.RefundAmount) && Convert.ToDecimal(Model.RefundAmount) > 0)
+                                {
+                                    <tr>
+                                        <td><b>Refund </b></td>
+                                        <td>:</td>
+                                        <td><b>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.RefundAmount))</b></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="line-height:20px; height:20px;"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="background-color:#5e2e86; color:#fff; padding:5px;"><h4 style=" margin:0px;">Guest Information</h4></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+
+                        <table border="1" align="center" cellpadding="4" cellspacing="0" style="width:100%; padding:5px;" class="table">
+                            <thead>
+                                <tr>
+                                    <th width="6%">ROOM</th>
+                                    <th width="13%">ROOM TYPE</th>
+                                    <th width="9%">PER NIGHT RATE</th>
+                                    <th width="10%">GUEST NAME</th>
+                                    <th width="10%">OCCUPANCY</th>
+                                    @if (!Model.IsTG)
+                                    {
+                                        <th width="13%">BED PREFERENCE  </th>
+                                    }
+
+                                    <th width="6%">EXTRA BED</th>
+                                    <th width="18%">CANCELLATION POLICY</th>
+                                    <th width="16%">INCLUSION</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @for (int i = 0; i < Model.BookingRoomDetails.Count; i++)
+                                {
+                                    <tr>
+                                        <td>@Model.BookingRoomDetails[i].RoomNo</td>
+                                        <td>@Model.BookingRoomDetails[i].RoomName</td>
+                                        <td>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.BookingRoomDetails[i].RoomRate))</td>
+                                        <td>@Model.BookingRoomDetails[i].GuestName</td>
+                                        <td>@Model.BookingRoomDetails[i].Occupancy</td>
+                                        @if (!Model.IsTG)
+                                        {
+                                            <td>@Model.BookingRoomDetails[i].BedPrefer</td>
+                                        }
+                                        <td>@Model.BookingRoomDetails[i].ExtraBed</td>
+                                        <td>
+                                            @Html.Raw(HttpUtility.HtmlDecode(Model.BookingRoomDetails[i].PolicyName))
+                                        </td>
+                                        <td>@Html.Raw(Model.BookingRoomDetails[i].AmenityRatePlan.Replace("|", "<br/>"))</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="line-height:20px; height:20px;"></td>
+                </tr>
+
+                @if (!Model.IsTG)
+                {
+                    <tr>
+                        <td colspan="2">
+                            <table border="0" cellspacing="0" cellpadding="0" class="table" style="width:100%;padding-left:5px;">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <h4 style="background-color:#5e2e86; color:#fff; padding:5px; margin:0px;">
+                                                Preferences
+                                            </h4>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="40%" valign="top">
+
+                                            <table style="width:100%;background-color:#fff; border:1px solid #d1d1d1; padding:5px;" class="table">
+                                                <tbody>
+                                                    @if (Convert.ToString(Model.SingleLady) != "" && !Model.SingleLady.Contains("No,"))
+                                                    {
+                                                        Count++;
+                                                    <tr>
+                                                        <td> @Model.SingleLady </td>
+                                                    </tr>
+                                                    }
+                                                    @if (Convert.ToString(Model.SmokingRoom) != "" && !Model.SmokingRoom.Contains("No,"))
+                                                    {
+                                                        Count++;
+                                                    <tr>
+                                                        <td> @Model.SmokingRoom </td>
+                                                    </tr>
+                                                    }
+                                                    @if (Convert.ToString(Model.Elevator) != "" && !Model.Elevator.Contains("No,"))
+                                                    {
+                                                        Count++;
+                                                    <tr>
+                                                        <td> @Model.Elevator </td>
+                                                    </tr>
+                                                    }
+                                                    @if (Convert.ToString(Model.QuietRoom) != "" && !Model.QuietRoom.Contains("No,"))
+                                                    {
+                                                        Count++;
+                                                    <tr>
+                                                        <td> @Model.QuietRoom </td>
+                                                    </tr>
+                                                    }
+
+                                                    @if (Count == 0)
+                                                    {
+                                                    <tr>
+                                                        <td>NA</td>
+                                                    </tr>
+                                                    }
+
+                                                </tbody>
+                                            </table>
+                                            <p>
+                                                <span style="color:red;">*</span> Please note that all preferences will be subject to availablity & at the sole discretion of the hotel.
+                                                You can also directly contact the hotel. For any further assistance..
+                                            </p>
+                                        </td>
+
+                                        <td width="3%">&nbsp;</td>
+                                        <td width="57%" valign="top">
+                                            <h3>Special Requests </h3>
+
+                                            <hr style="border: 1px solid #000000;">
+                                            <p>@Model.SpecialRequest</p>
+
+                                            <table class="table fontsize13 marginleft-5 marginbottom-7 margintop-10">
+                                                <tbody>
+                                                    <tr>
+                                                        <td><strong>EXPECTED CHECK-IN TIME</strong></td>
+                                                        <td>:</td>
+                                                        <td><strong>@Model.ExpectedCheckIn</strong></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <p>
+                                                <span style="color:red;">*</span> Please note that the check-in time of the hotel is <strong>1200hrs</strong>. Early check-in will be subject to availability
+                                                and may incur extra charges. Any request for pickup needs to be coordinated with the hotel directly.
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+
+                                            @if (!String.IsNullOrEmpty(Model.SpecialOccasion))
+                                            {
+
+                                            <strong> @Model.SpecialOccasion</strong>
+                                            <br />
+                                            }
+
+                                        </td>
+                                        <td></td>
+                                        <td valign="top">
+                                            @if (Model.Pickup == "Yes")
+                                            {
+
+                                            <table class="table" cellpadding="4">
+
+
+                                                @if (!String.IsNullOrEmpty(Model.FlightNumber))
+                                                {
+                                                    <tr>
+                                                        <td style="width:30%;">
+                                                            <strong>Transfer Details :</strong>
+                                                        </td>
+                                                        <td>@Model.FlightNumber</td>
+                                                    </tr>
+                                                }
+
+                                                @if (!String.IsNullOrEmpty(Model.EstimateArrivalTime))
+                                                {
+                                                    <tr>
+                                                        <td>
+                                                            <strong>Arrival Time :</strong>
+                                                        </td>
+                                                        <td>@Model.EstimateArrivalTime</td>
+                                                    </tr>
+                                                }
+
+                                                @if (!String.IsNullOrEmpty(Model.TypeOfCar))
+                                                {
+
+                                                    <tr>
+                                                        <td><strong>Type of Car :</strong></td>
+                                                        <td>@Model.TypeOfCar</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2"><span style=" color:red;">*</span> The charges  for the car to be paid at the hotel directly.</td>
+
+                                                    </tr>
+                                                }
+                                            </table>
+                                            }
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                }
+                <tr>
+                    <td style="line-height:20px; height:20px;"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="background-color:#5e2e86; color:#fff; padding:5px;"><h4 style=" margin:0px;">House Rules</h4></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="border: 1px solid #D1D1D1;">
+                        <table class=" table">
+                            <tbody>
+
+                                @if (!String.IsNullOrEmpty(Model.sCheckInMM))
+                                {
+                                <tr>
+                                    <td valign="top"><b>Check-In</b></td>
+                                    <td valign="top">:</td>
+                                    <td valign="top">
+
+                                        @if (Model.b24HrsCheckIn == true)
+                                        {
+                                            <div>
+                                                24 hours Check-In is Available. Early Check-In is @if (Model.bEarlyCheckInChargeable == true)
+                                                { <text>chargeable.</text> }
+                                                else
+                                                {<text>not chargeable.</text>}
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div>
+                                                From @Html.DisplayFor(m => m.sCheckInHH):@Html.DisplayFor(m => m.sCheckInMM) hrs onwards. Early Check-In is
+                                                @if (Model.bEarlyCheckInChargeable == true)
+                                                {
+                                                    <text>chargeable.</text>
+                                                }
+                                                else
+                                                {
+                                                    <text>not chargeable.</text>
+                                                }
+                                            </div>
+                                        }
+                                    </td>
+
+                                </tr>
+                                }
+
+
+                                @if (!String.IsNullOrEmpty(Model.sCheckoutMM))
+                                {
+                                <tr>
+                                    <td valign="top"><b>Check-Out</b></td>
+                                    <td valign="top">:	</td>
+                                    <td valign="top">
+                                        @if (Model.b24HrsCheckout == true)
+                                        {
+
+                                            <div>
+                                                24 hours Check-Out is Available. Late Check-Out is @if (Model.bEarlyCheckoutChargeable == true)
+                                                {
+                                                    <label>chargeable.</label>
+                                                }
+                                                else
+                                                {
+                                                    <label>not chargeable.</label>
+                                                }
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div>
+                                                Until @Html.DisplayFor(m => m.sCheckoutHH):@Html.DisplayFor(m => m.sCheckoutMM) hrs. @clsUtils.GetTimeType(Model.sCheckoutHH)Late Check-Out is @if (Model.bEarlyCheckoutChargeable == true)
+                                                { <label>chargeable.</label> }
+                                                else
+                                                {<label>not chargeable.</label>}
+                                            </div>
+                                        }
+
+                                    </td>
+                                </tr>
+                                }
+
+
+                                <tr>
+                                    <td valign="top"><b>Cancellation</b></td>
+                                    <td valign="top">:	</td>
+                                    <td valign="top">Cancellation policies vary according to room rate and package.</td>
+                                </tr>
+
+                                @if (Model.lstCreditCards != null)
+                                {
+                                    if (Model.lstCreditCards.Count > 0)
+                                    {
+                                <tr>
+                                    <td valign="top"><b>Cards accepted at this property</b> </td>
+                                    <td valign="top">:</td>
+                                    <td valign="top">
+                                        @foreach (var item in Model.lstCreditCards)
+                                        {
+                                                <img src="@item.sImg">
+                                        }
+                                    </td>
+                                </tr>
+                                    }
+                                }
+
+                            </tbody>
+                        </table>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td style="line-height:20px; height:20px;"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="background-color:#5e2e86; color:#fff; padding:5px;"><h4 style=" margin:0px;">OneFineRate Important Info</h4></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+
+                        <table style="background-color:#ececeb;">
+                            <tbody>
+                                <tr>
+                                    <td colspan="2">
+
+                                        <ul>
+                                            <li>Requests for bed types, early check in, late check out, smoking room etc cannot be guaranteed. These requests must be made directly to the hotel confirmed and are subject to availability.</li>
+                                            <li><strong>Reservation is guaranteed for arrival on the check-in date only.</strong> To avoid cancellation of your reservation due to a no show please alert the hotel xx days/ hours in advance to claim a refund.</li>
+                                            <li>The reservation holder must present a valid credit card at check-in. </li>
+                                            <li>According to government regulations, it is mandatory to present a valid Photo ID at check in by every person above the age of 18 staying at the hotel. A Drivers License, Voters Card, Passport are all acceptable as identity proof, however, please note PAN cards are not a valid ID. Without a valid ID no guest will be allowed to check in. </li>
+                                            <li>The inclusion of an extra bed with a booking is facilitated with a folding cot or a mattress.</li>
+                                            <li>A booking cannot be cancelled on or after the check in date and time mentioned in the Hotel Confirmation Voucher.</li>
+                                            <li>
+                                                The hotel reserves the right of admission. Accommodation can be denied to guests posing as a ' couple' if suitable proof of identification is not presented at check-in. OneFineRate will not be responsible for any check-in denied by the hotel due to the aforesaid reason.
+                                            </li>
+                                            <li>
+                                                All distances (Airport/Station etc.) are approximate and actual driving distances may vary based on the route taken.
+                                            </li>
+                                            <li>
+                                                Hotels may charge a mandatory meal surcharge on festive periods e.g. Christmas, New Year's Eve etc... All additional charges (including mandatory meal surcharges) need to be cleared directly at the hotel.
+                                            </li>
+                                        </ul>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+   }
+
+                                                        <table>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td><img src="@OneFineRateAppUtil.clsUtils.GetTripAdvisorLogoUrl()" /></td>
+                                                                    <td style="vertical-align:middle;">
+                                                                        <a href="https://www.tripadvisor.in">&copy; [@DateTime.Today.Year] TripAdvisor LLC. All rights reserved </a>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+   }

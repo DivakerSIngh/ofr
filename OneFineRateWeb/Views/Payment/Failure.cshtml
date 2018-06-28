@@ -1,0 +1,21 @@
+﻿@model   OneFineRateBLL.Entities.ePaymentFailure
+@{
+    ViewBag.Title = "Failure";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div style="height:200px; margin-top:10%; text-align:center;">
+    <div class="container">
+
+        @if (Model != null)
+        {
+            @*<h2>
+                @Model.ErrorMessage
+            </h2>*@
+            <a class="btn btn-primary" href="@Url.Action("PayNow", "Payment", new { bookingId=Model.BookingId })">Retry Again</a>
+        }
+      
+
+    </div>
+</div>

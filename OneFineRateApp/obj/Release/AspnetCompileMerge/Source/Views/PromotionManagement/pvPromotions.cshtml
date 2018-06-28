@@ -1,0 +1,176 @@
+﻿@model OneFineRateBLL.Entities.etblPropertyPromotionMap
+
+<script src="~/js/Jquery1.10.3.js"></script>
+
+<link href="~/css/jquery-ui.css" rel="stylesheet" />
+
+<script src="~/js/timepicki.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#BookingDateFrom').datepicker({
+        });
+        $('#BookingDateTo').datepicker({
+        });
+        $('#StayDateFrom').datepicker({
+        });
+        $('#StayDateTo').datepicker({
+        });
+
+        $("#BookingDateFrom").each(function () {
+            var selecteddate = $("#BookingDateFrom").datepicker("getDate");
+            var dateString = $.datepicker.formatDate('mm/dd/yy', selecteddate);
+            if (dateString == "01/01/2001") {
+                $("#BookingDateFrom").datepicker('setDate', new Date());
+            }
+
+        });
+        $("#BookingDateTo").each(function () {
+            var selecteddate = $("#BookingDateTo").datepicker("getDate");
+            var dateString = $.datepicker.formatDate('mm/dd/yy', selecteddate);
+            if (dateString == "01/01/2001") {
+                $("#BookingDateTo").datepicker('setDate', new Date());
+            }
+        });
+        $("#StayDateFrom").each(function () {
+            var selecteddate = $("#StayDateFrom").datepicker("getDate");
+            var dateString = $.datepicker.formatDate('mm/dd/yy', selecteddate);
+            if (dateString == "01/01/2001") {
+                $("#StayDateFrom").datepicker('setDate', new Date());
+            }
+        });
+        $("#StayDateTo").each(function () {
+            var selecteddate = $("#StayDateTo").datepicker("getDate");
+            var dateString = $.datepicker.formatDate('mm/dd/yy', selecteddate);
+            if (dateString == "01/01/2001") {
+                $("#StayDateTo").datepicker('setDate', new Date());
+            }
+        });
+        $("#ui-datepicker-div").hide();
+    });
+</script>
+
+<script type="text/javascript">
+    function minmax(value, min, max) {
+        if ($('#iIsPercent option:selected').text() == '%') {
+            if (parseInt(value) < min || isNaN(value))
+                return 0;
+            else if (parseInt(value) > max) {
+                $("#txtValue").val(null);
+                return null;
+            }
+            else {
+                $("#txtValue").val(value);
+                return value;
+            }
+        }
+        else {
+            $("#txtValue").val(value);
+            return value;
+        }
+    }
+
+    function ddListChange() {
+        if ($('#iIsPercent option:selected').text() == '%') {
+            var v = $("#txtValue").val();
+            minmax(v, 0, 100);
+        }
+
+    }
+
+    
+
+</script>
+
+
+
+<div class="panel-body">
+    <div class="row">
+        <div class="col-xs-1">Booking @Html.TextBoxFor(m => m.iID, new { type = "text", @class = "form-control", style = "display: none;" })</div>
+        <div class="col-xs-2">
+            @Html.TextBoxFor(m => m.dtBookingDateFrom, new { Value = Model.dtBookingDateFrom.ToString("MM/dd/yyyy"), type = "text", @class = "form-control", required = "true", name = "BookingDateFrom", onkeyup = "this.value=''", id = "BookingDateFrom" })
+        </div>
+        <div class="col-xs-2">
+            @Html.TextBoxFor(m => m.dtBookingDateTo, new { Value = Model.dtBookingDateTo.ToString("MM/dd/yyyy"), type = "text", @class = "form-control", required = "true", name = "BookingDateTo", onkeyup = "this.value=''", id = "BookingDateTo" })
+        </div>
+        <div class="col-xs-1 ">Stay Date</div>
+        <div class="col-xs-2">
+            @Html.TextBoxFor(m => m.dtStayDateFrom, new { Value = Model.dtStayDateFrom.ToString("MM/dd/yyyy"), type = "text", @class = "form-control", required = "true", name = "StayDateFrom", onkeyup = "this.value=''", id = "StayDateFrom" })
+        </div>
+        <div class="col-xs-2">
+            @Html.TextBoxFor(m => m.dtStayDateTo, new { Value = Model.dtStayDateTo.ToString("MM/dd/yyyy"), type = "text", @class = "form-control", required = "true", name = "StayDateTo", onkeyup = "this.value=''", id = "StayDateTo" })
+        </div>
+        <div class="col-xs-2"></div>
+    </div>
+
+    <div class="row margintop10">
+
+        <div class="col-xs-1 ">Rate Plan</div>
+        <div class="col-xs-2">
+            @Html.DropDownListFor(m => m.iRPId, new SelectList(OneFineRateBLL.BL_tblPromotionManagement.GetAllRecords(Model.iPropId), "iRPId", "sRatePlan"), "", new { @class = "form-control", required = "true" })
+        </div>
+        <div class="col-xs-2">
+
+            @Html.DropDownListFor(m => m.iIsPlus, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="+",Value="1" },
+                                                                            new SelectListItem {Text="-",Value="0" }},
+                                                                                     new { @class = "form-control", required = "true" })
+        </div>
+
+        <div class="col-xs-1">&nbsp;</div>
+        <div class="col-xs-2">
+            @Html.DropDownListFor(m => m.iIsPercent, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="%",Value="1" },
+                                                                            new SelectListItem {Text="Value",Value="0" }},
+                                                                                              new { @class = "form-control", required = "true", onchange = "ddListChange()" })
+        </div>
+
+
+
+        <div class="col-xs-2">
+            @Html.TextBoxFor(m => m.dValue, new { id = "txtValue", type = "text", @class = "form-control", required = "true", onkeyup = "this.value = minmax(this.value, 0, 100)" })
+        </div>
+        <div class="col-xs-1">&nbsp;</div>
+
+
+
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <b>Room Type for the Rate plan</b>
+
+        </div>
+        <div class="col-md-12">
+            @Html.CheckBoxListFor(m => m.SelectedRoomType, m => m.RoomTypeItems,
+                            group => group.Value,
+                            group => group.Text,
+                            m => m.Selected,
+                            MvcCheckBoxList.Model.Position.Horizontal,
+                                              x => new { @class = " CheckBoxList" })
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <b>  Meals or amenities to be added</b>
+
+        </div>
+        <div class="col-md-12">
+
+            @Html.CheckBoxListFor(m => m.SelectedAmenityID, m => m.Amenties,
+                            group => group.Value,
+                                     group => group.Text,
+                            m => m.Selected,
+                            MvcCheckBoxList.Model.Position.Horizontal,
+                            x => new { @class = " CheckBoxList" })
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-xs-2">All Amenities (100 char)</div>
+        <div class="col-xs-2">
+            @Html.TextBoxFor(m => m.sAmenity, new { type = "text", @class = "form-control",maxlength="100" })
+        </div>
+
+    </div>
+</div>

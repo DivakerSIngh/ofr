@@ -1,0 +1,528 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1F7BE6E6-A775-4FDF-B08D-667108966B6D}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>StaticDumpWebJob</RootNamespace>
+    <AssemblyName>StaticDumpWebJob</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.1.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
+      <HintPath>..\..\packages\BouncyCastle.1.8.1\lib\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework">
+      <HintPath>\\FIPC104\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\StaticDumpWebJob\StaticDumpWebJob\bin\Debug\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.BulkInsert">
+      <HintPath>\\FIPC104\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\StaticDumpWebJob\StaticDumpWebJob\bin\Debug\EntityFramework.BulkInsert.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.MappingAPI">
+      <HintPath>\\FIPC104\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\StaticDumpWebJob\StaticDumpWebJob\bin\Debug\EntityFramework.MappingAPI.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>\\FIPC104\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\StaticDumpWebJob\StaticDumpWebJob\bin\Debug\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>\\FIPC104\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\StaticDumpWebJob\StaticDumpWebJob\bin\Debug\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="MailKit, Version=1.18.0.0, Culture=neutral, PublicKeyToken=4e064fe7c44a8f1b, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MailKit.1.18.1.1\lib\net45\MailKit.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Azure.KeyVault.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Azure.KeyVault.Core.1.0.0\lib\net40\Microsoft.Azure.KeyVault.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Azure.WebJobs, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Microsoft.Azure.WebJobs.Core.2.1.0\lib\net45\Microsoft.Azure.WebJobs.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Azure.WebJobs.Host, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Microsoft.Azure.WebJobs.2.1.0\lib\net45\Microsoft.Azure.WebJobs.Host.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Data.Edm, Version=5.6.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Microsoft.Data.Edm.5.6.4\lib\net40\Microsoft.Data.Edm.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Data.OData, Version=5.6.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Microsoft.Data.OData.5.6.4\lib\net40\Microsoft.Data.OData.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Data.Services.Client, Version=5.6.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Microsoft.Data.Services.Client.5.6.4\lib\net40\Microsoft.Data.Services.Client.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=1.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Extensions.Logging.Abstractions.1.1.1\lib\netstandard1.1\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.Storage, Version=7.2.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\WindowsAzure.Storage.7.2.1\lib\net40\Microsoft.WindowsAzure.Storage.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MimeKit, Version=1.18.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MimeKit.1.18.1\lib\net45\MimeKit.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Spatial, Version=5.6.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\System.Spatial.5.6.4\lib\net40\System.Spatial.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DatabaseContext\C__MigrationHistory.cs" />
+    <Compile Include="DatabaseContext\IP2LOCATION.cs" />
+    <Compile Include="DatabaseContext\OFR_DataContext.cs" />
+    <Compile Include="DatabaseContext\tblAccessbilityM.cs" />
+    <Compile Include="DatabaseContext\tblAccomodationM.cs" />
+    <Compile Include="DatabaseContext\tblAdditionalCommision.cs" />
+    <Compile Include="DatabaseContext\tblAdditionalCommision_log.cs" />
+    <Compile Include="DatabaseContext\tblAffiliationM.cs" />
+    <Compile Include="DatabaseContext\tblAmenityHeaderMapTG.cs" />
+    <Compile Include="DatabaseContext\tblAmenityM.cs" />
+    <Compile Include="DatabaseContext\tblAmenityM_log.cs" />
+    <Compile Include="DatabaseContext\tblAnonymousRecentViewsTx.cs" />
+    <Compile Include="DatabaseContext\tblApplicabilityM.cs" />
+    <Compile Include="DatabaseContext\tblAwardM.cs" />
+    <Compile Include="DatabaseContext\tblBankDetailM.cs" />
+    <Compile Include="DatabaseContext\tblBankDetailM_log.cs" />
+    <Compile Include="DatabaseContext\tblBannerM.cs" />
+    <Compile Include="DatabaseContext\tblBannerM_log.cs" />
+    <Compile Include="DatabaseContext\tblBasicPropertyAmenitiesTGSpecific_Tmp.cs" />
+    <Compile Include="DatabaseContext\tblBasicPropertyImgTGSpecific_Tmp.cs" />
+    <Compile Include="DatabaseContext\tblBasicPropertyInfoTGSearch_Tmp.cs" />
+    <Compile Include="DatabaseContext\tblBasicPropertyInfoTGSpecific_Tmp.cs" />
+    <Compile Include="DatabaseContext\tblBasicPropertyPOITGSpecific_Tmp.cs" />
+    <Compile Include="DatabaseContext\tblBidCountsTx.cs" />
+    <Compile Include="DatabaseContext\tblBIDRoomAdultsTx.cs" />
+    <Compile Include="DatabaseContext\tblBidSettingsM.cs" />
+    <Compile Include="DatabaseContext\tblBookedBidAmenity.cs" />
+    <Compile Include="DatabaseContext\tblBookedDayWiseTaxAmountDetail.cs" />
+    <Compile Include="DatabaseContext\tblBookingAmedTx.cs" />
+    <Compile Include="DatabaseContext\tblBookingCancellationPolicyAmendMap.cs" />
+    <Compile Include="DatabaseContext\tblBookingCancellationPolicyMap.cs" />
+    <Compile Include="DatabaseContext\tblBookingDetailsAmendTx.cs" />
+    <Compile Include="DatabaseContext\tblBookingDetailsTx.cs" />
+    <Compile Include="DatabaseContext\tblBookingGuestAmendMap.cs" />
+    <Compile Include="DatabaseContext\tblBookingGuestMap.cs" />
+    <Compile Include="DatabaseContext\tblBookingNegotiationTx.cs" />
+    <Compile Include="DatabaseContext\tblBookingTrakerTx.cs" />
+    <Compile Include="DatabaseContext\tblBookingTx.cs" />
+    <Compile Include="DatabaseContext\tblBookingTx_log.cs" />
+    <Compile Include="DatabaseContext\tblBuildingCharacteristicsM.cs" />
+    <Compile Include="DatabaseContext\tblCarouselM.cs" />
+    <Compile Include="DatabaseContext\tblChainM.cs" />
+    <Compile Include="DatabaseContext\tblChainMTG.cs" />
+    <Compile Include="DatabaseContext\tblChainMTG_Tmp.cs" />
+    <Compile Include="DatabaseContext\tblChainM_log.cs" />
+    <Compile Include="DatabaseContext\tblChangeHistory.cs" />
+    <Compile Include="DatabaseContext\tblChangeHistoryBankAdditionalCommision.cs" />
+    <Compile Include="DatabaseContext\tblChangeHistoryBankDetail.cs" />
+    <Compile Include="DatabaseContext\tblChangeHistoryBasicDetailsProperty.cs" />
+    <Compile Include="DatabaseContext\tblChangeHistoryCompetitorSet.cs" />
+    <Compile Include="DatabaseContext\tblChangeHistoryDining.cs" />
+    <Compile Include="DatabaseContext\tblChangeHistoryPhoto.cs" />
+    <Compile Include="DatabaseContext\tblChangeHistoryPIRoom.cs" />
+    <Compile Include="DatabaseContext\tblChangeHistoryPolicy.cs" />
+    <Compile Include="DatabaseContext\tblChangeHistoryPropertyAmenty.cs" />
+    <Compile Include="DatabaseContext\tblChangeHistoryPropertyPromotionMap.cs" />
+    <Compile Include="DatabaseContext\tblChangeHistoryPropertyRatePlanMap.cs" />
+    <Compile Include="DatabaseContext\tblChangeHistoryRate.cs" />
+    <Compile Include="DatabaseContext\tblChangeHistoryRecreation.cs" />
+    <Compile Include="DatabaseContext\tblChangeHistoryRoom.cs" />
+    <Compile Include="DatabaseContext\tblChangeHistorySpa.cs" />
+    <Compile Include="DatabaseContext\tblChangeHistoryTax.cs" />
+    <Compile Include="DatabaseContext\tblChannelMgrBookingTracker.cs" />
+    <Compile Include="DatabaseContext\tblChannelMgrBookingTx.cs" />
+    <Compile Include="DatabaseContext\tblChannelMgrM.cs" />
+    <Compile Include="DatabaseContext\tblChannelMgrTracker.cs" />
+    <Compile Include="DatabaseContext\tblCityM.cs" />
+    <Compile Include="DatabaseContext\tblConserveCommissionM.cs" />
+    <Compile Include="DatabaseContext\tblCountryM.cs" />
+    <Compile Include="DatabaseContext\tblCrediCardM.cs" />
+    <Compile Include="DatabaseContext\tblCurrencyM.cs" />
+    <Compile Include="DatabaseContext\tblCustomerM.cs" />
+    <Compile Include="DatabaseContext\tblCustomerPointsHistoryTx.cs" />
+    <Compile Include="DatabaseContext\tblCustomerPointsMap.cs" />
+    <Compile Include="DatabaseContext\tblDaywiseBookingRateTx.cs" />
+    <Compile Include="DatabaseContext\tblEmailSettingsM.cs" />
+    <Compile Include="DatabaseContext\tblErrorLog.cs" />
+    <Compile Include="DatabaseContext\tblExchangeRatesM.cs" />
+    <Compile Include="DatabaseContext\tblGolfM.cs" />
+    <Compile Include="DatabaseContext\tblGroupM.cs" />
+    <Compile Include="DatabaseContext\tblGroupMenuM.cs" />
+    <Compile Include="DatabaseContext\tblGroupMenuM_log.cs" />
+    <Compile Include="DatabaseContext\tblGroupM_log.cs" />
+    <Compile Include="DatabaseContext\tblHotelAmenityM.cs" />
+    <Compile Include="DatabaseContext\tblHotelCommonServiceM.cs" />
+    <Compile Include="DatabaseContext\tblHotelConvenienceM.cs" />
+    <Compile Include="DatabaseContext\tblHotelFacilitesRankM.cs" />
+    <Compile Include="DatabaseContext\tblHotelLeisureM.cs" />
+    <Compile Include="DatabaseContext\tblHotelMeetingM.cs" />
+    <Compile Include="DatabaseContext\tblHotelParkingM.cs" />
+    <Compile Include="DatabaseContext\tblHotelPartnerM.cs" />
+    <Compile Include="DatabaseContext\tblHotelRoomAmenityAdditionalM.cs" />
+    <Compile Include="DatabaseContext\tblHotelRoomAmenityBathRoomM.cs" />
+    <Compile Include="DatabaseContext\tblHotelRoomAmenityBeddingM.cs" />
+    <Compile Include="DatabaseContext\tblHotelRoomAmenityM.cs" />
+    <Compile Include="DatabaseContext\tblIndianLocalityCordinate.cs" />
+    <Compile Include="DatabaseContext\tblItemNameM.cs" />
+    <Compile Include="DatabaseContext\tblLandActivitiesM.cs" />
+    <Compile Include="DatabaseContext\tblLanguageM.cs" />
+    <Compile Include="DatabaseContext\tblLocalityM.cs" />
+    <Compile Include="DatabaseContext\tblLocalityM_log.cs" />
+    <Compile Include="DatabaseContext\tblLookUp.cs" />
+    <Compile Include="DatabaseContext\tblLookUpExtraBed.cs" />
+    <Compile Include="DatabaseContext\tblLoyalityAmenityMap.cs" />
+    <Compile Include="DatabaseContext\tblLoyalityAmenityMap_log.cs" />
+    <Compile Include="DatabaseContext\tblLoyalityPointsM.cs" />
+    <Compile Include="DatabaseContext\tblLoyalityPointsM_log.cs" />
+    <Compile Include="DatabaseContext\tblMacroAreaM.cs" />
+    <Compile Include="DatabaseContext\tblMacroAreaM_log.cs" />
+    <Compile Include="DatabaseContext\tblMealCodesRG.cs" />
+    <Compile Include="DatabaseContext\tblMenuM.cs" />
+    <Compile Include="DatabaseContext\tblMyWishListTx.cs" />
+    <Compile Include="DatabaseContext\tblOfferReviewTrackerTx.cs" />
+    <Compile Include="DatabaseContext\tblOFRPropertyM.cs" />
+    <Compile Include="DatabaseContext\tblOnsiteRecreationFacilitiesM.cs" />
+    <Compile Include="DatabaseContext\tblPhotoCategoryM.cs" />
+    <Compile Include="DatabaseContext\tblPhotoSubCategoryM.cs" />
+    <Compile Include="DatabaseContext\tblPolygon.cs" />
+    <Compile Include="DatabaseContext\tblPromoCodeM.cs" />
+    <Compile Include="DatabaseContext\tblPromoCodeM_log.cs" />
+    <Compile Include="DatabaseContext\tblPromoM.cs" />
+    <Compile Include="DatabaseContext\tblPromotionalHotelsM.cs" />
+    <Compile Include="DatabaseContext\tblPromotionalHotelsM_log.cs" />
+    <Compile Include="DatabaseContext\tblPropConserveCommissionMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyAmenitiesMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyAmenitiesMap_log.cs" />
+    <Compile Include="DatabaseContext\tblPropertyAreaDataTG.cs" />
+    <Compile Include="DatabaseContext\tblPropertyBasicBiddingMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyBiddingRateM.cs" />
+    <Compile Include="DatabaseContext\tblPropertyBidUpgradeM.cs" />
+    <Compile Include="DatabaseContext\tblPropertyCancellationPolicyMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyChannelMgrMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyCompetitorSet.cs" />
+    <Compile Include="DatabaseContext\tblPropertyCompetitorSet_log.cs" />
+    <Compile Include="DatabaseContext\tblPropertyDiningMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyDiningMap_log.cs" />
+    <Compile Include="DatabaseContext\tblPropertyFacilityMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyFacilityTG.cs" />
+    <Compile Include="DatabaseContext\tblPropertyFacilityTG_Tmp.cs" />
+    <Compile Include="DatabaseContext\tblPropertyImageUrlTG.cs" />
+    <Compile Include="DatabaseContext\tblPropertyImageUrlTG_Tmp.cs" />
+    <Compile Include="DatabaseContext\tblPropertyLeadTimeBiddingMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyLocalityMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyLocalityMap_log.cs" />
+    <Compile Include="DatabaseContext\tblPropertyLOSBiddingMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyM.cs" />
+    <Compile Include="DatabaseContext\tblPropertyMTest.cs" />
+    <Compile Include="DatabaseContext\tblPropertyMTG_Tmp.cs" />
+    <Compile Include="DatabaseContext\tblPropertyM_log.cs" />
+    <Compile Include="DatabaseContext\tblPropertyParkingMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyParkingMap_log.cs" />
+    <Compile Include="DatabaseContext\tblPropertyPhotoMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyPhotoMap_log.cs" />
+    <Compile Include="DatabaseContext\tblPropertyPolicyMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyPolicyMap_log.cs" />
+    <Compile Include="DatabaseContext\tblPropertyPrimaryPhotoMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyPromoMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyPromoRateMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyPromoRateMap_log.cs" />
+    <Compile Include="DatabaseContext\tblPropertyPromotionAmenityMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyPromotionCancellationMainMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyPromotionCancellationMainMap_log.cs" />
+    <Compile Include="DatabaseContext\tblPropertyPromotionCancellationMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyPromotionMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyPromotionMap_log.cs" />
+    <Compile Include="DatabaseContext\tblPropertyPromotionRoomTypeMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyRatePlanAmenityMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyRatePlanCancellationMainMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyRatePlanCancellationMainMap_log.cs" />
+    <Compile Include="DatabaseContext\tblPropertyRatePlanCancellationMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyRatePlanMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyRatePlanMap_log.cs" />
+    <Compile Include="DatabaseContext\tblPropertyRatePlanRoomTypeMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyRatePlanRoomTypeMap_log.cs" />
+    <Compile Include="DatabaseContext\tblPropertyRecreationMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyRecreationMap_log.cs" />
+    <Compile Include="DatabaseContext\tblPropertyReviewTG.cs" />
+    <Compile Include="DatabaseContext\tblPropertyReviewTG_Tmp.cs" />
+    <Compile Include="DatabaseContext\tblPropertyRoomAmentiesMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyRoomDescriptionTG.cs" />
+    <Compile Include="DatabaseContext\tblPropertyRoomDescriptionTG_Tmp.cs" />
+    <Compile Include="DatabaseContext\tblPropertyRoomInventory.cs" />
+    <Compile Include="DatabaseContext\tblPropertyRoomInventory_log.cs" />
+    <Compile Include="DatabaseContext\tblPropertyRoomLevelAmenityTG.cs" />
+    <Compile Include="DatabaseContext\tblPropertyRoomLevelAmenityTG_Tmp.cs" />
+    <Compile Include="DatabaseContext\tblPropertyRoomMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyRoomMap_log.cs" />
+    <Compile Include="DatabaseContext\tblPropertyRoomRatePlanInventoryMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyRoomRatePlanInventoryMap_log.cs" />
+    <Compile Include="DatabaseContext\tblPropertyRoomsBiddingMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyRoomTaxMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyRoomTypeRoomAmentiesMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertySpaMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertySpaMap_log.cs" />
+    <Compile Include="DatabaseContext\tblPropertyTaxesMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyTaxesMap_log.cs" />
+    <Compile Include="DatabaseContext\tblPropertyTaxMap.cs" />
+    <Compile Include="DatabaseContext\tblPropertyTaxMap_log.cs" />
+    <Compile Include="DatabaseContext\tblPropertyTopAttrationTG.cs" />
+    <Compile Include="DatabaseContext\tblPropertyTopAttrationTG_Tmp.cs" />
+    <Compile Include="DatabaseContext\tblPropertyTripAdvisorM.cs" />
+    <Compile Include="DatabaseContext\tblPropertyWeekendBiddingMap.cs" />
+    <Compile Include="DatabaseContext\tblPurchaseHistory.cs" />
+    <Compile Include="DatabaseContext\tblRankManagement.cs" />
+    <Compile Include="DatabaseContext\tblRankManagement_log.cs" />
+    <Compile Include="DatabaseContext\tblRatePlanCancelPenaltyDescTGSearch_Tmp.cs" />
+    <Compile Include="DatabaseContext\tblRatePlanCancelPenaltyDescTGSpecific_Tmp.cs" />
+    <Compile Include="DatabaseContext\tblRatePlanCancelPenaltyTGSearch_Tmp.cs" />
+    <Compile Include="DatabaseContext\tblRatePlanCancelPenaltyTGSpecific_Tmp.cs" />
+    <Compile Include="DatabaseContext\tblRatePlanM.cs" />
+    <Compile Include="DatabaseContext\tblRatePlanM_log.cs" />
+    <Compile Include="DatabaseContext\tblRatePlanTGSearch_Tmp.cs" />
+    <Compile Include="DatabaseContext\tblRatePlanTGSpecific_Tmp.cs" />
+    <Compile Include="DatabaseContext\tblRecentSavingsTx.cs" />
+    <Compile Include="DatabaseContext\tblRecentViewsTx.cs" />
+    <Compile Include="DatabaseContext\tblRoomAccessibilityM.cs" />
+    <Compile Include="DatabaseContext\tblRoomFacilityDropDownM.cs" />
+    <Compile Include="DatabaseContext\tblRoomOutdoorViewM.cs" />
+    <Compile Include="DatabaseContext\tblRoomRateTaxTGSpecific_Tmp.cs" />
+    <Compile Include="DatabaseContext\tblRoomRateTGsearch_Tmp.cs" />
+    <Compile Include="DatabaseContext\tblRoomRateTGSpecific_Tmp.cs" />
+    <Compile Include="DatabaseContext\tblRoomTypeM.cs" />
+    <Compile Include="DatabaseContext\tblRoomTypeTGSearch_Tmp.cs" />
+    <Compile Include="DatabaseContext\tblRoomTypeTGSpecific_Tmp.cs" />
+    <Compile Include="DatabaseContext\tblSettingM.cs" />
+    <Compile Include="DatabaseContext\tblSettingsM.cs" />
+    <Compile Include="DatabaseContext\tblStarCategoryM.cs" />
+    <Compile Include="DatabaseContext\tblStateM.cs" />
+    <Compile Include="DatabaseContext\tblSyncBookingToChannelMgrTracker.cs" />
+    <Compile Include="DatabaseContext\tblTaxM.cs" />
+    <Compile Include="DatabaseContext\tblTaxM_log.cs" />
+    <Compile Include="DatabaseContext\tblTGAmenitiesMap.cs" />
+    <Compile Include="DatabaseContext\tblTopSellingHotelsForTag.cs" />
+    <Compile Include="DatabaseContext\tblTripAdvisorReview.cs" />
+    <Compile Include="DatabaseContext\tblUserGroupM.cs" />
+    <Compile Include="DatabaseContext\tblUserM.cs" />
+    <Compile Include="DatabaseContext\tblUserM_log.cs" />
+    <Compile Include="DatabaseContext\tblUserPropertyMap.cs" />
+    <Compile Include="DatabaseContext\tblUserPropertyMap_log.cs" />
+    <Compile Include="DatabaseContext\tblVideoUrlM.cs" />
+    <Compile Include="DatabaseContext\tblVideoUrlM_log.cs" />
+    <Compile Include="DatabaseContext\tblWebsiteGuestUserMaster.cs" />
+    <Compile Include="DatabaseContext\tblWebsiteUserClaim.cs" />
+    <Compile Include="DatabaseContext\tblWebsiteUserLogin.cs" />
+    <Compile Include="DatabaseContext\tblWebsiteUserMater.cs" />
+    <Compile Include="DatabaseContext\tblWebsiteUserRoleMaster.cs" />
+    <Compile Include="DataManager\ImageWork.cs" />
+    <Compile Include="DataManager\Repository.cs" />
+    <Compile Include="DataManager\DumpDataManager.cs" />
+    <Compile Include="MailComponent.cs" />
+    <Compile Include="Models\AreaData.cs" />
+    <Compile Include="Models\BaseEntity.cs" />
+    <Compile Include="Models\CityData.cs" />
+    <Compile Include="Models\Facility.cs" />
+    <Compile Include="Models\FileNameConstant.cs" />
+    <Compile Include="Models\HotelOverview.cs" />
+    <Compile Include="Models\HotelPolicy.cs" />
+    <Compile Include="Models\ImageURLsData.cs" />
+    <Compile Include="Models\InAndAround.cs" />
+    <Compile Include="Models\POIData.cs" />
+    <Compile Include="Models\Review.cs" />
+    <Compile Include="Models\RoomDescription.cs" />
+    <Compile Include="Models\RoomLevelAmenity.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Functions.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="bin\Debug\StaticDumpWebJob.exe.config" />
+    <None Include="bin\Debug\StaticDumpWebJob.vshost.exe.config" />
+    <None Include="bin\Debug\StaticDumpWebJob.vshost.exe.manifest" />
+    <None Include="packages.config" />
+    <None Include="Properties\PublishProfiles\ofrchannel.pubxml" />
+    <None Include="Properties\PublishProfiles\ofrchannelmgr - FTP %282%29.pubxml" />
+    <None Include="Properties\PublishProfiles\ofrchannelmgr - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\ofrchannelmgr - Web Deploy %282%29.pubxml" />
+    <None Include="Properties\PublishProfiles\ofrchannelmgr - Web Deploy.pubxml" />
+    <None Include="Properties\webjob-publish-settings.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="bin\Debug\de\Microsoft.Data.Edm.resources.dll" />
+    <Content Include="bin\Debug\de\Microsoft.Data.OData.resources.dll" />
+    <Content Include="bin\Debug\de\Microsoft.Data.Services.Client.resources.dll" />
+    <Content Include="bin\Debug\de\System.Spatial.resources.dll" />
+    <Content Include="bin\Debug\EntityFramework.BulkInsert.dll" />
+    <Content Include="bin\Debug\EntityFramework.BulkInsert.pdb" />
+    <Content Include="bin\Debug\EntityFramework.dll" />
+    <Content Include="bin\Debug\EntityFramework.MappingAPI.dll" />
+    <Content Include="bin\Debug\EntityFramework.MappingAPI.pdb" />
+    <Content Include="bin\Debug\EntityFramework.SqlServer.dll" />
+    <Content Include="bin\Debug\EntityFramework.SqlServer.xml" />
+    <Content Include="bin\Debug\EntityFramework.xml" />
+    <Content Include="bin\Debug\es\Microsoft.Data.Edm.resources.dll" />
+    <Content Include="bin\Debug\es\Microsoft.Data.OData.resources.dll" />
+    <Content Include="bin\Debug\es\Microsoft.Data.Services.Client.resources.dll" />
+    <Content Include="bin\Debug\es\System.Spatial.resources.dll" />
+    <Content Include="bin\Debug\fr\Microsoft.Data.Edm.resources.dll" />
+    <Content Include="bin\Debug\fr\Microsoft.Data.OData.resources.dll" />
+    <Content Include="bin\Debug\fr\Microsoft.Data.Services.Client.resources.dll" />
+    <Content Include="bin\Debug\fr\System.Spatial.resources.dll" />
+    <Content Include="bin\Debug\it\Microsoft.Data.Edm.resources.dll" />
+    <Content Include="bin\Debug\it\Microsoft.Data.OData.resources.dll" />
+    <Content Include="bin\Debug\it\Microsoft.Data.Services.Client.resources.dll" />
+    <Content Include="bin\Debug\it\System.Spatial.resources.dll" />
+    <Content Include="bin\Debug\ja\Microsoft.Data.Edm.resources.dll" />
+    <Content Include="bin\Debug\ja\Microsoft.Data.OData.resources.dll" />
+    <Content Include="bin\Debug\ja\Microsoft.Data.Services.Client.resources.dll" />
+    <Content Include="bin\Debug\ja\System.Spatial.resources.dll" />
+    <Content Include="bin\Debug\ko\Microsoft.Data.Edm.resources.dll" />
+    <Content Include="bin\Debug\ko\Microsoft.Data.OData.resources.dll" />
+    <Content Include="bin\Debug\ko\Microsoft.Data.Services.Client.resources.dll" />
+    <Content Include="bin\Debug\ko\System.Spatial.resources.dll" />
+    <Content Include="bin\Debug\log4net.dll" />
+    <Content Include="bin\Debug\log4net.xml" />
+    <Content Include="bin\Debug\Microsoft.Azure.WebJobs.dll" />
+    <Content Include="bin\Debug\Microsoft.Azure.WebJobs.Host.dll" />
+    <Content Include="bin\Debug\Microsoft.Azure.WebJobs.Host.xml" />
+    <Content Include="bin\Debug\Microsoft.Azure.WebJobs.xml" />
+    <Content Include="bin\Debug\Microsoft.Data.Edm.dll" />
+    <Content Include="bin\Debug\Microsoft.Data.Edm.xml" />
+    <Content Include="bin\Debug\Microsoft.Data.OData.dll" />
+    <Content Include="bin\Debug\Microsoft.Data.OData.xml" />
+    <Content Include="bin\Debug\Microsoft.Data.Services.Client.dll" />
+    <Content Include="bin\Debug\Microsoft.Data.Services.Client.xml" />
+    <Content Include="bin\Debug\Microsoft.WindowsAzure.Storage.dll" />
+    <Content Include="bin\Debug\Microsoft.WindowsAzure.Storage.xml" />
+    <Content Include="bin\Debug\Newtonsoft.Json.dll" />
+    <Content Include="bin\Debug\Newtonsoft.Json.xml" />
+    <Content Include="bin\Debug\ru\Microsoft.Data.Edm.resources.dll" />
+    <Content Include="bin\Debug\ru\Microsoft.Data.OData.resources.dll" />
+    <Content Include="bin\Debug\ru\Microsoft.Data.Services.Client.resources.dll" />
+    <Content Include="bin\Debug\ru\System.Spatial.resources.dll" />
+    <Content Include="bin\Debug\StaticDumpWebJob.exe" />
+    <Content Include="bin\Debug\StaticDumpWebJob.pdb" />
+    <Content Include="bin\Debug\StaticDumpWebJob.vshost.exe" />
+    <Content Include="bin\Debug\System.Spatial.dll" />
+    <Content Include="bin\Debug\System.Spatial.xml" />
+    <Content Include="bin\Debug\zh-Hans\Microsoft.Data.Edm.resources.dll" />
+    <Content Include="bin\Debug\zh-Hans\Microsoft.Data.OData.resources.dll" />
+    <Content Include="bin\Debug\zh-Hans\Microsoft.Data.Services.Client.resources.dll" />
+    <Content Include="bin\Debug\zh-Hans\System.Spatial.resources.dll" />
+    <Content Include="bin\Debug\zh-Hant\Microsoft.Data.Edm.resources.dll" />
+    <Content Include="bin\Debug\zh-Hant\Microsoft.Data.OData.resources.dll" />
+    <Content Include="bin\Debug\zh-Hant\Microsoft.Data.Services.Client.resources.dll" />
+    <Content Include="bin\Debug\zh-Hant\System.Spatial.resources.dll" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\..\packages\Microsoft.Web.WebJobs.Publish.1.1.0\tools\webjobs.targets" Condition="Exists('..\..\packages\Microsoft.Web.WebJobs.Publish.1.1.0\tools\webjobs.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,36 @@
+﻿@model OneFineRateWeb.Models.VerifyPhoneNumberViewModel
+@{
+    ViewBag.Title = "Verify Phone Number";
+}
+
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active" style="width:100%"><a href="#verifyPhoneNumber" role="tab" style="padding-left:34%" data-toggle="tab">Verify Phone Number</a></li>
+</ul>
+<div class="model-body ">
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="verifyPhoneNumber">
+
+            @using (Html.BeginForm("VerifyPhoneNumber", "Manage", FormMethod.Post, new { id = "frmVerifyPhoneNumber", @class = "form-horizontal", role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.Hidden("phoneNumber", Model.PhoneNumber)
+
+                <div class="col-md-12" style="color:red" id="verifyPhoneNumberError">
+                    <label>An OTP sent to your phone. <span id="mobileNumberSpan"> <b>@Model.PhoneNumber</b>  </span><br /> Please Verify your Phone Number</label>
+                </div>
+                <hr />
+                <div class="col-md-12">
+                    @Html.TextBoxFor(m => m.Code, new { @class = "form-control", placeholder = "Enter OTP Code", maxlength = "10" })
+                    @Html.ValidationMessageFor(x => x.Code, "", new { @class = "red" })
+                </div>
+                <div class="col-md-12 margintop30">
+                    <button type="submit" class="col-md-12 btn btn-success">Verify</button>
+                </div>
+                <div class="modal-footer  noborder">
+                    <a href="javascript:void(0)" id="resendOTP">Resend OTP?</a>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>

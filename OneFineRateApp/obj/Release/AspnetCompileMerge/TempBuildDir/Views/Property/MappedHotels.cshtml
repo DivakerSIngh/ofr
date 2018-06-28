@@ -1,0 +1,71 @@
+﻿@{
+    ViewBag.Title = "MappedHotels";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+
+<script>
+    var str = @Html.Raw(Json.Encode(ViewData["UserId"]));
+
+    $(document).ready(function () {
+
+        bindgrid();
+    });
+
+    function bindgrid() {
+
+        try {
+            var aoColumns =
+                [
+                 { "sTitle": "ID", "mData": "iPropId" },
+                 {
+                     "sTitle": "Name", "mData": "sHotelName",
+                     "mRender": function (data, type, full) {
+                         var html = '<button name="hotelname" id="' + full.iPropId + '" type="button"  onclick="GoToPage(' + full.iPropId + ',\'' + full.sHotelName +  '\')" class="btn btn-link">' + data + '</button><br />';
+                         html += full.sAddress;
+                         return html;
+                     }
+                 },
+                 {
+                     "sTitle": "OFR Link", "mData": "sWebSite","bSortable": false,
+                     "mRender": function (data, type, full) {
+                         var html = '<a href="' + data + '"  target="_blank"><img border="0" src="../images/WebLink.png" width="30" height="30"></a>';
+                         return html;
+                     }
+                 },
+                 { "sTitle": "Arriving Today", "mData": "Arriving" },
+                 { "sTitle": "Pending Negotiations", "mData": "Pending" }
+                ];
+            DatatableServerSide("#tblData", aoColumns, "/Services/Service.asmx/GetAllUserPropertyList?id="+str);
+        }
+        catch (e) {
+
+        }
+
+    }
+    
+    function GoToPage(a, pname){        
+        @*window.location.href = @Url.Action("ViewDashboard", "Property", new RouteValueDictionary(new { PropId = a }));*@
+        window.location.href = '/Property/ViewDashboard?PropId=' + a + '&PropName= '+ pname;
+    }
+
+</script>
+
+<div class="container margintop20">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <strong>Hotels Listing</strong>
+            </h4>
+        </div>
+        <div class="panel-body">
+
+            <div class="table-responsive margintop20">
+                <table class="display table table-striped table-bordered table-hover" id="tblData"></table>
+            </div>
+            <!-- End  table -->
+        </div>
+    </div>
+    <!-- container div END bottom -->
+</div>
+
+@*<a href='@Url.Action("ViewDashboard", "Property", new RouteValueDictionary(new { PropId = 1}))'>View Dashboard</a>*@

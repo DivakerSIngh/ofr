@@ -1,0 +1,645 @@
+﻿@model OneFineRateBLL.Entities.PropDetailsM
+@{
+    int index = 1;
+    string shouldDisplay = "";
+
+    if (Request.Browser.IsMobileDevice) { shouldDisplay = "none"; } else { shouldDisplay = ""; }
+
+}
+<style type="text/css">
+    .view-link {
+        display: none !important;
+    }
+
+    .google-maps-link {
+        display: none !important;
+    }
+
+    .nextImg {
+        position: absolute;
+        bottom: 200px;
+        right: 21px;
+    }
+
+    .prevImg {
+        position: absolute;
+        bottom: 200px;
+        left: 21px;
+    }
+
+    border_active {
+        border: 5px solid;
+    }
+
+    .hotelPoiDiv ul li {
+        margin-top: 3%;
+    }
+</style>
+
+<link href="~/Scripts/UserScripts/slider.css" rel="stylesheet" />
+
+<div class="loyality_infobg">
+    <div class="sortlist">
+        <ul>
+            <li><a href="#AboutHotel" class="active smoothScroll">ABOUT HOTEL</a></li>
+            <li><a href="#DateRange" class="smoothScroll">AVAILABLE ROOMS</a></li>
+            <li><a href="#divFacilities" class="smoothScroll">FACILITIES</a>	</li>
+            <li><a href="#divPolicies" class="smoothScroll">HOUSE RULES</a></li>
+            <li class="noborder"><a class="smoothScroll" href="#divTripadvisor">TRIPADVISOR REVIEWS</a></li>
+        </ul>
+    </div>
+</div>
+
+
+@if (Model.TG_Hotel != null && !string.IsNullOrEmpty(Model.TG_Hotel.HotelCode))
+{
+
+    <div id="AboutHotel" class="marginbottom10 margintop15">
+        <div class="row">
+
+            @if (Model.TG_Hotel.GalleryImages.Count > 0)
+            {
+                <div id="frmgallery">
+                    <div class="col-md-7">
+                        <div class="prevImg">
+                            <i class="fa fa-chevron-circle-left" style="font-size:45px; color:#cccccc;"></i>
+                        </div>
+                        <div id="imgdiv">
+
+                            <img src='@Model.TG_Hotel.GalleryImages[0].ImageUrl' data-index="0" id="imagePreview0" onerror="this.src='/images/noImage.jpg';" class="image-ban mainImage">
+
+                        </div>
+                        <div class="nextImg">
+                            <i class="fa fa-chevron-circle-right" style="font-size:45px; color:#cccccc;"></i>
+                        </div>
+                        <div class="position5 margin-5">
+                            <a class="whitetext">@Model.TG_Hotel.HotelName,<strong>@Model.TG_Hotel.CityName</strong> </a>
+                        </div>
+                    </div>
+                    <div class="col-md-2 offerimg" style="height:427px; overflow-y : auto;overflow-x: hidden; display:@(shouldDisplay)">
+                        <ul class="ul-loop">
+                            @foreach (var img in Model.TG_Hotel.GalleryImages)
+                            {
+                                <li>
+                                    <label style="display:none" class="lblTitle">@Model.TG_Hotel.HotelName,<strong>@Model.TG_Hotel.CityName</strong></label>
+                                    <img src="@img.ImageUrl" onerror="this.src='/images/noImage.jpg';" class="thumbImage" data-index="@(index)" id="thumbPreview@(index)" style="height:114px; width: auto; margin-bottom: 1px;">
+                                </li>
+
+                                index++;
+                            }
+                        </ul>
+                    </div>
+                </div>
+            }
+            else
+            {
+
+                <div id="frmgallery">
+                    <div class="col-md-7">
+                        <div class="prevImg">
+                            <i class="fa fa-chevron-circle-left" style="font-size:45px; color:#cccccc;"></i>
+                        </div>
+                        <div id="imgdiv">
+                            @if (Model.lstetblPhotoGallery != null && Model.lstetblPhotoGallery.Count > 0)
+                            {
+                                <img src='@Model.lstetblPhotoGallery[0].sMainImgUrl' data-index="0" id="imagePreview0" onerror="this.src='/images/noImage.jpg';" class="image-ban mainImage">
+                            }
+
+                        </div>
+                        <div class="nextImg">
+                            <i class="fa fa-chevron-circle-right" style="font-size:45px; color:#cccccc;"></i>
+                        </div>
+                        <div class="position5 margin-5">
+                            <a class="whitetext">@Model.TG_Hotel.HotelName,<strong>@Model.TG_Hotel.CityName</strong> </a>
+                        </div>
+                    </div>
+                    <div class="col-md-2 offerimg" style="height:427px; overflow-y : auto;overflow-x: hidden; display:@(shouldDisplay)">
+                        <ul class="ul-loop">
+                            @foreach (var img in Model.lstetblPhotoGallery)
+                            {
+                                <li>
+                                    <label style="display:none" class="lblTitle">@Model.TG_Hotel.HotelName,<strong>@Model.TG_Hotel.CityName</strong></label>
+                                    <img src="@img.sMainImgUrl" title="@img.sName" onerror="this.src='/images/noImage.jpg';" class="thumbImage" data-index="@(index)" id="thumbPreview@(index)" style="height:114px; width: 100%; margin-bottom: 1px;">
+                                </li>
+
+                                index++;
+                            }
+                        </ul>
+                    </div>
+                </div>
+            }
+
+
+            <div class="col-md-3 hotelPoiDiv">
+                <div class="reviewtextpara border1  padding5">
+
+                    @if (Model.TG_Hotel.POIData != null && Model.TG_Hotel.POIData.Count > 0)
+                    {
+                        var allAirportRailway = Model.TG_Hotel.POIData.Where(x => x.POIName.Contains("Airport") || x.POIName.Contains("Railway") || x.POIName.Contains("AIRPORT") || x.POIName.Contains("RAILWAY")).ToList();
+                        var allTransport = Model.TG_Hotel.POIData.Where(x => x.POIName.Contains("Transport") || x.POIName.Contains("TRANSPORT")).ToList();
+                        var allExceptedArea = allAirportRailway.Concat(allTransport).ToList();
+                        var topAttractions = Model.TG_Hotel.POIData.Except(allExceptedArea).ToList();
+
+
+                        <ul>
+                            @if (allAirportRailway.Count > 0)
+                            {
+                                <li><h5><strong>Nearest Airport/ Railway Station</strong></h5></li>
+                                foreach (var item in allAirportRailway)
+                                {
+                                    <li> @item.POIName ( @item.POIDistance Km )</li>
+                                }
+
+                            }
+
+                            @if (allTransport.Count > 0)
+                            {
+
+                                <li><h5><strong>Nearest Transport</strong></h5></li>
+                                foreach (var item in allTransport)
+                                {
+                                    <li> @item.POIName ( @item.POIDistance Km )</li>
+                                }
+
+                            }
+
+                            @if (topAttractions.Count > 0)
+                            {
+                                <li><h5><strong>Important Landmark Nearby</strong></h5></li>
+                                foreach (var item in topAttractions)
+                                {
+                                    <li> @item.POIName ( @item.POIDistance Km )</li>
+                                }
+
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <ul>
+                            <li> No Details found !</li>
+                        </ul>
+                    }
+
+
+                </div>
+                <div class="margintop10 border1" style="height:70px;">
+                    <div id="googleMap" style=" width:100%;height:58px;"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="border1 whitebg padding10 margintop10" id="overview">
+        <h4 class="margintop-5">
+            @*<i class="fa fa-lightbulb-o green" aria-hidden="true"></i>*@<i class="fa fa-lightbulb-o green" aria-hidden="true"></i>
+            Hotel Overview
+        </h4>
+        <div class="overviewparatext" id="OverviewText">
+
+        </div>
+        @Html.Hidden("overViewText", Html.Raw(Model.TG_Hotel.Description.TrimEnd('\r', '\n').Replace(Environment.NewLine, "<br/>").Replace("\"", "\'")), new { Id = "hdnContent" })<br />
+    </div>
+
+}
+else
+{
+
+    <div class="marginbottom10 margintop15">
+        <div class="row">
+
+            <div class="col-md-7">
+                <div class="prevImg">
+                    <i class="fa fa-chevron-circle-left" style="font-size:45px; color:#cccccc;"></i>
+                </div>
+                <div id="imgdiv"><img src='@Model.lstetblPhotoGallery[0].sMainImgUrl' id="imagePreview" class="image-ban"></div>
+                <div class="nextImg">
+                    <i class="fa fa-chevron-circle-right" style="font-size:45px; color:#cccccc;"></i>
+                </div>
+                <div class="position5 margin-5">
+                    <a href="#" class="whitetext">@Model.sPropertyName,<strong>@Model.sCity</strong> </a>
+                </div>
+            </div>
+
+            <div class="col-md-2 offerimg" style="height:427px; overflow-y : auto;overflow-x: hidden;display:@(shouldDisplay)">
+                <ul class="ul-loop">
+                    @if (Model.lstetblPhotoGallery != null)
+                    {
+                        for (int i = 0; i < Model.lstetblPhotoGallery.Count; i++)
+                        {
+                            //string thumbURL = Model.lstetblPhotoGallery[i].sthumbImgUrl;
+                            string MainURL = Model.lstetblPhotoGallery[i].sMainImgUrl;
+                            var thumbURL = Path.GetFileNameWithoutExtension(MainURL) + "_TN" + Path.GetExtension(MainURL);
+
+                            <li>
+                                <img src="@MainURL" stitle="@Model.lstetblPhotoGallery[i].sName" id="thumbPreview" style="height: 114px; width: 100%; margin-bottom: 1px;">
+                            </li>
+                        }
+                    }
+                </ul>
+            </div>
+
+            <div class="col-md-3">
+                <div class="reviewtextpara border1  padding5">
+                    @if (!string.IsNullOrEmpty(Model.sDistanceToAirportRailway1) || !string.IsNullOrEmpty(Model.sDistanceToAirportRailway2) || !string.IsNullOrEmpty(Model.sDistanceToAirportRailway3))
+                    {
+                        <h5><strong>Nearest Airport/ Railway Station</strong></h5>
+                        <ul>
+                            @if (!string.IsNullOrEmpty(Model.sDistanceToAirportRailway1))
+                            {
+                                <li> @Html.DisplayFor(m => m.sDistanceToAirportRailway1) (@Html.DisplayFor(m => m.dDistanceToAirportRailway1) Km) </li>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.sDistanceToAirportRailway2))
+                            {
+                                <li> @Html.DisplayFor(m => m.sDistanceToAirportRailway2) (@Html.DisplayFor(m => m.dDistanceToAirportRailway2) Km)  </li>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.sDistanceToAirportRailway3))
+                            {
+                                <li> @Html.DisplayFor(m => m.sDistanceToAirportRailway3) (@Html.DisplayFor(m => m.dDistanceToAirportRailway3) Km)  </li>
+                            }
+                        </ul>
+                    }
+
+
+                    @if (!string.IsNullOrEmpty(Model.sNearestTransport1) || !string.IsNullOrEmpty(Model.sNearestTransport2) || !string.IsNullOrEmpty(Model.sNearestTransport3))
+                    {
+                        <h5><strong>Nearest Transport</strong></h5>
+                        <ul>
+                            @if (!string.IsNullOrEmpty(Model.sNearestTransport1))
+                            {
+                                <li> @Html.DisplayFor(m => m.sNearestTransport1)  (@Html.DisplayFor(m => m.dNearestTransport1) Km) </li>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.sNearestTransport2))
+                            {
+                                <li> @Html.DisplayFor(m => m.sNearestTransport2)  (@Html.DisplayFor(m => m.dNearestTransport2) Km) </li>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.sNearestTransport3))
+                            {
+                                <li> @Html.DisplayFor(m => m.sNearestTransport3)  (@Html.DisplayFor(m => m.dNearestTransport3) Km) </li>
+                            }
+                        </ul>
+                    }
+
+
+                    <br>
+                    @if (!string.IsNullOrEmpty(Model.sAreaRecommended1) || !string.IsNullOrEmpty(Model.sAreaRecommended2) || !string.IsNullOrEmpty(Model.sAreaRecommended3))
+                    {
+                        <h5><strong>Area recommended for</strong></h5>
+
+                        <ul>
+                            @if (!string.IsNullOrEmpty(Model.sAreaRecommended1))
+                            {
+                                <li> @Html.DisplayFor(m => m.sAreaRecommended1)</li>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.sAreaRecommended2))
+                            {
+                                <li> @Html.DisplayFor(m => m.sAreaRecommended2)</li>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.sAreaRecommended3))
+                            {
+                                <li> @Html.DisplayFor(m => m.sAreaRecommended3)</li>
+                            }
+                        </ul>
+                    }
+
+
+                    @if (!string.IsNullOrEmpty(Model.sTopAttraction1) || !string.IsNullOrEmpty(Model.sTopAttraction2) || !string.IsNullOrEmpty(Model.sTopAttraction3))
+                    {
+                        <h5><strong>Top Attractions in the area </strong></h5>
+                        <ul>
+                            @if (!string.IsNullOrEmpty(Model.sTopAttraction1))
+                            {
+                                <li> @Html.DisplayFor(m => m.sTopAttraction1)</li>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.sTopAttraction2))
+                            {
+                                <li> @Html.DisplayFor(m => m.sTopAttraction2)</li>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.sTopAttraction3))
+                            {
+                                <li> @Html.DisplayFor(m => m.sTopAttraction3)</li>
+                            }
+                        </ul>
+                    }
+
+                    else
+                    {
+                        <h5>No details found !</h5>
+                    }
+
+                </div>
+                <div class="margintop10 border1" style="height:70px;">
+                    <div id="googleMap" style=" width:100%;height:58px;"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="border1 whitebg padding10" id="overview">
+        <h4 class="margintop-5">
+            <i class="fa fa-lightbulb-o green" aria-hidden="true"></i>
+            Hotel Overview
+        </h4>
+        <p class="overviewparatext" id="OverviewText">
+
+        </p>
+        @Html.HiddenFor(m => m.sDescription, new { Id = "hdnContent" })
+    </div>
+}
+
+
+<div class="modal fade" id="mapDivPopup">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">@Model.sPropertyName</h4>
+            </div>
+            <div class="modal-body" id="popupMapDiv" style="height:450px;overflow:hidden;">
+
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/UserScripts/jquery.slider.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBA8k8_YKEbkfECgXpF6FKdMkMA1jS1qAQ"></script>
+<script src="~/Scripts/Jquery.googleMapLebel.js"></script>
+<script>
+    $(function () {
+
+        var imageElementArr = [];
+        var currentImageIndex = 0;
+        var titleArr= [];
+
+        $('.thumbImage').each(function(i,element){
+            imageElementArr.push(element);
+        });
+
+        $('.lblTitle').each(function(i,element){
+            titleArr.push(element);
+        });
+
+        function moveLeft() {
+            var prevIndex = currentImageIndex-1;
+            var src = GetImageUrlFromIndex(prevIndex);
+            $('.mainImage').fadeOut('fast','linear',function(){
+
+                $('.mainImage').attr('src',src);
+                $('.mainImage').fadeIn();
+                $('.whitetext').html($(titleArr[prevIndex]).text());
+                $('.thumbImage').removeClass('border_active');
+                $('#thumbPreview'+prevIndex).addClass('border_active');
+
+            });
+        };
+
+        function moveRight() {
+            var nextIndex = currentImageIndex + 1;
+            var src = GetImageUrlFromIndex(nextIndex);
+
+            $('.mainImage').fadeOut('fast','linear',function(){
+
+                $('.mainImage').attr('src',src);
+                $('.mainImage').fadeIn();
+                $('.whitetext').html($(titleArr[nextIndex]).text());
+                $('.thumbImage').removeClass('border_active');
+                $('#thumbPreview'+nextIndex).addClass('border_active');
+
+            });
+        };
+
+        function GetImageUrlFromIndex(index)
+        {
+            if(index >= imageElementArr.length || index == -1)
+            {
+                currentImageIndex = 0;
+                if(imageElementArr[0])
+                    return $(imageElementArr[0]).attr('src');
+                else return '/images/noImage.jpg'
+            }
+            currentImageIndex = index;
+            return $(imageElementArr[index]).attr('src');
+        }
+
+        var interval =  setInterval(function(){ moveRight(); }, 8000);
+
+        $('.prevImg').click(function () {
+            moveLeft();
+            clearInterval(interval);
+            interval = setInterval(function(){ moveRight(); }, 8000);
+        });
+
+        $('.nextImg').click(function () {
+            moveRight();
+            clearInterval(interval);
+            interval = setInterval(function(){ moveRight(); }, 8000);
+        });
+
+
+        $('.thumbImage').click(function(e){
+
+            currentImageIndex = parseInt($(this).data('index'))-1;
+
+            var src = GetImageUrlFromIndex(currentImageIndex);
+
+            $('.mainImage').fadeOut('fast','linear',function(){
+
+                $('.mainImage').attr('src',src);
+                $('.mainImage').fadeIn();
+                $('.whitetext').html($(titleArr[currentImageIndex]).text());
+            });
+
+            $('.thumbImage').removeClass('border_active');
+            $(this).addClass('border_active');
+
+            clearInterval(interval);
+            interval = setInterval(function(){ moveRight(); }, 8000);
+        });
+
+
+        $(".nextImg").css('cursor', 'pointer');
+        $(".prevImg").css('cursor', 'pointer');
+    });
+
+</script>
+
+<script type="text/javascript">
+
+
+    var shortText = 0;
+    var content = $('#hdnContent').val();
+    var showChar = 300;
+    var ellipsestext = "...";
+    var moretext = "More..";
+    var lesstext = "Less";
+
+    function toggleOverview() {
+
+        //debugger;
+
+        if (shortText == 0) {
+            if (content.length > showChar) {
+                var c = content.substr(0, showChar);
+                var html = c + '<span>' + ellipsestext + '</span>';
+                html += '<span class="pull-right"><a onclick="moreClick()" href="javascript:void(0)" class="morelink"" >' + moretext + '</a></span>'
+                $('#OverviewText').html('');
+                $('#OverviewText').html(html);
+                shortText = c.length;
+
+            }
+            else
+            {
+                $('#OverviewText').html(content);
+            }
+        }
+        else {
+            moreClick();
+        }
+    };
+
+    function moreClick() {
+
+        if (shortText == showChar) {
+            var c = content;
+            var html = c;
+            html += '<span class="pull-right"><a onclick="toggleOverview()" href="javascript:void(0)" class="morelink"" >' + lesstext + '</a></span>'
+
+            $('#OverviewText').html('');
+            $('#OverviewText').html(html);
+            shortText = c.length;
+        }
+        else {
+            var c = content.substr(0, showChar);
+            var html = c + '<span>' + ellipsestext + '</span>';
+            html += '<span class="pull-right"><a onclick="toggleOverview()" href="javascript:void(0)" class="morelink"" >' + moretext + '</a></span>'
+
+            $('#OverviewText').html('');
+            $('#OverviewText').html(html);
+            shortText = c.length;
+        }
+    };
+
+    toggleOverview();
+
+
+</script>
+
+<script type="text/javascript">
+
+
+    var popupMap;
+
+
+    var myLatlng = new google.maps.LatLng(@Model.dLatitude, @Model.dLongitude);
+
+    var myOptions = {
+        zoom: 17,
+        center: myLatlng,
+        zoomControl: false,
+        clickableIcons: false
+    };
+
+
+    var mapLabel = new MapLabel({
+        text: '@Model.sPropertyName',
+        position: myLatlng,
+        map: popupMap,
+        fontSize: 20,
+        fontColor:'#A52A2A',
+        align: 'Left'
+    });
+
+    function initialize() {
+
+        var map = new google.maps.Map(document.getElementById('googleMap'), myOptions);
+        popupMap = new google.maps.Map(document.getElementById("popupMapDiv"),myOptions);
+
+        var centerControlDiv = document.createElement('div');
+        var centerControl = new CenterControl(centerControlDiv, map);
+
+        centerControlDiv.index = 1;
+        map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
+
+        var marker = new google.maps.Marker({
+            position: myLatlng
+        });
+
+        var marker2 = new google.maps.Marker({
+            position: myLatlng
+        });
+
+        marker.setMap(map);
+
+        mapLabel.set('position', myLatlng);
+
+        marker2.bindTo('map', mapLabel);
+        marker2.bindTo('position', mapLabel);
+        marker2.setDraggable(false);
+        marker2.setMap(popupMap);
+
+    }
+
+    google.maps.event.addDomListener(window, 'load', initialize);
+    google.maps.event.addDomListener(window, "resize", resizingMap());
+
+    function CenterControl(controlDiv, map) {
+
+        // Set CSS for the control border.
+        var controlUI = document.createElement('div');
+        controlUI.style.backgroundColor = '#fff';
+        controlUI.style.border = '2px solid #fff';
+        controlUI.style.borderRadius = '3px';
+        controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+        controlUI.style.cursor = 'pointer';
+        controlUI.style.marginBottom = '0px';
+        controlUI.style.textAlign = 'center';
+        controlUI.title = 'Click to View larger Map';
+        controlDiv.appendChild(controlUI);
+
+        // Set CSS for the control interior.
+        var controlText = document.createElement('div');
+        controlText.style.color = '#337ab7';
+        controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+        controlText.style.fontSize = '10px';
+        controlText.style.lineHeight = '20px';
+        controlText.style.paddingLeft = '5px';
+        controlText.style.paddingRight = '5px';
+        controlText.innerHTML = 'View larger Map';
+        controlUI.appendChild(controlText);
+
+        // Setup the click event listeners
+        //  var url =   'https://www.google.com/maps/place/the+Ashoka/28.5983307,77.1931878,17z?hl=en-US';
+
+        controlUI.addEventListener('click', function() {
+
+            $('#mapDivPopup').modal({
+                show: 'true'
+            });
+        });
+    }
+
+
+    $('#mapDivPopup').on('show.bs.modal', function() {
+        resizeMap();
+    })
+
+    function resizeMap() {
+        if(typeof popupMap =="undefined") return;
+        setTimeout( function(){resizingMap();} , 400);
+    }
+
+    function resizingMap() {
+        if(typeof popupMap =="undefined") return;
+        var center = popupMap.getCenter();
+        google.maps.event.trigger(popupMap, "resize");
+        popupMap.setCenter(center);
+    }
+
+
+</script>

@@ -1,0 +1,94 @@
+﻿@using OneFineRateWeb.Models
+
+@model VerifyPhoneViewModel
+
+
+@using (Html.BeginForm("VerifyPhoneAndRegister", "Account", FormMethod.Post, new { id = "verifyPhoneNumberForm", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="has-error">
+        <ul class="text-danger" id="phoneVerificationErrors"></ul>
+    </div>
+
+    <div class="col-md-12">
+        @Html.HiddenFor(m => m.Title)
+        @Html.HiddenFor(m => m.FirstName)
+        @Html.HiddenFor(m => m.LastName)
+        @Html.HiddenFor(m => m.Phone)
+        @Html.HiddenFor(m => m.Email)
+        @Html.HiddenFor(m => m.CorporateEmail)
+        @Html.HiddenFor(m => m.Password)
+        @Html.HiddenFor(m => m.ConfirmPassword)
+        @Html.HiddenFor(m => m.PhoneVerificationEncoded, new { id = "phoneVerificationEncoded" })
+        @Html.HiddenFor(m => m.RefereeCode)
+        @Html.HiddenFor(m => m.IsCorporateRequested)       
+
+
+        <label id="otpMessage" style="margin-top: 20px !important; color:#ff6a00 !important">An OTP is sent to your phone :</label><span> @Model.Phone</span>
+        <label>Please enter verification code</label>
+        @Html.TextBoxFor(m => m.PhoneVerificationCode, new { placeholder = "Phone Verification Code", maxlength = "10", id = "txtPhoneNumber", @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.PhoneVerificationCode, "", new { @class = "text-danger" })
+
+        <div class="modal-footer noborder">
+            <div class="row form-inline">
+                <button type="submit" class="col-md-12 btn btn-success">Verify</button>
+            </div>
+            <div class="row form-inline">
+                <label style="float:right" class="text-danger">Resend OTP ? <a href="javascript:;" id="lnkVerifyPhone">Resend</a></label>
+                <img id="loaderImage" style="display:none;float:right" src="~/images/ajax-loader.gif" />
+                @*<label style="float:left" class="text-danger"><a href="javascript:;" style="float:left" class="signInRegister">Back</a></label>*@
+
+            </div>
+        </div>
+
+    </div>
+
+}
+
+<script>
+
+
+
+
+    $('#lnkVerifyPhone').click(function (e) {
+
+        e.preventDefault();
+
+        $('#lnkVerifyPhone').hide();
+
+        $.post('@Url.Action("ResendVerification", "Account", new { phone= Model.Phone })', null)
+
+                .done(function (data) {
+
+                    if (data && data.status == false) {
+                        $('#phoneVerificationErrors').append('<li>' + data.message + '</li>');
+                    }
+                    else {
+                        $('#txtPhoneNumber').val('');
+                        $('#otpMessage').text('OTP sent to your phone !');
+                        $('#phoneVerificationEncoded').val(data.encodedCode);
+                    }
+
+                }).fail(function (error) {
+
+                    alert(error.message);
+
+                }).always(function () {
+
+                    $('#lnkVerifyPhone').show();
+                });
+    }
+    );
+
+    $('#lnkResendVerificationCode').click(function (e) {
+
+        e.preventDefault();
+
+        $('#lnkVerifyPhone').click();
+
+    });
+
+</script>

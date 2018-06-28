@@ -1,0 +1,146 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+
+@*<link href="~/css/jquery-ui.css" rel="stylesheet" />*@
+<script src="~/js/Jquery1.10.3.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script src="~/js/jquery-ui.js"></script>
+@System.Web.Optimization.Scripts.Render("~/bundles/validation")
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        bindgrid();
+        if ('@TempData["msg"]' != '') {
+            if ('@TempData["Mode"]' == 'Add') {
+                OpenPopUp();
+            }
+
+            if ('@TempData["Mode"]' == 'Modify') {
+                EditData('@TempData["id"]');
+            }
+        }
+
+       
+    });
+
+    function OpenPopUp() {
+        var url = '@Url.Action("Add")';
+        $("#AddRank").load(url);
+        $('#AddRank').modal({
+            show: 'true'
+        });
+    }
+
+    function EditData(Id) {
+        var url = '@Url.Action("Update")' + "/" + Id;
+        $("#AddRank").load(url);
+        $('#AddRank').modal({
+            show: 'true'
+        });
+    }
+
+    function DeleteData(Id, status) {
+        if (status == 'Live') {
+            bootbox.confirm("Are you sure, you want to Disable this record?", function (result) {
+                if (result == true) {
+                    var url = '@Url.Action("Delete")' + "/" + Id;
+                    window.location = url;
+                }
+            });
+        }
+        else {
+            bootbox.confirm("Are you sure, you want to Enable this record?", function (result) {
+                if (result == true) {
+                    var url = '@Url.Action("Delete")' + "/" + Id;
+                    window.location = url;
+                }
+            });
+        }
+    }
+
+
+
+
+
+
+    // bind list
+    function bindgrid() {
+
+        try {
+            var aoColumns =
+                [
+                 { "sTitle": "ID", "mData": "iID", "bVisible": false, },
+                 { "sTitle": "Property", "mData": "sHotelName" },
+                 { "sTitle": "Start Date", "mData": "dtValidFrom", "bSortable": false },
+                 { "sTitle": "End Date", "mData": "dtValidTo", "bSortable": false },
+                 { "sTitle": "Sponsored", "mData": "sSponsored", "bSortable": false },
+                 {
+                     "sTitle": "New Rank", "mData": "iNewRank"
+                 },
+                 { "sTitle": "Rate Disparity", "mData": "sRateDisparity" },
+                 { "sTitle": "Status", "mData": "cStatus", "bSortable": false },                 
+               {
+                   "sTitle": "Edit", "bSortable": false, "mData": "iID",
+                   "mRender": function (data, type, full) {
+                       var html = '<button type="button"   onclick="EditData(' + full.iID + ')";  class="btn btn-primary btn-xs margintop10">Edit</button>&nbsp';
+
+                       if (full.cStatus == "Live") {
+                           html += '<button type="button" onclick="DeleteData(' + full.iID + ',\'' + full.cStatus + '\')";  class="btn btn-danger btn-xs margintop10">Disable</button>';
+                       }
+                       else {
+                           html += '<button type="button" onclick="DeleteData(' + full.iID + ',\'' + full.cStatus + '\')";  class="btn btn-success btn-xs margintop10">Enable</button>';
+                       }
+                       return html;
+
+                   }
+               }
+
+
+                ];
+            DatatableServerSide("#tblData", aoColumns, "/Services/Service.asmx/GetRankManagementList");
+            $('.dataTables_filter input').attr('title', 'Property');
+        }
+        catch (e) {
+
+        }
+
+    }
+
+
+
+
+</script>
+
+
+
+<div class="container margintop20">
+    <div class="row panel panel-default">
+        <div class="container panel-heading">
+            <div class="col-md-6">
+                <h4 class="panel-title">
+                    Rank Management
+                </h4>
+            </div>
+            <div class="col-md-6"><button type="button" class="pull-right btn btn-warning" data-toggle="modal" onclick="OpenPopUp()"><i class="fa fa-plus"></i> Add Rank </button></div>
+
+        </div>
+        <div class="panel-body">
+
+            <div class="table-responsive margintop20">
+                <table class="table table-striped table-bordered table-hover display" id="tblData"></table>
+            </div>
+            <!-- End  table -->
+        </div>
+    </div>
+    <!-- container div END bottom -->
+</div>
+<!-- Add Rank -->
+<div id="AddRank" class="modal fade" role="dialog">
+
+</div>
+
+

@@ -1,0 +1,130 @@
+﻿@model List<OneFineRateBLL.Entities.eTblPromotionalHotel>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+
+<style>
+    .imgResponsive {
+        width: auto;
+        max-width: 100%;
+        height: 150px;
+    }
+
+    textarea {
+        resize: none;
+    }
+</style>
+
+
+<link href="~/Content/prettyPhoto.css" rel="stylesheet" />
+<script src="~/Scripts/jquery.prettyPhoto.js"></script>
+
+<div class="container margintop20">
+    <div class="row panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                Update Promotional Hotel Photos
+            </h4>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="red" style="line-height:14px; font-size:11px; padding-left:2%; padding-bottom:10px;">
+                        *Minimum recommended dimension:165x165px<br>
+                        *Supported file formats: jpg, jpeg, gif and png <br>
+                    </li>
+                </ul>
+
+                @if (Model != null)
+                {
+                    foreach (var item in Model)
+                    {
+                        Html.RenderPartial("_PromotionalImageForm", item);
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@System.Web.Optimization.Scripts.Render("~/bundles/validation")
+
+<script>
+
+    $(function () {
+
+        $("a[rel^='prettyPhoto[gallery]']").prettyPhoto({
+            social_tools: false,
+            deeplinking: false,
+            allow_resize: true,
+        });
+    })
+
+    function readURL(input) {
+
+        if (IsValidImage(input)) {
+
+            var _URL = window.URL || window.webkitURL;
+            if (input.files && input.files[0]) {
+                var file, img;
+                if ((file = input.files[0])) {
+                    img = new Image();
+                    img.onload = function () {
+                        if (this.height < 165 || this.width < 165) {
+                           
+                            //$(input).parent().find('img.imgResponsive').attr('src', 'http://placehold.it/165x165');
+                            $(input).val(null);
+                            //$(input).prev('img').attr('src', 'http://placehold.it/165x165');
+                            toastr.error('The size of file is less than minimum dimension of 165 x 165')
+                            return false;
+                        }
+                        else {
+                            $(input).parent().find('img.imgResponsive').attr('src', src);
+                        }
+                    };
+                    var src = _URL.createObjectURL(file);
+                    img.src = src;
+                }
+            }
+        }
+        else {
+            $(input).val(null);
+        }
+    }
+
+    function IsValidImage(fileUploadId) {
+        var ext = $(fileUploadId).val().split('.').pop().toLowerCase();
+        if (ext == '') {
+            return false;
+        }
+        if ($.inArray(ext, ['gif', 'png', 'jpg', 'jpeg']) == -1) {
+            toastr.error('Only jpg , jpeg , gif , png images are allowed !')
+            return false;
+        }
+        return true;
+    }
+
+    $(document).ready(function () {
+        setTimeout(function () {
+            document.getElementById('Progress').style.display = 'block';
+            setTimeout(function () {
+                document.getElementById('Progress').style.display = 'none';
+            }, 200);
+        }, 200);
+
+        
+    });
+
+    $(function () {
+        $("textarea[maxlength]").bind('input propertychange', function () {
+            var maxLength = $(this).attr('maxlength');
+            if ($(this).val().length > maxLength) {
+                $(this).val($(this).val().substring(0, maxLength));
+            }
+        })
+    });
+</script>
+

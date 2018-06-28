@@ -1,0 +1,375 @@
+﻿@using MvcCheckBoxList.Model;
+@model OneFineRateBLL.Entities.etblPropertyRoomMap
+<style>
+    label {
+        padding: 5px !important;
+    }
+    #sRoomCode{text-transform:uppercase}
+</style>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        SetSizeType();
+        $('.decimal').keyup(function () {
+            var val = $(this).val();
+            if (isNaN(val)) {
+                val = val.replace(/[^0-9\.]/g, '');
+                if (val.split('.').length > 2)
+                    val = val.replace(/\.+$/, "");
+            }
+            $(this).val(val);
+        });
+
+        $('.iNumberLength3').keypress(function (event) {
+            return isInteger(event, this, 3)
+        });
+
+
+
+    });
+
+    function isInteger(evt, element, l) {
+
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (charCode == 8)
+        {
+            return true;
+        }
+        else if (
+            (charCode != 45) &&      // “-” CHECK MINUS, AND ONLY ONE.
+            (charCode < 48 || charCode > 57))
+        { return false; } else {
+            if ($(element).val().length >= l) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    function CalculateSize(value) {
+
+        var value = $('#iorginalsize').val();
+        var Type = $('#ddlSizeType').val();
+        if (Type == 'Sq.Ft') {
+            $('#isize').val(parseFloat(value * '0.092903').toFixed(2));
+            $('#lblsizetype').html('Sq.Mtr');
+        }
+        else {
+            $('#isize').val(parseFloat(value * '10.7639').toFixed(2))
+            $('#lblsizetype').html('Sq.Ft');
+        }
+    }
+    function SetSizeType() {
+
+        var Type = $('#ddlSizeType').val();
+        if (Type == 'Sq.Ft') {
+            $('#lblsizetype').html('Sq.Mtr');
+        }
+        else {
+            $('#lblsizetype').html('Sq.Ft');
+        }
+    }
+
+</script>
+<script type="text/javascript">
+    function checkValue(Seqval) {
+       if (Seqval >= 0 && Seqval <= 99) {
+             $('#SeqNo').val(Seqval);
+        }
+        else { $('#SeqNo').val(null);; }
+    }
+</script>
+
+@using (Ajax.BeginForm("Add", "Rooms", new AjaxOptions() { InsertionMode = InsertionMode.Replace, UpdateTargetId = "targetid", HttpMethod = "POST", OnSuccess = "GetResult" }))
+{
+    <div class="modal-dialog">
+        @Html.HiddenFor(m => m.Mode)
+        @Html.HiddenFor(u => u.iPropId);
+        @Html.HiddenFor(u => u.iRoomId);
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">@ViewBag.HeaderText</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row ">
+
+                    <div class="col-xs-3" style="width:23%">
+                        Room Name<span class="star">*</span>
+                    </div>
+                    <div class="col-xs-5">
+                        @Html.TextBoxFor(m => m.sRoomName, new { type = "text", @class = "form-control", required = "true", pattern = "^[a-zA-Z]+[a-zA-Z0-9 ]+[a-zA-Z ]*$", oninvalid = "setCustomValidity('Please enter only alphanumeric character')", onchange = "try{setCustomValidity('')}catch(e){}", maxlength = "50" })
+                        @Html.ValidationMessageFor(m => m.sRoomName)
+                    </div>
+                </div>
+                <div class="row margintop10">
+                    <div class="col-xs-3" style="width:23%">
+                        Room Type <span class="star">*</span>
+                    </div>
+                    <div class="col-xs-5">
+                        @Html.DropDownListFor(m => m.iRoomTypeId, new SelectList(OneFineRateBLL.BL_tblRoomTypeM.GetAllRecords(), "iRoomTypeId", "sRoomType"), "", new { @class = "form-control", required = "true" })
+                        @Html.ValidationMessageFor(m => m.iRoomTypeId)
+                    </div>
+                </div>
+                <div class="row margintop10">
+                    <div class="col-xs-3" style="width:23%">
+                        Room Code<span class="star">*</span>
+                    </div>
+                    <div class="col-xs-3">
+                        @Html.TextBoxFor(m => m.sRoomCode, new { type = "text", @class = "form-control", required = "true", pattern = "^[a-zA-Z]+[a-zA-Z0-9 ]*$", maxlength = "5", oninvalid = "setCustomValidity('Please enter only alphanumeric character')", onchange = "try{setCustomValidity('')}catch(e){}" })
+                    </div>
+                </div>
+
+                <div class="row margintop10">
+                    <div class="col-xs-3" style="width:23%">
+                        Sequence Order
+                    </div>
+                    <div class="col-xs-3">
+                        @Html.TextBoxFor(m => m.iSeq, new { Id="SeqNo", type = "number", @class = "form-control", maxlength = "2", min = "0", max = "99" , onblur="checkValue(this.value);" })
+                    </div>
+                </div>
+
+                <div class="row margintop10">
+                    <div class="col-xs-3" style="width:23%">
+                        Max. Occupancy <span class="star">*</span>
+                    </div>
+                    <div class="col-xs-2">
+                        @Html.DropDownListFor(m => m.iMaxOccupancy, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="1",Value="1" },
+                                                                            new SelectListItem {Text="2",Value="2" },
+                                                                            new SelectListItem {Text="3",Value="3" },
+                                                                            new SelectListItem {Text="4",Value="4" },
+                                                                            new SelectListItem {Text="5",Value="5" },
+                                                                            new SelectListItem {Text="6",Value="6" },
+                                                                            new SelectListItem {Text="7",Value="7" },
+                                                                            new SelectListItem {Text="8",Value="8" },
+                                                                            new SelectListItem {Text="9",Value="9" },
+                                                                            new SelectListItem {Text="10",Value="10" }},
+                                                             new { @class = "form-control width90", required = "true" })
+                        @Html.ValidationMessageFor(m => m.iMaxOccupancy)
+                    </div>
+                    <div class="col-md-4"><span>(Including extra beds)</span></div>
+
+                    <div class="col-xs-3" style="width:23%; display:none;">
+
+                        Max Children
+                    </div>
+                    <div class="col-xs-3" style="display:none;">
+                        @Html.DropDownListFor(m => m.iMaxChildren, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="1",Value="1" },
+                                                                            new SelectListItem {Text="2",Value="2" },
+                                                                            new SelectListItem {Text="3",Value="3" },
+                                                                            new SelectListItem {Text="4",Value="4" },
+                                                                            new SelectListItem {Text="5",Value="5" },
+                                                                            new SelectListItem {Text="6",Value="6" },
+                                                                            new SelectListItem {Text="7",Value="7" },
+                                                                            new SelectListItem {Text="8",Value="8" },
+                                                                            new SelectListItem {Text="9",Value="9" },
+                                                                            new SelectListItem {Text="10",Value="10" }},
+                                                  new { @class = "form-control width60"})
+                    </div>
+                </div>
+                <div class="col-xs-12" style="display:none;">
+                    <span class="alerttext">* This is the various no of children that can stay in the room for---. The Maximum age of their children is 12 years.</span>
+
+                </div>
+                <div class="row margintop10">
+                    <div class="col-xs-3" style="width:23%">
+                        No. of Extra beds
+                    </div>
+
+                    <div class="col-xs-2">
+                        @Html.DropDownListFor(m => m.iNoOfExtraBeds, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="0",Value="0" },
+                                                                            new SelectListItem {Text="1",Value="1" },
+                                                                            new SelectListItem {Text="2",Value="2" },
+                                                                            new SelectListItem {Text="3",Value="3" },
+                                                                            new SelectListItem {Text="4",Value="4" },
+                                                                            new SelectListItem {Text="5",Value="5" },
+                                                                            new SelectListItem {Text="6",Value="6" },
+                                                                            new SelectListItem {Text="7",Value="7" },
+                                                                            new SelectListItem {Text="8",Value="8" },
+                                                                            new SelectListItem {Text="9",Value="9" },
+                                                                            new SelectListItem {Text="10",Value="10" }},
+                                                                 new { @class = "form-control ", required = "true" })
+                    </div>
+                    <div class="col-xs-3" style="width:23%">
+                        No. of Bedrooms
+                    </div>
+
+                    <div class="col-xs-2">
+                        @Html.DropDownListFor(m => m.iNoOfBedrooms, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="1",Value="1" },
+                                                                            new SelectListItem {Text="2",Value="2" },
+                                                                            new SelectListItem {Text="3",Value="3" },
+                                                                            new SelectListItem {Text="4",Value="4" },
+                                                                            new SelectListItem {Text="5",Value="5" },
+                                                                            new SelectListItem {Text="6",Value="6" },
+                                                                            new SelectListItem {Text="7",Value="7" },
+                                                                            new SelectListItem {Text="8",Value="8" },
+                                                                            new SelectListItem {Text="9",Value="9" },
+                                                                            new SelectListItem {Text="10",Value="10" }},
+
+                                                                 new { @class = "form-control ", required = "true" })
+                    </div>
+                </div>
+                <div class="row margintop10">
+                    <div class="col-xs-3" style="width:23%">
+                        No. of Bathroom
+                    </div>
+
+                    <div class="col-xs-2">
+                        @Html.DropDownListFor(m => m.iNoOfBathrooms, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="1",Value="1" },
+                                                                            new SelectListItem {Text="2",Value="2" },
+                                                                            new SelectListItem {Text="3",Value="3" },
+                                                                            new SelectListItem {Text="4",Value="4" },
+                                                                            new SelectListItem {Text="5",Value="5" },
+                                                                            new SelectListItem {Text="6",Value="6" },
+                                                                            new SelectListItem {Text="7",Value="7" },
+                                                                            new SelectListItem {Text="8",Value="8" },
+                                                                            new SelectListItem {Text="9",Value="9" },
+                                                                            new SelectListItem {Text="10",Value="10" }},
+                                                                 new { @class = "form-control ", required = "true" })
+                    </div>
+
+                    <div class="col-xs-3" style="width:23%">
+                        No. of Rooms 
+                    </div>
+
+                    <div class="col-xs-2">
+                        @Html.TextBoxFor(m => m.iTotalRooms, new { type = "text", pattern = "^[0-9]*$", @class = "form-control iNumberLength3", maxlength = "3" })
+                        @Html.ValidationMessageFor(m => m.iTotalRooms)
+                    </div>
+                </div>
+                <div class="row margintop10">
+                    <div class="col-xs-3" style="width:23%">
+                        Twin Room
+                    </div>
+
+                    <div class="col-xs-2">
+                        @Html.TextBoxFor(m => m.iTwinBeds, new { type = "text", pattern = "^[0-9]*$", @class = "form-control iNumberLength3", maxlength = "3" })
+                        @Html.ValidationMessageFor(m => m.iTwinBeds)
+                    </div>
+                    <div class="col-xs-3" style="width:23%">
+                        Double Room
+                    </div>
+
+                    <div class="col-xs-2">
+                        @Html.TextBoxFor(m => m.iDoubleBeds, new { type = "text", pattern = "^[0-9]*$", @class = "form-control iNumberLength3", maxlength = "3" })
+                        @Html.ValidationMessageFor(m => m.iDoubleBeds)
+                    </div>
+                </div>
+
+
+                <div class="row margintop10">
+                    <div class="col-xs-2" style="width:11%">
+                        Size <span class="star">*</span>
+                    </div>
+                    <div class="col-xs-2">
+                        @Html.TextBoxFor(m => m.dSizeSqft, new { type = "text", pattern = @"\d+(\.\d{1,2})?", @class = "form-control decimal", id = "iorginalsize", onblur = "CalculateSize(this.value);", maxlength = "6", required = "true" })
+                        @Html.ValidationMessageFor(m => m.dSizeSqft)
+                    </div>
+                    <div class="col-xs-3">
+                        @Html.DropDownListFor(m => m.SizeType, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="Sq.Ft",Value="Sq.Ft" },
+                                                                            new SelectListItem {Text="Sq.Mtr",Value="Sq.Mtr" }},
+                                   new { @class = "form-control", id = "ddlSizeType", onchange = "CalculateSize(m => m.dSizeSqft);" })
+                    </div>
+                    <div class="col-xs-2">
+
+                        @Html.TextBoxFor(m => m.dSizeMtr, new { type = "text", pattern = @"\d+(\.\d{1,2})?", @readonly = "readonly", @class = "decimal", id = "isize", maxlength = "6", required = "true", style = "border:0;" })
+                        @Html.ValidationMessageFor(m => m.dSizeMtr)
+                    </div>
+                    <div class="col-xs-1" style=" margin-left: -28px; margin-top: -5px;">
+                        @if (Model.SizeType == "Sq.Ft") { Model.Type = "Sq.Mtr"; } else { Model.Type = "Sq.Ft"; }
+                        @*@Html.LabelFor(u => u.Type, new {id="lblsizetype", style="display:none" })*@
+                        <label id="lblsizetype"></label>
+                    </div>
+                </div>
+
+                <div class="row margintop10">
+
+                    <div class="col-xs-12">
+                        <div class="subheadcolor"><h4>Do you need?</h4></div>
+                        <hr />
+                    </div>
+
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th colspan="2">Room Accessibility and Building characteristics</th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Accessibility</td>
+                                <td>
+                                    @{
+    var htmlList1 = new HtmlListInfo(HtmlTag.table, 1, null,
+      TextLayout.Default, TemplateIsUsed.No);
+                                    }
+                                    @Html.CheckBoxListFor(m => m.SelectedAccessibility, m => m.AccessibilityItems,
+                                    group => group.Value,
+                                    group => group.Text,
+                                    m => m.Selected,
+                                       htmlList1)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Building characteristics</td>
+                                <td>
+                                    @{
+    var htmlList = new HtmlListInfo(HtmlTag.table, 2, null,
+      TextLayout.Default, TemplateIsUsed.No);
+                                    }
+                                    @Html.CheckBoxListFor(m => m.SelectedBuildingcharacteristics, m => m.BuildingcharacteristicsItems,
+                                    group => group.Value,
+                                    group => group.Text,
+                                    m => m.Selected,
+                                    htmlList)
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="subheadcolor"><h4>Outdoor & View</h4></div>
+                        <hr />
+                    </div>
+
+                    @*<div class="col-xs-4"><input name="" type="checkbox" value=""> City View</div>
+                        <div class="col-xs-4 Chkboxhighlighted"><input name="" type="checkbox" value="" checked> Garden View</div>*@
+                    <div class="col-xs-12">
+                        @{
+    var htmlListInfo = new HtmlListInfo(HtmlTag.table, 5, null,
+                         TextLayout.Default, TemplateIsUsed.No);
+                        }
+                        @Html.CheckBoxListFor(m => m.SelectedOutdoorView, m => m.OutdoorViewItems,
+                                    group => group.Value,
+                                    group => group.Text,
+                                    m => m.Selected,
+                                    htmlListInfo)
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+
+    </div>
+    <div id="targetid"></div>
+}

@@ -1,0 +1,69 @@
+﻿@model OneFineRateBLL.Entities.etblPropertyBidUpgradeM
+
+@using (Ajax.BeginForm("UpdateUpgrade", "RateInventoryBid", new AjaxOptions() { InsertionMode = InsertionMode.Replace, UpdateTargetId = "targetid", HttpMethod = "POST", OnSuccess = "GetResult" }))
+{
+    @Html.HiddenFor(x => x.dtEffectiveDate)
+    @Html.HiddenFor(x => x.iPropId)
+    @Html.HiddenFor(x => x.iRoomId)
+    @Html.HiddenFor(x => x.sUpgradeType)
+
+    <div class="modal-dialog modal-lg">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header ">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <div class="pull-left">
+                    <h4>Room Upgrade</h4>
+                </div>
+                <div class="pull-right blue">@ViewData["Date"]</div>
+            </div>
+            <div class="modal-body">
+
+
+                <div class="row">
+                    <div class="col-xs-3">
+                        Upgrade Type : @if (Model.sUpgradeType == "BTB")
+                        {
+                            <span><b> Bar To Bar</b></span>
+                        }
+                        else
+                        {
+                            <span><b> Wish Rate</b></span>
+                        }
+                    </div>
+
+                    @if (Model.sUpgradeType == "WIS")
+                    {
+                        <div class="col-xs-3">
+                            Upgrade Charge : @Html.DisplayFor(m => m.dUpgradeCharge)
+                        </div>
+                        <div class="col-xs-3">
+                            New Discount
+                            @Html.TextBoxFor(m => m.dUpgradeCharge, new { type = "text", @class = "form-control", maxlength = "5", pattern = "[0-9]+([\\.,][0-9]+)?" })
+                        </div>
+                    }
+
+
+                    <div class="col-xs-3">
+                        Close Out
+                        @Html.DropDownListFor(m => m.bCloseOut, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="Yes",Value="true" },
+                                                                            new SelectListItem {Text="No",Value="false" }},
+                                                                            new { @class = "form-control " })
+                    </div>
+
+                </div>
+                <div class="row ">
+                    <div class="col-xs-12 marginbottom20 margintop10 text-center">
+                        <hr>
+                        <input type="submit" class="btn btn-primary margintop10" value="Save">
+                        <input type="button" class="btn btn-danger margintop10" value="Cancel" data-dismiss="modal">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div id="targetid"></div>
+}

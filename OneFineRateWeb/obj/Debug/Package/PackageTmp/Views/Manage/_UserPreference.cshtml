@@ -1,0 +1,116 @@
+﻿@model OneFineRateWeb.Models.PreferenceViewModel
+
+<div class="tablebluebg accordion margintop20" id="MyPreference">Preferences</div>
+<div class="padding10 bookingbxbg">
+
+    @using (Html.BeginForm("UserPreference", "Manage", FormMethod.Post, new { @class = "profileForm", id = "frmUserPreference" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="row form-group">
+            <div class="col-md-2">
+                @Html.LabelFor(model => model.SmokingRoom)
+            </div>
+            <div class="col-md-3">
+                @Html.EnumDropDownListFor(x => x.SmokingRoom, "Select", new { @class = "form-control margintop5" })
+                @Html.ValidationMessageFor(model => model.SmokingRoom, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-2">
+                @Html.LabelFor(model => model.PreferedStarRating)
+            </div>
+            <div class="col-md-2">
+                @Html.EnumDropDownListFor(x => x.PreferedStarRating, "Select", new { @class = "form-control margintop5" })
+                @Html.ValidationMessageFor(model => model.PreferedStarRating, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="row form-inline">
+            <div class="col-md-2">
+                <label>Preferred Facilities</label>
+            </div>
+
+            <div class="col-md-10">
+                <ul class="prefer">
+                    <li>
+                        @Html.CheckBoxFor(x => x.Facilities_For_Disabled_Guest, new { @class = "checkbox" })
+                        @Html.LabelFor(x => x.Facilities_For_Disabled_Guest, "Facilities for Disable Guests")
+                    </li>
+                    <li>
+                        @Html.CheckBoxFor(x => x.Fitness_Center, new { @class = "checkbox" })
+                        @Html.LabelFor(x => x.Fitness_Center, "Fitness Center")
+                    </li>
+                    <li>
+                        @Html.CheckBoxFor(x => x.Internet_Services, new { @class = "checkbox" })
+                        @Html.LabelFor(x => x.Internet_Services, "Internet Services")
+                    </li>
+
+                    <li>
+                        @Html.CheckBoxFor(x => x.Pets_Allowed, new { @class = "checkbox" })
+                        @Html.LabelFor(x => x.Pets_Allowed, "Pets Allowed")
+                    </li>
+                    <li>
+                        @Html.CheckBoxFor(x => x.Pool, new { @class = "checkbox" })
+                        @Html.LabelFor(x => x.Pool, "Pool")
+                    </li>
+                    <li>
+                        @Html.CheckBoxFor(x => x.Luggage_Storage, new { @class = "checkbox" })
+                        @Html.LabelFor(x => x.Luggage_Storage, "Language storage")
+                    </li>
+                    <li>
+                        @Html.CheckBoxFor(x => x.Restaurant, new { @class = "checkbox" })
+                        @Html.LabelFor(x => x.Restaurant, "Restaurant")
+                    </li>
+                    <li>
+                        @Html.CheckBoxFor(x => x.Spa_And_Wellness_Center, new { @class = "checkbox" })
+                        @Html.LabelFor(x => x.Spa_And_Wellness_Center, "Spa and wellness center")
+                    </li>
+
+                    <li>
+                        @Html.CheckBoxFor(x => x.Front_Desk_24_Hour, new { @class = "checkbox" })
+                        @Html.LabelFor(x => x.Front_Desk_24_Hour)
+
+                    </li>
+
+                    <li>
+                        @Html.CheckBoxFor(x => x.Bar, new { @class = "checkbox" })
+                        @Html.LabelFor(x => x.Bar, "Bar")
+                    </li>
+                    <li>
+                        @Html.CheckBoxFor(x => x.Family_Rooms, new { @class = "checkbox" })
+                        @Html.LabelFor(x => x.Family_Rooms, "Family Rooms")
+                    </li>
+                    <li>
+                        @Html.CheckBoxFor(x => x.Airport_Suttle, new { @class = "checkbox" })
+                        @Html.LabelFor(x => x.Airport_Suttle, "Airport Shuttle")
+                    </li>
+
+                    <li>
+                        @Html.CheckBoxFor(x => x.Parking, new { @class = "checkbox" })
+                        @Html.LabelFor(x => x.Parking, "Parking")
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-2 ">
+                <label>Special Request</label><br /><span class="red">*Max(200)</span>
+            </div>
+            <div class="col-md-10 margintop10">
+                <div class="form-group">
+                    @Html.TextAreaFor(x => x.SpecialRequest, new { maxlength = "200", placeholder = "Special Requests", @class = "form-control height100" })
+                    @Html.ValidationMessageFor(model => model.SpecialRequest, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-md-12 ">
+                <button type="button" class="btn btn-danger cancelMyAccountForm marginleft5 cancel pull-right">Cancel</button>
+                <button type="submit" class="btn btn-success pull-right">Save</button>
+
+            </div>
+        </div>
+
+    }
+
+</div>

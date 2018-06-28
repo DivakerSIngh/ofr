@@ -1,0 +1,50 @@
+﻿@model OneFineRateBLL.Entities.etblPropertyTaxMap
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutProperty.cshtml";
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        bindgrid();
+    });
+    // bind list
+    function bindgrid() {
+
+        try {
+            var aoColumns =
+                [
+                   {
+                       "sTitle": "Stay From", "mData": "dtStayFrom", "bSortable": false
+                   },
+                 {
+                     "sTitle": "Stay To", "mData": "dtStayTo", "bSortable": false
+                 },
+                 { "sTitle": "Rate Plan", "mData": "RatePlan", "bSortable": false },
+                   { "sTitle": "Taxes", "mData": "Tax", "bSortable": false },
+                 { "sTitle": "Status", "mData": "cStatus", "bSortable": false }
+                ];
+            DatatableServerSide("#tblData", aoColumns, "/Services/Service.asmx/GetPropertyTaxes?Id=@Convert.ToInt32(Session["PropId"])");
+            $('.dataTables_filter input').attr('title', 'Type here to search in the Rate Plan Column');
+        }
+        catch (e) {
+
+        }
+
+    }
+</script>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4 class="panel-title">
+             Taxes and Fees
+        </h4>
+    </div>
+    <div class="panel-body">
+
+        <div class="table table-striped table-bordered table-hover display margintop20">
+            <table class="display table-striped table-bordered table-hover" id="tblData"></table>
+        </div>
+        <!-- End  table -->
+    </div>
+</div>
+

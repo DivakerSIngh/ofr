@@ -1,0 +1,740 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+<link href="~/css/TimeSheetSimulator.css" rel="stylesheet" />
+
+@System.Web.Optimization.Scripts.Render("~/bundles/ajaxpostform")
+@System.Web.Optimization.Scripts.Render("~/bundles/validation")
+<script src="~/js/TimeSheetSimulator.js"></script>
+<script src="~/js/jquery-ui.js"></script>
+
+<style>
+    .hideancor {
+        display: none;
+    }
+
+    .container {
+        width: 100% !important;
+    }
+
+    .ThreshHoldMatch {
+        border-bottom-color: red !important;
+        border-top-color: red !important;
+        border-right-color: red !important;
+        border-left-color: red !important;
+    }
+
+    /*.TimeSheetBid .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+        line-height: 20px;
+    }*/
+
+    .TimeSheetBid-row:first-child > td {
+        line-height: 17px !important;
+    }
+
+    /*.TimeSheetBid img {
+        height: 20px !important;
+    }*/
+
+    #tblinventory thead tr th {
+        text-align: center;
+    }
+
+    #tblinventory.table > tbody > tr > td,
+    #tblinventory.table > tbody > tr > th,
+    #tblinventory.table > tfoot > tr > td,
+    #tblinventory.table > tfoot > tr > th,
+    #tblinventory.table > thead > tr > td,
+    #tblinventory.table > thead > tr > th {
+        padding: 0px !important;
+        line-height: 20px !important;
+        padding-left:5px !important;
+    }
+
+    .publicTR {
+        background-color: #999 !important;
+        text-align:left;
+        color:#fff;
+        font-weight:bold;
+        padding-left:5px !important;
+    }
+
+    .corporateTR {
+                padding-left:5px !important;
+        background-color: #999 !important;
+        text-align:left;
+        color:#fff;
+        font-weight:bold;
+        
+    }
+</style>
+<script type="text/javascript">
+    var dayList = '';
+    var hourList = '';
+    var sheetData = '';
+    var dimensions = '';
+    var Arrivaldate = '';
+    var NextDueDate = '';
+    var TodayDate = '';
+    var Bookingdate = '';
+    var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    var dimensions = [8, 15];
+    var DataType = 1;
+
+    //type desc
+    // 2 for lead time
+    // 3 for length of stay
+    // 4 for weekdays and weekends
+    // 5 for Multiple rooms
+    // 1 for Base
+
+    //var dayList = [
+    //   { name: "Bid Room", type: "0" }, { name: "Base", type: "1" },{ name: "Length of stay", type: "3" },
+    //   { name: "Multiple Rooms", type: "5" },{ name: "Lead Time", type: "2" },
+    //   { name: "Weekend/Weekday", type: "4" }
+    //]
+    //,    { name: "Maximum Discount Applicable", type: "0" }, { name: "Maximum discount giving by competative hotel", type: "0" }
+
+    function getdata(obj) {
+
+        //debugger;
+
+        var selectedTypeVal = $('#Type option:selected').val();
+
+        var type = $(obj).attr('type');
+        var cdate = $(obj).attr('cdate');
+        var publicOrCorporate = selectedTypeVal == 1 ? 'p' : selectedTypeVal == 2 ? 'c' : 'b';
+
+        if (publicOrCorporate == 'b') {
+            var rowid = $(obj).closest('tr').data('rowid');
+            if (rowid && rowid >= 12)
+                publicOrCorporate = 'c';
+            else
+                publicOrCorporate = 'p';
+
+        }
+
+
+        if (type == 1) {
+            $("#divbasic").html('');
+            var url = '@Url.Action("Basic","RateInventoryBid")' + "?date=" + cdate + "&type=" + DataType + "&pctype=" + publicOrCorporate;
+            $("#divbasic").load(url);
+            $('#divbasic').modal({
+                show: 'true'
+            });
+        }
+        else if (type == 2) {
+            $("#divleadtime").html('');
+            var url = '@Url.Action("LeadTime", "RateInventoryBid")' + "?date=" + cdate + "&type=" + DataType + "&pctype=" + publicOrCorporate;
+            $("#divleadtime").load(url);
+            $('#divleadtime').modal({
+                show: 'true'
+            });
+        }
+        else if (type == 3) {
+            $("#divlos").html('');
+            var url = '@Url.Action("LOS", "RateInventoryBid")' + "?date=" + cdate + "&type=" + DataType + "&pctype=" + publicOrCorporate;
+            $("#divlos").load(url);
+            $('#divlos').modal({
+                show: 'true'
+            });
+        }
+        else if (type == 4) {
+            $("#divWeekEndWeekDay").html('');
+            var url = '@Url.Action("Week", "RateInventoryBid")' + "?date=" + cdate + "&type=" + DataType + "&pctype=" + publicOrCorporate;
+            $("#divWeekEndWeekDay").load(url);
+            $('#divWeekEndWeekDay').modal({
+                show: 'true'
+            });
+        }
+        else if (type == 5) {
+            $("#divRooms").html('');
+            var url = '@Url.Action("Rooms", "RateInventoryBid")' + "?date=" + cdate + "&type=" + DataType + "&pctype=" + publicOrCorporate;
+            $("#divRooms").load(url);
+            $('#divRooms').modal({
+                show: 'true'
+            });
+        }
+        else if (type.indexOf('_') == 0) {
+
+            $("#divUpdates").html('');
+            var url = '@Url.Action("Updates", "RateInventoryBid")' + "?date=" + cdate + "&&id=" + type.split('_')[1];
+            if (!$(obj).hasClass("yellowbg")) {
+                $("#divUpdates").load(url);
+                $('#divUpdates').modal({
+                    show: 'true'
+                });
+            }
+        }
+    }
+
+    function Toggletr(obj) {
+        $(".parent").click(function () {
+            $(this).nextUntil(".parent").toggle();
+        });
+    }
+
+    function BindGrid(Bookingdate, Arrivaldate) {
+
+        var rowtext = '';
+        $("#tblError tbody").html(rowtext);
+        $(".ErrorsExist").hide();
+
+        var values = {
+            BookingDate: Bookingdate,
+            ArrivalDate: Arrivaldate,
+            LOS: $("#LOS option:selected").text(),
+            Rooms: $("#Rooms option:selected").text(),
+            Occupancy: $("#Occupancy option:selected").text(),
+            Type: $("#Type option:selected").val()
+        };
+
+        DataType = $("#Type option:selected").val();
+        document.getElementById('Progress').style.display = 'block';
+
+        setTimeout(function () {
+
+            AjaxCallWithDataMVC_Async("@Url.Action("BindGrid")", values, function (data) {
+
+                var Data = $.parseJSON(data);
+
+                var corporateAndPublic = false;
+
+                if (Data && Data.st == 1) {
+
+                    //debugger;
+
+                    hourList = JSON.parse(Data.days);
+                    sheetData = JSON.parse(Data.publicValues);
+
+                    dimensions = [Data.count, 15];
+
+                    //debugger;
+
+                    var dayList = [];
+
+                    var dayListPublic = [
+                       { name: "Bid Room", type: "0" },
+                       { name: "Current Rate", type: "9" },
+                       { name: "Base", type: "1" },
+                       { name: "Length of stay", type: "3" },
+                       { name: "Multiple Rooms", type: "5" },
+                       { name: "Lead Time", type: "2" },
+                       { name: "Weekend/Weekday", type: "4" },
+                       { name: "Total Discount %", type: "6" },
+                       { name: "Discounted Rate", type: "7" },
+                       { name: "Discounted Rate Inclusions", type: "8" },
+                       { name: "Competition Min. Rate", type: "10" },
+                       { name: "Competition Min Rate Inclusion", type: "11" }
+                    ];
+
+                    dayList = dayListPublic;
+
+                    var Rooms = JSON.parse(Data.rooms);
+
+
+                    if (Data.both == true) {
+
+                        var dayListCorporate = [
+                        //{ name: "", type: "0" },
+                        //{ name: "Current Rate", type: "9" },
+                        { name: "Base", type: "1" },
+                        { name: "Length of stay", type: "3" },
+                        { name: "Multiple Rooms", type: "5" },
+                        { name: "Lead Time", type: "2" },
+                        { name: "Weekend/Weekday", type: "4" },
+                        { name: "Total Discount %", type: "6" },
+                        { name: "Discounted Rate", type: "7" },
+                        { name: "Discounted Rate Inclusions", type: "8" },
+                        { name: "Competition Min. Rate", type: "10" },
+                        { name: "Competition Min Rate Inclusion", type: "11" },
+
+                        ];
+
+                        for (var i = 0; i < dayListCorporate.length; i++) {
+
+                            var p = { name: dayListCorporate[i].name, type: dayListCorporate[i].type }
+
+                            dayList.push(p);
+                        }
+
+                        corporateAndPublic = true;
+                    }
+
+
+                    for (var i = 0; i < Rooms.length; i++) {
+                        var p =
+                        { name: Rooms[i].name, type: Rooms[i].id }
+
+                        dayList.push(p);
+                    }
+
+                    console.log(dayList);
+                    console.log(sheetData);
+
+                    try {
+                        var sheet = $("#tblinventory").TimeSheetBid({
+                            data: {
+                                dimensions: dimensions,
+                                colHead: hourList,
+                                rowHead: dayList,
+                                sheetHead: { name: "Close Out" },
+                                sheetData: sheetData,
+                                corporateAndPublic: corporateAndPublic
+                            },
+                            end: function (ev, selectedArea) {
+                                //updateRemark(sheet);
+                            }
+                        });
+
+                        // $("#tblinventory").find("[data-rowid='12']").remove();
+
+                    } catch (e) {
+
+                        console.error(e);
+
+                    }
+
+                    try {
+
+                        //debugger;
+
+                        var p_errors = '';
+
+                        if (Data.publicErrors) {
+                            p_errors = JSON.parse(Data.publicErrors);
+                        }
+
+                        if (p_errors.length > 0) {
+
+                            for (var i = 0; i < p_errors.length; i++) {
+
+                                rowtext += '<tr>';
+                                rowtext += '<td>' + p_errors[i].Date + '</td>';
+                                rowtext += '<td>' + p_errors[i].Type + '</td>';
+                                rowtext += '<td>' + p_errors[i].Error + '</td>';
+                                rowtext += '</tr>';
+                            }
+
+                            $("#tblError tbody").html(rowtext);
+                            $(".ErrorsExist").show();
+                        }
+
+                    } catch (e) {
+                        console.error(e);
+                    }
+
+                    //$('#tblinventory').gridviewScroll({
+                    //    width: 660,
+                    //    height: 200
+                    //});
+                }
+                else {
+
+                    if (Data)
+                        toastr.info(Data.msg);
+                    else
+                        toastr.error('An error occured!');
+                }
+
+                $('#txtThreshHold').keyup();
+
+                ////////////////////////////////////////////////////////////////////////////////////////
+
+            });
+
+        });
+    }
+
+    $(document).ready(function () {
+        var d = new Date();
+        var ThreeYearDate = new Date();
+        var a = ThreeYearDate.getFullYear();
+        ThreeYearDate.setFullYear(a + 3);
+
+        $('#txtBookdate').datepicker({
+            startDate: d,
+            minDate: d,
+            maxDate: ThreeYearDate,
+            autoclose: true,
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true,
+            onClose: function (selectedDate) {
+                $("#txtArrivaldate").datepicker("option", "minDate", selectedDate);
+                CalcLT();
+            }
+        });
+
+        $('#txtArrivaldate').datepicker({
+            startDate: d,
+            minDate: d,
+            maxDate: ThreeYearDate,
+            autoclose: true,
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true,
+            onClose: function (selectedDate) {
+                CalcLT();
+            }
+        });
+
+        document.getElementById('frmDate').onsubmit = function (e) {
+            e.preventDefault();
+            //debugger;
+            var f = document.getElementById('frmDate');
+            if (f.checkValidity()) {
+
+                var Bdate = $('#txtBookdate').val();
+                var Bd = new Date(Bdate.split("/").reverse().join("-"));
+                var Bdd = Bd.getDate();
+                var Bmm = Bd.getMonth() + 1;
+                var Byy = Bd.getFullYear();
+
+                if (Bdd < 10) {
+                    Bdd = '0' + Bdd
+                }
+                if (Bmm < 10) {
+                    Bmm = '0' + Bmm
+                }
+                Bookingdate = Bmm + "/" + Bdd + "/" + Byy;
+
+                var Adate = $('#txtArrivaldate').val();
+                var Ad = new Date(Adate.split("/").reverse().join("-"));
+                var Add = Ad.getDate();
+                var Amm = Ad.getMonth() + 1;
+                var Ayy = Ad.getFullYear();
+
+                if (Add < 10) {
+                    Add = '0' + Add
+                }
+                if (Amm < 10) {
+                    Amm = '0' + Amm
+                }
+                Arrivaldate = Amm + "/" + Add + "/" + Ayy;
+
+                BindGrid(Bookingdate, Arrivaldate);
+            }
+        }
+
+        $(".ErrorsExist").hide();
+
+        $("#ui-datepicker-div").hide();
+
+
+    });
+    $(function () {
+        //debugger;
+        var bookingDate = '@ViewBag.BookingDate';
+        var arrivalDate = '@ViewBag.BookingDate';
+        var los = '@ViewBag.LOS';
+        var rooms = '@ViewBag.Rooms';
+        var occupancy = '@ViewBag.Occupancy';
+        var type = '@ViewBag.Type';
+        $('#txtBookdate').val(bookingDate);
+        $('#txtArrivaldate').val(arrivalDate);
+        if (los != '') {
+            $('#LOS').val(los).change();
+        }
+        if (rooms != '') {
+            $('#Rooms').val(rooms).change();
+        }
+        if (occupancy != '') {
+            $('#Occupancy').val('').change();
+        }
+        if (type != '') {
+            $('#Type').val(type).change();
+        }
+        if ($('#txtBookdate').val() != "") {
+            $("#frmDate").submit();
+        }
+        $("#btnExcelDownload").click(function () {
+            location.href = '@Url.Action("ExportExcel", "RateInventoryBid")';
+        });
+        $("#btnGoToOverview").click(function () {
+            location.href = '/RateInventoryBid/Index';
+        });
+    });
+
+    function GetResult(data) {
+        if (data.st == '1') {
+            toastr.success(data.msg);
+            $('.close').click();
+            BindGrid(Bookingdate, Arrivaldate);
+        }
+        else {
+            toastr.error(data.msg);
+        }
+    }
+
+    function CalcLT() {
+        var value = '';
+        $('#LT').html(value);
+        try {
+            var Bdate = $('#txtBookdate').val();
+            var Bd = new Date(Bdate.split("/").reverse().join("-"));
+
+            var Adate = $('#txtArrivaldate').val();
+            var Ad = new Date(Adate.split("/").reverse().join("-"));
+
+            var timeDiff = Math.abs(Ad.getTime() - Bd.getTime());
+            var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+            if (!isNaN(diffDays) && diffDays != 0) {
+                value = 'Lead Time : ' + diffDays + ' days';
+            }
+            else {
+                value = 'Lead Time : 0 days';
+            }
+            $('#LT').html(value);
+        }
+        catch (e) { }
+    }
+    $("#btnExcelDownload").click(function () {
+        location.href = '/RateInventoryBid';
+    });
+    $("#btnGoToOverview").click(function () {
+
+        location.href = '/RateInventoryBid/Index';
+    });
+
+</script>
+<div class="container margintop20">
+    <div class="panel panel-default">
+
+        <div class="panel-heading">
+            Overview
+            <span style="text-align:right; float:right;">
+                <button type="submit" id="btnGoToOverview" class="btn btn-warning">Express View</button>
+                <button type="submit" id="btnExcelDownload" class="btn btn-warning">Excel Download</button>
+                <a class="btn btn-info" href="/BulkBid">Back to bulk update</a>
+            </span>
+        </div>
+        <div class="panel-body">
+            <div class="margin15t">
+                <div class="row">
+                    <form id="frmDate">
+                        <div class="row">
+                            <div class="col-md-1" style="width:10%;">
+                                <label>Booking Date</label>
+                            </div>
+                            <div class="col-md-1" style="width:11%;">
+                                @Html.TextBox("txtBookdate", null, new { @class = "form-control ", id = "txtBookdate", onkeyup = "this.value=''", required = "true" })
+                            </div>
+                            <div class="col-md-1" style="width:9%;">
+                                <label>Target Date</label>
+                            </div>
+                            <div class="col-md-1" style="width:11%;">
+                                @Html.TextBox("txtArrivaldate", null, new { @class = "form-control ", id = "txtArrivaldate", onkeyup = "this.value=''", required = "true" })
+                            </div>
+                            <div class="col-md-1" style="width:13%;">
+                                <label id="LT">Lead Time : 0 days</label>
+                            </div>
+                            <div class="col-md-1" style="width:3%;">
+                                <label>LOS</label>
+                            </div>
+                            <div class="col-md-1" style="width:7%;">
+                                <select id="LOS" class="form-control">
+                                    <option value="1">1</option>
+                                    <option value="2" selected="selected">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                    <option value="13">13</option>
+                                    <option value="14">14</option>
+                                    <option value="15">15</option>
+                                    <option value="16">16</option>
+                                    <option value="17">17</option>
+                                    <option value="18">18</option>
+                                    <option value="19">19</option>
+                                    <option value="20">20</option>
+                                    <option value="21">21</option>
+                                    <option value="22">22</option>
+                                    <option value="23">23</option>
+                                    <option value="24">24</option>
+                                    <option value="25">25</option>
+                                    <option value="26">26</option>
+                                    <option value="27">27</option>
+                                    <option value="28">28</option>
+                                    <option value="29">29</option>
+                                    <option value="30">30</option>
+                                    <option value="31">31</option>
+                                    <option value="32">32</option>
+                                    <option value="33">33</option>
+                                    <option value="34">34</option>
+                                    <option value="35">35</option>
+                                    <option value="36">36</option>
+                                    <option value="37">37</option>
+                                    <option value="38">38</option>
+                                    <option value="39">39</option>
+                                    <option value="40">40</option>
+                                    <option value="41">41</option>
+                                    <option value="42">42</option>
+                                    <option value="43">43</option>
+                                    <option value="44">44</option>
+                                    <option value="45">45</option>
+                                </select>
+                            </div>
+                            <div class="col-md-1" style="width:4%;">
+                                <label>Rooms</label>
+                            </div>
+                            <div class="col-md-1" style="width:7%;">
+                                <select id="Rooms" class="form-control">
+                                    <option value="1" selected="selected">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                </select>
+                            </div>
+                            <div class="col-md-1" style="width:7%;">
+                                <label>Occupancy</label>
+                            </div>
+                            <div class="col-md-1" style="width:7%;">
+                                <select id="Occupancy" class="form-control">
+                                    <option value="1">1</option>
+                                    <option value="2" selected="selected">2</option>
+                                </select>
+                            </div>
+                            <div class="col-md-1" style="width:4%;">
+                                <button type="submit" id="btnSubmit" class="btn btn-primary">GO</button>
+                            </div>
+                        </div>
+                        <div class="row">                            
+                            <div class="col-md-1" style="width:10%;">
+                                <label>Type</label>
+                            </div>
+                            <div class="col-md-1" style="width:11%;">
+                                <select id="Type" class="form-control">
+                                    <option value="0" selected="selected">Both</option>
+                                    <option value="1">Public</option>
+                                    <option value="2">Corporate</option>
+                                </select>
+                            </div>
+                            <div class="col-md-1" style="width:9%;">
+                                <label>Threshold</label>
+                            </div>
+                            <div class="col-md-1" style="width:11%;">
+                                @Html.TextBox("txtThreshHold", null, new { @class = "form-control ", id = "txtThreshHold", type = "number", step = "0.01" })
+                            </div>
+                            <div class="col-md-4" style="padding-left:0">
+                                (Highlight dates higher than the total discount)
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="table-responsive margintop20 margin15">
+                <table class="table table-striped table-bordered table-hover txtcenter" id="tblinventory"></table>
+
+                <div class="pull-right padding10"><img src="../images/legend2.jpg" alt=""></div>
+            </div>
+            <!-- End  table -->
+        </div>
+        <div class="ErrorsExist margin15t">
+            <h4>Errors</h4>
+            <hr />
+
+        </div>
+        <div class="panel-body ErrorsExist">
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-hover " id="tblError">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Error</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Popup 1-->
+<div id="divleadtime" class="modal fade" role="dialog">
+
+</div>
+<!-- Popup1-->
+<!-- Popup 2-->
+<div id="divlos" class="modal fade" role="dialog">
+
+</div>
+<!-- Popup2-->
+<!-- Popup 3-->
+<div id="divRooms" class="modal fade" role="dialog">
+
+</div>
+<!-- Popup3-->
+<!-- Popup 4-->
+<div id="divWeekEndWeekDay" class="modal fade" role="dialog">
+
+</div>
+<!-- Popup4-->
+<!-- Popup 5-->
+<div id="divbasic" class="modal fade" role="dialog">
+
+</div>
+<!-- Popup5-->
+<!-- Popup 6-->
+<div id="divUpdates" class="modal fade" role="dialog">
+
+</div>
+<!-- Popup6-->
+
+<script>
+
+    $(function () {
+
+        $('#txtThreshHold').keyup(function () {
+
+            var value = $(this).val();
+
+            var parseVal = parseFloat(value);
+
+            //debugger;
+
+            var tr_public = $(document).find('#tblinventory').find('tr:nth-child(9)');
+
+            $(tr_public).find('td').each(function () {
+
+                if (parseFloat($(this).text()) > parseVal) {
+
+                    $(this).addClass('ThreshHoldMatch');
+                }
+                else {
+
+                    $(this).removeClass('ThreshHoldMatch')
+                }
+            });
+
+            var tr_corporate = $(document).find('#tblinventory').find('tr:nth-child(22)');
+
+            $(tr_corporate).find('td').each(function () {
+
+                if (parseFloat($(this).text()) > parseVal) {
+
+                    $(this).addClass('ThreshHoldMatch');
+                }
+                else {
+
+                    $(this).removeClass('ThreshHoldMatch')
+                }
+
+            });
+        });
+
+    });
+</script>

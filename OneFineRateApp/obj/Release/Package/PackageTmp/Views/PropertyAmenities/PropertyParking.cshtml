@@ -1,0 +1,349 @@
+﻿@model   OneFineRateBLL.Entities.etblPropertyAmenitiesMap
+
+
+<script type="text/javascript">
+    function fnNumeric(element, l) {
+        var charCode = event.keyCode
+        if (charCode == 8) {
+            return true;
+        }
+        else if (
+            //(charCode != 45) &&      // “-” CHECK MINUS, AND ONLY ONE.
+            (charCode != 46 || $(element).val().indexOf('.') != -1) &&      // “.” CHECK DOT, AND ONLY ONE.
+            (charCode < 48 || charCode > 57))
+        { return false; }
+        else if ($(element).val().indexOf('.') > 0 && ($(element).val().length - $(element).val().indexOf('.')) > 2) {
+
+            return false;
+        }
+        else {
+            if ($(element).val().length >= l) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    var ParkingData = [];
+    var OneWayCharge = '';
+    var TwoWayCharge = '';
+    var ShowDiv = 0;
+
+    //validate one way charge and two charge required optional
+    function validateData(oneway, twoway) {
+        var one = $('#' + oneway + '').val();
+        var two = $('#' + twoway + '').val();
+
+        if (one != '' && two == '') {
+            $('#' + oneway + '').addClass('validate[custom[number],min[1],required]');
+            $('#' + twoway + '').removeClass('validate[custom[number],min[1],required]');
+        }
+        else if (one == '' && two != '') {
+            $('#' + twoway + '').addClass('validate[custom[number],min[1],required]');
+            $('#' + oneway + '').removeClass('validate[custom[number],min[1],required]');
+        }
+        else {
+            $('#' + oneway + '').addClass('validate[custom[number],min[1],required]');
+            $('#' + twoway + '').addClass('validate[custom[number],min[1],required]');
+        }
+    }
+
+    $(document).ready(function () {
+
+        //Get Parkings mapped data with this property and bind table
+        var jsonData = '@Html.Raw(Model.JsonParkingMapData)';
+        if (jsonData != "") {
+            ParkingData = JSON.parse(jsonData);
+            if (ParkingData.length == 0)
+            {
+                //$('#trshow').show();
+            } else {
+                BindData(ParkingData);
+            }
+        }
+        else {
+            //$('#trshow').show();
+        }
+
+        //Add dynamic columns to add new parking
+        $('#btnadd').click(function () {
+            var i = $('#parking tr.trc').length + 1;
+            var myval = '';
+            myval += '<tr class="trc"> <td valign="bottom"><img src="/images/error.png" class="delete" style="cursor: pointer; padding-top:20px; float: right;" id="btnDelete' + i + '" />';
+            myval += '<div class="col-xs-3 margintop10"><input type="text" placeholder="Car Name/Model" id="txtname" name="txtname" class="form-control txtname validate[required]" maxlength="50" /></div>';
+            myval += '<div class="col-xs-3 margintop10" ><select name="ddltype" id="ddltype" class="form-control ddltype"><option value="A">Airport Domestic</option><option value="I">Airport International</option><option value="B">Bus Stand</option><option value="R">Railway Station</option><option value="T">Taxi Stand</option><option value="S">Sea Port</option></select></div>';
+            myval += '<div class="col-xs-3 margintop10"  style="width: 155px; "><input name="txtcompl" id="txtcompl' + i + '" class="txtcompl" type="checkbox"> Complimentary</div>';
+            // myval += '<div class="clearfix"></div>';
+            // myval += '<div class="col-xs-2 margintop10">One Way</div>';
+            myval += '<div class="col-xs-1 margintop10" style="width: 100px; "><input type="text" onkeypress="return fnNumeric(this,7)" placeholder="One Way" id="txtoneway' + i + '" pattern="^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$" onblur=validateData("txtoneway' + i + '","txttwoway' + i + '"); name="txtoneway' + i + '" class="form-control txtoneway validate[custom[number],min[1],required]" maxlength="7"  /></div>';
+            // myval += '<div class="col-xs-2">Two Way</div>';
+            myval += '<div class="col-xs-1 margintop10" style="width: 100px; "><input type="text" onkeypress="return fnNumeric(this,7)" placeholder="Two Way" id="txttwoway' + i + '" pattern="^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$" onblur=validateData("txtoneway' + i + '","txttwoway' + i + '"); name="txttwoway' + i + '" class="form-control txttwoway validate[custom[number],min[1],required]" maxlength="7"  /></div>';
+            myval += '</td></tr>';
+
+            myval += '';
+            $('#parking').append("" + myval + "");
+
+            $("#txtcompl" + i + "").click(function () {
+                if ($(this).is(':checked')) {
+                    $('#txtoneway' + i + '').hide();
+                    $('#txttwoway' + i + '').hide();
+                    $('#txtoneway' + i + '').removeClass('validate[custom[number],min[1],required]');
+                    $('#txttwoway' + i + '').removeClass('validate[custom[number],min[1],required]');
+                    $('.txtoneway' + i + 'formError').empty();
+                    $('.txttwoway' + i + 'formError').empty();
+                }
+                else {
+                    $('#txtoneway' + i + '').show();
+                    $('#txttwoway' + i + '').show();
+                    $('#txtoneway' + i + '').addClass('validate[custom[number],min[1],required]');
+                    $('#txttwoway' + i + '').addClass('validate[custom[number],min[1],required]');
+                }
+            });
+
+        });
+
+        // Delete dynamic row of parking
+        $('#parking').on('click', '.delete', function (e) {
+            e.preventDefault();
+            $(this).closest('tr').remove();
+        });
+
+
+        //On complementary checkbox click
+        $('#txtcompl').click(function () {
+            if ($(this).is(':checked')) {
+                $('#txtoneway').hide();
+                $('#txttwoway').hide();
+                $('#txtoneway').removeClass('validate[custom[number],min[1],required]');
+                $('#txttwoway').removeClass('validate[custom[number],min[1],required]');
+                $('.txtonewayformError').empty();
+                $('.txttwowayformError').empty();
+            }
+            else {
+                $('#txtoneway').show();
+                $('#txttwoway').show();
+                $('#txtoneway').addClass('validate[custom[number],min[1],required]');
+                $('#txttwoway').addClass('validate[custom[number],min[1],required]');
+            }
+        });
+
+    });
+
+    //Fetch data on button click before calling controller
+    function FetchData() {
+
+        var result = $('#myform').validationEngine("validate");
+        if (!result) {
+            return false;
+        }
+        else {
+            //var f = document.getElementById('myform');
+            //if (f.checkValidity()) {
+            //    alert('1');
+
+            //}
+            //else
+            //{
+            //    alert('2');
+            //    return false;
+            //}
+
+            var Data = [];
+            $("#parking tr.trc").each(function () {
+                var name = $(this).find("input:text.txtname").val();
+                var type = $(this).find('select.ddltype option:selected').val();
+                var comp = $(this).find("input:checkbox.txtcompl")[0].checked;
+                if (!comp) {
+                    var oneway = $(this).find("input:text.txtoneway").val();
+                    var twoway = $(this).find("input:text.txttwoway").val();
+                    if (oneway == '')
+                        oneway = 0;
+
+                    if (twoway == '')
+                        twoway = 0;
+                }
+                else {
+                    var oneway = '0';
+                    var twoway = '0';
+                }
+
+                Data.push({
+                    Name: name,
+                    Type: type,
+                    oneway: oneway,
+                    twoway: twoway,
+                    comp: comp
+                });
+            });
+
+            if (Data.length == 0)
+            {
+                toastr.warning('Please add transfer available facilities.');
+                $("html, body").delay(300).animate({
+                    scrollTop: $('.panel-group').offset().top
+                }, 500);
+                return false;
+            }
+            $("#hdnJson").val(JSON.stringify(Data));
+            return true;
+        }
+
+    }
+
+    function BindData(pdata) {
+        console.log(pdata);
+        var myval = '';
+        if (pdata.length == 1) {
+            var data = pdata[0];
+            $('#txtname').val(data.sCarName);
+            $('#txtoneway').val(data.dOnewayCharge == 0 ? '' : data.dOnewayCharge);
+            $('#txttwoway').val(data.dTwowayCharge == 0 ? '' : data.dTwowayCharge);
+            $("#ddltype").val(data.cAirportRail);
+            $('#txtcompl').prop('checked', data.bIsFree);
+            if (data.bIsFree) {
+                $('#txtoneway').hide();
+                $('#txttwoway').hide();
+                $('#txtoneway').removeClass('validate[custom[number],min[1],required]');
+                $('#txttwoway').removeClass('validate[custom[number],min[1],required]');
+                $('#txtoneway').val('');
+                $('#txttwoway').val('');
+                
+            }
+            else {
+                //$('#trshow').show();
+                $('#txtoneway').show();
+                $('#txttwoway').show();
+                $('#txtoneway').addClass('validate[custom[number],min[1],required]');
+                $('#txttwoway').addClass('validate[custom[number],min[1],required]');
+                validateData('txtoneway', 'txttwoway');
+                ShowDiv = 1;
+            }
+
+
+        }
+        else if (pdata.length > 1) {
+
+            
+            $("#parking").empty();
+
+            $.each(pdata, function (key, value) {
+                var i = $('#parking tr.trc').length + 1;
+                var myval = '';
+                myval += '<tr class="trc "> <td valing="bottom"><img src="/images/error.png" style="cursor: pointer; padding-top:20px; float: right;" class="delete"  id="btnDelete' + i + '" />';
+                myval += '<div class="col-xs-3 margintop10"><input type="text" id="txtname" value="' + value.sCarName + '" name="txtname" class="form-control txtname validate[required]" maxlength="50"/></div>';
+                myval += '<div class="col-xs-3 margintop10"><select name="ddltype" id="ddltype' + i + '" class="form-control ddltype"><option value="A">Airport Domestic</option><option value="I">Airport International</option><option value="B">Bus Stand</option><option value="R">Railway Station</option><option value="T">Taxi Stand</option><option value="S">Sea Port</option></select></div>';
+                myval += '<div class="col-xs-3 margintop10" style="width: 155px; "><input name="txtcompl" id="txtcompl' + i + '" class="txtcompl" type="checkbox"> Complimentary</div>';
+                //myval += '<div class="clearfix"></div>';
+                //myval += '<div class="col-xs-2 margintop10">One Way</div>';
+                if (!value.bIsFree) {
+                    OneWayCharge = value.dOnewayCharge == 0 ? "" : value.dOnewayCharge;
+                    TwoWayCharge = value.dTwowayCharge == 0 ? "" : value.dTwowayCharge;
+                    myval += '<div class="col-xs-1 margintop10" style="width: 100px;"><input type="text"  onkeypress="return fnNumeric(this,7)"  placeholder="One Way" id="txtoneway' + i + '" pattern="^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$"  name="txtoneway" class="form-control txtoneway validate[custom[number],min[1],required]" maxlength="7"  onblur=validateData("txtoneway' + i + '","txttwoway' + i + '"); /></div>';
+                    //myval += '<div class="col-xs-2 margintop10">Two Way</div>';
+                    myval += '<div class="col-xs-1 margintop10" style="width: 100px;"><input type="text" onkeypress="return fnNumeric(this,7)"  placeholder="Two Way" id="txttwoway' + i + '" pattern="^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$" name="txttwoway" class="form-control txttwoway validate[custom[number],min[1],required]" maxlength="7"   onblur=validateData("txtoneway' + i + '","txttwoway' + i + '"); /></div>';
+                }
+                else {
+                    myval += '<div class="col-xs-1 margintop10" style="width: 100px;"><input type="text" onkeypress="return fnNumeric(this,7)" style="display:none;" placeholder="One Way" id="txtoneway' + i + '" pattern="^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$"  name="txtoneway" class="form-control txtoneway" maxlength="7" onblur=validateData("txtoneway' + i + '","txttwoway' + i + '");  /></div>';
+                    //myval += '<div class="col-xs-2 margintop10">Two Way</div>';
+                    myval += '<div class="col-xs-1 margintop10" style="width: 100px;"><input type="text" onkeypress="return fnNumeric(this,7)" style="display:none;" placeholder="Two Way" id="txttwoway' + i + '" pattern="^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$"  name="txttwoway" class="form-control txttwoway" maxlength="7"  onblur=validateData("txtoneway' + i + '","txttwoway' + i + '"); /></div>';
+                }
+                myval += '</td></tr>';
+                myval += '';
+                console.log(myval);
+                $('#parking').append("" + myval + "");
+                $('#ddltype' + i + '').val(value.cAirportRail);
+                $('#txtcompl' + i + '').prop('checked', value.bIsFree);
+                $('#txtoneway' + i + '').val(OneWayCharge);
+                $('#txttwoway' + i + '').val(TwoWayCharge);
+                if (!value.bIsFree) {
+                    validateData('txtoneway' + i + '', 'txttwoway' + i + '');
+                    ShowDiv++;
+                }
+                //else {
+                //    ShowDiv--;
+                //}
+           
+
+                $("#txtcompl" + i + "").click(function () {
+                    if ($(this).is(':checked')) {
+                        $('#txtoneway' + i + '').hide();
+                        $('#txttwoway' + i + '').hide();
+                        $('#txtoneway' + i + '').removeClass('validate[custom[number],min[1],required]');
+                        $('#txttwoway' + i + '').removeClass('validate[custom[number],min[1],required]');
+                        $('#txtoneway' + i + '').val('');
+                        $('#txttwoway' + i + '').val('');
+                        $('.txtoneway' + i + 'formError').empty();
+                        $('.txttwoway' + i + 'formError').empty();
+                        
+                    }
+                    else {
+                        $('#txtoneway' + i + '').show();
+                        $('#txttwoway' + i + '').show();
+                        $('#txtoneway' + i + '').addClass('validate[custom[number],min[1],required]');
+                        $('#txttwoway' + i + '').addClass('validate[custom[number],min[1],required]');
+                        $('#txtoneway' + i + '').val('');
+                        $('#txttwoway' + i + '').val('');
+                    }
+                });
+            });
+        }
+        else {
+           // $('#trshow').show();
+        }
+        //if (ShowDiv>0)
+        //    $('#trshow').show();
+        //else
+        //    $('#trshow').hide();
+    }
+
+</script>
+@Html.HiddenFor(x => x.SelectedParkings, new { id = "hdnJson" })
+
+<div class="row">
+    <div class="col-xs-3" style="padding-left:30px;"><b>Transport Type / Model</b></div>
+    <div class="col-xs-3"><b>Pick up from</b></div>
+    <div class="col-xs-2" style="width: 155px; "></div>
+    <div id="trshow">
+        <div class="col-xs-1" style="width: 100px; ">
+            <b> One way</b>
+        </div>
+        <div class="col-xs-1" style="width: 100px; "><b>Two Way</b></div>
+    </div>
+</div>
+
+<table style="height:auto;" id="parking">
+
+    <tr class="trc">
+        <td class="row">
+            <div class="col-xs-3">
+                <input type="text" id="txtname" name="txtname" placeholder="Transport Type / Model" class="form-control txtname validate[required]" maxlength="50" />
+            </div>
+            <div class="col-xs-3">
+                <select name="ddltype" id="ddltype" class="form-control ddltype">
+                    <option value="A">Airport Domestic</option>
+                    <option value="I">Airport International</option>
+                    <option value="B">Bus Stand</option>
+                    <option value="R">Railway Station</option>
+                    <option value="T">Taxi Stand</option>
+                    <option value="S">Sea Port</option>
+
+                </select>
+            </div>
+            <div class="col-xs-2" style="width: 155px; ">
+                <input name="txtcompl" id="txtcompl" class="txtcompl" type="checkbox"> Complimentary
+            </div>
+
+            <div class="col-xs-1 " style="width: 100px; ">
+                <input type="text" id="txtoneway" pattern="^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$" placeholder="One Way" onkeypress="return fnNumeric(this,7)" name="txtoneway" class="form-control validate[custom[number],min[1],required] txtoneway" onblur="validateData('txtoneway', 'txttwoway');" maxlength="10" />
+            </div>
+            <div class="col-xs-1" style="width: 100px; ">
+                <input type="text" id="txttwoway" pattern="^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$" placeholder="Two Way" onkeypress="return fnNumeric(this,7)" name="txttwoway" class="form-control validate[custom[number],min[1],required] txttwoway" onblur="validateData('txtoneway', 'txttwoway');" maxlength="10" />
+            </div>
+
+        </td>
+    </tr>
+</table>
+
+<div class="col-xs-1 ">
+    <button id="btnadd" type="button" class="btn btn-primary margintop10"><i class="fa fa-plus"></i> Add</button>
+</div>

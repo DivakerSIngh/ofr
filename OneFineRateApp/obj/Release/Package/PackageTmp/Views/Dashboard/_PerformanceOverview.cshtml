@@ -1,0 +1,356 @@
+﻿@model OneFineRateBLL.Entities.ePerformanceOverviewGraphModel
+
+@{
+    Layout = null;
+}
+<table class="table table-bordered" id="performance" style="width:100%">
+    <thead class="thead-default">
+        <tr>
+            <th></th>
+            <th></th>
+            <th>Bid</th>
+            <th>Negotiate</th>
+            <th>Buy</th>
+            <th>Corporate</th>
+            <th>Overall</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.RoomNights.Count == 3)
+        {
+            <tr>
+                <td rowspan="3" valign="middle" style="vertical-align:middle; text-align:center;font-weight:bold">Room Nights</td>
+                <td>Current Year</td>
+                <td>@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Model.RoomNights[0].Bids)</td>
+                <td>@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Model.RoomNights[0].Negotiations)</td>
+                <td>@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Model.RoomNights[0].Buy)</td>
+                <td>@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Model.RoomNights[0].Corporate)</td>
+                <td>@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Model.RoomNights[0].OverAll)</td>
+            </tr>
+
+            <tr>
+
+                <td>Last Year</td>
+                <td>@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Model.RoomNights[1].Bids)</td>
+                <td>@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Model.RoomNights[1].Negotiations)</td>
+                <td>@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Model.RoomNights[1].Buy)</td>
+                <td>@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Model.RoomNights[1].Corporate)</td>
+                <td>@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Model.RoomNights[1].OverAll)</td>
+            </tr>
+
+            <tr>
+                @*<td></td>*@
+                <td></td>
+                <td>
+                    @if (Model.RoomNights[1].Bids != 0)
+                    {
+                        if (Model.RoomNights[2].Bids > 0)
+                        {
+                            <label class="text-info"> @Model.RoomNights[2].Bids % <span class="glyphicon glyphicon-arrow-up"></span></label>
+                        }
+                        else if (Model.RoomNights[2].Bids < 0)
+                        {
+                            <label class="red"> @(Model.RoomNights[2].Bids * -1) % <span class="glyphicon glyphicon-arrow-down"></span></label>
+                        }
+                        else
+                        {
+                            <label class="text-info">0%</label>
+                        }
+                    }
+                </td>
+                <td>
+                    @if (Model.RoomNights[1].Negotiations != 0)
+                    {
+                        if (Model.RoomNights[2].Negotiations > 0)
+                        {
+                            <label class="text-info"> @Model.RoomNights[2].Negotiations % <span class="glyphicon glyphicon-arrow-up"></span></label>
+                        }
+                        else if (Model.RoomNights[2].Negotiations < 0)
+                        {
+                            <label class="red"> @(Model.RoomNights[2].Negotiations * -1) % <span class="glyphicon glyphicon-arrow-down"></span></label>
+                        }
+                        else
+                        {
+                            <label class="text-info">0%</label>
+                        }
+                    }
+                </td>
+                <td>
+                    @if (Model.RoomNights[1].Buy != 0)
+                    {
+                        if (Model.RoomNights[2].Buy > 0)
+                        {
+                            <label class="text-info"> @Model.RoomNights[2].Buy % <span class="glyphicon glyphicon-arrow-up"></span></label>
+                        }
+                        else if (Model.RoomNights[2].Buy < 0)
+                        {
+                            <label class="red"> @(Model.RoomNights[2].Buy * -1) % <span class="glyphicon glyphicon-arrow-down"></span></label>
+                        }
+                        else
+                        {
+                            <label class="text-info">0%</label>
+                        }
+                    }
+                </td>
+                <td>
+                    @if (Model.RoomNights[1].Corporate != 0)
+                    {
+                        if (Model.RoomNights[2].Corporate > 0)
+                        {
+                            <label class="text-info"> @Model.RoomNights[2].Corporate % <span class="glyphicon glyphicon-arrow-up"></span></label>
+                        }
+                        else if (Model.RoomNights[2].Corporate < 0)
+                        {
+                            <label class="red"> @(Model.RoomNights[2].Corporate * -1) % <span class="glyphicon glyphicon-arrow-down"></span></label>
+                        }
+                        else
+                        {
+                            <label class="text-info">0%</label>
+                        }
+                    }
+                </td>
+                <td>
+                    @if (Model.RoomNights[1].OverAll != 0)
+                    {
+                        if (Model.RoomNights[2].OverAll > 0)
+                        {
+                            <label class="text-info">@Model.RoomNights[2].OverAll % <span class="glyphicon glyphicon-arrow-up"></span></label>
+                        }
+                        else if (Model.RoomNights[2].OverAll < 0)
+                        {
+                            <label class="red"> @(Model.RoomNights[2].OverAll * -1) % <span class="glyphicon glyphicon-arrow-down"></span></label>
+                        }
+                        else
+                        {
+                            <label class="text-info">0%</label>
+                        }
+                    }
+                </td>
+            </tr>
+        }
+        <tr><td colspan="6">&nbsp;</td></tr>
+        @if (Model != null && Model.Revenue.Count == 3)
+        {
+            <tr>
+                <td rowspan="3" valign="middle" style="vertical-align:middle; text-align:center;font-weight:bold">Revenue</td>
+                <td>Current Year</td>
+                <td>@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Model.Revenue[0].Bids)</td>
+                <td>@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Model.Revenue[0].Negotiations)</td>
+                <td>@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Model.Revenue[0].Buy)</td>
+                <td>@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Model.Revenue[0].Corporate)</td>
+                <td>@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Model.Revenue[0].OverAll)</td>
+            </tr>
+
+            <tr>
+
+                <td>Last Year</td>
+                <td>@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Model.Revenue[1].Bids)</td>
+                <td>@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Model.Revenue[1].Negotiations)</td>
+                <td>@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Model.Revenue[1].Buy)</td>
+                <td>@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Model.Revenue[1].Corporate)</td>
+                <td>@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Model.Revenue[1].OverAll)</td>
+            </tr>
+
+            <tr>
+                @*<td></td>*@
+                <td></td>
+                <td>
+                    @if (Model.Revenue[1].Bids != 0)
+                    {
+                        if (Model.Revenue[2].Bids > 0)
+                        {
+                            <label class="text-info"> @Model.Revenue[2].Bids % <span class="glyphicon glyphicon-arrow-up"></span></label>
+                        }
+                        else if (Model.Revenue[2].Bids < 0)
+                        {
+                            <label class="red"> @(Model.Revenue[2].Bids * -1) % <span class="glyphicon glyphicon-arrow-down"></span></label>
+                        }
+                        else
+                        {
+                            <label class="text-info">0%</label>
+                        }
+                    }
+                </td>
+                <td>
+                    @if (Model.Revenue[1].Negotiations != 0)
+                    {
+                        if (Model.Revenue[2].Negotiations > 0)
+                        {
+                            <label class="text-info"> @Model.Revenue[2].Negotiations % <span class="glyphicon glyphicon-arrow-up"></span></label>
+                        }
+                        else if (Model.Revenue[2].Negotiations < 0)
+                        {
+                            <label class="red"> @(Model.Revenue[2].Negotiations * -1) % <span class="glyphicon glyphicon-arrow-down"></span></label>
+                        }
+                        else
+                        {
+                            <label class="text-info">0%</label>
+                        }
+                    }
+                </td>
+                <td>
+                    @if (Model.Revenue[1].Buy != 0)
+                    {
+                        if (Model.Revenue[2].Buy > 0)
+                        {
+                            <label class="text-info"> @Model.Revenue[2].Buy % <span class="glyphicon glyphicon-arrow-up"></span></label>
+                        }
+                        else if (Model.Revenue[2].Buy < 0)
+                        {
+                            <label class="red"> @(Model.Revenue[2].Buy * -1) % <span class="glyphicon glyphicon-arrow-down"></span></label>
+                        }
+                        else
+                        {
+                            <label class="text-info">0%</label>
+                        }
+                    }
+                </td>
+                <td>
+                    @if (Model.Revenue[1].Corporate != 0)
+                    {
+                        if (Model.Revenue[2].Corporate > 0)
+                        {
+                            <label class="text-info"> @Model.Revenue[2].Corporate % <span class="glyphicon glyphicon-arrow-up"></span></label>
+                        }
+                        else if (Model.Revenue[2].Corporate < 0)
+                        {
+                            <label class="red"> @(Model.Revenue[2].Corporate * -1) % <span class="glyphicon glyphicon-arrow-down"></span></label>
+                        }
+                        else
+                        {
+                            <label class="text-info">0%</label>
+                        }
+                    }
+                </td>
+                <td>
+                    @if (Model.Revenue[1].OverAll != 0)
+                    {
+                        if (Model.Revenue[2].OverAll > 0)
+                        {
+                            <label class="text-info">@Model.Revenue[2].OverAll % <span class="glyphicon glyphicon-arrow-up"></span></label>
+                        }
+                        else if (Model.Revenue[2].OverAll < 0)
+                        {
+                            <label class="red"> @(Model.Revenue[2].OverAll * -1) % <span class="glyphicon glyphicon-arrow-down"></span></label>
+                        }
+                        else
+                        {
+                            <label class="text-info">0%</label>
+                        }
+                    }
+                </td>
+            </tr>
+        }
+        <tr><td colspan="6">&nbsp;</td></tr>
+        @if (Model != null && Model.AvgDailyRate.Count == 3)
+        {
+            <tr>
+                <td rowspan="3" valign="middle" style="vertical-align:middle; text-align:center; font-weight:bold;">Average Daily Rate </td>
+                <td>Current Year</td>
+                <td>@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Model.AvgDailyRate[0].Bids)</td>
+                <td>@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Model.AvgDailyRate[0].Negotiations)</td>
+                <td>@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Model.AvgDailyRate[0].Buy)</td>
+                <td>@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Model.AvgDailyRate[0].Corporate)</td>
+                <td>@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Model.AvgDailyRate[0].OverAll)</td>
+            </tr>
+            <tr>
+
+                <td>Last Year</td>
+                <td>@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Model.AvgDailyRate[1].Bids)</td>
+                <td>@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Model.AvgDailyRate[1].Negotiations)</td>
+                <td>@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Model.AvgDailyRate[1].Buy)</td>
+                <td>@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Model.AvgDailyRate[1].Corporate)</td>
+                <td>@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Model.AvgDailyRate[1].OverAll)</td>
+            </tr>
+            <tr>
+                @*<td></td>*@
+                <td></td>
+                <td>
+                    @if (Model.AvgDailyRate[1].Bids != 0)
+                    {
+                        if (Model.AvgDailyRate[2].Bids > 0)
+                        {
+                            <label class="text-info"> @Model.AvgDailyRate[2].Bids % <span class="glyphicon glyphicon-arrow-up"></span></label>
+                        }
+                        else if (Model.AvgDailyRate[2].Bids < 0)
+                        {
+                            <label class="red"> @(Model.AvgDailyRate[2].Bids * -1) % <span class="glyphicon glyphicon-arrow-down"></span></label>
+                        }
+                        else
+                        {
+                            <label class="text-info">0%</label>
+                        }
+                    }
+                </td>
+                <td>
+                    @if (Model.AvgDailyRate[1].Negotiations != 0)
+                    {
+                        if (Model.AvgDailyRate[2].Negotiations > 0)
+                        {
+                            <label class="text-info"> @Model.AvgDailyRate[2].Negotiations % <span class="glyphicon glyphicon-arrow-up"></span></label>
+                        }
+                        else if (Model.AvgDailyRate[2].Negotiations < 0)
+                        {
+                            <label class="red"> @(Model.AvgDailyRate[2].Negotiations * -1) % <span class="glyphicon glyphicon-arrow-down"></span></label>
+                        }
+                        else
+                        {
+                            <label class="text-info">0%</label>
+                        }
+                    }
+                </td>
+                <td>
+                    @if (Model.AvgDailyRate[1].Buy != 0)
+                    {
+                        if (Model.AvgDailyRate[2].Buy > 0)
+                        {
+                            <label class="text-info"> @Model.AvgDailyRate[2].Buy % <span class="glyphicon glyphicon-arrow-up"></span></label>
+                        }
+                        else if (Model.AvgDailyRate[2].Buy < 0)
+                        {
+                            <label class="red"> @(Model.AvgDailyRate[2].Buy * -1) % <span class="glyphicon glyphicon-arrow-down"></span></label>
+                        }
+                        else
+                        {
+                            <label class="text-info">0%</label>
+                        }
+                    }
+                </td>
+                <td>
+                    @if (Model.AvgDailyRate[1].Corporate != 0)
+                    {
+                        if (Model.AvgDailyRate[2].Corporate > 0)
+                        {
+                            <label class="text-info"> @Model.AvgDailyRate[2].Corporate % <span class="glyphicon glyphicon-arrow-up"></span></label>
+                        }
+                        else if (Model.AvgDailyRate[2].Corporate < 0)
+                        {
+                            <label class="red"> @(Model.AvgDailyRate[2].Corporate * -1) % <span class="glyphicon glyphicon-arrow-down"></span></label>
+                        }
+                        else
+                        {
+                            <label class="text-info">0%</label>
+                        }
+                    }
+                </td>
+                <td>
+                    @if (Model.AvgDailyRate[1].OverAll != 0)
+                    {
+                        if (Model.AvgDailyRate[2].OverAll > 0)
+                        {
+                            <label class="text-info">@Model.AvgDailyRate[2].OverAll % <span class="glyphicon glyphicon-arrow-up"></span></label>
+                        }
+                        else if (Model.AvgDailyRate[2].OverAll < 0)
+                        {
+                            <label class="red"> @(Model.AvgDailyRate[2].OverAll * -1) % <span class="glyphicon glyphicon-arrow-down"></span></label>
+                        }
+                        else
+                        {
+                            <label class="text-info">0%</label>
+                        }
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

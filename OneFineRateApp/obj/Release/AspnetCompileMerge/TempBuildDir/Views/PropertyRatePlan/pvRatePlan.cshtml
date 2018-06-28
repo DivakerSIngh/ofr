@@ -1,0 +1,344 @@
+﻿@model OneFineRateBLL.Entities.etblPropertyRatePlanMap
+<script src="~/js/Jquery1.10.3.js"></script>
+
+
+
+@using (Html.BeginForm("Save", "PropertyRatePlan", FormMethod.Get, new { ReturnUrl = ViewBag.ReturnUrl, id = "frmRatePlan", role = "form" }))
+{
+    @Html.HiddenFor(m => m.Mode)
+    @Html.HiddenFor(m => m.iUpdateRPId)
+    <div class="modal-dialog">
+        <div class="panel-group">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <button type="button" class="close" onclick="window.location = '../PropertyRatePlan'">&times;</button>
+                    <h4 class="panel-title">
+                        <strong>@Html.DisplayFor(m => m.heading)</strong>
+                    </h4>
+                </div>
+                <div>
+                    <div class="panel-body">
+
+                        <div class="row">
+                            <div class="col-xs-3 ">Name</div>
+                            <div class="col-xs-4">
+                                @Html.TextBoxFor(m => m.sRatePlan, new { name = "RatePlanName", id = "RatePlanName", type = "text", @class = "form-control", required = "true" })
+                                <div id="results" class="autoCompleteList"></div>
+                            </div>
+                            <div class="col-xs-3">Rate Plan Type </div>
+                            <div class="col-xs-2">
+                                @Html.DropDownListFor(m => m.cRatePlanType, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="Standard",Value="S" },
+                                                                            new SelectListItem {Text="Package",Value="P" }},
+                                                                                              new { name = "RatePlanType", @class = "form-control" })
+                            </div>
+                        </div>
+
+                        <div class="row margintop10">
+                            <div class="col-xs-3">Validity From</div>
+                            <div class="col-xs-4">@Html.TextBoxFor(m => m.dtValidFrom, new { Value = Model.dtValidFrom.ToString("MM/dd/yyyy"), type = "text", @class = "form-control", required = "true", name = "ValidDateFrom", onkeyup = "this.value=''", id = "ValidDateFrom" })</div>
+                            <div class="col-xs-1 ">To</div>
+                            <div class="col-xs-4">@Html.TextBoxFor(m => m.dtValidTo, new { Value = Model.dtValidTo.ToString("MM/dd/yyyy"), type = "text", @class = "form-control", required = "true", name = "ValidDateTo", onkeyup = "this.value=''", id = "ValidDateTo" })</div>
+                        </div>
+
+
+                        <div class="row margintop10">
+                            <div class="col-xs-5">Link to an existing Rate Plan</div>
+                            <div class="col-xs-7">
+                                @Html.RadioButtonFor(m => m.bLinkToExistingRatePlan, "true", new { name = "IsLinkRatePlan", id = "chkYes", onclick = "ShowHideDiv()" }) <span>Yes</span>
+                                @Html.RadioButtonFor(m => m.bLinkToExistingRatePlan, "false", new { name = "IsLinkRatePlan", id = "chkYes", onclick = "ShowHideDiv()" })<span>No</span>
+                            </div>
+                        </div>
+                        <br />
+                        <div id="divExistingRP" style="display:none;">
+                            <div class="row">
+                                <div class="col-xs-3">Rate Plan</div>
+                                <div class="col-xs-4">
+                                    @Html.DropDownListFor(m => m.iLinkRatePlanId, new SelectList(OneFineRateBLL.BL_tblPropertyRatePlanMap.GetRatePlansForDD(), "Id", "Name"), "", new { @class = "form-control", name = "ExistingRatePLan" })
+                                </div>
+                                <div class="col-xs-4">
+                                    @Html.DropDownListFor(m => m.iIsPlus, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="+",Value="1" },
+                                                                            new SelectListItem {Text="-",Value="0" }},
+                                                                                     new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="row margintop10">
+                                <div class="col-xs-3">&nbsp;</div>
+                                <div class="col-xs-4">
+                                    @Html.DropDownListFor(m => m.iIsPercent, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="%",Value="1" },
+                                                                            new SelectListItem {Text="Value",Value="0" }},
+                                                                                              new { @class = "form-control", onchange = "ddListChange()" })
+                                </div>
+
+                                <div class="col-xs-4">
+                                    @Html.TextBoxFor(m => m.dValue, new { id = "txtValue", type = "text", @class = "form-control", onkeyup = "this.value = minmax(this.value, 0, 100)" })
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <b> Room Type for the Rate plan</b>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                @Html.CheckBoxListFor(m => m.SelectedRoomType, m => m.RoomTypeItems,
+                                                                                        group => group.Value,
+                                                                                        group => group.Text,
+                                                                                        m => m.Selected,
+                                                                                        MvcCheckBoxList.Model.Position.Horizontal,
+                                          x => new { @class = "CheckBoxList" })
+
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <b> Meals or amenities to be added</b>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-11">
+                                @Html.CheckBoxListFor(m => m.SelectedAmenityID, m => m.Amenties,
+                                                                    group => group.Value,
+                                                                    group => group.Text,
+                                                                    m => m.Selected,
+                                                                    MvcCheckBoxList.Model.Position.Horizontal,
+                                                                    x => new { @class = " CheckBoxList" })
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-4">All Amenities (100 char)</div>
+                            <div class="col-xs-4">@Html.TextBoxFor(m => m.sAmenity, new { type = "text", @class = "form-control", maxlength = "100" })</div>
+
+                        </div>
+                        <br />
+                        <div class="row box2">
+                            <div class="col-xs-12">
+                                <strong>	Conditions</strong>
+
+                            </div>
+                            <div class="col-xs-12 ">
+                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td width="18%" align="left">Minimum length of stay </td>
+                                        <td width="20%" align="left">
+                                            @Html.TextBoxFor(m => m.iMinLengthStay, new { type = "number", @class = "form-control", maxlength = "2" })
+                                        </td>
+                                        <td width="4%"></td>
+                                        <td width="20%">Maximum length of stay </td>
+                                        <td width="13%">
+                                            @Html.TextBoxFor(m => m.iMaxLengthStay, new { type = "number", @class = "form-control", maxlength = "2" })
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td align="left">This deal can only be booked</td>
+                                        <td align="left">
+                                            @Html.TextBoxFor(m => m.dHrsDays, new { type = "number", @class = "form-control", maxlength = "2" })
+                                        </td>
+                                        <td></td>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.cHrsDays, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="Hrs",Value="H" },
+                                                                            new SelectListItem {Text="Days",Value="D" }},
+                                                                                              new { @class = "form-control" })
+                                        </td>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.iIsBefore, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="Before",Value="1" },
+                                                                            new SelectListItem {Text="After",Value="0" }},
+                                                                                              new { @class = "form-control" })
+                                        </td>
+                                        <td>Check-in.</td>
+                                    </tr>
+                                </table>
+
+                            </div>
+                            <div class="col-xs-12">
+                                <strong>Cancellation Policy</strong>
+
+                            </div>
+                            <div class="col-xs-12">
+                                @Html.CheckBoxListFor(m => m.SelectedCancellationPolicy, m => m.CancellationPolicy,
+                                        group => group.Value,
+                                        group => group.Text,
+                                        m => m.Selected,
+                                       MvcCheckBoxList.Model.Position.Horizontal,
+                                       x => new { @class = "CheckBoxList", onchange = "CancellationPolicy(this);" })
+                            </div>
+                            <div class="col-xs-12 margintop10">
+                                <div class="col-xs-5">Cancellation Policy Validity From</div>
+                                <div class="col-xs-4">@Html.TextBoxFor(m => m.dtCancellationValidFrom, new { Value = Model.dtCancellationValidFrom.ToString("MM/dd/yyyy"), type = "text", @class = "form-control", required = "true", name = "CancellationValidFrom", onkeyup = "this.value=''", id = "CancellationValidFrom" })</div>
+                            </div>
+                            <div class="col-xs-12 margintop10">
+                                <div class="col-xs-5 ">Cancellation Policy To</div>
+                                <div class="col-xs-4">@Html.TextBoxFor(m => m.dtCancellationValidTo, new { Value = Model.dtCancellationValidTo.ToString("MM/dd/yyyy"), type = "text", @class = "form-control", required = "true", name = "CancellationValidTo", onkeyup = "this.value=''", id = "CancellationValidTo" })</div>
+                            </div>
+
+                            <div class="col-xs-3">Is it a Secret Deal</div>
+                            <div class="col-xs-9">
+                                @Html.RadioButtonFor(m => m.bIsSecretDeal, "true") <span>Yes</span>
+                                @Html.RadioButtonFor(m => m.bIsSecretDeal, "false")<span>No</span>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                </div>
+
+                <div class="row pull-right">
+                    <div class="col-xs-12">
+                        <input name="" type="submit" class="btn btn-primary" value="Save">
+                        <input name="" type="button" onclick="window.location = '../PropertyRatePlan'" class="btn btn-danger" value="Cancel">
+                    </div>
+                </div>
+                <br />
+                <br />
+            </div>
+
+        </div>
+    </div>
+}
+
+
+<style>
+    .autoCompleteList {
+        width: 100%;
+        position: absolute;
+        z-index: 2;
+    }
+</style>
+<script type="text/javascript">
+    $(document).ready(function () {
+        calendar();
+        ShowHideDiv();
+    })
+    function calendar() {
+        $('#ValidDateFrom').datepicker({
+        });
+        $('#ValidDateTo').datepicker({
+        });
+        $('#CancellationValidFrom').datepicker({
+        });
+        $('#CancellationValidTo').datepicker({
+        });
+
+
+
+        $("#ValidDateFrom").each(function () {
+            var selecteddate = $("#ValidDateFrom").datepicker("getDate");
+            var dateString = $.datepicker.formatDate('mm/dd/yy', selecteddate);
+            if (dateString == "01/01/2001") {
+                $("#ValidDateFrom").datepicker('setDate', new Date());
+            }
+
+        });
+        $("#ValidDateTo").each(function () {
+            var selecteddate = $("#ValidDateTo").datepicker("getDate");
+            var dateString = $.datepicker.formatDate('mm/dd/yy', selecteddate);
+            if (dateString == "01/01/2001") {
+                $("#ValidDateTo").datepicker('setDate', new Date());
+            }
+
+        });
+        $("#CancellationValidFrom").each(function () {
+            var selecteddate = $("#CancellationValidFrom").datepicker("getDate");
+            var dateString = $.datepicker.formatDate('mm/dd/yy', selecteddate);
+            if (dateString == "01/01/2001") {
+                $("#CancellationValidFrom").datepicker('setDate', new Date());
+            }
+
+        });
+        $("#CancellationValidTo").each(function () {
+            var selecteddate = $("#CancellationValidTo").datepicker("getDate");
+            var dateString = $.datepicker.formatDate('mm/dd/yy', selecteddate);
+            if (dateString == "01/01/2001") {
+                $("#CancellationValidTo").datepicker('setDate', new Date());
+            }
+
+        });
+        $("#ui-datepicker-div").hide();
+    }
+    function minmax(value, min, max) {
+        if ($('#iIsPercent option:selected').text() == '%') {
+            if (parseInt(value) < min || isNaN(value))
+                return 0;
+            else if (parseInt(value) > max) {
+                $("#txtValue").val(null);
+                return null;
+            }
+            else {
+                $("#txtValue").val(value);
+                return value;
+            }
+        }
+        else {
+            $("#txtValue").val(value);
+            return value;
+        }
+    }
+    function ddListChange() {
+        if ($('#iIsPercent option:selected').text() == '%') {
+            var v = $("#txtValue").val();
+            minmax(v, 0, 100);
+        }
+
+    }
+    function ShowHideDiv() {
+        var chkYes = document.getElementById("chkYes");
+        var dvExistingRP = document.getElementById("divExistingRP");
+        dvExistingRP.style.display = chkYes.checked ? "block" : "none";
+    }
+</script>
+<script type="text/javascript">
+
+    $("#RatePlanName").autocomplete({
+        minLength: 0,
+        source: function (request, response) {
+            var result = new Array();
+            $.ajax({
+                async: false,
+                cache: false,
+                type: "POST",
+                url: "@(Url.Action("Autocomplete", "PropertyRatePlan"))",
+                data: { "term": request.term },
+                success: function (data) {
+                    for (var i = 0; i < data.length ; i++) {
+                        result[i] = { label: data[i].Value, Id: data[i].Key };
+                    }
+                }
+            });
+            response(result);
+        },
+        messages: {
+            noResults: '', results: function () { }
+        },
+        appendTo: "#results"
+    }).focus(function () {
+        $(this).autocomplete("search", "");
+    });
+
+    function CancellationPolicy(cb) {
+        console.log(cb);
+        var valNo = cb.value;
+        if (valNo == 1) { // Do your work here
+            $("input[name='SelectedCancellationPolicy']").each(function () {
+                if ($(this).attr("value") != valNo) {
+                    if (cb.checked)
+                        $(this).prop("checked", !cb.checked);
+                    $(this).prop("disabled", cb.checked);
+                }
+            });
+        }
+    }
+
+</script>
+
+

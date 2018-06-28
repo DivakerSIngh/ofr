@@ -1,0 +1,142 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.16
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneFineRate", "OneFineRate\OneFineRate.csproj", "{32D39257-5529-4EF8-A50D-5B3C57F1A686}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneFineRateApp", "OneFineRateApp\OneFineRateApp.csproj", "{71BE42C2-6F46-4F8C-81E4-3087EC11B6E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneFineRateAppUtil", "OneFineRateAppUtil\OneFineRateAppUtil.csproj", "{B122CC70-553F-4F8F-A0A5-0E1AFA42797A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneFineRateBLL", "OneFineRateBLL\OneFineRateBLL.csproj", "{71780191-6E4C-44D1-8697-74569663DB23}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneFineRateAPI", "OneFineRateAPI\OneFineRateAPI.csproj", "{ACEE154A-AD21-4A8E-B839-941AFB862715}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneFineRateWeb", "OneFineRateWeb\OneFineRateWeb.csproj", "{5537849C-1191-4BE3-8437-704D53576ACF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneFineRateWebBLL", "OneFineRateWebBLL\OneFineRateWebBLL.csproj", "{887C30C6-DD8E-4C66-BC39-0CD1C0C9F59F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OFRChannelMgr", "OFRChannelMgr\OFRChannelMgr.csproj", "{C0CEC355-C6B0-46D2-8664-96DD25B4C17E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyncBooking", "SyncBooking\SyncBooking.csproj", "{D24FC365-F6BF-4485-96D0-3F86DCD1AC4E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaticDumpWebJob", "StaticDumpWebJob\StaticDumpWebJob\StaticDumpWebJob.csproj", "{1F7BE6E6-A775-4FDF-B08D-667108966B6D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyncTripAdvisor", "SyncTripAdvisor\SyncTripAdvisor.csproj", "{2073D30B-1C75-4613-A8F1-FEBE0B35CC0E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TripAdvisorMonthlyReport", "TripAdvisorMonthlyReport\TripAdvisorMonthlyReport.csproj", "{CD4891F3-BFB0-444C-9B9D-85894AC03683}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TripAdvisorWeekly", "TripAdvisorWeekly\TripAdvisorWeekly.csproj", "{25C0266D-3ED6-4CAC-8894-ADA63E299EAC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{32D39257-5529-4EF8-A50D-5B3C57F1A686}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32D39257-5529-4EF8-A50D-5B3C57F1A686}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32D39257-5529-4EF8-A50D-5B3C57F1A686}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32D39257-5529-4EF8-A50D-5B3C57F1A686}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71BE42C2-6F46-4F8C-81E4-3087EC11B6E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71BE42C2-6F46-4F8C-81E4-3087EC11B6E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71BE42C2-6F46-4F8C-81E4-3087EC11B6E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71BE42C2-6F46-4F8C-81E4-3087EC11B6E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B122CC70-553F-4F8F-A0A5-0E1AFA42797A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B122CC70-553F-4F8F-A0A5-0E1AFA42797A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B122CC70-553F-4F8F-A0A5-0E1AFA42797A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B122CC70-553F-4F8F-A0A5-0E1AFA42797A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71780191-6E4C-44D1-8697-74569663DB23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71780191-6E4C-44D1-8697-74569663DB23}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71780191-6E4C-44D1-8697-74569663DB23}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71780191-6E4C-44D1-8697-74569663DB23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACEE154A-AD21-4A8E-B839-941AFB862715}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACEE154A-AD21-4A8E-B839-941AFB862715}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACEE154A-AD21-4A8E-B839-941AFB862715}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACEE154A-AD21-4A8E-B839-941AFB862715}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5537849C-1191-4BE3-8437-704D53576ACF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5537849C-1191-4BE3-8437-704D53576ACF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5537849C-1191-4BE3-8437-704D53576ACF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5537849C-1191-4BE3-8437-704D53576ACF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{887C30C6-DD8E-4C66-BC39-0CD1C0C9F59F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{887C30C6-DD8E-4C66-BC39-0CD1C0C9F59F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{887C30C6-DD8E-4C66-BC39-0CD1C0C9F59F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{887C30C6-DD8E-4C66-BC39-0CD1C0C9F59F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0CEC355-C6B0-46D2-8664-96DD25B4C17E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0CEC355-C6B0-46D2-8664-96DD25B4C17E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0CEC355-C6B0-46D2-8664-96DD25B4C17E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0CEC355-C6B0-46D2-8664-96DD25B4C17E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D24FC365-F6BF-4485-96D0-3F86DCD1AC4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D24FC365-F6BF-4485-96D0-3F86DCD1AC4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D24FC365-F6BF-4485-96D0-3F86DCD1AC4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D24FC365-F6BF-4485-96D0-3F86DCD1AC4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F7BE6E6-A775-4FDF-B08D-667108966B6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F7BE6E6-A775-4FDF-B08D-667108966B6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F7BE6E6-A775-4FDF-B08D-667108966B6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F7BE6E6-A775-4FDF-B08D-667108966B6D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2073D30B-1C75-4613-A8F1-FEBE0B35CC0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2073D30B-1C75-4613-A8F1-FEBE0B35CC0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2073D30B-1C75-4613-A8F1-FEBE0B35CC0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2073D30B-1C75-4613-A8F1-FEBE0B35CC0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD4891F3-BFB0-444C-9B9D-85894AC03683}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD4891F3-BFB0-444C-9B9D-85894AC03683}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD4891F3-BFB0-444C-9B9D-85894AC03683}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD4891F3-BFB0-444C-9B9D-85894AC03683}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25C0266D-3ED6-4CAC-8894-ADA63E299EAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25C0266D-3ED6-4CAC-8894-ADA63E299EAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25C0266D-3ED6-4CAC-8894-ADA63E299EAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25C0266D-3ED6-4CAC-8894-ADA63E299EAC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3AFAA174-6876-4D69-9381-268EE0075B0A}
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 14
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://fiplndctfs:8080/tfs/fs
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = OneFineRateAppUtil\\OneFineRateAppUtil.csproj
+		SccProjectName1 = OneFineRateAppUtil
+		SccLocalPath1 = OneFineRateAppUtil
+		SccProjectUniqueName2 = OneFineRate\\OneFineRate.csproj
+		SccProjectName2 = OneFineRate
+		SccLocalPath2 = OneFineRate
+		SccProjectUniqueName3 = OneFineRateBLL\\OneFineRateBLL.csproj
+		SccProjectName3 = OneFineRateBLL
+		SccLocalPath3 = OneFineRateBLL
+		SccProjectUniqueName4 = OneFineRateApp\\OneFineRateApp.csproj
+		SccProjectName4 = OneFineRateApp
+		SccLocalPath4 = OneFineRateApp
+		SccProjectUniqueName5 = OneFineRateAPI\\OneFineRateAPI.csproj
+		SccProjectName5 = OneFineRateAPI
+		SccLocalPath5 = OneFineRateAPI
+		SccProjectUniqueName6 = OneFineRateWeb\\OneFineRateWeb.csproj
+		SccProjectName6 = OneFineRateWeb
+		SccLocalPath6 = OneFineRateWeb
+		SccProjectUniqueName7 = OneFineRateWebBLL\\OneFineRateWebBLL.csproj
+		SccProjectName7 = OneFineRateWebBLL
+		SccLocalPath7 = OneFineRateWebBLL
+		SccProjectUniqueName8 = OFRChannelMgr\\OFRChannelMgr.csproj
+		SccProjectName8 = OFRChannelMgr
+		SccLocalPath8 = OFRChannelMgr
+		SccProjectUniqueName9 = SyncBooking\\SyncBooking.csproj
+		SccProjectName9 = SyncBooking
+		SccLocalPath9 = SyncBooking
+		SccProjectUniqueName10 = StaticDumpWebJob\\StaticDumpWebJob\\StaticDumpWebJob.csproj
+		SccProjectName10 = StaticDumpWebJob/StaticDumpWebJob
+		SccLocalPath10 = StaticDumpWebJob\\StaticDumpWebJob
+		SccProjectUniqueName11 = SyncTripAdvisor\\SyncTripAdvisor.csproj
+		SccProjectName11 = SyncTripAdvisor
+		SccLocalPath11 = SyncTripAdvisor
+		SccProjectUniqueName12 = TripAdvisorMonthlyReport\\TripAdvisorMonthlyReport.csproj
+		SccProjectName12 = TripAdvisorMonthlyReport
+		SccLocalPath12 = TripAdvisorMonthlyReport
+		SccProjectUniqueName13 = TripAdvisorWeekly\\TripAdvisorWeekly.csproj
+		SccProjectName13 = TripAdvisorWeekly
+		SccLocalPath13 = TripAdvisorWeekly
+	EndGlobalSection
+EndGlobal

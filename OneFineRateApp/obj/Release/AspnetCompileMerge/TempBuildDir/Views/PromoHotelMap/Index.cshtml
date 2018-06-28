@@ -1,0 +1,228 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+
+<!--<h2>Promo Code Hotel Map</h2>-->
+<link href="~/css/highCheckTree.css" rel="stylesheet" />
+<script src="~/js/highchecktree.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var str = @Html.Raw(Json.Encode(ViewData["Id"]));
+
+        var p = @Html.Raw(Json.Encode(ViewData["fname"]));
+
+        $('#hdnId').val(str);
+        $("#txtName").val(p);
+        $("#txttitle").val(@Html.Raw(Json.Encode(ViewData["lname"])));
+        // var treecreated=false, startloop=true;
+
+        var mns = AjaxCallWithDataGET("/Services/Service.asmx/GetPromoMappedHotels?id=" + str + "&&s=" );
+        setMenuTree();
+
+        document.getElementById('frmHotelList').onsubmit = function (e) {
+            e.preventDefault();
+            var text = $('#txtSearch').val().trim();
+            if(text == ""){
+
+                var chkd = [];
+
+                $('.checked').parent().each(function (index) {
+                    chkd.push($(this).attr('rel'));
+                });
+                var values = {
+                    id: $('#hdnId').val(),
+                    Hotels: chkd.join()
+                };
+                var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("SavePromoCodes")", values));
+                if (Data != null) {
+                    if (Data.st == '1') {
+                        toastr.success(Data.msg);
+                        setTimeout(function () {
+                            window.location.href="/PromoCode";
+                        },3000);
+
+                        return false;
+                    }
+                    else if (Data.st == '0') {
+                        toastr.error(Data.msg);
+                        return false;
+                    }
+                }
+            }
+            else{
+                var chkd = [], UnChkd=[];
+
+                $('.checkbox').parent().each(function (index) {
+                    UnChkd.push($(this).attr('rel'));
+                });
+                $('.checked').parent().each(function (index) {
+                    chkd.push($(this).attr('rel'));
+                });
+                var values = {
+                    id: $('#hdnId').val(),
+                    MapHotels: chkd.join(),
+                    UnmapHotels:UnChkd.join()
+                };
+                var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("SaveFilterHotels")", values));
+                if (Data != null) {
+                    if (Data.st == '1') {
+                        toastr.success(Data.msg);
+                        setTimeout(function () {
+                            window.location.href="/PromoCode";
+                        },3000);
+
+                        return false;
+                    }
+                    else if (Data.st == '0') {
+                        toastr.error(Data.msg);
+                        return false;
+                    }
+                }
+            }
+
+        }
+
+        document.getElementById('txtSearch').onkeyup = function(){
+            var text = $('#txtSearch').val().trim();
+
+            mns = AjaxCallWithDataGET("/Services/Service.asmx/GetPromoMappedHotels?id=" + str + "&&s=" + text );
+            setMenuTree();
+            if(text != "")
+                $(".collapsed").click();
+        }
+
+        function setMenuTree(){
+            var menus = $.parseJSON(mns.d);
+            var chkData = "", PrevParent = "", onlyHotelsWithoutChain=true;
+
+            var mockData = [], children = [];
+            var parentitem;
+            for (var i = 0; i < menus.length; i++) {
+                if( menus[i].parent != ""){
+                    onlyHotelsWithoutChain=false;
+                    if (PrevParent == menus[i].parent) {
+
+                        children.push({ "item": { "id": "" + menus[i].id, "label": menus[i].name, checked: menus[i].checked == 0 ? false:true } });
+                    }
+                    else {
+                        if (PrevParent != "") {
+                            mockData.push({ "item": { "id": "Parent" + i, "label": PrevParent, checked: false }, children: children });
+                        }
+                        children = [];
+                        children.push({ "item": { "id": "" + menus[i].id, "label": menus[i].name, checked: menus[i].checked == 0 ? false:true } });
+                        PrevParent = menus[i].parent;
+                    }
+                }
+                else{
+                    mockData.push({ "item": { "id": "" + menus[i].id, "label": menus[i].name, checked: menus[i].checked == 0 ? false:true } });
+                }
+            }
+            if(!onlyHotelsWithoutChain)
+                mockData.push({ "item": { "id": "Parent" + menus.length + 1, "label": PrevParent, checked: false }, children: children });
+            //treecreated=true;
+            $('#chkdiv').highCheckTree({
+                data: mockData
+            });
+
+            $(".expanded").click();
+
+        }
+
+        function CheckAllMenuTree(check){
+            var menus = $.parseJSON(mns.d);
+            var chkData = "", PrevParent = "", onlyHotelsWithoutChain = true;
+
+            var mockData = [], children = [];
+            var parentitem;
+            for (var i = 0; i < menus.length; i++) {
+                if( menus[i].parent != ""){
+                    onlyHotelsWithoutChain = false;
+                    if (PrevParent == menus[i].parent) {
+
+                        children.push({ "item": { "id": "" + menus[i].id, "label": menus[i].name, checked: check } });
+                    }
+                    else {
+                        if (PrevParent != "") {
+                            mockData.push({ "item": { "id": "Parent" + i, "label": PrevParent, checked: false }, children: children });
+                        }
+                        children = [];
+                        children.push({ "item": { "id": "" + menus[i].id, "label": menus[i].name, checked: check } });
+                        PrevParent = menus[i].parent;
+                    }
+                }
+                else{
+                    mockData.push({ "item": { "id": "" + menus[i].id, "label": menus[i].name, checked: check } });
+                }
+            }
+            if(!onlyHotelsWithoutChain)
+                mockData.push({ "item": { "id": "Parent" + menus.length + 1, "label": PrevParent, checked: false }, children: children });
+
+            var chkData = "";
+            $("#chkdiv").html(chkData);
+
+            $('#chkdiv').highCheckTree({
+                data: mockData
+            });
+
+            $(".expanded").click();
+
+        }
+
+        $('#All').click(function() {
+            CheckAllMenuTree($(this).is(':checked'));
+        });
+    });
+</script>
+<form id="frmHotelList">
+
+    @Html.Hidden("hdnId")
+    <div class="modal-dialog" style="width:100% !important;">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                @*<button type="button" class="close" data-dismiss="modal">&times;</button>*@
+                <h4 class="modal-title">Promo Code And Hotel Mapping</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-4">
+                        Promo Code
+                    </div>
+                    <div class="col-xs-8">
+                        @Html.TextBox("txtName", null, new { @class = "form-control", oninvalid = "setCustomValidity('No special characters allowed')", onchange = "try{setCustomValidity('')}catch(e){}", maxlength = "50", disabled = "true" })
+                    </div>
+                    <div class="col-xs-4 margintop10">
+                        Promo Title
+                    </div>
+                    <div class="col-xs-8 margintop10">
+                        @Html.TextBox("txttitle", null, new { @class = "form-control", oninvalid = "setCustomValidity('No special characters allowed')", onchange = "try{setCustomValidity('')}catch(e){}", maxlength = "50", disabled = "true" })
+                    </div>
+
+                    <div class="col-xs-4 margintop10">
+                        Search by Hotel name
+                    </div>
+                    <div class="col-xs-8 margintop10">
+                        @Html.TextBox("txtSearch", null, new { @class = "form-control", maxlength = "50" })
+                    </div>
+                    <div class="col-xs-12">
+                        <input type="checkbox" id="All" /> &nbsp;All properties
+                    </div>
+                    <div class="col-xs-4 ">
+                        Hotels And Chains
+                    </div>
+                    <div id="chkdiv" class="col-xs-8">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" id="btnSubmit" class="btn btn-primary">Save</button>
+                <a href="@Url.Action("Index", "PromoCode")" class="btn btn-danger">Cancel</a>
+            </div>
+        </div>
+
+    </div>
+</form>
+

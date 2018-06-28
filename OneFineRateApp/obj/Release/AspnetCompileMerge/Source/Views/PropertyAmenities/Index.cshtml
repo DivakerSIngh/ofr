@@ -1,0 +1,200 @@
+﻿@using MvcCheckBoxList.Model;
+@model OneFineRateBLL.Entities.etblPropertyAmenitiesMap
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutProperty.cshtml";
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        if('@Model.bAirportTransferAvalible')
+        {
+            var url = '@Url.Action("AddPartial")';
+            $("#divPropertyParking").load(url);
+            $('#btnsubmit').attr('onclick', 'return FetchData()');
+        }
+
+        $('#chkairport').click(function () {
+            if ($(this).is(':checked')) {
+                var url = '@Url.Action("AddPartial")';
+                $("#divPropertyParking").load(url);
+                $('#btnsubmit').attr('onclick', 'return FetchData()');
+            }
+            else
+            {
+                $("#divPropertyParking").html('');
+                $('#btnsubmit').removeAttr("onclick");
+            }
+        });
+
+    });
+</script>
+@using (Html.BeginForm("Modify", "PropertyAmenities", FormMethod.Post, new { ReturnUrl = ViewBag.ReturnUrl, id = "myform", role = "form" }))
+{
+
+    @Html.HiddenFor(u => u.iPropId);
+    <div class="panel-group">
+        <div class="panel panel-default">
+           
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+
+                        <b> Amenities/ Services </b>
+
+                    </h4>
+                </div>
+            <div class="panel-body">
+                <div class="col-md-12">
+
+
+                    @{
+    foreach (var item in Model.HotelAmenities)
+    {
+        @Html.RadioButtonFor(m => m.sHotelAmenities, item.iHotelAmenityId)
+                        @Html.Label(item.sAmenity)
+    }
+                    }
+
+
+                </div>
+
+
+
+
+
+                <div class="col-md-12 ">
+
+
+                    <div class="subheadcolor"><h4>Parking & Transport</h4></div>
+                    <hr />
+
+
+
+                    @{
+    foreach (var item in Model.HotelParkingsRadio)
+    {
+        @Html.RadioButtonFor(m => m.sHotelParkingRadio, item.iHotelParkingId)
+                        @Html.Label(item.sParking)
+    }
+                    }
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <div class="col-md-12">
+
+                    @Html.CheckBoxListFor(m => m.SelectedHotelParkings, m => m.HotelParkingsItems,
+                            group => group.Value,
+                            group => group.Text,
+                            m => m.Selected,
+                            MvcCheckBoxList.Model.Position.Horizontal,
+                            x => new { @class = " CheckBoxList" })
+                </div>
+
+                <div class="col-md-12">
+                    @Html.CheckBoxFor(m => m.bAirportTransferAvalible, new { id = "chkairport" })
+                    @Html.Label("lblAirportTransferAvalible", "Airport Transfer Available")
+                </div>
+
+                @{
+                    <div class="col-md-12" id="divPropertyParking">
+                        @*@Html.Partial("PropertyParking", Model)*@
+                    </div>
+
+                }
+
+
+
+
+                <!-- partking ends -->
+                <!-- common service start-->
+                <div class="col-md-12">
+
+
+                    <div class="subheadcolor"><h4>Common Services</h4></div>
+                    <hr />
+
+                    @{ var putCheckBoxesIntoTable = new HtmlListInfo(HtmlTag.table, 3, new { style = "width:100%;" }); }
+                    @Html.CheckBoxListFor(m => m.SelectedCommonServices, m => m.CommonServicesItems,
+                                group => group.Value,
+                                group => group.Text,
+                                m => m.Selected,
+ putCheckBoxesIntoTable)
+
+                </div>
+
+                <!-- Convenience start-->
+                <div class="col-md-12" style="width:100%">
+
+
+                    <div class="subheadcolor"><h4>Convenience</h4></div>
+                    <hr />
+                    @{
+    var putCheckBoxesIntoTablenew =
+      new HtmlListInfo(HtmlTag.table, 3, new { style = "width:100%;" });
+                    }
+                    @Html.CheckBoxListFor(m => m.SelectedConveniences, m => m.ConveniencesItems,
+                                group => group.Value,
+                                group => group.Text,
+                                m => m.Selected,
+             putCheckBoxesIntoTablenew)
+
+                </div>
+
+                <!-- Leisure start-->
+                <div class="col-md-12">
+
+                    <div class="subheadcolor"><h4>Leisure</h4></div>
+                    <hr />
+                    @{
+    var sasasasadsa =
+      new HtmlListInfo(HtmlTag.table, 4, new { style = "width:100%;" });
+                    }
+                    @Html.CheckBoxListFor(m => m.SelectedLeisure, m => m.LeisureItems,
+                                group => group.Value,
+                                group => group.Text,
+                                m => m.Selected,
+             sasasasadsa)
+
+                </div>
+
+                <!-- Meetings & confereance start-->
+                <div class="col-md-12">
+
+                    <div class="subheadcolor"><h4>Meetings & Conferences</h4></div>
+                    <hr />
+
+                    @Html.CheckBoxListFor(m => m.SelectedMeetings, m => m.MeetingsItems,
+                                group => group.Value,
+                                group => group.Text,
+                                m => m.Selected,
+                                MvcCheckBoxList.Model.Position.Horizontal,
+                                x => new { @class = "CheckBoxList" })
+                    @*<div class="col-xs-4">
+                    <input name="" type="checkbox" value=""> Wedding Facilities
+                </div>*@
+                </div><br />
+                <div class="col-md-12 text-right">
+
+                    <input type="submit" id="btnsubmit" class="btn btn-primary" value="Save">                   
+
+                </div>
+
+            </div>
+            </div>
+        <!-- Panel 1 div END  -->
+
+    </div>
+
+}
+<!-- Panel group div END  -->

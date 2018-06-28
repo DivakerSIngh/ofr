@@ -1,0 +1,236 @@
+﻿@model OneFineRateBLL.Entities.etblUnfinishedTransactions
+@{
+    ViewBag.Title = "Unfinished-Transactions";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+@System.Web.Optimization.Scripts.Render("~/bundles/validation")
+
+
+<script type="text/javascript">
+    //$(document).ready(function () {
+
+    function OpenLink(BookingId, Type, Status, ccType) {
+        if (Status != 'NC' && Type == 'N') {
+
+            if (ccType == 'CA' || ccType == 'RA' || ccType == 'BA' || Status == 'NA' || Status == 'BP' || Status == 'CA' || Status == 'FA' || Status == 'OA' || Status == 'NS') // Neg accepted
+                window.open('/UnFinishedTransaction/UnfinishedBalanceToBePaid?Id=' + BookingId, '_blank'); //NegotiationAccepted
+
+            else if ((Status == 'CO' && ccType != 'CA') || (Status == 'HR' && ccType != 'RA') || ccType == 'FO') // Counter Offer/Original price provided
+                window.open('/UnFinishedTransaction/GotCounterOffer?Id=' + BookingId, '_blank'); // NegotiationCounterOffer
+
+            else // Refund money Status : Cust has rejected the offer
+                window.open('/UnFinishedTransaction/GotCounterOffer?Id=' + BookingId, '_blank'); // NegotiationCounterOffer
+        }
+        if (Status == 'NC' && Type == 'N') { // Response pending from hotel
+            window.open('@Url.Action("NegotiationForHotelPending", "UnFinishedTransaction")?bookingId=' + BookingId, '_blank');
+        }
+        if (Type == 'B') {
+            window.open('/UnFinishedTransaction/UnfinishedHotelNotSelected?bookingId=' + BookingId, '_blank');
+        }
+    }
+
+    function ReleaseInv(BookingId, Type, Status, ccType) {
+        var values = {
+            bookingId: BookingId
+        };
+        var url = $.parseJSON(AjaxCallWithDataMVCPOST("@Url.Action("ReleaseInventory")", values));
+
+        if (url.st == 0)
+            toastr.error(url.Status);
+        else {
+            toastr.success(url.Status);
+            Fillgrid();
+        }
+    }
+
+    function Fillgrid() {
+
+
+        var sSearchType = $("#sSearchType").val();
+        var sName = $("#sName").val();
+        var sEmailID = $("#sEmailID").val();
+        var iTelephone = $("#iTelephone").val();
+        var iBookingID = $("#iBookingID").val();
+        var sDate = $('#sTransDate').val();
+
+        if (sName == '') { sName = null; }
+        if (sEmailID == '') { sEmailID = null; }
+        if (iTelephone == '') { iTelephone = null; }
+        if (iBookingID == '') { iBookingID = null; }
+        if (sDate == '') { sDate = null; }
+
+        if (sName == null && sEmailID == null && iTelephone == null && iBookingID == null && sDate == null) {
+            toastr.warning("Please enter value in atleast one field to search record.");
+            return;
+        }
+
+        // console.log(sSearchType, sName, sEmailID, iTelephone, iBookingID)
+
+        BindGrid(sSearchType, sName, sEmailID, iTelephone, iBookingID, sDate);
+
+    }
+
+    function BindGrid(sSearchType, sName, sEmailID, iTelephone, iBookingID, sDate) {
+        try {
+            var aoColumns =
+                         [
+                            {
+                                "sTitle": "Date of Transaction", "mData": "dtTransactionDate", "bSortable": false,
+                                "mRender": function (data, type, full) {
+                                    return getNorDateTime(data);
+                                }
+                            },
+                            { "sTitle": "Name", "mData": "sName", "bSortable": false },
+                            { "sTitle": "Email ID", "mData": "sEmailID", "bSortable": false },
+                            { "sTitle": "Telephone", "mData": "iTelephone", "bSortable": false },
+                            { "sTitle": "Booking ID", "mData": "iBookingID", "bSortable": false },
+                            { "sTitle": "Type", "mData": "sType", "bSortable": false },
+                            { "sTitle": "Status", "mData": "sStatus", "bSortable": false },
+                            {
+                                "sTitle": "Action", "mData": "iBookingID", "bSortable": false,
+                                "mRender": function (data, type, full) {
+                                    var param = full.iBookingID + ',\'' + full.sTypeInitial + '\',\'' + full.sStatusInitial + '\',\'' + full.ccTypeInitial + '\'';
+                                    var html = '<input type="button" name="Select" Text="' + full.iBookingID + '" Value="Select" onclick="OpenLink(' + param + ')" class="btn btn-warning width60a marginleft5 margintop5  btn-sm">'
+                                    if (full.sTypeInitial == 'N') {
+                                        html += '<input type="button" name="Release" Text="' + full.iBookingID + '" Value="Release" onclick="ReleaseInv(' + param + ')" class="btn btn-primary btn-sm marginleft5 margintop5">'
+                                    }
+                                    return html;
+                                }
+                            }
+                         ];
+            //debugger;
+            DatatableServerSide("#tblData1", aoColumns, "/Services/Service.asmx/GetUnFinishedTransactionData" + "?sSearchType=" + sSearchType + "&sName=" + sName + "&sEmailID=" + sEmailID + "&iTelephone=" + iTelephone + "&iBookingID=" + iBookingID + "&sDate=" + sDate);
+            $('.dataTables_filter input').attr('title', 'Name');
+        }
+        catch (e) {
+
+        }
+    }
+</script>
+
+<script type="text/javascript">
+    function checkLengthMobile(val) {
+        var vallen = val.length;
+        if (vallen >= 10 && vallen <= 15) {
+            return;
+        }
+        else {
+            $("#iTelephone").val(null);
+            return;
+        }
+    }
+</script>
+
+@using (Html.BeginForm("", "", new { id = "form1", role = "form" }))
+{
+    <div class="container margintop20">
+        <div class="row panel panel-default">
+            <div class="container panel-heading">
+                <h4 class="panel-title">
+                    Unfinished Transactions
+                </h4>
+            </div>
+            <div class="panel-body">
+
+                <div class="row">
+                    <div class="col-md-2" style="width:120px;">
+                        Type
+                    </div>
+
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(m => m.sSearchType, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="All",Value="A" },
+                                                                            new SelectListItem {Text="Bidding",Value="B" },
+                                                                            new SelectListItem {Text="Bargain",Value="N" }},
+                                                                                                                new { name = "sSearchType", @class = "form-control col-xs-2" })
+                    </div>
+                    <div class="col-md-1" style="width:10px;">&nbsp; </div>
+                    <div class="col-md-2" style="width:120px;">
+                        Email Address
+                    </div>
+
+                    <div class="col-md-3">
+                        @Html.TextBoxFor(m => m.sEmailID, new { type = "text", @class = "form-control", name = "sEmailID", id = "sEmailID" })
+                        @Html.ValidationMessageFor(m => m.sEmailID, "", new { @class = "red" })
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-2" style="width:120px;">
+                        Name
+                    </div>
+
+                    <div class="col-md-3">
+                        @Html.TextBoxFor(m => m.sName, new { type = "text", @class = "form-control", name = "sName", id = "sName" })
+                    </div>
+                    <div class="col-md-1" style="width:10px;">&nbsp; </div>
+                    <div class="col-md-2" style="width:120px;">
+                        Phone No.
+                    </div>
+
+                    <div class="col-md-3">
+                        @Html.TextBoxFor(m => m.iTelephone, new { type = "number", @class = "form-control", onblur = "checkLengthMobile(this.value)", minlength = "10", maxlength = "10", name = "iTelephone", id = "iTelephone" })
+                    </div>
+                </div>
+
+                <div class="row margintop10">
+                    <div class="col-md-2" style="width:120px;">
+                        Booking ID
+                    </div>
+
+                    <div class="col-md-3">
+                        @Html.TextBoxFor(m => m.iBookingID, new { type = "number", @class = "form-control", min = "0", name = "iBookingID", id = "iBookingID" })
+                    </div>
+                    <div class="col-md-1" style="width:10px;">&nbsp; </div>
+                    <div class="col-md-2" style="width:120px;">
+                        Transaction Date
+                    </div>
+                    <div class="col-md-3">
+                        
+                        @Html.TextBoxFor(m => m.sTransDate, new { Value = Convert.ToString(Model.sTransDate), type = "text", @class = "form-control  ", name = "sTransDate", onkeyup = "this.value=''"})
+                    </div>
+                </div>
+
+                <div class="pull-right">
+                    <div class="row ">
+                        <div class="col-md-12">
+                            <input type="button" name="Search" value="Search" onclick="Fillgrid()" class="btn btn-primary">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 margintop10" id="divgrid1">
+                    <div class="table-responsive margintop20">
+                        <table class="table table-striped table-bordered table-hover display" id="tblData1"></table>
+                    </div>
+                </div>
+                <!-- End  table -->
+            </div>
+        </div>
+        <!-- container div END bottom -->
+    </div>
+    <!-- CONTENT-WRAPPER SECTION END-->
+}
+
+<style>
+    .dataTables_filter {
+        display: none;
+    }
+    /*, .dataTables_info*/
+</style>
+<script src="~/js/jquery-ui.js"></script>
+<script>
+    
+    $(document).ready(function () {
+        
+        var d = new Date();
+        $('#sTransDate').datepicker({
+            startDate: d,
+            autoclose: true,
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true,
+        });
+        $("#ui-datepicker-div").hide();
+    });
+</script>

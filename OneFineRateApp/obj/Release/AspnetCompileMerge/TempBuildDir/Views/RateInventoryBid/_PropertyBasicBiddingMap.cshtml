@@ -1,0 +1,76 @@
+﻿@model OneFineRateBLL.Entities.etblPropertyBasicBiddingMap
+
+@using (Ajax.BeginForm("UpdateBasicBidding", "RateInventoryBid", new AjaxOptions() { InsertionMode = InsertionMode.Replace, UpdateTargetId = "targetid", HttpMethod = "POST", OnSuccess = "GetResult" }))
+{
+    @Html.HiddenFor(x => x.dtEffectiveDate)
+    @Html.HiddenFor(x => x.bIsClosedroom)
+    @Html.HiddenFor(x => x.bCTAroom)
+    @Html.HiddenFor(x => x.bCTDroom)
+    @Html.HiddenFor(x => x.bIsClosedlead)
+    @Html.HiddenFor(x => x.bCTAlead)
+    @Html.HiddenFor(x => x.bCTDlead)
+    @Html.HiddenFor(x => x.bIsClosedlos)
+    @Html.HiddenFor(x => x.bCTAlos)
+    @Html.HiddenFor(x => x.bCTDlos)
+
+    <div class="modal-dialog modal-lg" style="width: 96%;">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header ">
+                         <button type="button" class="close" data-dismiss="modal">&times;</button> 
+                <div class="pull-left">
+                    <h4>Basic Discount</h4>
+                </div>
+                <div class="pull-right blue">28 Jan, 2016</div>
+            </div>
+            <div class="modal-body">
+                <div class="row  paddingbottom10">
+
+                    <div class="row">
+                        <div class="col-xs-3">
+                            Current Discount
+                            @Html.DisplayFor(m => m.dBasicDiscount)
+                        </div>
+
+                        <div class="col-xs-3">
+                            New Discount
+                            @Html.TextBoxFor(m => m.dBasicDiscount, new { type = "text", @class = "form-control", maxlength = "5", pattern = "[0-9]+([\\.,][0-9]+)?" })
+                        </div>
+
+                        <div class="col-xs-3">
+                            Close Out
+                            @Html.DropDownListFor(m => m.bIsClosed, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="Yes",Value="true" },
+                                                                            new SelectListItem {Text="No",Value="false" }},
+                                                                            new { @class = "form-control " })
+                        </div>
+                        <div class="col-xs-3">
+                            CTA
+                            @Html.DropDownListFor(m => m.bCTA, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="Yes",Value="true" },
+                                                                            new SelectListItem {Text="No",Value="false" }},
+                                                                            new { @class = "form-control " })
+                        </div>
+                        <div class="col-xs-3">
+                            CTD
+                            @Html.DropDownListFor(m => m.bCTD, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="Yes",Value="true" },
+                                                                            new SelectListItem {Text="No",Value="false" }},
+                                                                            new { @class = "form-control" })
+                        </div>
+
+                    </div>
+                    <div class="row ">
+                        <div class="col-xs-12 marginbottom20 margintop10 text-center">
+                            <hr>
+                            <input type="submit" class="btn btn-primary margintop10" value="SAVE">
+                            <input type="button" class="btn btn-danger margintop10" value="CANCEL" data-dismiss="modal">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="targetid"></div>
+}

@@ -1,0 +1,499 @@
+﻿@model   OneFineRateBLL.Entities.PropDetailsM
+@using OneFineRateBLL
+@using Microsoft.AspNet.Identity
+@{
+    ViewBag.Title = "BookerInformation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('[data-toggle="popover"]').popover();
+        SetValues();
+    });
+
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    });
+
+    function SetValues() {
+
+        var NegoAmount = $("#txtNegotiaionAmount").val();
+        var type = $("#hdntype").val();
+        var hdnreqstatus = $("#hdnreqstatus").val();
+        if (type == 'G' || type == 'L') {
+            $('#txtNegotiaionAmount').attr('disabled', 'disabled');
+            $('#chkAgree').attr('disabled', 'disabled');
+            $('#chkAgree').attr('checked', 'checked');
+        }
+        else if (type == 'O') {
+            {
+                $('#txtNegotiaionAmount').removeAttr('disabled');
+                $('#chkAgree').removeAttr('disabled');
+                $('#chkAgree').removeAttr('checked');
+            }
+        }
+
+        if (type == 'G') {
+            $('#ddtitle').removeAttr('disabled');
+            $('#txtFirstName').removeAttr('disabled');
+            $('#txtLastName').removeAttr('disabled');
+            $('#txtEmailId').removeAttr('disabled');
+            $('#txtMobileNo').removeAttr('disabled');
+            $('#btnVerifyMobileNumber').removeAttr('disabled');
+        }
+
+
+
+        if (hdnreqstatus == 'OTP') {
+            $('#trOTP').removeAttr('style');
+            $('#txtOTP').val('');
+            $('#btnChargeCard').attr('disabled', 'disabled');
+
+            $('#ddtitle').attr('disabled', 'disabled');
+            $('#txtFirstName').attr('disabled', 'disabled');
+            $('#txtLastName').attr('disabled', 'disabled');
+            $('#txtEmailId').attr('disabled', 'disabled');
+            $('#txtMobileNo').attr('disabled', 'disabled');
+            $('#btnVerifyMobileNumber').attr('disabled', 'disabled');
+        }
+    }
+
+</script>
+
+<script type="text/javascript">
+
+    $(function () {
+        $('#btnModify').click(function () {
+            $('#trOTP').attr('style', 'display:none;');
+            $('#txtOTP').val('');
+
+
+            $('#ddtitle').removeAttr('disabled');
+            $('#txtFirstName').removeAttr('disabled');
+            $('#txtLastName').removeAttr('disabled');
+            $('#txtEmailId').removeAttr('disabled');
+            $('#txtMobileNo').removeAttr('disabled');
+            $('#btnVerifyMobileNumber').removeAttr('disabled');
+
+        });
+    });
+
+    $(function () {
+        $('#txtOTP').blur(function () {
+            $('#btnChargeCard').removeAttr('disabled');
+        });
+    });
+
+    $(function () {
+        $('#btnVerifyMobileNumber').click(function (event) {
+            event.preventDefault();
+            var NegotiationAmount = $("#txtNegotiaionAmount").val();
+            if (NegotiationAmount > 0 && NegotiationAmount < 50000) {
+                var NegoAmount = $("#txtNegotiaionAmount").val();
+                $.ajax({
+
+                    type: 'POST',
+                    url: '../Negotiation/VerifyMobileNo',
+                    cache: false,
+                    dataType: 'json',
+                    data: {
+                        NegotiationAmount: NegoAmount,
+                        Title: $("#ddtitle").val(),
+                        FirstName: $("#txtFirstName").val(),
+                        LastName: $("#txtLastName").val(),
+                        EmailID: $("#txtEmailId").val(),
+                        Mobile: $("#txtMobileNo").val()
+                    },
+                    success: function (data) {
+                        if (data.st == 0) {
+                            toastr.info(data.msg);
+
+                            $('#ddtitle').attr('disabled', 'disabled');
+                            $('#txtFirstName').attr('disabled', 'disabled');
+                            $('#txtLastName').attr('disabled', 'disabled');
+                            $('#txtEmailId').attr('disabled', 'disabled');
+                            $('#txtMobileNo').attr('disabled', 'disabled');
+                            $('#btnVerifyMobileNumber').attr('disabled', 'disabled');
+                        }
+                        else {
+                            $('#hdnVC').val(data.VC);
+                            $("#hdnreqstatus").val("OTP");
+                            $("#hdntype").val("G");
+                            SetValues();
+                        }
+
+                    },
+                    error: function (err) {
+                        alert('Error block')
+                        console.log(err);
+                    }
+                });
+            }
+            else {
+                alert("Negotiation Amount entered is incorrect.");
+                $("#txtNegotiaionAmount").focus();
+            }
+        });
+    });
+
+
+
+    $(function () {
+        $('#btnChargeCard').click(function (event) {
+            event.preventDefault();
+            var NegotiationAmount = $("#txtNegotiaionAmount").val();
+            if (NegotiationAmount > 0 && NegotiationAmount < 50000) {
+                var NegoAmount = $("#txtNegotiaionAmount").val();
+
+                $.ajax({
+
+                    type: 'POST',
+                    url: '../Negotiation/ChargeCard',
+                    cache: false,
+                    dataType: 'json',
+                    data: {
+                        NegotiationAmount: NegoAmount,
+                        Title: $("#ddtitle").val(),
+                        FirstName: $("#txtFirstName").val(),
+                        LastName: $("#txtLastName").val(),
+                        EmailID: $("#txtEmailId").val(),
+                        Mobile: $("#txtMobileNo").val(),
+                        VC: $("#hdnVC").val(),
+                        OTPCode: $("#txtOTP").val()
+                    },
+                    success: function (data) {
+                        if (data.st == 0) {
+                            toastr.info(data.msg);
+                            $('#ddtitle').attr('disabled', 'disabled');
+                            $('#txtFirstName').attr('disabled', 'disabled');
+                            $('#txtLastName').attr('disabled', 'disabled');
+                            $('#txtEmailId').attr('disabled', 'disabled');
+                            $('#txtMobileNo').attr('disabled', 'disabled');
+                            $('#btnVerifyMobileNumber').attr('disabled', 'disabled');
+                        }
+                        else {
+                            $('#hdnVC').val(data.VC);
+                            $("#hdnreqstatus").val("OTP");
+                            $("#hdntype").val("G");
+                            SetValues();
+                        }
+
+                        if (data.reqStatus == 'C') {
+                            url = "../Negotiation/GuestInformation";
+                            window.location.href = url;
+                        }
+                    },
+                    error: function (err) {
+                        alert('Error block')
+                        console.log(err);
+                    }
+                });
+            }
+            else {
+                alert("Negotiation Amount entered is incorrect.");
+                $("#txtNegotiaionAmount").focus();
+            }
+        });
+    });
+
+
+</script>
+
+
+<div class="container-wrapper">
+    @Html.HiddenFor(m => Model.sPropertyName)
+    @Html.HiddenFor(m => Model.iPropId)
+    @Html.HiddenFor(m => Model.sPropertyAddress)
+    @Html.HiddenFor(m => Model.iStarCategory)
+    @Html.HiddenFor(m => Model.sVerificationCode, new { Id = "hdnVC", name = "hdnVC" })
+    @Html.HiddenFor(m => Model.lstetblPhotoGallery[0].sMainImgUrl)
+    @for (int hdni = 0; hdni < Model.lstetblHotelFacilities.Count; hdni++)
+    {
+        @Html.HiddenFor(m => Model.lstetblHotelFacilities[hdni].sImgUrl)
+    }
+
+    <input type="hidden" id="hdntype" value="@ViewBag.type" />
+    <input type="hidden" id="hdnreqstatus" value="@ViewBag.reqstatus" />
+
+
+    <!--slider-starts here-->
+    <div class="main-wrapper">
+        <div class="blue_header_bar">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2>Please review your request</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--2nd row start-->
+        <div class="thirdsection">
+            <div class="container">
+                <div class="col-md-8 paddingtop-bottom15">
+                    <div class="col-md-7 col-xs-12">
+                        <div class="img-res">
+                            <img class="image-ban" src='@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()@Model.lstetblPhotoGallery[0].sMainImgUrl' id="imagePreview">
+                        </div>
+                    </div>
+                    <div class="col-md-5 col-xs-12">
+                        <h4>@Model.sPropertyName</h4>
+                        <div class="margintop-10"> <img src="~/images/inner-star@(Model.iStarCategory).png"></div>
+                        <address>
+                            @Model.sPropertyAddress
+                            <div class="row">
+                                <div class="col-lg-3 col-md-3 col-sm-3  col-xs-3">Facilities:</div>
+                                <div class="col-md-8 col-xs-8 facilityicon">
+                                    <ul>
+                                        @for (int i = 0; i < Model.lstetblHotelFacilities.Count; i++)
+                                        {
+                                            <li><img src='@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()@Model.lstetblHotelFacilities[i].sImgUrl' id="iconPreview" style="height: 14px; width: 16px"></li>
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        </address>
+                    </div>
+                </div>
+                <div class="col-md-4 col-xs-12">
+                    <div class="row">
+                        <div class="col-md-6 col-xs-6 pull-left">
+                            <div class="whitebg center  border1">
+                                <h4>Check In</h4>
+                            </div>
+                            <div class="lytgry center  border1">
+                                <div class="row">
+                                    <div class="col-md-5   col-xs-5"><img src="../images/calendar_icon.png" alt=""></div>
+                                    <div class="col-md-7   col-xs-7">
+                                        <div class="bluetextsmall">23 Dec</div>
+                                        <div class="bluetextbig">2015</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-xs-6 pull-right">
+                            <div class="whitebg center  border1">
+                                <h4>Check Out</h4>
+                            </div>
+                            <div class="lytgry center  border1">
+                                <div class="row">
+                                    <div class="col-md-5  col-xs-5"><img src="../images/calendar_icon.png" alt=""></div>
+                                    <div class="col-md-7 col-xs-7">
+                                        <div class="bluetextsmall">25 Dec</div>
+                                        <div class="bluetextbig">2015</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 margintop10">
+                            <div class="col-md-4">&nbsp;</div>
+                            <div class="col-md-4 whitebg center border1"><strong>Nights:</strong> 2</div>
+
+                            <div class="col-md-4">&nbsp;</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--next section-->
+        </div>
+        <!--2nd row row end-->
+        <!--3rd row row start-->
+        <div class="container">
+            <div class="col-md-12 margintop30">
+                <div class="tablebluebg">Rate Summary</div>
+                <div class=" table-responsive">
+                    <table class="table lightgrybg table-bordered table-hover">
+                        <tbody>
+                        <thead>
+                        <th>ROOM</th>
+                        <th>ROOM TYPE</th>
+                        <th>ADULTS</th>
+                        <th>CHILDREN</th>
+                        <th>PRICE/ NIGHT</th>
+                        <th>EXTRA</th>
+                        <th class="width100">NIGHT(S)</th>
+                        <th>TOTAL PRICE</th>
+                        <th></th>
+                        </thead>
+
+                        @{int CountIndex = 0;}
+
+                        @for (int i = 0; i < Model.lstetblRooms.Count; i++)
+                        {
+                            @Html.HiddenFor(m => Model.iPropId)
+                            @Html.HiddenFor(m => Model.lstetblRooms[i].iRoomId)
+                            @Html.HiddenFor(m => Model.lstetblRooms[i].sRoomName)
+
+                            for (int j = 0; j < Model.lstetblRooms[i].lstRatePlan.Count; j++)
+                            {
+                                @Html.HiddenFor(m => Model.lstetblRooms[i].lstRatePlan[j].RPID)
+                                @Html.HiddenFor(m => Model.lstetblRooms[i].lstRatePlan[j].iRoomId)
+
+                                for (int lstOcc = 0; lstOcc < Model.lstetblRooms[i].lstRatePlan[j].lstetblOccupancy.Count; lstOcc++)
+                                {
+                                    if (Model.lstetblRooms[i].lstRatePlan[j].lstetblOccupancy[lstOcc].iNoOfRooms != 0)
+                                    {
+                                        for (int k = 0; k < Model.lstetblRooms[i].lstRatePlan[j].lstetblOccupancy[lstOcc].iNoOfRooms; k++)
+                                        {
+                                            <tr>
+                                                <td>Room @(CountIndex + 1)</td>
+                                                <td>@Model.lstetblRooms[i].sRoomName</td>
+                                                <td>@Model.lstetblRooms[i].sRoomName </td>
+                                                <td>@Model.lstetblRooms[i].sRoomName</td>
+                                                <td>@Model.lstetblRooms[i].sRoomName</td>
+                                                <td>@Model.lstetblRooms[i].sRoomName</td>
+                                                <td>@Model.lstetblRooms[i].sRoomName</td>
+                                                <td> INR @Model.lstetblRooms[i].lstRatePlan[j].lstetblOccupancy[lstOcc].dPrice</td>
+                                                <td>
+                                                    <a href="#" data-toggle="popover" title="What is Bid" data-trigger="hover" data-placement="bottom" data-content="write up about bid display here.">
+                                                        <img src="@Url.Content("~/images/info.png")">
+                                                    </a>
+
+                                                </td>
+                                            </tr>
+                                            CountIndex++;
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+
+                        <tr class="noborder">
+
+                            <td colspan="7"><span class="pull-right">Taxes and other service charge: </span></td>
+                            <td> INR 8900</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+
+                            <td class="noborder" colspan="7"><strong class="pull-right">Grand Total: </strong></td>
+                            <td class="noborder"><strong class="pull-left">INR 96,900</strong></td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="container">
+        <div class="col-md-12 margintop20">
+            <div class="tablebluebg">Your Negotiation</div>
+            <div class=" table-responsive table-bordered padding15 lightgrybg">
+                <div class="row">
+                    <div class="form-inline col-md-5">
+                        <label>Your negotiation Amount : </label>
+                        <input type="text" id="txtNegotiaionAmount" value="@ViewBag.NegotiationAmount" class="form-control width245">
+                    </div>
+                    <div class="redtextsmall col-md-7">* This is the total amount you wish to pay for the above booking (incl. taxes)</div>
+                </div>
+                <div class="row margintop10">
+                    <div class="col-md-12 fontsmall12">A valid negotiation requires a value above <span class="small alert border1 bg-warning">INR 70000</span></div>
+                    <div class="col-md-12">
+                        <div class="redtextsmall marginleft-15 lineheight21">
+                            * In order to submit your negotiation, you need pay INR 500. If your negotiation is accepted, then the balance amount of the reservation needs to be paid.  Please allow us approximately 3 hours
+                            to get you the rate of your choice (during business hours). If your negotiation is received beyond Business Hours, then we will get back to you within 3 hours of the next business hour cycle.
+                            Should your negotiation is not accepted by the hotel, then INR 500 will be refunded back to you within the next 24 hours. In case, your negotiation is successful and the balance amount not paid,
+                            then the advance of INR 500 will be forfeited.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="col-md-12 margintop30">
+            <div class="tablebluebg">Important Information</div>
+            <div class=" table-responsive table-bordered padding10 lightgrybg">
+                <p>
+                    Once the hotel is selected by you after the payment, the same cannot be changed. Rooms purchased through onefinerate negotiation cannot be cancelled, changed or transferred and refunded. If your offer is not accepted, your advance amount of INR 500, will be refunded.<br>
+                    Requests for bed types (King, Queen, 2 Doubles, etc.) including preferences like early check in, late check out, smoking room etc should be requested through your confirmed hotel and cannot be guaranteed.<br>
+                    Reservation is guaranteed for arrival on the confirmed check-in date only. If you do not check-in on the first day of your reservation and you do not alert the hotel in advance, the remaining portion of your reservation will be canceled and you will not be entitled to a refund.<br>
+                    The reservation holder must present a valid photo ID and credit card at check-in. The credit card is required for any additional hotel specific service fees or incidental charges or fees that may be charged by the hotel to the customer at checkout. These charges may be mandatory (e.g., resort fees) or optional (parking, phone calls or minibar charges) and are not included in your offer price.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container marginbottom-10">
+    <div class="col-md-12 t-c form-inline">
+        <div class="form-group">
+            <input type="checkbox" id="chkAgree" class="checkbox ">
+            I have read, accept and agree to abide by Onefinerate.com's
+            <a href="#" data-toggle="popover" title="Terms and Conditions" data-trigger="hover" data-placement="bottom" data-content=" Please read Terms and Conditions carefully.">Terms and Conditions</a>
+            ,<a href="#" data-toggle="popover" title="Privacy Policy" data-trigger="hover" data-placement="bottom" data-content=" Please read Privacy Policy carefully.">Privacy Policy</a>
+            and <a href="#" data-toggle="popover" title="Hotel Policy" data-trigger="hover" data-placement="bottom" data-content=" Please read Hotel Policy carefully.">Hotel Policy</a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="col-md-12 margintop10">
+        <div class="tablebluebg">Your Information</div>
+        <div class=" table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead>
+                <th>TITLE</th>
+                <th>FIRST NAME</th>
+                <th>LAST NAME</th>
+                <th>EMAIL ID</th>
+                <th> MOBILE NO.</th>
+                <th></th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                         
+                            @Html.DropDownListFor(m => m.sUserTitle, new List<SelectListItem> { new SelectListItem { Value = "Mr.", Text = "Mr.", Selected = Model.sUserTitle == "Mr." }, new SelectListItem { Value = "Ms.", Text = "Ms.", Selected = Model.sUserTitle == "Ms." } }, "Select title", new { @class = "form-control", disabled = "disabled", id = "ddtitle", required = "true" })
+                            
+                            @*@Html.DropDownListFor(m => m.sUserTitle, EnumHelper.GetSelectList(typeof(OneFineRateWeb.Models.TitleType)), "Select title", new { @class = "form-control", disabled = "disabled", id = "ddtitle" })*@
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(m => m.sUserFirstName, new { id = "txtFirstName", type = "text", placeholder = "First Name", disabled = "disabled", @class = "form-control" })
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(m => m.sUserLastName, new { id = "txtLastName", type = "text", placeholder = "Last Name", disabled = "disabled", @class = "form-control" })
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(m => m.sUserEmail, new { id = "txtEmailId", type = "email", placeholder = "Email Id", disabled = "disabled", @class = "form-control" })
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(m => m.sUserMobileNo, new { id = "txtMobileNo", type = "phone", placeholder = "Mobile No", maxlength = "15", disabled = "disabled", @class = "form-control" })
+                        <td>
+                            <button id="btnVerifyMobileNumber" disabled="disabled" class="btn btn-primary">Verify Mobile Number</button>
+                        </td>
+                    </tr>
+                    <tr id="trOTP" style="display:none;">
+                        <td colspan="6" align="center">
+                            <div class="col-md-12">
+                                Please Enter OTP : <input id="txtOTP" style="width:100px;" type="text" placeholder="" maxlength="6" class="form-control">
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="col-md-12 center margintop10">
+        <button type="button" id="btnModify" class="btn btn-success  btn-lg">Modify</button>
+        <button type="button" id="btnChargeCard" class="btn btn-info  btn-lg">Charge Card</button>
+    </div>
+</div>
+<div class="marginbottom20">&nbsp;</div>
+
+
+
+
+
+
+
+

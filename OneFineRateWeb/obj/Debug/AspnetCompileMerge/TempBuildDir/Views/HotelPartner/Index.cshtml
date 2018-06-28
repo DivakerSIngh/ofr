@@ -1,0 +1,272 @@
+﻿@model OneFineRateBLL.Entities.etblHotelPartnerM
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<style type="text/css">
+    .red {
+        color: red;
+    }
+</style>
+
+@using (Html.BeginForm("Index", "HotelPartner", FormMethod.Post, new { id = "frmHotelPartner", role = "form" }))
+{
+    <div class="container-wrapper">
+
+        <div class="light_header_bar">
+            <div class="container">
+                <div class="col-md-12">
+                    <h4 class="padddingbottom10">Become A Hotel Partner</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+
+            <div class="col-md-6">
+                <h4>Property Details</h4>
+                <hr>
+                <div class="row form-group  margintop15">
+                    <div class="col-md-4">Hotel Name: <span class="red">*</span></div>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(m => m.sHotelName, new { type = "text", required = "true", @class = "form-control", maxlength = "50", placeholder = "Hotel Name" })
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-4">Star Category: <span class="red">*</span> </div>
+                    <div class="col-md-8">
+                        @Html.DropDownListFor(m => m.iStarCategory, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="Select",Value="" },
+                                                                            new SelectListItem {Text="1 Star",Value="1" },
+                                                                            new SelectListItem {Text="2 Star",Value="2" },
+                                                                            new SelectListItem {Text="3 Star",Value="3" },
+                                                                            new SelectListItem {Text="4 Star",Value="4" },
+                                                                            new SelectListItem {Text="5 Star",Value="5" },},
+                                                                                     new { @class = "form-control " })
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-4">Hotel Website</div>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(m => m.sWebsiteUrl, new { type = "text", @class = "form-control", maxlength = "250", placeholder = "www.abc.com" })
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-4">Address: <span class="red">*</span></div>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(m => m.sAddress, new { type = "text", required = "true", @class = "form-control", maxlength = "200", placeholder = "Address" })
+                        @*<textarea type="text" placeholder="Address" class="form-control"></textarea>*@
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-4">City: <span class="red">*</span></div>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(m => m.sCity, new { type = "text", required = "true", @class = "form-control", maxlength = "50", placeholder = "City" })
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-4">State : <span class="red">*</span></div>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(m => m.sState, new { type = "text", required = "true", @class = "form-control", maxlength = "50", placeholder = "State" })
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-4">Country : <span class="red">*</span></div>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(m => m.sCountry, new { type = "text", required = "true", @class = "form-control", maxlength = "50", placeholder = "Country" })
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-4">Pin Code: <span class="red">*</span></div>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(m => m.sPIN, new { type = "number", onblur = "checkLengthPinCode(this.value)", required = "true", @class = "form-control", maxlength = "6", placeholder = "PIN Code" })
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-4">Board line Number: <span class="red">*</span></div>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(m => m.sBoardLineNumber, new { min = "1", type = "number", onblur = "checkLengthBoardline(this.value)", required = "true", @class = "form-control", maxlength = "15", placeholder = "Hotel Board line Number" })
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-6">
+                <h4>Contact Details</h4>
+                <hr>
+                <div class="row form-group  margintop15">
+                    <div class="col-md-4">First Name: <span class="red">*</span></div>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(m => m.sFirstName, new { type = "text", required = "true", @class = "form-control", maxlength = "50", placeholder = "First Name" })
+                    </div>
+                </div>
+
+                <div class="row form-group  margintop15">
+                    <div class="col-md-4">Last Name: <span class="red">*</span></div>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(m => m.sLastName, new { type = "text", required = "true", @class = "form-control", maxlength = "50", placeholder = "Last Name" })
+
+                    </div>
+                </div>
+
+                <div class="row form-group  margintop15">
+                    <div class="col-md-4">Designation: <span class="red">*</span></div>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(m => m.sDesignation, new { type = "text", required = "true", @class = "form-control", maxlength = "50", placeholder = "Designation" })
+
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-4">Email Address: <span class="red">*</span></div>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(m => m.sEmail, new { type = "text", required = "true", @class = "form-control", maxlength = "100", placeholder = "abc@email.com" })
+                        @Html.ValidationMessageFor(m => m.sEmail, "", new { @class = "red" })
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-4">Mobile Number: <span class="red">*</span></div>
+                    <div class="col-md-8 form-inline">
+                        <input type="text" placeholder="+91" readonly="readonly" class="form-control width20percent">
+                        @Html.TextBoxFor(m => m.sMobile, new { type = "number", required = "true", onblur = "checkLengthMobile(this.value)", @class = "form-control width75percent", minlength = "10", maxlength = "15", placeholder = "Mobile No." })
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-md-12 marginbottom20">
+                <hr>
+                @Html.CheckBoxFor(m => m.bIsAgree) <label for="bIsAgree"> I agree to the <a href="javascript:void(0)" onclick="OpenTermsAndCondition()"> Terms and Conditions</a></label>
+                @Html.ValidationMessageFor(m => m.bIsAgree, "", new { @class = "red" })
+                <br>
+                <input type="submit" class="btn btn-success margintop20" name="btnSubmit" value="Submit">
+            </div>
+
+        </div>
+
+    </div>
+}
+
+<div id="divTermsAndCondition" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"> Terms and Conditions</h4>
+            </div>
+            <div class="modal-body">
+                <p>This page states the Terms and Conditions under which you (Visitor) may visit this web site. Please read this page carefully. If you do not accept the Terms and Conditions stated here, we would request you to exit this site. FPHL or any of its business divisions and / or its subsidiaries, associate companies or subsidiaries to subsidiaries or such other investment companies (in India or abroad) reserve their respective rights to revise these Terms and Conditions at any time by updating this posting. You should visit this page periodically to re-appraise yourself of the Terms and Conditions, because they are binding on all users of this web site.</p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    $(function () {
+
+        var success = @((TempData["msg"] != null).ToString().ToLower());
+        if (success == true) {
+            toastr.success('@TempData["msg"]');
+            setTimeout(function(){
+                window.location.href = '@Url.Action("Index", "Home")'
+            },5000);
+        }
+
+        var error = @((TempData["ERROR"] != null).ToString().ToLower());
+
+        if (error == true) {
+            toastr.error('@TempData["ERROR"]');
+        }
+    });
+
+</script>
+
+<script type="text/javascript">
+
+    function checkLengthMobile(val) {
+        var vallen = val.length;
+        if (vallen >= 10 && vallen <= 15) {
+            return;
+        }
+        else {
+
+            toastr.error('Mobile number is not valid !');
+
+            return;
+        }
+    }
+
+    function checkLengthPinCode(val) {
+        var vallen = val.length;
+        if (vallen == 6) {
+            return;
+        }
+        else {
+            toastr.error('PIN code is not valid !');
+            return;
+        }
+    }
+
+    function checkLengthBoardline(val) {
+        var vallen = val.length;
+        if (vallen >= 1 && vallen <= 15) {
+            return;
+        }
+        else {
+            $("#sBoardLineNumber").val(null);
+            return;
+        }
+    }
+
+    function OpenTermsAndCondition() {
+
+        $('#divTermsAndCondition').modal({
+            show: 'true'
+        });
+    }
+
+
+    $("#frmHotelPartner").validate({
+        rules: {
+
+            sHotelName: { required: true, maxlength: 200, message: false },
+            iStarCategory: { required: true, message: false },
+            sAddress: { required: true, message: false },
+            sCity: { required: true, message: false },
+
+            sState: { required: true, message: false },
+            sCountry: { required: true, message: false },
+            sPIN: { required: true,maxlength: 6, message: false },
+            sBoardLineNumber: { required: true,maxlength: 200, message: false },
+            sFirstName: { required: true,maxlength: 50, message: false },
+
+            sLastName: { required: true,maxlength: 50, message: false },
+            sDesignation: { required: true,maxlength: 200, message: false },
+            sEmail: { required: true,email:true,maxlength: 200, message: 'Email address not valid' },
+            sMobile: { required: true,maxlength: 12, message: false },
+            bIsAgree: { required: true, maxlength: 50 }
+        },
+        errorPlacement: function (error, element) { },
+        highlight: function (element) {
+            $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+
+        },
+        unhighlight: function (element) {
+            $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+        }
+    });
+
+</script>

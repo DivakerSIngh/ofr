@@ -1,0 +1,99 @@
+﻿@model OneFineRateBLL.Entities.eCorporateCompanyM
+@{
+    ViewBag.Title = "Become Corporate";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style type="text/css">
+    .red {
+        color: red;
+    }
+</style>
+
+
+@using (Html.BeginForm("BecomeCorporate", "Corporate", FormMethod.Post, new { id = "frmBecomeCorporatePartner", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="container-wrapper">
+
+        <div class="light_header_bar">
+            <div class="container">
+                <div class="col-md-12">
+                    <h4 class="padddingbottom10">Become A Corporate Partner</h4>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="col-md-6">
+                <h4>Corporate Details</h4>
+                <hr>
+                <div class="row form-group  margintop15">
+                    <div class="col-md-4">Company Name: <span class="red">*</span></div>
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.sCompanyName, new { htmlAttributes = new { maxlength = "200", @class = "form-control",Placeholder="Company Name" } })
+                        @Html.ValidationMessageFor(model => model.sCompanyName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-4">Primary Contact: <span class="red">*</span> </div>
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.sPrimaryContact, new { htmlAttributes = new { maxlength = "100", @class = "form-control", Placeholder = "Primary Contact" } })
+                        @Html.ValidationMessageFor(model => model.sPrimaryContact, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-4">Telephone Number: <span class="red">*</span></div>
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.sTelephoneNumber, new { htmlAttributes = new { maxlength = "20", @class = "form-control", Placeholder = "Telephone Number" } })
+                        @Html.ValidationMessageFor(model => model.sTelephoneNumber, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-4">Email Address: <span class="red">*</span></div>
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.sEmailAddress, new { htmlAttributes = new { maxlength = "100", @class = "form-control", Placeholder = "abc@gmail.com" } })
+                        @Html.ValidationMessageFor(model => model.sEmailAddress, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-4">Mobile Number: <span class="red">*</span></div>
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.sMobileNumber, new { htmlAttributes = new { maxlength = "10", id = "txtMobileNumber", @class = "form-control countryCodeRespectiveTextBox", Placeholder = "Mobile Number" } })
+                        @Html.ValidationMessageFor(model => model.sMobileNumber, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+
+                <div class="col-md-12 marginbottom20">
+                    <input type="submit" class="btn btn-success margintop20" name="btnSubmit" value="Submit">
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+<script type="text/javascript">
+   
+    $(function () {
+
+        var success = @((TempData["msg"] != null).ToString().ToLower());
+        if (success == true) {
+            toastr.success('@TempData["msg"]');
+            setTimeout(function(){
+                window.location.href = '@Url.Action("Index", "Home")'
+            },5000);
+        }
+
+        var error = @((TempData["ERROR"] != null).ToString().ToLower());
+
+        if (error == true) {
+            toastr.error('@TempData["ERROR"]');
+        }
+
+    });
+
+</script>

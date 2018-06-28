@@ -1,0 +1,138 @@
+﻿@model OneFineRateBLL.Entities.eReport
+@{
+    ViewBag.Title = "Report";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+
+@System.Web.Optimization.Scripts.Render("~/bundles/ajaxpostform")
+
+<script type="text/javascript">
+
+    function calendar() {
+        var d = new Date();
+        
+        $('#dtFrom').datepicker({
+            startDate: d,
+            autoclose: true,
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true,
+            onClose: function (selectedDate) {
+                $("#dtTo").datepicker("option", "minDate", selectedDate);
+            }
+        });
+        $('#dtTo').datepicker({
+            startDate: d,
+            autoclose: true,
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true,
+            onClose: function (selectedDate) {
+                $("#dtFrom").datepicker("option", "maxDate", selectedDate);
+            }
+        });
+
+
+        $("#dtFrom").each(function () {
+            var selecteddate = $("#dtFrom").datepicker("getDate");
+            var dateString = $.datepicker.formatDate('dd/mm/yy', selecteddate);
+            if (dateString == "01/01/2001") {
+                $("#dtFrom").datepicker('setDate', new Date('dd/mm/yy'));
+            }
+            $('#dtFrom').attr('disable', true)
+
+        });
+        $("#dtTo").each(function () {
+            var selecteddate = $("#dtTo").datepicker("getDate");
+            var dateString = $.datepicker.formatDate('dd/mm/yy', selecteddate);
+            if (dateString == "01/01/2001") {
+                $("#dtTo").datepicker('setDate', new Date('dd/mm/yy'));
+            }
+
+        });
+        $("#ui-datepicker-div").hide();
+    }
+
+    $(document).ready(function () {
+
+        calendar();
+
+        $('.download').on('click', function () {
+
+            if ($("#Master").val() == "") {
+                bootbox.alert("Please select master")
+                return false;
+            }
+            else if ($("#dtFrom").val() == "" || $("#dtTo").val() == "") {
+                bootbox.alert("Please chose both dates")
+                return false;
+            }
+
+            location.href = '@Url.Action("ExportExcel", "Report")?table=' + $("#Master").val() + '&fromdate=' + $("#dtFrom").val() + '&todate=' + $("#dtTo").val();
+        });
+        
+    });
+</script>
+    <div class="container margintop20">
+        <div class="row panel panel-default">
+            <div class="container panel-heading">
+                <div class="col-md-6">
+                    <h4 class="panel-title">
+                        Report
+                    </h4>
+                </div>
+                <div class="col-md-6"></div>
+
+            </div>
+            <div class="panel-body">
+
+                <div class="table-responsive margintop20">
+
+                    <div class="row">
+
+                        <div class="col-md-4">
+                            Master
+
+                                @Html.DropDownListFor(m => m.Master, new List<SelectListItem> {
+                                                                            new SelectListItem {Text = "Select",Value = "" },
+                                                                            new SelectListItem {Text = "User Management",Value = "USM" },
+                                                                            new SelectListItem {Text = "Map Hotel Management",Value = "MHM" },
+                                                                            new SelectListItem {Text = "User Group Management",Value = "UGM" },
+                                                                            new SelectListItem {Text = "User Group Rights Management",Value = "URM" },
+                                                                            new SelectListItem {Text = "Macro Area Management",Value="MAM" },
+                                                                            new SelectListItem {Text = "Locality Management",Value="LM" },
+                                                                            new SelectListItem {Text = "Promotional Hotel Management",Value="PHM" },
+                                                                            new SelectListItem {Text = "Chain Management",Value="CM" },
+                                                                            new SelectListItem {Text = "Promo Code Management",Value="PCM" },
+                                                                            new SelectListItem {Text = "Loyalty Management", Value = "LYM"},
+                                                                            new SelectListItem {Text = "Loyalty Amenity Management", Value = "LAM"},
+                                                                            new SelectListItem {Text = "Tax Management", Value = "TM"},
+                                                                            new SelectListItem {Text = "Banner Management", Value = "BM"},
+                                                                            new SelectListItem {Text = "Amenity Management", Value = "AM"},
+                                                                            new SelectListItem {Text = "Rate Plan Management", Value = "RPM"},
+                                                                            new SelectListItem {Text = "Video Management", Value = "VM"},
+                                                                            new SelectListItem {Text = "Rank Management", Value = "RM"},
+                                                                            new SelectListItem {Text = "Bookings", Value = "tblBookingTx"},
+                                                                             new SelectListItem { Text = "Master Tax Management", Value = "MTM" }},
+                                                                                               new { @class = "form-control", required = "true" })
+
+                        </div>
+                        <div class="col-md-2" style="width:11%;">
+                            From
+                            @Html.TextBoxFor(m => m.dtFrom, new { Value = Convert.ToString(Model.dtFrom), type = "text", @class = "form-control  ", required = "true", name = "dtFrom", onkeyup = "this.value=''", id = "dtFrom" })
+                        </div>
+                        <div class="col-md-2" style="width:11%;">
+                            To
+                            @Html.TextBoxFor(m => m.dtTo, new { Value = Convert.ToString(Model.dtTo), type = "text", @class = "form-control ", required = "true", name = "dtTo", onkeyup = "this.value=''", id = "dtTo" })
+                        </div>
+                        <div class="col-md-2 margintop30">
+                            <button type="submit" id="btnSubmit" class="btn btn-primary download">Download Excel</button>
+                        </div>
+                     </div>
+
+                </div>
+                <!-- End  table -->
+            </div>
+        </div>
+        <!-- container div END bottom -->
+    </div>

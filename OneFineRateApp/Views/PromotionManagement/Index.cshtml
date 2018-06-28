@@ -1,0 +1,276 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutPromotions.cshtml";
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        bindgrid(); //binding datatable
+    });
+
+    function bindgrid() {
+
+        try {
+
+            var aoColumns =
+                [
+                    { "sTitle": "ID", "bSortable": false, "mData": "iID" },
+                 {
+                     "sTitle": "Booking Date From", "mData": "dtBookingDateFrom",
+                     "mRender": function (data, type, full) {
+                         return getNorDateWithoutTime(data);
+                     }
+                 },
+                 {
+                     "sTitle": "Booking Date To", "mData": "dtBookingDateTo",
+                     "mRender": function (data, type, full) {
+                         return getNorDateWithoutTime(data);
+                     }
+                 },
+                 {
+                     "sTitle": "Stay From", "mData": "dtStayDateFrom",
+                     "mRender": function (data, type, full) {
+                         return getNorDateWithoutTime(data);
+                     }
+                 },
+                 {
+                     "sTitle": "Stay To", "mData": "dtStayDateTo",
+                     "mRender": function (data, type, full) {
+                         return getNorDateWithoutTime(data);
+                     }
+                 },
+                 { "sTitle": "Rate Plan", "bSortable": false, "mData": "sRPName" },
+                 { "sTitle": "Room Type", "bSortable": false, "mData": "sRoomTypeId" },
+                 { "sTitle": "Discount", "bSortable": false, "mData": "sIsPercent" },
+                 { "sTitle": "Status", "bSortable": false, "mData": "cStatus" },
+                 { "sTitle": "Action By", "bSortable": false, "mData": "UserName" },
+                 {
+                     "sTitle": "Action Date", "bSortable": false, "mData": "dtActionDate",
+                     "mRender": function (data, type, full) {
+                         return getNorDateTime(data);
+                     }
+                 },
+                 {
+                     "sTitle": "Edit", "bSortable": false, "mData": "iID",
+                     "mRender": function (data, type, full) {
+                         var html = '<button type="button" onclick="UpdateData(' + full.iID + '  , ' + full.iPromoId + ')";  class="btn btn-primary btn-xs margintop10 width80">Edit</button>&nbsp';
+                         html += '<button type="button" onclick="EditData(' + full.iID + ',' + full.iPromoId + ')";  class="btn btn-warning btn-xs   margintop10 width80">Copy</button>&nbsp';
+                         if (full.cStatus == "Live") {
+                             html += '<button type="button" onclick="DeleteData(' + full.iID + ',' + full.iPromoId + ')";  class="btn btn-danger btn-xs  margintop10">Disable</button>';
+                         }
+                         else {
+                             html += '<button type="button" onclick="DeleteData(' + full.iID + ',' + full.iPromoId + ')";  class="btn btn-success btn-xs  margintop10">Enable</button>';
+                         }
+                         //html += '<button type="button" onclick="DeleteData(' + full.iID + ',' + full.iPromoId + ')";  class="btn btn-danger">Delete</button>';
+                         return html;
+
+                     }
+                 }
+                ];
+
+
+            var aoColumnsFreeBies =
+                [
+                    { "sTitle": "Rate Plan", "bSortable": false, "mData": "sRPName", "bVisible": false },
+                    { "sTitle": "ID", "bSortable": false, "mData": "iID" },
+                 {
+                     "sTitle": "Booking Date From", "mData": "dtBookingDateFrom",
+                     "mRender": function (data, type, full) {
+                         return getNorDateWithoutTime(data);
+                     }
+                 },
+                 {
+                     "sTitle": "Booking Date To", "mData": "dtBookingDateTo",
+                     "mRender": function (data, type, full) {
+                         return getNorDateWithoutTime(data);
+                     }
+                 },
+                 {
+                     "sTitle": "Stay From", "mData": "dtStayDateFrom",
+                     "mRender": function (data, type, full) {
+                         return getNorDateWithoutTime(data);
+                     }
+                 },
+                 {
+                     "sTitle": "Stay To", "mData": "dtStayDateTo",
+                     "mRender": function (data, type, full) {
+                         return getNorDateWithoutTime(data);
+                     }
+                 },
+                
+                 { "sTitle": "Room Type", "bSortable": false, "mData": "sRoomTypeId" },
+             
+               
+                 { "sTitle": "Status", "bSortable": false, "mData": "cStatus" },
+                 { "sTitle": "Action By", "bSortable": false, "mData": "UserName" },
+                 {
+                     "sTitle": "Action Date", "bSortable": false, "mData": "dtActionDate",
+                     "mRender": function (data, type, full) {
+                         return getNorDateTime(data);
+                     }
+                 },
+                 {
+                     "sTitle": "Edit", "bSortable": false, "mData": "iID",
+                     "mRender": function (data, type, full) {
+                         var html = '<button type="button" onclick="UpdateData(' + full.iID + '  , ' + full.iPromoId + ')";  class=" btn btn-primary btn-xs margintop10 width80">Edit</button>&nbsp';
+                         html += '<button type="button" onclick="EditData(' + full.iID + ',' + full.iPromoId + ')";  class=" btn btn-warning btn-xs margintop10 width80">Copy</button>&nbsp';
+                         if (full.cStatus == "Live") {
+                             html += '<button type="button" onclick="DeleteData(' + full.iID + ',' + full.iPromoId + ')";  class=" btn btn-danger btn-xs  margintop10">Disable</button>';
+                         }
+                         else {
+                             html += '<button type="button" onclick="DeleteData(' + full.iID + ',' + full.iPromoId + ')";  class=" btn btn-success btn-xs  margintop10">Enable</button>';
+                         }
+                         //html += '<button type="button" onclick="DeleteData(' + full.iID + ',' + full.iPromoId + ')";  class="btn btn-danger">Delete</button>';
+                         return html;
+
+                     }
+                 }
+                ];
+           
+
+            DatatableServerSide("#tblData1", aoColumns, "/Services/Service.asmx/GetAllPropertyPromoRecords?id=1");
+            DatatableServerSide("#tblData2", aoColumns, "/Services/Service.asmx/GetAllPropertyPromoRecords?id=2");
+            DatatableServerSide("#tblData3", aoColumns, "/Services/Service.asmx/GetAllPropertyPromoRecords?id=3");
+            DatatableServerSide("#tblData4", aoColumns, "/Services/Service.asmx/GetAllPropertyPromoRecords?id=4");
+            DatatableServerSide("#tblData5", aoColumns, "/Services/Service.asmx/GetAllPropertyPromoRecords?id=5");
+            DatatableServerSide("#tblData6", aoColumnsFreeBies, "/Services/Service.asmx/GetAllPropertyPromoRecords?id=6");
+            $('.dataTables_filter input').attr('title', 'Type here to search in the Room Type Column');
+        }
+        catch (e) {
+        }
+            
+          //  $('.dataTables_length select').attr('title', 'Select number of visible rows');
+        
+    }
+
+    function EditData(obj, objpromo) {
+        window.location = 'PromotionManagement/SetData?Modelprop=null&IsError=false&Entrytype=E&id=' + obj + '&promo=' + objpromo;
+    }
+
+    function UpdateData(obj, objpromo) {
+        window.location = 'PromotionManagement/SetData?Modelprop=null&IsError=false&Entrytype=U&id=' + obj + '&promo=' + objpromo;
+    }
+    function DeleteData(obj, objpromo) {
+        window.location = 'PromotionManagement/SetData?Modelprop=null&IsError=false&Entrytype=D&id=' + obj + '&promo=' + objpromo;
+    }
+
+
+</script>
+
+
+
+<body>
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <div class="subheadcolor">
+                                <h4>Basic Deal </h4>
+                            </div>
+
+                        </div>
+                        <div class="col-xs-8">
+                            <input name="" type="button" class="pull-right btn btn-info" onclick="window.location = 'PromotionManagement/BasicPromotions';" value="Create Promotion">
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="table-responsive margintop20">
+                        <table class="table table-striped table-bordered table-hover display" id="tblData1"></table>
+                    </div>
+
+                    <div class="row" style="height:10px;"></div>
+                    <!-- End  table -->
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <div class="subheadcolor">
+                                <h4>Minimum Stay </h4>
+                            </div>
+
+                        </div>
+                        <div class="col-xs-8">
+                            <input name="" type="button" class="pull-right btn btn-info" onclick="window.location = 'PromotionManagement/MinimumLengthPromotion';" value="Create Promotion">
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="table-responsive margintop20">
+                        <table class="table table-striped table-bordered table-hover display" id="tblData2"></table>
+                    </div>
+                    <div class="row" style="height:10px;"></div>
+                    <!-- End  minimum -->
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <div class="subheadcolor">
+                                <h4>Early Booker </h4>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-8"><input name="" type="button" class="pull-right btn btn-info" onclick="window.location = 'PromotionManagement/EarlyBookerPromotion';" value="Create Promotion"></div>
+                    </div>
+                    <hr />
+                    <div class="table-responsive margintop20">
+                        <table class="table table-striped table-bordered table-hover display" id="tblData3"></table>
+                    </div>
+                    <div class="row" style="height:10px;"></div>
+                    <!-- End  early booker -->
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <div class="subheadcolor">
+                                <h4>Last Minutes </h4>
+                            </div>
+                        </div>
+                        <div class="col-xs-8"><input name="" type="button" class="pull-right btn btn-info" onclick="window.location = 'PromotionManagement/LastMinutePromotion';" value="Create Promotion"></div>
+                    </div>
+                    <hr />
+                    <div class="table-responsive margintop20">
+                        <table class="table table-striped table-bordered table-hover display" id="tblData4"></table>
+                    </div>
+                    <div class="row" style="height:10px;"></div>
+                    <!-- End  Last Minutes -->
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <div class="subheadcolor">
+                                <h4>24 Hrs Promotions </h4>
+                            </div>
+                        </div>
+                        <div class="col-xs-8"><input name="" type="button" class="pull-right btn btn-info" onclick="window.location = 'PromotionManagement/HrsPromotions';" value="Create Promotion"></div>
+                    </div>
+                    <hr />
+                    <div class="table-responsive margintop20">
+                        <table class="table table-striped table-bordered table-hover display" id="tblData5"></table>
+                    </div>
+                    <div class="row" style="height:10px;"></div>
+                    <!-- End  24 Hrs Promotions -->
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <div class="subheadcolor">
+                                <h4>OFR Freebies</h4>
+                            </div>
+                        </div>
+                        <div class="col-xs-8">
+                            <input name="" type="button" class="pull-right btn btn-info" onclick="window.location = 'PromotionManagement/OFR';" value="Create Promotion">
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="table-responsive margintop20">
+                        <table class="table table-striped table-bordered table-hover display" id="tblData6"></table>
+                    </div>
+
+
+                    <!-- End  OFR Freebies-->
+                </div>
+
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+</body>
+

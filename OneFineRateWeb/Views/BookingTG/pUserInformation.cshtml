@@ -1,0 +1,555 @@
+﻿@model OneFineRateBLL.Entities.PropDetailsM
+@using OneFineRateBLL
+@using Microsoft.AspNet.Identity
+
+<style>
+    .select2 {
+        width: 50% !important;
+        float: left !important;
+    }
+
+    .select2-container--default .select2-selection--single {
+        height: 34px;
+    }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 33px;
+        }
+
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type="number"] {
+        -moz-appearance: textfield;
+    }
+    label.error {
+        color: #d60000 !important
+    }
+    @@media only screen and (max-device-width: 568px) {
+        .select2{
+            width:100% !important;
+        }
+    }
+    @@media all and (max-width: 800px) {
+        .select2 {
+            width: 100% !important;
+        }
+    }
+</style>
+
+
+@using (Html.BeginForm("ChargeCard", "Booking", FormMethod.Post, new { id = "frmUserDetails" }))
+{
+    <input type="hidden" id="hdnreqstatus" value="@ViewBag.reqstatus" />
+    <input type="hidden" id="hdnVerificationCode" />
+
+
+    <div class="container" style="padding-top: 20px;">
+
+        <div class="tablebluebg">Your Information</div>
+
+        @if (Request.Browser.IsMobileDevice)
+        {
+            if (Model.sUserFirstName != null && Model.sUserLastName != null && Model.sUserEmail != null && Model.sUserMobileNo != null)
+            {
+
+                <div class="row">
+                    <div class="col-xs-4" style="padding-top:15px">
+                        TITLE <span class="red">*</span>
+                    </div>
+                    <div class="col-xs-8 form-group" style="padding-top:15px">
+                        @Html.DropDownListFor(m => m.sUserTitle, new List<SelectListItem> { new SelectListItem { Value = "Mr.", Text = "Mr.", Selected = Model.sUserTitle == "Mr." }, new SelectListItem { Value = "Ms.", Text = "Ms.", Selected = Model.sUserTitle == "Ms." } }, "Select title", new { @class = "form-control", id = "ddtitle", required = "true" })
+                    </div>
+                    <div class="col-xs-4">
+                        FIRST NAME<span class="red">*</span>
+                    </div>
+                    <div class="col-xs-8 form-group">
+                        @Html.TextBoxFor(m => m.sUserFirstName, new { id = "txtFirstName", type = "text", placeholder = "First Name", disabled = "disabled", @class = "form-control", required = "true" })
+                    </div>
+                    <div class="col-xs-4">
+                        LAST NAME<span class="red">*</span>
+                    </div>
+                    <div class="col-xs-8 form-group">
+                        @Html.TextBoxFor(m => m.sUserLastName, new { id = "txtLastName", type = "text", placeholder = "Last Name", disabled = "disabled", @class = "form-control", required = "true" })
+                    </div>
+                    <div class="col-xs-4">
+                        EMAIL ID<span class="red">*</span>
+                    </div>
+                    <div class="col-xs-8 form-group">
+                        @Html.TextBoxFor(m => m.sUserEmail, new { id = "txtEmailId", type = "email", placeholder = "Email Id", disabled = "disabled", @class = "form-control", required = "true" })
+                    </div>
+                    <div class="col-xs-4">
+                        MOBILE NO.<span class="red">*</span>
+                    </div>
+                    <div class="col-xs-8 form-group">
+                        @Html.DropDownListFor(model => model.sCountryPhoneCode, new SelectList(Model.CountryCodePhoneList, "sCode", "sFrontendCode", Model.sCountryPhoneCode), new { disabled = "disabled", style = "width:60% !important; float:left", id = "ddlCountryCodeTG", maxlength = "20", @class = "form-control selectpicker" })
+
+                        @Html.TextBoxFor(m => m.sUserMobileNo, new { disabled = "disabled", style = "float:left", id = "txtMobileNo", placeholder = "Mobile No,An OTP will sent", maxlength = "10", @class = "form-control", required = "true", pattern = @"^[\-\+]?\d+$", oninvalid = "setCustomValidity('Please enter valid mobile number.')", onchange = "try{setCustomValidity('')}catch(e){}" })
+                    </div>
+                    <div id="trOTP" style="display:none;">
+                        <div class="col-xs-4">
+                            Enter OTP : <span class="red">*</span>
+                        </div>
+                        <div class="col-xs-8 form-group">
+                            <input id="txtOTP" style="width:100px;" type="number" placeholder="OTP" oninput="if (this.value.length > 6){ this.value = this.value.slice(0, 6);}" maxlength="6" class="form-control">
+                            <a style="cursor:pointer; text-decoration:underline" id="btnResend">Re-Send OTP</a>
+                        </div>
+                    </div>
+
+                </div>
+
+            }
+            else
+            {
+                <div class="row">
+                    <div class="col-xs-4" style="padding-top:15px">
+                        TITLE <span class="red">*</span>
+                    </div>
+                    <div class="col-xs-8 form-group" style="padding-top:15px">
+                        @Html.DropDownListFor(m => m.sUserTitle, new List<SelectListItem> { new SelectListItem { Value = "Mr.", Text = "Mr.", Selected = Model.sUserTitle == "Mr." }, new SelectListItem { Value = "Ms.", Text = "Ms.", Selected = Model.sUserTitle == "Ms." } }, "Select title", new { @class = "form-control", id = "ddtitle", required = "true" })
+                    </div>
+                    <div class="col-xs-4">
+                        FIRST NAME<span class="red">*</span>
+                    </div>
+                    <div class="col-xs-8 form-group">
+                        @Html.TextBoxFor(m => m.sUserFirstName, new { id = "txtFirstName", type = "text", placeholder = "First Name", @class = "form-control", required = "true" })
+                    </div>
+                    <div class="col-xs-4">
+                        LAST NAME<span class="red">*</span>
+                    </div>
+                    <div class="col-xs-8 form-group">
+                        @Html.TextBoxFor(m => m.sUserLastName, new { id = "txtLastName", type = "text", placeholder = "Last Name", @class = "form-control", required = "true" })
+                    </div>
+                    <div class="col-xs-4">
+                        EMAIL ID<span class="red">*</span>
+                    </div>
+                    <div class="col-xs-8 form-group">
+                        @Html.TextBoxFor(m => m.sUserEmail, new { id = "txtEmailId", type = "email", placeholder = "Email Id", @class = "form-control", required = "true" })
+                    </div>
+                    <div class="col-xs-4">
+                        MOBILE NO.<span class="red">*</span>
+                    </div>
+                    <div class="col-xs-8 form-group">
+                        @Html.DropDownListFor(model => model.sCountryPhoneCode, new SelectList(Model.CountryCodePhoneList, "sCode", "sFrontendCode", Model.sCountryPhoneCode), new { style = "width:50% !important; float:left", id = "ddlCountryCodeTG", maxlength = "20", @class = "form-control" })
+
+                        @Html.TextBoxFor(m => m.sUserMobileNo, new {  id = "txtMobileNo", placeholder = "Mobile No,An OTP will sent", maxlength = "10", @class = "form-control", required = "true", pattern = @"^[\-\+]?\d+$", oninvalid = "setCustomValidity('Please enter valid mobile number.')", onchange = "try{setCustomValidity('')}catch(e){}" })
+                    </div>
+
+                    <div id="trOTP" style="display:none;">
+                        <div class="col-xs-4">
+                            Enter OTP : <span class="red">*</span>
+                        </div>
+                        <div class="col-xs-8 form-group">
+                            <input id="txtOTP" style="width:100px;" type="number" placeholder="OTP" oninput="if (this.value.length > 6){ this.value = this.value.slice(0, 6);}" maxlength="6" class="form-control">
+                            <a style="cursor:pointer; text-decoration:underline" id="btnResend">Re-Send OTP</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th width="9%">TITLE<span class="red">*</span></th>
+                            <th width="14%">FIRST NAME<span class="red">*</span></th>
+                            <th width="14%">LAST NAME<span class="red">*</span></th>
+                            <th width="18%">EMAIL ID<span class="red">*</span></th>
+                            <th width="26%">MOBILE NO.<span class="red">*</span></th>
+                            <th width="10%" class="clsedit" style="display:none;">Edit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.sUserFirstName != null && Model.sUserLastName != null && Model.sUserEmail != null && Model.sUserMobileNo != null)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DropDownListFor(m => m.sUserTitle, new List<SelectListItem> { new SelectListItem { Value = "Mr.", Text = "Mr.", Selected = Model.sUserTitle == "Mr." }, new SelectListItem { Value = "Ms.", Text = "Ms.", Selected = Model.sUserTitle == "Ms." } }, "Select title", new { @class = "form-control mwidth110", disabled = "disabled", id = "ddtitle", required = "true" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(m => m.sUserFirstName, new { id = "txtFirstName", type = "text", placeholder = "First Name", disabled = "disabled", @class = "form-control mwidth130", required = "true" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(m => m.sUserLastName, new { id = "txtLastName", type = "text", placeholder = "Last Name", disabled = "disabled", @class = "form-control mwidth130", required = "true" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(m => m.sUserEmail, new { id = "txtEmailId", type = "email", placeholder = "Email Id", disabled = "disabled", @class = "form-control mwidth130", required = "true" })
+                                </td>
+                                <td>
+                                    <div>
+                                        @Html.DropDownListFor(model => model.sCountryPhoneCode, new SelectList(Model.CountryCodePhoneList, "sCode", "sFrontendCode", "+91"), new { disabled = "disabled", style = "width:60% !important; float:left", id = "ddlCountryCodeTG", maxlength = "20", @class = "form-control selectpicker" })
+                                    </div>
+                                    <div>
+                                        @Html.TextBoxFor(m => m.sUserMobileNo, new { style = "width:50%; float:left", disabled = "disabled", id = "txtMobileNo", placeholder = "Mobile No,An OTP will sent", maxlength = "10", @class = "form-control", required = "true", pattern = @"^[\-\+]?\d+$", oninvalid = "setCustomValidity('Please enter valid mobile number.')", onchange = "try{setCustomValidity('')}catch(e){}" })
+                                    </div>
+                                   
+                                </td>
+                                <td class="clsedit" style="display:none;">
+                                    <a href="javascript:void(0);" onclick="EditUserInformation()">Edit</a>
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DropDownListFor(m => m.sUserTitle, new List<SelectListItem> { new SelectListItem { Value = "Mr.", Text = "Mr.", Selected = Model.sUserTitle == "Mr." }, new SelectListItem { Value = "Ms.", Text = "Ms.", Selected = Model.sUserTitle == "Ms." } }, "Select title", new { @class = "form-control mwidth110", id = "ddtitle", required = "true" })
+
+                                    @*@Html.DropDownListFor(m => m.sUserTitle, EnumHelper.GetSelectList(typeof(OneFineRateWeb.Models.TitleType)), "Select title", new { @class = "form-control", id = "ddtitle", required = "true" })*@
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(m => m.sUserFirstName, new { id = "txtFirstName", type = "text", placeholder = "First Name", @class = "form-control mwidth130", required = "true" })
+
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(m => m.sUserLastName, new { id = "txtLastName", type = "text", placeholder = "Last Name", @class = "form-control mwidth130", required = "true" })
+
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(m => m.sUserEmail, new { id = "txtEmailId", type = "email", placeholder = "Email Id", @class = "form-control mwidth130", required = "true" })
+
+                                </td>
+                                <td>
+                                    <div>
+                                        @Html.DropDownListFor(model => model.sCountryPhoneCode, new SelectList(Model.CountryCodePhoneList, "sCode", "sFrontendCode", "+91"), new { data_live_search = "true", style = "width:40% !important; float:left", id = "ddlCountryCodeTG", maxlength = "20", @class = "form-control selectpicker" })
+                                    </div>
+                                    <div>
+                                        @Html.TextBoxFor(m => m.sUserMobileNo, new { style = "width:50%; float:left", id = "txtMobileNo", placeholder = "Mobile No,An OTP will sent", maxlength = "10", @class = "form-control", required = "true", pattern = @"^[\-\+]?\d+$", oninvalid = "setCustomValidity('Please enter valid mobile number.')", onchange = "try{setCustomValidity('')}catch(e){}" })
+                                    </div>
+                                </td>
+                                <td class="clsedit" style="display:none;">
+                                    <a href="javascript:void(0);" onclick="EditUserInformation()">Edit</a>
+                                </td>
+                            </tr>
+                        }
+                        <tr id="trOTP" style="display:none;">
+                            <td colspan="6" align="center">
+                                <div class="col-md-12">
+                                    Please Enter OTP :
+
+                                    <input id="txtOTP" style="width:100px;" type="number" placeholder="OTP" oninput="if (this.value.length > 6){ this.value = this.value.slice(0, 6);}" maxlength="6" class="form-control">
+
+                                    <a style="cursor:pointer; text-decoration:underline" id="btnResend">Re-Send OTP</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+    <div class="container">
+        <div class="col-md-12 center margintop10">
+            <button type="button" id="btnModify" class="btn btn-filter btn-lg">Modify Search</button>
+            <button type="submit" id="btnChargeCard" class="btn btn-filter  btn-lg">Proceed to Payment</button>
+        </div>
+    </div>
+}
+<form style="display:none" action="@Url.Action("Index", "OfferReviewTg")" method="get" id="frmBookingTGHiddenModify">
+
+    @Html.Hidden("Id", Model.iVendorId)
+    @Html.Hidden("cIn", Model.scheckIn)
+    @Html.Hidden("cOut", Model.scheckOut)
+    @Html.Hidden("sRequestType", Model.sRequestType)
+    @Html.Hidden("sLocation", Model.sCity)
+    @Html.Hidden("sRoomData", Model.sRoomData)
+
+</form>
+
+<script type="text/javascript" src="~/Scripts/additional-methods.js"></script>
+<script type="text/javascript">
+    $("#frmUserDetails").validate({
+        rules: {
+            sUserTitle: {
+                required: true
+            },
+            sUserFirstName: {
+                required: true
+            },
+            sUserLastName: {
+                required: true
+            },
+            sUserEmail: {
+                required: true,
+                email: true
+            },
+            sUserMobileNo: {
+                required: true,
+                phoneIndia: true
+            },
+            iStateId: {
+                required: true
+            }
+        },
+        messages: {
+            sUserTitle: {
+                required: "Please select Title."
+            },
+            sUserFirstName: {
+                required: "Please enter First Name."
+            },
+            sUserLastName: {
+                required: "Please enter Last Name."
+            },
+            sUserEmail: {
+                required: "Pleaser enter Email Id.",
+                email: "Please enter valid Email Id."
+            },
+            sUserMobileNo: {
+                required: "Please enter Mobile No.",
+                phoneIndia: "Please enter valid Mobile No."
+            },
+            iStateId: {
+                required: "Please select State."
+            }
+        },
+        errorPlacement: function (error, element) {
+            if ('@Request.Browser.IsMobileDevice'!='True') {
+                if (element.attr('name') == "sUserMobileNo" || element.attr('name') == "iStateId") {
+                    error.insertAfter(element.parent('div'));
+                }
+                else {
+                    error.insertAfter(element);
+                }
+            }
+            else {
+                if (element.attr('name') == "sUserMobileNo" || element.attr('name') == "iStateId") {
+                    error.insertAfter(element.parent('div'));
+                }
+                else {
+                    error.insertAfter(element);
+                }
+            }
+        }
+    })
+    $(document).ready(function () {
+
+        $('#ddlCountryCodeTG').select2();
+
+        $('#frmUserDetails #txtMobileNo').keypress(function (e) {
+
+            var cursorPosition = document.getElementById('txtMobileNo').selectionStart;
+
+            if ((this.value.length == 0 || cursorPosition == 0) && e.which == 48) {
+
+                return false;
+            }
+
+        });
+
+        //var referrerUrl = document.referrer
+        //if (referrerUrl.indexOf("OfferReviewTG?Id") > -1) {
+        //    $.removeCookie("prevUrl");
+        //    $.cookie("prevUrl", referrerUrl, { expires: 1 });
+        //}
+
+        $('#hdnVerificationCode').val('');
+        $('[data-toggle="popover"]').popover();
+
+        $('#btnResend').click(function (e) {
+            e.preventDefault();
+            var param = {
+                mobile: $("#frmUserDetails #txtMobileNo").val(),
+                verificationCode: $("#hdnVerificationCode").val()
+            }
+            var data = AjaxCallWithDataMVC('/BookingTG/ReSendOTPCode', param);
+            if (data != null) {
+                if (data.status) {
+
+                    $('#hdnVerificationCode').val(data.verificationCode);
+                    toastr.success('OTP sent on mobile no: ' + $("#frmUserDetails #txtMobileNo").val() + '');
+                }
+                else {
+
+                    toastr.error('Kindly try after some time.')
+                }
+            }
+            else {
+
+                toastr.error('Kindly try after some time.')
+            }
+        });
+
+        $('#btnModify').click(function (e) {
+
+            e.preventDefault();
+
+            bootbox.confirm("Are you sure you want to modify the current search ?", function (result) {
+
+                if (result == true) {
+                    $('#frmBookingTGHiddenModify').submit();
+                    //startSpinning();
+                }
+            });
+        });
+
+    });
+
+
+</script>
+
+<script type="text/javascript">
+
+    function EditUserInformation() {
+
+        $('#trOTP').attr('style', 'display:none;');
+        $('#ddtitle').removeAttr('disabled');
+        $('#txtFirstName').removeAttr('disabled');
+        $('#txtLastName').removeAttr('disabled');
+        $('#txtEmailId').removeAttr('disabled');
+        $('#frmUserDetails #txtMobileNo').removeAttr('disabled');
+        $('.clsedit').hide();
+        $('#hdnVerificationCode').val('');
+        $("#hdnreqstatus").val('');
+        $("#txtOTP").val('');
+        $('#ddlCountryCodeTG').prop('disabled', false);
+        $('#ddlCountryCodeTG').selectpicker('refresh');
+    }
+
+    $(function () {
+
+        $('#btnVerifyMobileNumber').click(function (event) {
+
+            event.preventDefault();
+
+            $.ajax({
+
+                type: 'POST',
+                url: '../BookingTG/VerifyMobileNo',
+                cache: false,
+                dataType: 'json',
+                data: {
+                    Title: $("#ddtitle").val(),
+                    FirstName: $("#txtFirstName").val(),
+                    LastName: $("#txtLastName").val(),
+                    EmailID: $("#txtEmailId").val(),
+                    Mobile: $("#frmUserDetails #txtMobileNo").val(),
+                    sCountryCode: $('#ddlCountryCodeTG').val()
+                },
+                success: function (data) {
+                    if (data.status) {
+                        toastr.info(data.msg);
+
+                        $('#ddtitle').attr('disabled', 'disabled');
+                        $('#txtFirstName').attr('disabled', 'disabled');
+                        $('#txtLastName').attr('disabled', 'disabled');
+                        $('#txtEmailId').attr('disabled', 'disabled');
+                        $('#frmUserDetails #txtMobileNo').attr('disabled', 'disabled');
+                        $('#btnVerifyMobileNumber').attr('disabled', 'disabled');
+
+                        $('#ddlCountryCodeTG').prop('disabled', true);
+                        $('#ddlCountryCodeTG').selectpicker('refresh');
+                    }
+                    else {
+
+                        $('#hdnVerificationCode').val(data.verificationCode);
+                        $("#hdnreqstatus").val("OTP");
+                        $("#hdntype").val("G");
+                    }
+
+                },
+                error: function (err) {
+                    toastr.error('An error occured!');
+                }
+            });
+        });
+    });
+
+
+
+    $(function () {
+        $('#frmUserDetails').submit(function (e) {
+
+            e.preventDefault();
+
+            if ($(this).valid()) {
+
+                if (!$("#chkAgree").prop('checked')) {
+                    toastr.warning('Please accept the terms and conditions first.');
+                    return false;
+                }
+
+                if ($('#hdnVerificationCode').val() != '') {
+                    if ($("#txtOTP").val() == '' || $("#txtOTP").val() == undefined) {
+                        toastr.error('Please enter the OTP first.');
+                        $('#trOTP').removeAttr('style');
+                        return false;
+                    }
+
+                }
+
+                var result = {
+                    Title: $("#ddtitle").val(),
+                    FirstName: $("#txtFirstName").val(),
+                    LastName: $("#txtLastName").val(),
+                    EmailID: $("#txtEmailId").val(),
+                    Mobile: $("#frmUserDetails #txtMobileNo").val(),
+                    VerificationCode: $("#hdnVerificationCode").val(),
+                    OTPCode: $("#txtOTP").val(),
+                    sCountryPhoneCode: $('#ddlCountryCodeTG').val()
+                }
+
+                //startSpinning();
+                $.ajax({
+                    type: 'POST',
+                    url: '../BookingTG/ChargeCard',
+                    cache: false,
+                    dataType: 'json',
+                    data: result,
+                    success: function (data) {
+
+                        //stopSpinning();
+
+                        if (data.status && data.verificationRequired) {
+
+                            toastr.success('OTP sent on mobile no: ' + $("#frmUserDetails #txtMobileNo").val() + '');
+                            $('#ddtitle').attr('disabled', 'disabled');
+                            $('#txtFirstName').attr('disabled', 'disabled');
+                            $('#txtLastName').attr('disabled', 'disabled');
+                            $('#txtEmailId').attr('disabled', 'disabled');
+                            $('#frmUserDetails #txtMobileNo').attr('disabled', 'disabled');
+                            $('#hdnVerificationCode').val(data.verificationCode);
+                            $('.clsedit').show();
+                            $('#trOTP').show();
+                            //$('#ddlCountryCodeTG').select2('disable');
+
+                        }
+                        else if (data.status == false) {
+
+                            $('#trOTP').hide();
+
+                            toastr.error(data.msg);
+
+                        }
+                        else if (data.status == true) {
+
+                            var bookingId = parseInt(data.bookingId);
+
+                            if (bookingId != undefined) {
+
+                                url = "../Payment/PayNow?bookingId=" + bookingId;
+                                window.location.href = url;
+                            }
+                            else {
+                                toastr.error('Opps! An error occured.');
+                            }
+                        }
+                    },
+                    error: function (err) {
+                        toastr.error('An error occured !');
+                        //stopSpinning();
+                        console.log(err);
+                    }
+                });
+            }
+        });
+
+    });
+
+
+</script>

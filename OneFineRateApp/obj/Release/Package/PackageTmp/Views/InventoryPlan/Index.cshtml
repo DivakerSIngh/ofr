@@ -1,0 +1,124 @@
+﻿@model OneFineRateBLL.Entities.eInventoryPlan_Ph
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutMobile.cshtml";
+}
+<link href="~/css/jquery-ui.css" rel="stylesheet" />
+<script src="~/js/Jquery1.10.3.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script src="~/js/jquery-ui.js"></script>
+@*//Scripts for validation server side through ajax call*@
+@System.Web.Optimization.Scripts.Render("~/bundles/validation")
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        var d = new Date();
+
+        $("#FromDate").datepicker({
+            startDate: d,
+            minDate: d,
+            numberOfMonths: 1,
+            autoclose: true,
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd/mm/yy',
+            onClose: function (selectedDate) {
+                $("#ToDate").datepicker("option", "minDate", selectedDate);
+            }
+        });
+        $("#ToDate").datepicker({
+            startDate: d,
+            minDate: d,
+            dateFormat: 'dd/mm/yy',
+            autoclose: true,
+            numberOfMonths: 1,
+            changeMonth: true,
+            changeYear: true,
+            onClose: function (selectedDate) {
+                $("#FromDate").datepicker("option", "maxDate", selectedDate);
+            }
+        });
+
+        $('input[name=RoomType]').click(function () {
+            if ($('input[name=RoomType]:checked').val() == "True")
+                $('#divrooms').hide();
+            else
+                $('#divrooms').show();
+        });
+    });
+    function GetResult(data) {
+        if (data.st == '1') {
+            toastr.success(data.msg);
+            $("#ToDate").val('');
+            $("#FromDate").val('');
+            $("#RoomType").prop("checked", false);
+            $("#Action").prop("checked", false);
+            $('#divrooms').hide();
+        }
+        else {
+            toastr.error(data.msg);
+        }
+    }
+
+</script>
+@using (Ajax.BeginForm("AddUpdate", "InventoryPlan", new AjaxOptions() { InsertionMode = InsertionMode.Replace, UpdateTargetId = "targetid", HttpMethod = "POST", OnSuccess = "GetResult" }))
+{
+
+<div class="container whitebg border1">
+    <h4>Inventory Plan Open/Close</h4>
+    <hr>
+    <form>
+        <div class="row">
+            <div class="form-group">
+                <div class="col-md-2  marginbottom10">
+                    <label>From</label>
+                    @Html.TextBoxFor(u => u.FromDate, new { @class = "form-control", id = "FromDate", onkeyup = "this.value=''", required = "true" })
+                    @Html.ValidationMessageFor(m => m.FromDate)
+
+                </div>
+                <div class="col-md-2  marginbottom10">
+                    <label>To</label>
+                    @Html.TextBoxFor(u => u.ToDate, new { @class = "form-control", id = "ToDate", onkeyup = "this.value=''", required = "true" })
+                    @Html.ValidationMessageFor(m => m.ToDate)
+                </div>
+                <div class="col-md-6  margintop27 form-inline marginbottom10">
+                    <label>
+                        @Html.RadioButtonFor(m => m.RoomType, true, new { required = "true" })
+                        @Html.Label("All Rooms")
+                    </label>
+                    <label>
+                        @Html.RadioButtonFor(m => m.RoomType, false, new { required = "true" })
+                        @Html.Label("Room Type")
+                        @Html.ValidationMessageFor(m => m.RoomType)
+                    </label>
+                    <div id="divrooms" style="display:none;">
+                        @Html.DropDownListFor(m => m.RoomId, new SelectList(OneFineRateBLL.BL_tblPropertyRoomMap.GetAllPropertyRoomNames(Convert.ToInt32(Session["PropId"].ToString())), "Id", "Name"), "Select Room", new { @class = "form-control", required = "true" })
+                        @Html.ValidationMessageFor(m => m.RoomId)
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-5 marginbottom10">
+                <label>
+                    @Html.RadioButtonFor(m => m.Action, true, new {required="true" })
+                    @Html.Label("Open")
+                </label>
+                <label>
+                    @Html.RadioButtonFor(m => m.Action, false, new { required = "true" })
+                    @Html.Label("Close")
+                    @Html.ValidationMessageFor(m => m.Action)
+                </label>
+            </div>
+        </div>
+        <div class="row marginbottom10">
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-success width100">Ok</button>
+            </div>
+        </div>
+    </form>
+</div>
+    <div id="targetid"></div>
+}

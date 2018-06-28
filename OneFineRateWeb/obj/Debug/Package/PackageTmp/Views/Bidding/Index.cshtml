@@ -1,0 +1,1348 @@
+﻿@using MvcCheckBoxList.Model
+@model OneFineRateBLL.Entities.eBiddingSearch
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@System.Web.Optimization.Scripts.Render("~/bundles/autofill")
+
+<!--next section-starts here-->
+@Html.Partial("~/Views/Home/pSearchBar_Bid.cshtml")
+
+
+<style>
+    ul.checkbox-grid {
+        padding-left: 0px;
+    }
+
+    .checkbox-grid li {
+        display: block;
+        float: left;
+        width: 33%;
+    }
+
+    #divwhole {
+        width: 310px !important;
+        display: none;
+        border: 1px solid #d1d1d1;
+        background-color: #fff;
+        position: absolute;
+        top: 70px;
+        right: 15%;
+        height: 280px;
+        overflow: auto;
+        z-index: 9999;
+    }
+
+    .star-choice li {
+        cursor: pointer;
+    }
+
+    .childli {
+        float: left;
+        width: 115px;
+        margin-right: 14px;
+        margin-top: 10px;
+    }
+
+    .selectimg {
+        background: url(http://notrealdomain2.com/newbanner.png);
+    }
+
+    .ui-menu {
+        width: 350px !important;
+    }
+
+    .ui-widget.ui-widget-content li {
+        border: 0px !important;
+    }
+
+    @@media(max-width:480px){
+        .ui-menu {
+        width: 300px !important;
+    }
+    }
+</style>
+
+
+<div id="divScrollHere"></div>
+<div class="row divWarning2 " style="display:none;">
+    <div class="col-md-12 "><img src="~/images/wishtobid-bnr.jpg" class="img-responsive text-center" /></div>
+
+
+    <div class="col-md-3 col-xs-2"> &nbsp;</div>
+    <div class="col-md-6 col-xs-8"><img src="~/images/steps.jpg" class="img-responsive text-center" /></div>
+    <div class="col-md-3 col-xs-2"> &nbsp;</div>
+
+    @*<div class="col-md-offset-1 text-center">
+            <div class="col-md-3 col-xs-4 step1 "><img src="~/images/step1.jpg" class="img-responsive text-center" /></div>
+            <div class="col-md-3 col-xs-4 step2 "><img src="~/images/step2.jpg" class="img-responsive text-center" /></div>
+            <div class="col-md-3 col-xs-4 step3 "><img src="~/images/step3.jpg" class="img-responsive text-center" /></div>
+
+        </div>*@
+
+    @*<div class="col-md-3 step4"><img src="~/images/step4.jpg" class="img-responsive" /></div>*@
+</div>
+@*<div onclick="OpenPopUp();">Open PopUp</div>*@
+<div class="alert alert-warning fade in divWarning2" style="display:none;">
+    <div class="container">
+        <div class=" text-center"> <a class="btn btn-primary btn-lg" onclick="CallPage();">Negotiate</a> </div>
+        <strong style="color:red;" class="warningmsg"></strong>
+    </div>
+</div>
+<div class="alert alert-warning fade in" id="divWarning1" style="display:none;">
+    <div class="container">
+        <strong style="color:red;" class="warningmsg"></strong>
+    </div>
+</div>
+<div class="container warning3 ">
+    <div class="row">
+        <div class="col-md-12">
+            <h4 class="bold red ">Save up to 50% on a hotel in three easy steps.</h4>
+            <p class="red headingnote">
+                You choose the price, area and star level. We will find a quality name brand or independent hotel for you in seconds.<br />
+                Please Note: we  accept bidding only three times per day. So if you need a specific area or star level - be sure your first offer price is your best price.
+            </p>
+        </div>
+    </div>
+    <div class="row">
+
+        <div class="col-md-6   ">
+            <div class="panel panel-default">
+
+                <div class="blueheadingbg">Location and Star Category</div>
+                <div class="panel-body">
+                    <div class="row bid2ndrowbg">
+                        <div class="col-md-12">
+                            <strong>Step 1</strong> : Choose the star level for your hotel
+                        </div>
+                        <div class="col-md-4"><strong>Choose Star Category</strong></div>
+                        <div class="col-md-6">
+                            <ul class="star-choice" id="divStars">
+                                <li><img class="starChoice" data-id="1" data-startype="n" src="@Url.Content("~/images/1Star-n.png")" /></li>
+                                <li><img class="starChoice" data-id="2" data-startype="n" src="@Url.Content("~/images/2Star-n.png")" /></li>
+                                <li><img class="starChoice" data-id="3" data-startype="n" src="@Url.Content("~/images/3Star-n.png")" /></li>
+                                <li><img class="starChoice" data-id="4" data-startype="n" src="@Url.Content("~/images/4Star-n.png")" /></li>
+                                <li><img class="starChoice" data-id="5" data-startype="n" src="@Url.Content("~/images/5Star-n.png")" /></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <strong> Step 2 </strong> : Choose where you want to stay<br />
+                            Choose more than one area  to improve your chances.
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div style=" height:210px; overflow-y:auto">
+                            <div class="col-md-12">
+                                <input type="checkbox" class="checkbox chkselectall" id="chkSelectAll"> <label for="chkSelectAll"> Select All</label>
+                                <ul class="checkbox-grid" id="divSearchPref"></ul>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="col-md-12" style="display:none;" id="divshowLocality">
+                                <a style="cursor:pointer" id="anclocality">More within <span id="sSelectedLocation"></span></a>
+                            </div>
+                            <div class="col-md-12" style="display:none;" id="divBack">
+                                <a style="cursor:pointer" id="ancBack">Back</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 ">
+
+            <div style="height:411px;" id="map_canvas"></div>
+
+        </div>
+
+    </div>
+    <div class="row">
+
+        @*<div class="col-md-6">
+                <div class="panel panel-default ">
+                    <div class="blueheadingbg">
+                        <div class="row">
+                            <div class="col-md-7 ">Choice of Star Category</div>
+                            <div class="col-md-5 ">No. of Rooms</div>
+                        </div>
+                    </div>
+                    <div class="panel-body paddingbottom22">
+
+                        <div class="col-md-7">
+
+                            <div id="star-range"></div>
+
+
+
+
+
+                        </div>
+                        <div class="col-md-5 ">
+                            <div class="form-group margintop5">
+                                <div id="txttotalcount" class="form-control ">1 Person in 1 Room</div>
+                                <div id="divwhole" class="addheight">
+                                    <i class="sprite-booking-engine ico-be-sub-arrow"></i>
+                                    <div id="roomContainerDiv">
+                                        <div class="rooms">
+                                            <div class='col-md-12  pull-left'>
+                                                <h5><strong>Room1:</strong></h5>
+                                            </div>
+                                            <div class='col-md-6'>
+                                                <h5><strong>Adult</strong></h5>
+                                                <h6>Above 12 years</h6>
+
+                                                <div class='input-group width110'>
+                                                    <input id="adult1" class="form-control adult1" itype="adult1" type="number" roomno="1" readonly="readonly" value="1" min="1" max="6" />
+                                                </div>
+                                            </div>
+                                            <div class='col-md-6'>
+                                                <h5><strong>Children</strong></h5>
+                                                <h6>Below 12 years</h6>
+                                                <div class='input-group width110'>
+                                                    <input id="children1" class="form-control children1" readonly="readonly" roomno="1" itype="children1" type="number" value="0" min="0" max="6" />
+
+                                                </div>
+                                            </div>
+                                            <div class='col-md-12' id="divChildAge1" style="display:none;">
+
+                                                <h5><strong>Age of Childen</strong></h5>
+                                                <ul style="list-style:none; padding:0; margin:0; " id="ulchilds1"></ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class='col-md-12 margintop5'>
+                                        <a id="btnaddroom" href='javascript:void(0);' onclick="AddRooms();">Add a room</a>
+                                        <span id="sppipe" style="display:none;">|</span>
+                                        <a id="btnremoveroom" href='javascript:void(0);' style="display:none;" onclick="RemoveRoom();">Remove this room</a>
+                                        <hr>
+                                        <div onclick="FetchRoomDetails(); Validate();" class='btn btn-primary margintop5 marginbottom10 col-md-12'>Done</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>*@
+        <div class="col-md-12">
+            <div class="panel panel-default  bidpnlbg">
+                <div class="blueheadingbg">
+                    <div class="row">
+                        @*Bid Range*@
+                        <div class="col-md-5">
+                            Rates for
+                            <span class="yellow font16" id="StarRating">--- Star</span>
+                            hotel in the area selected range between
+                        </div>
+                        <div style="margin-left:-6%" class="col-md-5">
+                            <div class="col-md-3 col-xs-3 yellow text-center" id="divminrange"><strong>0</strong></div>
+                            <div class="col-md-1 col-xs-1 text-center">To</div>
+                            <div class="col-md-3 col-xs-5  yellow text-center" id="divuprange"><strong>0</strong></div>
+                        </div>
+                        <div class="col-md-2 col-xs-5"></div>
+                    </div>
+                </div>
+                <div class="panel-body bidpnlbg">
+                    @*<div class="col-md-7"></div>*@
+                    <div class="row">
+                        <div class="col-md-12"><h4>Total charges, including taxes and service fees, are shown on the next page. You're protected by our Best Price Guarantee.</h4></div>
+
+                        @*<div class="slider-range">
+                        <div id="slider-range"></div>
+                    </div>*@
+                        <div class="col-md-3">
+                            <h4 class="margintop15"> Make Your Bid (Excluding Taxes)</h4><br />
+                            @*<a style="cursor:pointer;">View Important Information</a>*@
+                        </div>
+                        <div class="col-md-2">
+                            <h4> @Html.TextBoxFor(m => m.dBidPrice, new { id = "txtBiddingPrice", type = "text", placeholder = "Bidding Price", disabled = "disabled", @class = "form-control width168", maxlength = "10", required = "true" }) </h4>
+                        </div>
+                        <div class="col-md-3">
+                            <h4 class="margintop15">  Per Room/ Per Night</h4> @*<span id="sSymbol"></span>*@.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <form id="frmBidAmt">
+        @*<div class="row">
+                <div class="col-md-12">
+                    <div class="col-md-3 ">&nbsp;</div>
+                    <div class="col-md-6 ">
+                        <div class="panel panel-default ">
+                            <div class="blueheadingbg">
+                                Bid of Your Choice
+                            </div>
+
+                            <div class="panel-body ">
+                                <div class="row">
+                                    <div class="col-md-12 form-inline">
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="col-md-3">&nbsp;</div>
+                </div>
+            </div>*@
+    </form>
+
+    @{
+        if (User.Identity.IsAuthenticated || ViewBag.type == "G" || Model.sActionType == "G" || Model.sActionType == "OTP" || Model.sActionType == "OTP Incorrect")
+        {
+
+
+            @Html.Partial("pGuestDetails", Model)
+
+        }
+        else
+        {
+            <div id="divuserdetails"></div>
+
+            @*<div class="row" id="whatNextIndexDiv">
+                <div class="col-md-12">
+                    <h3 class="whathpn">What Happens Next</h3>
+                    Once you click "Continue Bid", OneFineRate will look for hotels that match your bid.
+                    <ul class="whathppn">
+                        <li>
+                            <strong>If we accept your Bid :</strong> We will give you an idea what the hotels that chose your bid are offering as savings  and you will be also be able to review your reservation. Pay the total amount and then choose the hotel of your choice for the list.
+                        </li>
+                        <li>
+                            <strong>If we can't accept your bid :</strong> You can select more localities and increase your bid amount to improve your chances of a successful bid.
+                        </li>
+                    </ul>
+                </div>
+            </div>*@
+
+            <div class="row" id="divUserTypeLogin">
+                <div class="text-center ">
+                    <button class="btn btn-inactive btn-lg  marginbottom20" disabled="" id="btnRegisteredUserLogin" type="submit">Log In</button>
+                    <button type="submit" id="btnGuestUserLogin" disabled="" class="btn btn-inactive btn-lg marginbottom20">Continue As Guest</button>
+                </div>
+            </div>
+        }
+    }
+
+    <input type="hidden" value="50000" id="hdnUpperPrice">
+    <input type="hidden" value="0" id="hdnLowerPrice">
+    <input type="hidden" value="0" id="hdnStarRating">
+    <input type="hidden" value="" id="hdnLocalities">
+    <input type="hidden" value="" id="hdntype">
+    <input type="hidden" id="hdnSelectedAreaId" value="@Model.sSearchId">
+    <input type="hidden" id="hdnJson" />
+    <input type="hidden" id="hdntaxes">
+    <input type="hidden" id="hdnMinallowed">
+    <input type="hidden" id="hdnSymbol">
+
+
+</div>
+<div id="RoomDetails" class="modal fade" role="dialog">
+
+</div>
+
+@Html.Hidden("hdnVC", null, new { name = "hdnVC" })
+
+<script src="~/js/bootstrap-number-input.js"></script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD0X4v7eqMFcWCR-VZAJwEMfb47id9IZao"></script>
+
+<script>
+
+    var areasPolygonMapData = @Html.Raw(OneFineRateAppUtil.clsUtils.ConvertToJson(Model.lstPolygonData));
+    var localitiesPolygonMapData = [];
+    var areaNameArr = [];
+    var currentZoom = 10;
+    var tempPolygons = [];
+    var prevMarkers = [];
+    var localityNameFromCookie;
+
+
+
+    var searchData = $.cookie("srchdetails");
+    if (searchData) {
+
+        var jsonSearchData = $.parseJSON(searchData);
+
+        if (jsonSearchData) {
+            localityNameFromCookie = jsonSearchData.cname;
+        }
+    }
+
+    var myConfig = {
+        zoomControl: false,
+        zoom: currentZoom,
+        scaleControl: false,
+        scrollwheel: false,
+        disableDoubleClickZoom: true,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+
+    var map = new google.maps.Map(document.getElementById("map_canvas"), myConfig);
+    var centerBounds = new google.maps.LatLngBounds();
+
+    TryGetAddressLatLng(localityNameFromCookie,map);
+
+    var scrhBidDetails = '';
+    var proBid = [];
+    var returnUrl = '';
+
+    function ShowDiv(obj) {
+
+        var Count = 0;
+        var ActualCount=0;
+
+        GetLocalitiesValues();
+
+        $('.ChPref').each(function (i, j) {
+            ActualCount++;
+            if ($(this).find("input:checkbox.ChPref").context.checked)
+                Count++;
+        });
+
+        if(parseInt(ActualCount)== parseInt(Count))
+        {
+            $(".chkselectall").prop("checked", true);
+        }
+
+        else
+        {
+            $(".chkselectall").prop("checked", false);
+        }
+
+        if(Count==0)
+        {
+            Disable_RangeNotThere();
+            $(".chkselectall").prop("checked", false);
+        }
+
+        if ('@Model.sSearchType' == 'C') {
+            if (Count == 1)
+            {
+                $('#divshowLocality').show();
+                var selectedLocationName = $('input.ChPref:checkbox.ChPref:checked:visible:first').attr('data-name');
+                $('#sSelectedLocation').html(selectedLocationName);
+            }
+            else
+            {
+                $('#sSelectedLocation').html('');
+                $('#divshowLocality').hide();
+                UpdateMarkers(null);
+            }
+
+        }
+    }
+
+    function validateBidPrice() {
+        FetchDataForCookie();
+        var biddingPriceRange = !isNaN(parseFloat($('#txtBiddingPrice').val())) && isFinite($('#txtBiddingPrice').val());
+        if (!biddingPriceRange) {
+            toastr.error('Please enter valid bidding price.')
+        }
+        if (parseFloat($('#txtBiddingPrice').val()) == 0) {
+            toastr.error('Please enter valid bidding price.')
+            biddingPriceRange = false;
+        }
+        return biddingPriceRange;
+    }
+
+    function validateAllData() {
+
+        var checkedvalues = '';
+
+        $('.ChPref').each(function (i, j) {
+
+            if ($(this).find("input:checkbox.ChPref").context.checked) {
+                checkedvalues += $(this).find("input:checkbox.ChPref").context.value;
+                checkedvalues += ',';
+
+                debugger;
+
+                $('#hdntype').val($(this).attr('ctype'));
+            }
+
+        });
+
+        $('#hdnLocalities').val(checkedvalues);
+
+        if ($(hdnStarRating).val() == '' || $(hdnStarRating).val() == '0' || $(hdnStarRating).val() == undefined) {
+            toastr.error('Please select star category.');
+            return false;
+        }
+        if ($(hdnLocalities).val() == '' || $(hdnLocalities).val() == '0' || $(hdnLocalities).val() == undefined) {
+            toastr.error('Please select localities.')
+            return false;
+        }
+        var valid = !isNaN(parseFloat($('#txtBiddingPrice').val())) && isFinite($('#txtBiddingPrice').val());
+
+        if (!valid) {
+            toastr.error('Please enter valid bidding price.')
+            return false;
+        }
+        if (parseFloat($('#txtBiddingPrice').val()) == 0) {
+            EnableControls();
+            toastr.error('Please enter valid bidding price.')
+            return false;
+        }
+
+        var minallowedamt = parseFloat($('#hdnMinallowed').val());
+        var bidamt = parseFloat($('#txtBiddingPrice').val());
+        if (bidamt < minallowedamt) {
+            //toastr.error('Please enter bidding price greater than ' + minallowedamt + ' .');
+            toastr.error('Based on recent data, your price has almost no chance of being accepted.');
+            return false;
+        }
+
+        return true;
+    }
+
+
+
+    function BindLocality(Id) {
+        $('#hdnSelectedAreaId').val(Id);
+        var Type = '';
+        if ('@Model.sSearchType' == 'C')
+            Type = 'A';
+        else
+            Type = '@Model.sSearchType';
+
+        var param = {
+            Type: Type,
+            Id: Id
+        }
+
+        var data = AjaxCallWithDataMVC('/Bidding/GetLocalities', param);
+
+        if (data.list.length > 0) {
+            var myval = '';
+            $(data.list).each(function (i, j) {
+                myval += '<li><input type="checkbox" ctype="L" class="ChPref checkbox" onclick="GetLocalitiesValues();" data-name="' + j.Name + '" id ="text' + j.Id + '" value="' + j.Id + '" />  <label for="text' + j.Id + '">' + j.Name + ' </label></li>';
+            });
+            $('#divSearchPref').html(myval);
+            $('#divshowLocality').hide();
+            $('#divBack').show();
+
+            if(data.list.LatLngBoundList != undefined)
+            {
+                UpdateMarkers(data.list.LatLngBoundList)
+            }
+            else
+            {
+                UpdateMarkers(null);
+            }
+        }
+        else
+        {
+            UpdateMarkers(null);
+        }
+
+    }
+
+    function BindLocalityOnLoad(lids, ctype, AreaId) {
+
+        var ids = [];
+
+        ids = lids.split(',');
+
+        var defaultSType = '@Model.sSearchType';
+
+        if (ctype == 'A') {
+
+            var count = 0;
+
+            $('.ChPref').each(function (i, j) {
+
+                var id = $(this).find("input:checkbox.ChPref").context.value;
+
+                if ($.inArray(id, ids) != -1) {
+                    count++;
+                    $(this).find("input:checkbox.ChPref").context.checked = true;
+                }
+            });
+            if (count == 1)
+            {
+                $('#divshowLocality').show();
+            }
+
+        }
+        else if (ctype == 'L' && defaultSType != 'L') {
+
+            var data =  AjaxCallWithDataMVC('/Bidding/GetLocalities', { Type: 'A', Id: AreaId });
+
+            if(data.list)
+            {
+                if (data.list.length > 0) {
+                    var myval = '';
+                    $(data.list).each(function (i, j) {
+                        if ($.inArray(j.Id.toString(), ids) != -1) {
+                            myval += '<li><input type="checkbox" checked  ctype="L" class="ChPref checkbox" onclick="GetLocalitiesValues();" id ="text' + j.Id + '" value="' + j.Id + '" />  <label for="text' + j.Id + '">' + j.Name + ' </label> </li>';
+                        }
+                        else {
+                            myval += '<li><input type="checkbox" ctype="L" class="ChPref checkbox" onclick="GetLocalitiesValues();" id ="text' + j.Id + '" value="' + j.Id + '" /> <label for="text' + j.Id + '">' + j.Name + ' </label> </li>';
+                        }
+
+                        areaNameArr.push(j.Name);
+
+                    });
+                    $('#divSearchPref').html(myval);
+                    $('#divshowLocality').hide();
+                    $('#divBack').show();
+                }
+
+                if(data.list.LatLngBoundList != undefined)
+                {
+                    UpdateMarkers(data.list.LatLngBoundList)
+                }
+                else
+                {
+                    UpdateMarkers(null);
+                }
+            }
+            else
+            {
+                UpdateMarkers(null);
+            }
+        }
+        else if (ctype == 'L' && defaultSType == 'L') {
+            $('.ChPref').each(function (i, j) {
+                var id = $(this).find("input:checkbox.ChPref").context.value;
+                if ($.inArray(id, ids) != -1) {
+                    $(this).find("input:checkbox.ChPref").context.checked = true;
+                }
+            });
+        }
+    }
+
+    function GetBidRange(localities, ratingid){
+
+        FetchRoomDetails();
+
+        debugger;
+
+        var param = {
+            Localities: localities,
+            RatingId: ratingid,
+            Type: $('#hdntype').val()
+            //RoomData: $('#hdnJson').val()
+        }
+
+        //startSpinning();
+
+        setTimeout(function () {
+
+            var data = AjaxCallWithDataMVC('@Url.Action("GetBidRange")', param);
+
+            //stopSpinning();
+
+            if (data.list != null) {
+
+                if (data.list.Msg == "1") {
+
+                    $('#txtBiddingPrice').removeAttr('disabled');
+                    $('#btnGuestUserLogin').removeAttr('disabled');
+                    $('#btnRegisteredUserLogin').removeAttr('disabled');
+                    $('#divuprange').html(data.list.sSymbol + ' ' + data.list.MaxRange);
+                    $('#divminrange').html(data.list.sSymbol + ' ' + data.list.MinRange);
+                    $('#hdnUpperPrice').val(data.list.MaxRange);
+                    $('#hdnLowerPrice').val(data.list.MinRange);//MinRange
+                    $('#hdnMinallowed').val(data.list.MinAllowed);
+                    $('#hdnSymbol').val(data.list.sSymbol);
+                    $('#sSymbol').html('('+data.list.sSymbol +')');
+                }
+                else {
+                    toastr.error(data.list.Msg);
+                    Disable_RangeNotThere();
+                    $('#sSymbol').val('');
+                }
+
+                if(data.list.LatLngBoundList != undefined)
+                {
+                    UpdateMarkers(data.list.LatLngBoundList)
+                }
+                else
+                {
+                    UpdateMarkers(null);
+                }
+            }
+            else
+            {
+                UpdateMarkers(null);
+            }
+        }, 100);
+    }
+
+    function Disable_RangeNotThere()
+    {
+        $('#divuprange').html('0');
+        $('#divminrange').html('0');
+        $('#txtBiddingPrice').attr('disabled', 'disabled');
+        $('#btnGuestUserLogin').attr('disabled', 'disabled');
+        $('#btnRegisteredUserLogin').attr('disabled', 'disabled');
+        $('#hdnUpperPrice').val('');
+        $('#hdnLowerPrice').val('');
+        $('#hdnMinallowed').val('');
+        $('#hdnSymbol').val('');
+        $('#txtBiddingPrice').val('');
+    }
+
+    function Validate() {
+
+        var checkedvalues = '';
+
+        $('.ChPref').each(function (i, j) {
+
+            if ($(this).find("input:checkbox.ChPref").context.checked) {
+                checkedvalues += $(this).find("input:checkbox.ChPref").context.value;
+                checkedvalues += ',';
+                $('#hdntype').val($(this).attr('ctype'));
+            }
+
+        });
+
+        $('#hdnLocalities').val(checkedvalues);
+
+        if ($(hdnStarRating).val() == '' || $(hdnStarRating).val() == '0' || $(hdnStarRating).val() == undefined) {
+            return false;
+        }
+        if ($(hdnLocalities).val() == '' || $(hdnLocalities).val() == '0' || $(hdnLocalities).val() == undefined) {
+            return false;
+        }
+        GetBidRange($(hdnLocalities).val(), $(hdnStarRating).val())
+    }
+
+    function GetLocalitiesValues() {
+        var LCount = 0;
+        var checkedvalues = '';
+        $('.ChPref').each(function (i, j) {
+            if ($(this).find("input:checkbox.ChPref").context.checked) {
+                checkedvalues += $(this).find("input:checkbox.ChPref").context.value;
+                checkedvalues += ',';
+                $('#hdntype').val($(this).attr('ctype'));
+                LCount++;
+            }
+        });
+
+        if(LCount != 1)
+        {
+            $('#divshowLocality').hide();
+        }
+
+        if(LCount==0)
+        {
+            Disable_RangeNotThere();
+            $(".chkselectall").prop("checked", false);
+        }
+        $('#hdnLocalities').val(checkedvalues);
+        Validate();
+    }
+
+    function ChangeStarType(starNumber) {
+        try {
+            $('.starChoice').each(function (i, j) {
+                i++;
+                if (i == starNumber) {
+                    $(this)[0].src = '../images/' + starNumber + 'Star-h.png';
+                    $('#hdnStarRating').val(starNumber);
+                    Validate();
+                }
+                else {
+                    var d = $(this)[0].attributes[1].value;
+                    if (starNumber != d) {
+                        $(this)[0].src = '../images/' + d + 'Star-n.png';
+                    }
+                }
+
+            });
+
+            if(parseInt(starNumber)>0)
+            {
+                $('#StarRating').html(starNumber +' Star');
+            }
+            else
+            {
+                $('#StarRating').html('--- Star');
+            }
+
+        } catch (e) {
+
+        }
+    }
+
+    function DisableControls() {
+        $('.checkbox').each(function (i, j) {
+            $(this).attr('disabled', 'disabled');
+        });
+
+        $('#ancBack').attr('disabled', 'disabled');
+        $('#anclocality').attr('disabled', 'disabled');
+        $('#txtBiddingPrice').attr('disabled', 'disabled');
+        $(".starChoice").off('click');
+
+    }
+
+    function EnableControls() {
+
+        $('.checkbox').each(function (i, j) {
+            $(this).removeAttr('disabled');
+        });
+
+        $('#ancBack').removeAttr('disabled');
+        $('#anclocality').removeAttr('disabled');
+        $('#txtBiddingPrice').removeAttr('disabled', 'disabled');
+        $('.starChoice').click(function () {
+            var $this = $(this);
+            var id = $this.attr('data-id');
+            var starType = $this.attr('data-startype');
+            ChangeStarType(id);
+        });
+    }
+
+    function FetchDataForCookie() {
+
+        FetchRoomDetails();
+
+        var values = {
+            Ids: $('#hdnLocalities').val(),
+            Rating: $('#hdnStarRating').val(),
+            SearchType: $('#hdntype').val(),
+            BidAmount: $('#txtBiddingPrice').val(),
+            SelectedAreaId: $('#hdnSelectedAreaId').val(),
+            Max: $('#hdnUpperPrice').val(),//hdnUpperPrice
+            Min: $('#hdnLowerPrice').val(),//
+            Minallowed: $('#hdnMinallowed').val(),
+            symbol: $('#hdnSymbol').val(),
+            RoomData: JSON.stringify($('#hdnJson').val()),
+
+        }
+        $.removeCookie('scrhBidDetails'); //for removing cookie
+        proBid=[];
+        // $.cookie.json = true;
+        proBid.push(JSON.stringify(values));
+        $.cookie("scrhBidDetails", proBid, { expires: 2, path: '/' });
+
+    }
+
+
+
+    function DrawGoogleMap(areaNameArr) {
+
+        ClearMapPolygonsStyle(tempPolygons);
+
+        for (var i = 0; i < areaNameArr.length; i++) {
+
+            var placeName = areaNameArr[i].Name;
+            var polygonId = areaNameArr[i].Id;
+            var isChecked = areaNameArr[i].isChecked;
+
+            var currentAreaPolygonData = $.grep(areasPolygonMapData, function(e){ return e.Id == polygonId; });
+
+            if(currentAreaPolygonData.length > 0 && currentAreaPolygonData[0] != undefined && currentAreaPolygonData[0].tblPolygons[0] !=undefined)
+            {
+                var polygonDataForThisArea = JSON.parse(currentAreaPolygonData[0].tblPolygons[0].PolygonCordinates);
+
+                DrawPolygon(map,isChecked, centerBounds, polygonDataForThisArea, i+1,placeName, function (centerBounds) {
+
+                    if (i == areaNameArr.length - 1) {
+                        map.fitBounds(centerBounds);
+                        // map.setCenter(centerBounds.getCenter());
+                    };
+
+                });
+            }
+            else
+            {
+                map.fitBounds(centerBounds);
+                // map.setCenter(centerBounds.getCenter());
+            }
+        };
+    }
+
+    function DrawPolygon(map,isChecked, centerBounds, polygonCoordinates, polygonId, areaName, callback) {
+
+        var latLongCordinateArr = [];
+
+        for (var i = 0; i < polygonCoordinates.length; i++) {
+
+            latLongCordinateArr[i] = new google.maps.LatLng(polygonCoordinates[i].lat, polygonCoordinates[i].lng);
+
+            centerBounds.extend(latLongCordinateArr[i]);
+        };
+
+        var areaPolygon = new google.maps.Polygon({
+            paths: latLongCordinateArr,
+            id: polygonId,
+            areaName : areaName
+        });
+
+        tempPolygons.push(areaPolygon);
+
+        if(isChecked)
+        {
+            areaPolygon.setOptions({ strokeColor: "#6666FF", fillOpacity: 0.30,strokeWeight: 2.0, fillColor: 'green'});
+        }
+        else
+        {
+            areaPolygon.setOptions({ strokeColor: "#2F4F4F", fillOpacity: 0.05,strokeWeight: 1.0, fillColor: 'green'});
+        }
+
+        areaPolygon.setMap(map);
+
+
+        google.maps.event.addListener(areaPolygon, "click", function () {
+
+            var currentPolygon = this;
+            var checkBox = $('#text'+ currentPolygon.id);
+
+            if(checkBox.prop('checked') == true)
+            {
+                $('#text'+ currentPolygon.id).prop('checked',false);
+                currentPolygon.setOptions({ strokeColor: "#2F4F4F", fillOpacity: 0.05,strokeWeight: 1.0, fillColor: 'green'});
+
+            }
+            else
+            {
+                $('#text'+ currentPolygon.id).prop('checked',true);
+                currentPolygon.setOptions({  strokeColor: "#6666FF", fillOpacity: 0.30,strokeWeight: 2.0, fillColor: 'green' });
+            }
+
+
+        });
+
+
+        google.maps.event.addListener(areaPolygon, "mouseover", function (event) {
+
+            var currentPolygon = this;
+            currentPolygon.setOptions({ strokeWeight: 2 });
+            $("label[for='text"+ currentPolygon.id+"']").css('background-color', 'green');
+
+        });
+
+        google.maps.event.addListener(areaPolygon, "mouseout", function () {
+
+            var currentPolygon = this;
+            currentPolygon.setOptions({ strokeWeight: 1 });
+            $("label[for='text"+ currentPolygon.id+"']").css('background-color', 'white');
+
+        });
+
+        console.log(polygonId);
+
+        $("#text" + polygonId).change(function () {
+
+            var checkbox = $(this);
+
+            if (checkbox.data('name') && checkbox.val()) {
+
+                if(checkbox.prop("checked"))
+                {
+                    areaPolygon.setOptions({ strokeColor: "#6666FF", fillOpacity: 0.30,strokeWeight: 2.0, fillColor: 'green'});
+                }
+                else
+                {
+                    areaPolygon.setOptions({ strokeColor: "#2F4F4F", fillOpacity: 0.05,strokeWeight: 1.0, fillColor: 'green'});
+                }
+            }
+        });
+
+        $("label[for='text" + polygonId + "']").mouseover(function () {
+            areaPolygon.setOptions({ strokeWeight: 2 });
+        });
+
+        $("label[for='text" + polygonId + "']").mouseout(function () {
+            areaPolygon.setOptions({ strokeWeight: 1 });
+        });
+
+        callback(centerBounds);
+    };
+
+    function ClearMapPolygonsStyle(polygonsArray)
+    {
+        for (var i = 0; i < polygonsArray.length; i++ ) {
+            polygonsArray[i].setMap(null);
+        }
+        polygonsArray = [];
+    }
+
+    function AddMarkers(map,latLngArray)
+    {
+        for (i = 0; i < latLngArray.length; i++)
+        {
+            var lng = latLngArray[i].dLongitude;
+            var lat = latLngArray[i].dLatitude;
+
+            var latlngset = new google.maps.LatLng(lat, lng);
+            centerBounds.extend(latlngset);
+
+            var marker = new google.maps.Marker({
+                map: map,
+                position: latlngset
+            });
+
+            map.fitBounds(centerBounds);
+        }
+    }
+
+    function UpdateMarkers(latLngArray)
+    {
+
+        map = new google.maps.Map(document.getElementById("map_canvas"), myConfig);
+
+        if(latLngArray && latLngArray.length)
+        {
+            for (i = 0; i < latLngArray.length; i++)
+            {
+                var lng = latLngArray[i].dLongitude;
+                var lat = latLngArray[i].dLatitude;
+
+                var latlngset = new google.maps.LatLng(lat, lng);
+                centerBounds.extend(latlngset);
+
+                var marker = new google.maps.Marker({
+                    map: map,
+                    position: latlngset
+                });
+
+                map.fitBounds(centerBounds);
+            }
+        }
+        else
+        {
+            TryGetAddressLatLng(localityNameFromCookie,map);
+        }
+    }
+
+    function GetAddressDetails(address, polygonId, counterId, callback) {
+
+        var geocoder = new google.maps.Geocoder();
+
+        geocoder.geocode({ address: address }, function (currentAreaPolygonDatas, status) {
+
+            if (status == google.maps.GeocoderStatus.OK) {
+
+                var cordinate = currentAreaPolygonDatas[0].geometry.location;
+
+                var radius = 6;
+                var latitude = cordinate.lat();
+                var longitude = cordinate.lng();
+                //Degrees to radians
+                var d2r = Math.PI / 180;
+
+                //  Radians to degrees
+                var r2d = 180 / Math.PI;
+
+                // Earth radius is 3,963 miles
+                var cLat = (radius / 3963) * r2d;
+
+                var cLng = cLat / Math.cos(latitude * d2r);
+
+                //Store points in array
+                var points = [];
+
+                // Calculate the points
+                // Work around 360 points on circle
+                for (var i = 0; i < 360; i += 360 / 6) {
+
+                    var theta = Math.PI * (i / 180);
+
+                    // Calculate next X point
+                    circleY = longitude + (cLng * Math.cos(theta));
+                    //console.log("CircleY:" + circleY);
+                    // Calculate next Y point
+                    circleX = latitude + (cLat * Math.sin(theta));
+                    //console.log("circleX:" + circleX);
+                    // Add point to array
+                    var aPoint = { Latitude: circleX, Longitude: circleY };
+                    points.push(aPoint);
+
+                };
+
+                points.push(points[0]);
+
+                callback(points, polygonId, counterId);
+            };
+        });
+    };
+
+
+    function TryGetAddressLatLng(address,map) {
+
+
+
+        var geocoder = new google.maps.Geocoder();
+
+        geocoder.geocode({ address: address }, function (currentAreaPolygonData, status) {
+
+            if (status == google.maps.GeocoderStatus.OK) {
+
+                var cordinate = currentAreaPolygonData[0].geometry.location;
+                map.setCenter(cordinate);
+
+            }
+            else{
+
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        var pos = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        };
+                        map.setCenter(pos);
+                    }, function() {
+
+                    });
+                }
+            }
+        });
+    };
+
+
+</script>
+
+<script>
+
+    //bind toastr
+    $(function () {
+        toastr.options = {
+
+            "closeButton": true,
+            "debug": false,
+            "positionClass": "toast-top-right",
+            "onclick": null,
+            "showDuration": "1500",
+            "hideDuration": "1000",
+            "timeOut": "3000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut",
+            "preventDuplicates": false
+        }
+
+        //On page load bind localities
+        var data = JSON.parse('@Html.Raw(Model.sJsonLocality)');
+        if (data != null) {
+            var myval = '';
+            $(data).each(function (i, j) {
+                if ('@Model.sSearchType' == 'L') {
+                    if ('@Model.sSearchId' == j.Id) {
+                        myval += '<li><input type="checkbox" ctype="L" onclick="ShowDiv(this);" class="ChPref checkbox" checked  data-name="' + j.Name + '" id ="text' + j.Id + '" value="' + j.Id + '" />  <label for="text' + j.Id + '">' + j.Name + ' </label> </li>';
+                    }
+                    else {
+                        myval += '<li><input type="checkbox"  ctype="L" onclick="ShowDiv(this);"  class="ChPref checkbox"  data-name="' + j.Name + '" id ="text' + j.Id + '" value="' + j.Id + '" />  <label for="text' + j.Id + '">' + j.Name + ' </label> </li>';
+                    }
+                }
+                else if('@Model.sSearchType'=='A')
+                {
+                    //myval += '<li><input type="checkbox" ctype="L" class="ChPref checkbox" onclick="ShowDiv(' + j.Id + ');"  data-name="' + j.Name + '" id ="text' + j.Id + '" value="' + j.Id + '" />  <label for="text' + j.Id + '">' + j.Name + ' </label> </li>';
+                    myval += '<li><input type="checkbox" ctype="L" class="ChPref checkbox" onclick="GetLocalitiesValues();" data-name="' + j.Name + '" id ="text' + j.Id + '" value="' + j.Id + '" />  <label for="text' + j.Id + '">' + j.Name + ' </label></li>';
+                }
+                else {
+                    myval += '<li><input type="checkbox" ctype="A" class="ChPref checkbox" onclick="ShowDiv(this);"  data-name="' + j.Name + '" id ="text' + j.Id + '" value="' + j.Id + '" />  <label for="text' + j.Id + '">' + j.Name + ' </label> </li>';
+                }
+            });
+            $('#divSearchPref').html(myval);
+        }
+
+        var Count = 0;
+        var ActualCount=0;
+
+
+        $('.ChPref').each(function (i, j) {
+            ActualCount++;
+            if ($(this).find("input:checkbox.ChPref").context.checked)
+                Count++;
+        });
+
+        if(parseInt(ActualCount)== parseInt(Count))
+            $(".chkselectall").prop("checked", true);
+
+
+        var roomdata = JSON.parse('@Html.Raw(Model.sJsonRoomData)');
+        if (roomdata != '') {
+            BindRoomData(roomdata);
+        }
+
+
+
+        //checking cookies data is present or not
+        var scrhBidDetails = $.cookie("scrhBidDetails");
+        if (scrhBidDetails != undefined && scrhBidDetails != '') {
+
+            $.removeCookie('scrhBidDetails');
+            var sdata = $.parseJSON(scrhBidDetails);
+            ChangeStarType(sdata.Rating);
+            var Max = sdata.Max;
+            var Min = sdata.Min;
+            $('#txtBiddingPrice').val(sdata.BidAmount);
+            $('#divuprange').html(sdata.symbol + ' ' + Max);
+            $('#divminrange').html(sdata.symbol + ' ' + Min);
+            $('#hdnUpperPrice').val(Max);
+            $('#hdnLowerPrice').val(Min);
+            $('#hdnMinallowed').val(sdata.Minallowed);
+            $('#hdnSymbol').val(sdata.symbol);
+            $('#btnChargeCard').removeAttr('disabled');
+
+            BindLocalityOnLoad(sdata.Ids, sdata.SearchType, sdata.SelectedAreaId);
+            $('#txtBiddingPrice').removeAttr('disabled');
+            $('#btnGuestUserLogin').removeAttr('disabled');
+            $('#btnRegisteredUserLogin').removeAttr('disabled');
+            var roomdata = JSON.parse(sdata.RoomData);
+            if (roomdata != '') {
+                BindRoomData(JSON.parse(roomdata));
+            }
+            $('#hdntype').val(sdata.SearchType);
+
+            GetBidRange(sdata.Ids,sdata.Rating);
+        }
+
+
+
+        $('#chkSelectAll').click(function(){
+            areaNameArr = [];
+            if ($(this).prop("checked")) {
+                $(".ChPref").prop("checked", true);
+                GetLocalitiesValues();
+            }
+            else {
+                Disable_RangeNotThere();
+                $(".ChPref").prop("checked", false);
+                $('#divshowLocality').hide();
+                UpdateMarkers(null);
+            }
+        });
+
+
+        $('#ancBack').click(function () {
+            Disable_RangeNotThere();
+            $(".chkselectall").prop("checked", false);
+            var obj = $(this).attr('disabled');
+            if (obj == 'disabled') {
+                return false;
+            }
+            var Type = '';
+            if ('@Model.sSearchType' == 'C')
+                Type = 'A';
+            else
+                Type = '@Model.sSearchType';
+
+            var param = {
+                Type: '@Model.sSearchType',
+                Id: '@Model.sSearchId'
+            }
+            var data = AjaxCallWithDataMVC('/Bidding/GetLocalities', param);
+            if(data)
+            {
+                if(data.list){
+                    if (data.list.length > 0) {
+                        var myval = '';
+                        $(data.list).each(function (i, j) {
+                            if ('@Model.sSearchType' == 'L') {
+                                if ('@Model.sSearchId' == j.Id) {
+                                    myval += '<li><input type="checkbox" ctype="' + Type + '" onclick="ShowDiv(this);" class="ChPref checkbox" checked  data-name="' + j.Name + '" id ="text' + j.Id + '" value="' + j.Id + '" /> <label for="text' + j.Id + ' ">' + j.Name + ' </label> </li>';
+                                }
+                                else {
+                                    myval += '<li><input type="checkbox" ctype="' + Type + '" onclick="ShowDiv(this);"  class="ChPref checkbox"  data-name="' + j.Name + '" id ="text' + j.Id + '" value="' + j.Id + '" />  <label for="text' + j.Id + ' ">' + j.Name + ' </label> </li>';
+                                }
+                            }
+                            else {
+                                myval += '<li><input type="checkbox" ctype="' + Type + '" class="ChPref checkbox" onclick="ShowDiv();"  data-name="' + j.Name + '" id ="text' + j.Id + '" value="' + j.Id + '" /> <label for="text' + j.Id + '">' + j.Name + ' </label> </li>';
+                            }
+                        });
+                        $('#divSearchPref').html(myval);
+                        $('#divBack').hide();
+
+                        if ('@Model.sSearchType' == 'L') {
+                            $('#divshowLocality').show();
+                        }
+                    }
+
+                    if(data.list.LatLngBoundList != undefined)
+                    {
+                        UpdateMarkers(data.list.LatLngBoundList)
+                    }
+                    else
+                    {
+                        UpdateMarkers(null);
+                    }
+                }
+                else
+                {
+                    UpdateMarkers(null);
+                }
+
+            }
+        });
+
+        $('#anclocality').click(function (e) {
+
+            Disable_RangeNotThere();
+            $(".chkselectall").prop("checked", false);
+            var obj = $(this).attr('disabled');
+            if (obj == 'disabled') {
+                return false;
+            }
+            var Id = '';
+            $('.ChPref').each(function (i, j) {
+                if ($(this).find("input:checkbox.ChPref").context.checked)
+                    Id = $(this).find("input:checkbox.ChPref").context.value;
+            });
+            if (parseInt(Id) > 0)
+                BindLocality(Id);
+
+        });
+
+        $('.starChoice').click(function () {
+            var $this = $(this);
+            var id = $this.attr('data-id');
+            var starType = $this.attr('data-startype');
+            ChangeStarType(id);
+        });
+
+        //On Continue as Guest button click
+        $('#btnGuestUserLogin').click(function (e) {
+            e.preventDefault();
+            var currentAreaPolygonData = validateAllData();
+            //var currentAreaPolygonData = validateBidPrice();
+            if (currentAreaPolygonData) {
+                var url = '@Url.Action("GetUserDetails")';
+                $("#divuserdetails").load(url, function () {
+                    $('#whatNextIndexDiv').hide();
+                    $('#divUserTypeLogin').hide();
+                    DisableControls();
+                });
+            }
+        });
+
+        //On Continue as Login click
+        $('#btnRegisteredUserLogin').click(function (e) {
+            e.preventDefault();
+            FetchDataForCookie();
+            var currentAreaPolygonData = validateAllData();
+            //var currentAreaPolygonData = validateBidPrice();
+            if (currentAreaPolygonData) {
+
+                CheckPopupAvailibility(function(){
+
+                    var locationHref = window.location.href;
+                
+                    $('#hdnLoginReturnUrl').val(locationHref +'#frmBidAmt');
+                    $('#hdnExternalLoginReturnUrl').val(locationHref +'#frmBidAmt');
+                    $('#homePageLoginRegisterLink').click();
+
+                });                
+            }
+        });
+
+    });
+
+</script>

@@ -1,0 +1,534 @@
+﻿@model   OneFineRateBLL.Entities.PropDetailsM
+
+<style type="text/css">
+    .NextImg {
+        position: absolute;
+        bottom: 200px;
+        right: 21px;
+    }
+
+    .PrevImg {
+        position: absolute;
+        bottom: 200px;
+        left: 21px;
+    }
+</style>
+
+
+<div class="loyality_infobg">
+    <div class=" sortlist">
+        <ul>
+            <li><a href="#" class="active smoothScroll">ABOUT HOTEL</a></li>
+            <li><a href="#DateRange" class="smoothScroll">AVAILABLE ROOMS</a></li>
+            <li><a href="#divFacilities" class="smoothScroll">FACILITIES</a>	</li>
+            <li><a href="#divPolicies" class="smoothScroll">HOUSE RULES</a></li>
+            <li class="
+                border"><a href="#divTripadvisor" class="smoothScroll">TRIPADVISOR REVIEWS</a></li>
+
+        </ul>
+    </div>
+</div>
+<div class="marginbottom10 margintop15">
+    <div class="row ">
+        <form id="frmgallery">
+            <div class="col-md-7">
+                <div class="PrevImg">
+                    <i class="fa fa-chevron-circle-left photoglryicn"></i>
+                </div>
+                @{
+                    if (Model.lstetblPhotoGallery != null && Model.lstetblPhotoGallery.Count > 0)
+                    {
+                        <div id="imgdiv"><img src='@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()@Model.lstetblPhotoGallery[0].sMainImgUrl' id="imagePreview" class="image-ban"></div>
+                    }
+                    else
+                    {
+                        <div id="imgdiv"><img src='~/images/noImage.jpg' id="imagePreview" class="image-ban"></div>
+
+                    }
+                }
+
+                <div class="NextImg">
+                    <i class="fa fa-chevron-circle-right photoglryicn"></i>
+                </div>
+                <div class="position5 margin-5">
+                    <a class="whitetext">
+                        <strong id="imgtitle">
+
+                            @if (Model.lstetblPhotoGallery != null && Model.lstetblPhotoGallery.Count > 0)
+                            {
+                                @Model.lstetblPhotoGallery[0].sName
+                            }
+
+                        </strong>
+                    </a>
+                </div>
+            </div>
+            @{
+                string shouldDisplay = "";
+
+                if (Request.Browser.IsMobileDevice) { shouldDisplay = "none"; } else { shouldDisplay = ""; }
+
+            }
+            <div class="col-md-2 offerimg" style="height:427px; overflow-y : auto;overflow-x: hidden; display:@(shouldDisplay)">
+
+                <ul class="ul-loop">
+
+                    @if (Model.lstetblPhotoGallery != null && Model.lstetblPhotoGallery.Count > 0)
+                    {
+                        for (int i = 0; i < Model.lstetblPhotoGallery.Count; i++)
+                        {
+
+                            string thumbURL = @System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString() + Model.lstetblPhotoGallery[i].sthumbImgUrl;
+                            string MainURL = @System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString() + Model.lstetblPhotoGallery[i].sMainImgUrl;
+                            <li>
+                                <img src="@thumbURL" stitle="@Model.lstetblPhotoGallery[i].sName" alt="@MainURL" id="thumbPreview" style="height: 114px; width: auto; margin-bottom: 1px;" class="@String.Concat("image-thumb",i)" onclick="PreviewImage(this)">
+                                <input type="hidden" id="@String.Concat("hdntitle",i)" value="@Model.lstetblPhotoGallery[i].sName" />
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                        <li>
+                            <img src="~/images/noImage.jpg" id="thumbPreview" style="height: 114px; width: auto; margin-bottom: 1px;" class="image-thumb">
+
+                        </li>
+                    }
+
+                </ul>
+            </div>
+        </form>
+        <div class="col-md-3">
+            <div class="reviewtextpara  border1  padding5">
+                @if (!string.IsNullOrEmpty(Model.sDistanceToAirportRailway1) || !string.IsNullOrEmpty(Model.sDistanceToAirportRailway2) || !string.IsNullOrEmpty(Model.sDistanceToAirportRailway3))
+                {
+                    <h5><strong>Nearest Airport/ Railway Station</strong></h5>
+                    <ul>
+                        @if (!string.IsNullOrEmpty(Model.sDistanceToAirportRailway1))
+                        {
+                            <li> @Html.DisplayFor(m => m.sDistanceToAirportRailway1) (@Html.DisplayFor(m => m.dDistanceToAirportRailway1) Km) </li>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.sDistanceToAirportRailway2))
+                        {
+                            <li> @Html.DisplayFor(m => m.sDistanceToAirportRailway2) (@Html.DisplayFor(m => m.dDistanceToAirportRailway2) Km)  </li>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.sDistanceToAirportRailway3))
+                        {
+                            <li> @Html.DisplayFor(m => m.sDistanceToAirportRailway3) (@Html.DisplayFor(m => m.dDistanceToAirportRailway3) Km)  </li>
+                        }
+                    </ul>
+                }
+
+
+                @if (!string.IsNullOrEmpty(Model.sNearestTransport1) || !string.IsNullOrEmpty(Model.sNearestTransport2) || !string.IsNullOrEmpty(Model.sNearestTransport3))
+                {
+                    <h5><strong>Nearest Public Transport</strong></h5>
+                    <ul>
+                        @if (!string.IsNullOrEmpty(Model.sNearestTransport1))
+                        {
+                            <li> @Html.DisplayFor(m => m.sNearestTransport1)  (@Html.DisplayFor(m => m.dNearestTransport1) Km) </li>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.sNearestTransport2))
+                        {
+                            <li> @Html.DisplayFor(m => m.sNearestTransport2)  (@Html.DisplayFor(m => m.dNearestTransport2) Km) </li>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.sNearestTransport3))
+                        {
+                            <li> @Html.DisplayFor(m => m.sNearestTransport3)  (@Html.DisplayFor(m => m.dNearestTransport3) Km) </li>
+                        }
+                    </ul>
+                }
+
+
+
+                @if (!string.IsNullOrEmpty(Model.sAreaRecommended1) || !string.IsNullOrEmpty(Model.sAreaRecommended2) || !string.IsNullOrEmpty(Model.sAreaRecommended3))
+                {
+                    <h5><strong>Area recommended for</strong></h5>
+
+                    <ul>
+                        @if (!string.IsNullOrEmpty(Model.sAreaRecommended1))
+                        {
+                            <li> @Html.DisplayFor(m => m.sAreaRecommended1)</li>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.sAreaRecommended2))
+                        {
+                            <li> @Html.DisplayFor(m => m.sAreaRecommended2)</li>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.sAreaRecommended3))
+                        {
+                            <li> @Html.DisplayFor(m => m.sAreaRecommended3)</li>
+                        }
+                    </ul>
+                }
+
+
+                @if (!string.IsNullOrEmpty(Model.sTopAttraction1) || !string.IsNullOrEmpty(Model.sTopAttraction2) || !string.IsNullOrEmpty(Model.sTopAttraction3))
+                {
+                    <h5><strong>Top Attractions </strong></h5>
+                    <ul>
+                        @if (!string.IsNullOrEmpty(Model.sTopAttraction1))
+                        {
+                            <li> @Html.DisplayFor(m => m.sTopAttraction1)</li>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.sTopAttraction2))
+                        {
+                            <li> @Html.DisplayFor(m => m.sTopAttraction2)</li>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.sTopAttraction3))
+                        {
+                            <li> @Html.DisplayFor(m => m.sTopAttraction3)</li>
+                        }
+                    </ul>
+                }
+
+
+                @*@Html.DisplayFor(m => m.sTopAttraction)*@
+            </div>
+            <div class="margintop10   border1" style="width:263px;height:70px;">
+                <div id="googleMap" style=" width:100%;height:58px;"></div>
+
+                @*<iframe style=" width:100%;height:58px;border:0;" frameborder="0"
+                    src="https://www.google.com/maps/embed/v1/place?q=place_id:ChIJQYmIQJ7iDDkRrU95a6O-BH8&key=AIzaSyBA8k8_YKEbkfECgXpF6FKdMkMA1jS1qAQ" allowfullscreen></iframe>*@
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="border1 whitebg padd5 margintop15" id="overview">
+    <h4 class="margintop5">
+        @*<i class="fa fa-lightbulb-o green" aria-hidden="true"></i>*@
+        Hotel Overview
+    </h4>
+    <div class="overviewparatext" id="OverviewText">
+    </div>
+    @Html.HiddenFor(m => m.sDescription, new { Id = "hdnContent" })
+</div>
+
+<div class="modal fade" id="mapDivPopup">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">@Model.sPropertyName</h4>
+            </div>
+            <div class="modal-body" id="popupMapDiv" style="height:450px;overflow:hidden;">
+
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var images = [], x = 0,imgindex =0;
+
+    var shortText = 0;
+    var content =    "@Html.Raw(Model.sDescription !=null ? Model.sDescription.TrimEnd('\r', '\n').Replace(Environment.NewLine, "<br/>").Replace("\"", "\'") : "")";
+    var showChar = 515;
+    var ellipsestext = "...";
+    var moretext = "More";
+    var lesstext = "Less";
+
+    $(".NextImg").css( 'cursor', 'pointer' );
+    $(".PrevImg").css( 'cursor', 'pointer' );
+
+
+    $(".ul-loop li").each(function (i) {
+        //   images[i] = $(".image-thumb"+i).prop("alt");
+        images.push({
+            id:i,
+            img: $(".image-thumb"+i).prop("alt"),
+            title:$("#hdntitle"+i+"").val()
+        });
+
+
+        imgindex = i;
+    });
+
+    function toggleOverview(){
+        if(shortText == 0)
+        {
+            if (content.length > showChar) {
+                var c = content.substr(0, showChar);
+                var html = c + '<span>'+ ellipsestext +'</span>';
+                html += '<span class="pull-right"><a onclick="moreClick()" href="javascript:void(0)" class="morelink"" >'+ moretext + '</a></span>'
+                $('#OverviewText').html('');
+                $('#OverviewText').html(html);
+                shortText = c.length;
+
+            }
+            else
+            {
+                $('#OverviewText').html(content);
+            }
+        }
+        else
+        {
+            moreClick();
+        }
+    };
+
+    function moreClick() {
+        if(shortText == showChar)
+        {
+            var c = content;
+            var html = c;
+            html += '<span class="pull-right"><a onclick="toggleOverview()" href="javascript:void(0)" class="morelink"" >'+ lesstext + '</a></span>'
+
+            $('#OverviewText').html('');
+            $('#OverviewText').html(html);
+            shortText = c.length;
+        }
+        else
+        {
+            var c = content.substr(0, showChar);
+            var html = c + '<span>'+ ellipsestext +'</span>';
+            html += '<span class="pull-right"><a onclick="toggleOverview()" href="javascript:void(0)" class="morelink"" >'+ moretext + '</a></span>'
+
+            $('#OverviewText').html('');
+            $('#OverviewText').html(html);
+            shortText = c.length;
+        }
+    };
+
+    function AutoScrollGallery(){
+        setInterval(function() {
+            displayNextImage();
+        },  10000);
+    }
+
+    function displayNextImage() {
+
+        x = (x === images.length - 1) ? 0 : x + 1;
+        try {
+            $('#imgdiv').fadeOut('fast',function(){
+
+                document.getElementById("imagePreview").src = images[x].img;
+                $('#imgtitle').html(images[x].title);
+            });
+            $('#imgdiv').fadeIn('fast');
+        } catch (err) {}
+    }
+
+    function PreviewImage(val) {
+        //console.log(val)
+        $('#imgdiv').fadeOut('fast',function(){
+            $('#imagePreview').attr('src', $(val).attr('alt'));
+            $('#imgtitle').html($(val).attr('stitle'));
+        });
+        $('#imgdiv').fadeIn('fast');
+
+        $(".ul-loop li").each(function (i) {
+            //            images[i].img = $(".image-thumb"+i).prop("alt");
+
+            images.push({
+                id:i,
+                img: $(".image-thumb"+i).prop("alt"),
+                title:$("#hdntitle"+i+"").val()
+            });
+
+            if(images[i].img == $(val).attr('alt')){
+                x = i;
+                console.log(x);
+            }
+        });
+    }
+
+
+    toggleOverview();
+
+    @if (Model.lstetblPhotoGallery != null && Model.lstetblPhotoGallery.Count > 0)
+    {
+     <text>AutoScrollGallery();</text>
+
+    }
+
+    $(".NextImg").click(function(){
+        var imgbanner = $(".image-ban").prop("src");
+        //console.log(imgbanner);
+
+        var IsFound = false;
+        $(".ul-loop li").each(function (i) {
+            // console.log($(".image-thumb"+i).prop("src"));
+            var imgthumb = $(".image-thumb"+i).prop("alt");
+            var title = $("#hdntitle"+i+"").val();
+            if(IsFound == true){
+                $('#imgdiv').fadeOut('fast',function(){
+                    $('#imagePreview').attr('src', imgthumb);
+                    $('#imgtitle').html(title);
+                });
+                $('#imgdiv').fadeIn('fast');
+                return false;
+            }else{
+                if(imgbanner == imgthumb){
+                    IsFound = true;
+                }
+            }
+        });
+    });
+
+
+    $(".PrevImg").click(function(){
+        var imgbanner = $(".image-ban").prop("src");
+        //console.log(imgbanner);
+
+        var IsFound = false;
+        var PreviousImgURL = null;
+        var Prevtitle='';
+        $(".ul-loop li").each(function (i) {
+            // console.log($(".image-thumb"+i).prop("src"));
+            var imgthumb = $(".image-thumb"+i).prop("alt");
+            var title = $("#hdntitle"+i+"").val();
+            if(IsFound == true){
+                if(PreviousImgURL != null){
+                    //$('#imgdiv').fadeOut('fast',function(){
+                    //    $('#imagePreview').attr('src', PreviousImgURL);
+                    //});
+                    //$('#imgdiv').fadeIn('fast');
+                    return false;
+                }
+                else{
+                    $('#imgdiv').fadeOut('fast',function(){
+                        $('#imagePreview').attr('src', imgthumb);
+                        $('#imgtitle').html(title);
+                    });
+                    $('#imgdiv').fadeIn('fast');
+                    return false;
+                }
+            }else{
+                if(imgbanner == imgthumb){
+                    if(i != 0 ){
+                        IsFound = true;
+                    }
+                }else{
+                    PreviousImgURL = imgthumb;
+                    Prevtitle=title;
+                }
+            }
+        });
+        if(IsFound == true && PreviousImgURL != null){
+            $('#imgdiv').fadeOut('fast',function(){
+                $('#imagePreview').attr('src', PreviousImgURL);
+                $('#imgtitle').html(Prevtitle);
+
+            });
+            $('#imgdiv').fadeIn('fast');
+        }
+    });
+</script>
+
+<script src="~/Scripts/UserScripts/jquery.slider.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBA8k8_YKEbkfECgXpF6FKdMkMA1jS1qAQ"></script>
+<script src="~/Scripts/Jquery.googleMapLebel.js"></script>
+
+<script type="text/javascript">
+
+
+    var popupMap;
+
+
+    var myLatlng = new google.maps.LatLng(@Model.dLatitude, @Model.dLongitude);
+
+    var myOptions = {
+        zoom: 17,
+        center: myLatlng,
+        zoomControl: false,
+        clickableIcons: false
+    };
+
+
+    var mapLabel = new MapLabel({
+        text: '@Model.sPropertyName',
+        position: myLatlng,
+        map: popupMap,
+        fontSize: 20,
+        fontColor:'#A52A2A',
+        align: 'Left'
+    });
+
+    function initialize() {
+
+        var map = new google.maps.Map(document.getElementById('googleMap'), myOptions);
+        popupMap = new google.maps.Map(document.getElementById("popupMapDiv"),myOptions);
+
+        var centerControlDiv = document.createElement('div');
+        var centerControl = new CenterControl(centerControlDiv, map);
+
+        centerControlDiv.index = 1;
+        map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
+
+        var marker = new google.maps.Marker({
+            position: myLatlng
+        });
+
+        var marker2 = new google.maps.Marker({
+            position: myLatlng
+        });
+
+        marker.setMap(map);
+
+        mapLabel.set('position', myLatlng);
+
+        marker2.bindTo('map', mapLabel);
+        marker2.bindTo('position', mapLabel);
+        marker2.setDraggable(false);
+        marker2.setMap(popupMap);
+
+    }
+
+    google.maps.event.addDomListener(window, 'load', initialize);
+    google.maps.event.addDomListener(window, "resize", resizingMap());
+
+    function CenterControl(controlDiv, map) {
+
+        var controlUI = document.createElement('div');
+        controlUI.style.backgroundColor = '#fff';
+        controlUI.style.border = '2px solid #fff';
+        controlUI.style.borderRadius = '3px';
+        controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+        controlUI.style.cursor = 'pointer';
+        controlUI.style.marginBottom = '0px';
+        controlUI.style.textAlign = 'center';
+        controlUI.title = 'Click to View larger Map';
+        controlDiv.appendChild(controlUI);
+
+        // Set CSS for the control interior.
+        var controlText = document.createElement('div');
+        controlText.style.color = '#337ab7';
+        controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+        controlText.style.fontSize = '10px';
+        controlText.style.lineHeight = '20px';
+        controlText.style.paddingLeft = '5px';
+        controlText.style.paddingRight = '5px';
+        controlText.innerHTML = 'View larger Map';
+        controlUI.appendChild(controlText);
+
+        controlUI.addEventListener('click', function() {
+
+            $('#mapDivPopup').modal({
+                show: 'true'
+            });
+        });
+    }
+
+
+    $('#mapDivPopup').on('show.bs.modal', function() {
+        resizeMap();
+    })
+
+    function resizeMap() {
+        if(typeof popupMap =="undefined") return;
+        setTimeout( function(){resizingMap();} , 400);
+    }
+
+    function resizingMap() {
+        if(typeof popupMap =="undefined") return;
+        var center = popupMap.getCenter();
+        google.maps.event.trigger(popupMap, "resize");
+        popupMap.setCenter(center);
+    }
+
+
+</script>

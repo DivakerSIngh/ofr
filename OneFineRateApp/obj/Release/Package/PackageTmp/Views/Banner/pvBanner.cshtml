@@ -1,0 +1,417 @@
+﻿@model OneFineRateBLL.Entities.etblBannerM
+
+
+<script src="../ckeditor/ckeditor.js"></script>
+@System.Web.Optimization.Scripts.Render("~/bundles/validation")
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        //  alert(1)
+        // setImage();
+
+
+        if ("@Model.sBannerType" == "Page Bottom") {
+            $("#desctext").css("display", "none");
+            $("#sDescription").css("display", "none");
+            $("#sTextPosition").attr("disabled", "disabled");
+            //$("#sLinkController").attr("disabled", "disabled");
+            //$("#sLinkAction").attr("disabled", "disabled");
+            $('#div_sLinkId').show();
+        }
+        else if ("@Model.sBannerType" == "Page Top") {
+            //$("#desctext").css("display", "none");
+            //$("#sDescription").css("display", "none");
+            $("#sTextPosition").attr("disabled", "disabled");
+            //$("#sLinkController").attr("disabled", "disabled");
+            //$("#sLinkAction").attr("disabled", "disabled");
+            $("#bannerImagePreview").css("display", "none");
+            $("#bannerImage").attr("disabled", "disabled");
+            $("#closeimg").css("display", "none");
+
+            CKEDITOR.replace('sDescription');
+            var desc = @{@Html.Raw(Json.Encode(Model.sDescription));}
+            CKEDITOR.instances.sDescription.setData(desc)
+        }
+        else {
+            CKEDITOR.replace('sDescription');
+            var desc = @{@Html.Raw(Json.Encode(Model.sDescription));}
+            CKEDITOR.instances.sDescription.setData(desc)
+        }
+
+        CKEDITOR.config.height = 150;
+    });
+
+    function setValue() {
+        var v = CKEDITOR.instances.sDescription.getData();
+        $("#sDescription").val(v);
+
+        var f = document.getElementById('frmBanner');
+        if (f.checkValidity()) {
+            document.getElementById('Progress').style.display = 'block';
+        }
+    }
+
+    function IsValidUrl(url) {
+        return /^(http(s)?:\/\/)?(www\.)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/.test(url);
+    }
+
+    //$('#sLinkId').change(function(){
+    //    if($(this).val()==undefined || $(this).val()=='')
+    //    {
+    //        $('#sLinkId_error').hide();
+    //    }
+    //});
+
+    //$('#sLinkId').keypress(function(){
+
+    //    if(IsValidUrl($(this).val()))
+    //    {
+    //        $('#sLinkId_error').hide();
+    //    }
+    //    else{
+    //        $('#sLinkId_error').show();
+    //    }
+
+    //});
+
+
+    $("#sBannerType").change(function () {
+
+
+        var control = $("#bannerImage");
+        control.replaceWith(control = control.clone(true));
+        document.getElementById("bannerImagePreview").src = "http://placehold.it/100x100";
+
+        if ($("#sBannerType").val() == "Page Bottom") {
+            $("#desctext").css("display", "none");
+            $("#cke_sDescription").css("display", "none");
+            $("#sTextPosition").attr("disabled", "disabled");
+            //$("#sLinkController").attr("disabled", "disabled");
+            //$("#sLinkAction").attr("disabled", "disabled");
+            $("#bannerImagePreview").css("display", "inherit");
+            $("#bannerImage").removeAttr("disabled", "disabled");
+            $('#div_sLinkId').show();
+        }
+        else if ($("#sBannerType").val() == "Page Top") {
+            $("#desctext").css("display", "inherit");
+            $("#cke_sDescription").css("display", "inherit");
+            $("#sTextPosition").attr("disabled", "disabled");
+            //$("#sLinkController").attr("disabled", "disabled");
+            //$("#sLinkAction").attr("disabled", "disabled");
+            $("#bannerImagePreview").css("display", "none");
+            $("#bannerImage").attr("disabled", "disabled");
+            $('#div_sLinkId').show();
+        }
+        else {
+            $("#desctext").css("display", "inherit");
+            $("#cke_sDescription").css("display", "inherit");
+
+            $("#sTextPosition").removeAttr("disabled", "disabled");
+
+            $('#div_sLinkId').show();
+            //$("#sLinkController").removeAttr("disabled", "disabled");
+            //$("#sLinkAction").removeAttr("disabled", "disabled");
+            $("#bannerImagePreview").css("display", "inherit");
+            $("#bannerImage").removeAttr("disabled", "disabled");
+        }
+    });
+
+    @*function setImage() {
+        alert(2)
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            var preImg = @System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString() + @Model.sImgUrl
+            console.log(preImg)
+            $('#bannerImagePreview').attr('src', preImg);
+        }
+    }*@
+
+</script>
+
+@using (Html.BeginForm("Save", "Banner", FormMethod.Post, new { enctype = "multipart/form-data", ReturnUrl = ViewBag.ReturnUrl, id = "frmBanner", role = "form" }))
+{
+    @Html.HiddenFor(m => m.Mode)
+    @Html.HiddenFor(m => m.iBannerId)
+    @Html.HiddenFor(m => m.sImgUrl)
+    @Html.HiddenFor(m => m.iResolutionH)
+    @Html.HiddenFor(m => m.iResolutionW)
+    @Html.HiddenFor(m => m.UniqueAzureFileName)
+    @Html.HiddenFor(m => m.cstatus)
+
+
+    <form id="frmBanner">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">@Html.DisplayFor(m => m.heading)</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row">
+
+                        <div class="col-md-6">
+                            <label>    Name </label>
+                            @if (@Model.Mode == "Edit")
+                            {
+                                @Html.TextBoxFor(m => m.sBannerName, new { @class = "form-control", maxlength = "50", required = true, @readonly = true })
+                                @Html.ValidationMessageFor(m => m.sBannerName, "", new { @class = "red" })
+                            }
+                            else
+                            {
+                                @Html.TextBoxFor(m => m.sBannerName, new { @class = "form-control", maxlength = "50", required = true })
+                                @Html.ValidationMessageFor(m => m.sBannerName, "", new { @class = "red" })
+                            }
+
+                        </div>
+
+                        <div class="col-md-6">
+                            <label>   Banner Type </label>
+                            @if (@Model.Mode == "Edit")
+                            {
+                                @Html.DropDownListFor(m => m.sBannerType, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="Home",Value="Home" },
+                                                                            new SelectListItem {Text="Page Top",Value="Page Top" },
+                                                                            new SelectListItem {Text="Page Bottom",Value="Page Bottom" }},
+                                                                                               new { @class = "form-control", required = "true", @disabled = "disabled" })
+                                @Html.HiddenFor(m => m.sBannerType)
+                            }
+                            else
+                            {
+                                @Html.DropDownListFor(m => m.sBannerType, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="Home",Value="Home" },
+                                                                            new SelectListItem {Text="Page Top",Value="Page Top" },
+                                                                            new SelectListItem {Text="Page Bottom",Value="Page Bottom" }},
+                                                                                     new { @class = "form-control", required = "true" })
+                            }
+                        </div>
+
+
+
+                        <div class="col-md-12">
+                            <label id="desctext">  Description </label>
+                            @if (@Model.sBannerType == "Page Bottom")
+                            {
+
+                            }
+
+                            @Html.TextBoxFor(m => m.sDescription)
+
+                        </div>
+
+                        @*<div class="col-md-4" id="div_sTextPosition">
+                                <label> Banner Text Position </label>
+                                @Html.DropDownListFor(m => m.sTextPosition, new List<SelectListItem> {
+                                                                                new SelectListItem {Text="Top",Value="Top" },
+                                                                                new SelectListItem {Text="Bottom",Value="Bottom" },
+                                                                                new SelectListItem {Text="Right",Value="Right" },
+                                                                                new SelectListItem {Text="Left",Value="Left" },
+                                                                                new SelectListItem {Text="Center",Value="Center" }},
+                                                                                         new { @class = "form-control" })
+
+                            </div>*@
+
+                        @if (Model.sBannerType == "Page Top")
+                        {
+                            <div class="col-md-12">
+                                <label>Hyperlink </label>
+                                @Html.TextBoxFor(m => m.sLinkId, new { @class = "form-control", maxlength = 200 })
+                                @Html.ValidationMessageFor(m => m.sLinkId, "", new { @class = "red" })
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-md-12" id="div_sLinkId" style="display:block">
+                                <label>Hyperlink </label>
+                                @Html.TextBoxFor(m => m.sLinkId, new { @class = "form-control", maxlength = 200 })
+                                @Html.ValidationMessageFor(m => m.sLinkId, "", new { @class = "red" })
+                            </div>
+                        }
+                        @*<div class="col-md-6">
+                                <label> Status </label>
+                                @Html.DropDownListFor(m => m.cstatus, new List<SelectListItem> {
+                                                                                new SelectListItem {Text="Live",Value="A" },
+                                                                                new SelectListItem {Text="Disable",Value="I" }},
+                                                                                         new { @class = "form-control", required = "true" })
+                            </div>*@
+
+
+                        @*<div class="col-md-12">
+                                <label> Link </label>
+                                @Html.DropDownListFor(m => m.iLinkId, new SelectList(OneFineRateBLL.BL_Country.GetAllRecords(), "iCountryId", "sCountry"), "", new { @class = "form-control", oninvalid = "setCustomValidity('Please select country')", required = true })
+                            </div>*@
+
+                        @*<div class="col-md-6">
+                                <label>Link Banner </label>
+                                @Html.DropDownListFor(m => m.sLinkController, new List<SelectListItem> {
+                                                                                new SelectListItem {Text="Select",Value="Select" },
+                                                                                new SelectListItem {Text="Ashoka",Value="Property1" },
+                                                                                new SelectListItem {Text="Ahuja Residency Dlf Phase - 2",Value="Property2" },
+                                                                                new SelectListItem {Text="Ahuja Residency Golf Links",Value="Property3" },
+                                                                                new SelectListItem {Text="Cosy Grand Hotel",Value="Property4" },
+                                                                                new SelectListItem {Text="Shanti Morada",Value="Property5" }},
+                                                                                         new { @class = "form-control" })
+                            </div>*@
+
+
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3 margintop20">
+                            @if (Model.Mode == "Edit" && Model.sImgUrl != null)
+                            {
+                                <label> Change Banner </label>
+
+                            }
+                            else
+                            {
+                                <label> Upload Banner </label>
+
+                            }
+                            <label class="btn">
+                                <input type="file" name="bannerImage" id="bannerImage" style="width:95px" />
+                            </label>
+                            <br />
+                            <span style="color:gray;font-size:10px;padding-left:10px;">(JPG PNG GIF JPEG only)</span><br />
+
+                        </div>
+                       
+                        <div class="col-md-9 margintop20">
+                            @if (Model.sImgUrl == null)
+                            {
+                                <img src="http://placehold.it/100x100" id="bannerImagePreview" height="150" width="400">
+                            }
+                            else
+                            {
+                                <button type="button" onclick="RemoveBanner()" class="close pull-right" id="closeimg">&times;</button>
+                                <img src='@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()@Model.sImgUrl' id="bannerImagePreview" height="150" onerror="this.src='http://placehold.it/100x100'" width="400">
+                            }
+
+                        </div>
+                        <div class="col-md-3"></div>
+                        <div class="col-md-9 red">Image dimention :  1600 x 150 px (Width x height)</div>
+                    </div>
+
+                    @*<div class="col-md-6">
+                            <label>&nbsp; </label>
+                            @Html.DropDownListFor(m => m.sLinkAction, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="Select",Value="Select" },
+                                                                            new SelectListItem {Text="Room",Value="Index1" },
+                                                                            new SelectListItem {Text="Test1",Value="Index2" },
+                                                                            new SelectListItem {Text="Test 2",Value="Index3" },
+                                                                            new SelectListItem {Text="Test3Room",Value="Index4" },
+                                                                            new SelectListItem {Text="Delux",Value="Index5" }},
+                                                                                     new { @class = "form-control" })
+                        </div>*@
+
+
+
+
+
+
+                    <div class="row">
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    @if (Model.cstatus == "I")
+                    {
+                        <button type="button" id="btnCancel" data-dismiss="modal" class="btn btn-danger">Cancel</button>
+                    }
+                    else
+                    {
+                        <input type="submit" id="btnSubmit" class="btn btn-primary" onclick="setValue();" value="Save">
+                        <button type="button" id="btnCancel" data-dismiss="modal" class="btn btn-danger">Cancel</button>
+                    }
+                </div>
+            </div>
+
+        </div>
+
+
+    </form>
+}
+<script type="text/javascript">
+
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+
+                var image = new Image();
+                image.src = e.target.result;
+                image.onload = function () {
+                    var height = this.height;
+                    var width = this.width;
+                    
+                    if ($("#sBannerType").val() == "Page Bottom") {
+                        if (height > 150 || width > 1600) {
+                            toastr.error("Height(150px) and Width(1600px) must not exceed.");
+                            var control = $("#bannerImage");
+                            control.replaceWith(control = control.clone(true));
+                            $('#bannerImagePreview').attr('src', 'http://placehold.it/100x100');
+                            return false;
+                        } else {
+                            $('#bannerImagePreview').attr('src', e.target.result);
+                        }
+                    }
+                    //else if($("#sBannerType").val() == "Home"){
+                    //    if (height > 165 || width > 245) {
+                    //        toastr.error("Height(165) and Width(245) must not exceed.");
+                    //        var control = $("#bannerImage");
+                    //        control.replaceWith( control = control.clone( true ) );
+                    //        $('#bannerImagePreview').attr('src', 'http://placehold.it/100x100');
+                    //        return false;
+                    //    }
+                    //    else
+                    //    {
+                    //        $('#bannerImagePreview').attr('src', e.target.result);
+                    //    }
+                    //}
+                };
+
+                $('#bannerImagePreview').attr('src', e.target.result);
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function RemoveBanner() {
+
+        $('#bannerImagePreview').attr('src', 'http://placehold.it/100x100');
+    }
+
+
+    $("#bannerImage").change(function () {
+        //debugger;
+        var files = this.files; // FileList object
+
+        // Loop through the FileList and render image files as thumbnails.
+        for (var i = 0, f; f = files[i]; i++) {
+            if (!f.type.match('image/pjpeg') && !f.type.match('image/jpeg') && !f.type.match('image/gif') && !f.type.match('image/png')) {
+                bootbox.alert("Please choose either a GIF, JPG or PNG image.");
+                var control = $("#bannerImage");
+                control.replaceWith(control = control.clone(true));
+                $('#bannerImagePreview').attr('src', 'http://placehold.it/100x100');
+                return false;
+            }
+            //if (height > 100 || width > 100) {
+            //    bootbox.alert("Height and Width must not exceed 100px.");
+            //    return false;
+            //}
+        }
+
+        readURL(this);
+    });
+
+
+
+</script>
+

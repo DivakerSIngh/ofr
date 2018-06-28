@@ -1,0 +1,711 @@
+﻿
+
+@model OneFineRateBLL.Entities.eInvoiceModel
+@{
+    Layout = null;
+}
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <style>
+        .invoice-box {
+            max-width: 900px;
+            /*padding: 20px;
+            border: 1px solid #eee;*/
+            font-size: 14px;
+            line-height: 24px;
+            font-family: Arial,'Helvetica Neue', 'Helvetica', Helvetica, sans-serif;
+            color: #555;
+        }
+
+            .invoice-box table {
+                width: 100%;
+                line-height: inherit;
+                text-align: left;
+            }
+
+                .invoice-box table td {
+                    padding: 5px;
+                    vertical-align: top;
+                }
+
+                .invoice-box table tr td:nth-child(2) {
+                    text-align: right;
+                }
+
+                .invoice-box table tr.top table td {
+                    padding-bottom: 20px;
+                }
+
+                    .invoice-box table tr.top table td.title {
+                        font-size: 45px;
+                        line-height: 45px;
+                        color: #333;
+                    }
+
+                .invoice-box table tr.information table td {
+                    /*padding-bottom: 40px;*/
+                }
+
+                .invoice-box table tr.heading td {
+                    background: #eee;
+                    border-bottom: 1px solid #ddd;
+                    font-weight: bold;
+                }
+
+                .invoice-box table tr.details td {
+                    padding-bottom: 20px;
+                }
+
+                .invoice-box table tr.item td {
+                    border: 1px solid #eee;
+                }
+
+                .invoice-box table tr.item.last td {
+                    border-bottom: none;
+                }
+
+                .invoice-box table tr.total td:nth-child(2) {
+                    border-top: 2px solid #eee;
+                    font-weight: bold;
+                }
+
+        .tdwidth18 td table td:nth-child(1) {
+            width: 23%
+        }
+
+        @@media only screen and (max-width: 600px) {
+            .invoice-box table tr.top table td {
+                width: 100%;
+                display: block;
+                text-align: center;
+            }
+
+            .invoice-box table tr.information table td {
+                width: 100%;
+                display: block;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+
+@if (!Model.IsGeneratingPdf)
+{
+    @System.Web.Optimization.Scripts.Render("~/bundles/validation")
+}
+
+@if (Model.HotelOrGuest == OneFineRateBLL.Entities.HotelOrGuest.Hotel)
+{
+    if (!Model.IsGeneratingPdf)
+    {
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Hotel Invoice</h4>
+        </div>
+    }
+
+    if (string.IsNullOrEmpty(Model.dGstOnCommission))
+    {
+        Model.dGstOnCommission = "0";
+    }
+
+
+    <div class="modal-body">
+
+        <div class="invoice-box">
+
+            <table style="border:1px ridge; padding:10px" cellspacing="0" cellpadding="0">
+                <tbody>
+                    <tr>
+                        <td>
+
+                            <table cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td colspan="2" style="text-align:center">
+                                        <strong style="text-decoration:underline">Tax Invoice</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="text-align:center">
+                                        <img src="@System.Configuration.ConfigurationManager.AppSettings["OFRBaseUrl"].ToString()images/logoNew.png" alt="OneFineRate Logo" />
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td style="text-align:left">
+                                        <strong>  @Model.sHotelName (@Model.iPropId)</strong>
+                                    </td>
+                                    <td style="text-align:right">
+                                        Invoice No. : @Model.sInvoiceNumber
+                                    </td>
+                                </tr>
+
+                                <tr class="information tdwidth18">
+                                    <td>
+                                        <table style="line-height:10px;">
+                                            <tr>
+                                                <td><strong>Address</strong></td>
+                                                <td>:</td>
+                                                <td>@Model.sHotelAddress</td>
+                                            </tr>
+                                            @if (!string.IsNullOrEmpty(Model.sHotelGSTIN))
+                                            {
+                                                <tr>
+                                                    <td><strong>GSTIN</strong></td>
+                                                    <td>:</td>
+                                                    <td>@Model.sHotelGSTIN</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Place of Supply</strong></td>
+                                                    <td>:</td>
+                                                    <td>@Model.sHotelGSTINPlaceOfSupply</td>
+                                                </tr>
+                                            }
+
+
+                                            <tr>
+                                                <td><strong>Booking Id</strong></td>
+                                                <td>:</td>
+                                                <td>@Model.iBookingId</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Booking Date</strong></td>
+                                                <td>:</td>
+                                                <td>@Model.dtReservationDate</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Check In Date</strong></td>
+                                                <td>:</td>
+                                                <td>@Model.CheckIn</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Check Out Date</strong></td>
+                                                <td>:</td>
+                                                <td>@Model.CheckOut</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Number of Rooms</strong></td>
+                                                <td>:</td>
+                                                <td>@Model.NoOfRooms</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+
+                                <tr class="heading">
+                                    <td>
+                                        Particulars
+                                    </td>
+
+                                    <td style="text-align:right">
+                                        Amount
+                                    </td>
+                                </tr>
+
+                                <tr class="item">
+                                    <td>
+                                        Commission Charges <br />
+                                        <span style="font-style:italic">(Commission Charges for the month of @DateTime.Today.ToString("MMM yyyy") for the Booking Id: @Model.iBookingId)</span>
+                                    </td>
+                                    <td style="text-align:right">@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dCommission))</td>
+                                </tr>
+
+                                @if (!string.IsNullOrEmpty(Model.dGstOnCommission) && Convert.ToDecimal(Model.dGstOnCommission) > 0)
+                                {
+                                    if (Model.Hotel_GST_Same_State)
+                                    {
+
+                                        var totalValue = Math.Round(Convert.ToDecimal(string.IsNullOrEmpty(Model.dGstOnCommissionPercent) ? "0" : Model.dGstOnCommissionPercent));
+                                        <tr class="item">
+                                            <td>
+                                                CGST @@ @(totalValue / 2)%
+                                            </td>
+                                            <td style="text-align:right">
+                                                @(Math.Round(Convert.ToDecimal(Model.dGstOnCommission) / 2, 0))
+                                            </td>
+                                        </tr>
+                                        <tr class="item">
+                                            <td>
+                                                SGST @@ @(totalValue / 2)%
+                                            </td>
+                                            <td style="text-align:right">
+                                                @(Math.Round(Convert.ToDecimal(Model.dGstOnCommission) / 2, 0))
+                                            </td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        <tr class="item">
+                                            <td>
+                                                IGST @@ @Model.dGstOnCommissionPercent %
+                                            </td>
+                                            <td style="text-align:right">
+                                                @OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dGstOnCommission))
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                <tr class="item">
+                                    <td style="font-style:italic">
+                                        Whether Tax is Payable in Reverse Charge: No
+                                    </td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                                <tr class="item">
+                                    <td><strong>SAC Code :  996211</strong></td>
+                                    <td></td>
+                                </tr>
+                                <tr class="item">
+                                    <td style="text-align:right">
+                                        Total:
+                                    </td>
+                                    <td style="text-align:right">
+                                        @Model.sSymbol @OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dTotalCommission))
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td colspan="2">
+                                        <strong>Amount Chargeable (in words): </strong>
+                                        <em>@Model.sTotalCommissionInWords<em></em></em>
+                                    </td>
+                                </tr>
+                                <tr><td></td></tr>
+                                <tr><td></td></tr>
+
+                            </table>
+                            <table cellpadding="0" cellspacing="0">
+                                <tbody>
+                                    <tr>
+                                        <td style="text-align:left; width:60%;line-height:14px">
+                                            <table>
+                                                <tr>
+                                                    <td><strong>PAN No.</strong> </td>
+                                                    <td>:</td>
+                                                    <td>@Model.InvoiceSettingDetail.PAN_OFR</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong> GSTIN of OFR</strong></td>
+                                                    <td>:</td>
+                                                    <td>@Model.InvoiceSettingDetail.GSTIN_OFR</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Declaration</strong> </td>
+                                                    <td>:</td>
+                                                    <td>TDS is to Be Deducted @@ 5% u/s 194H</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong> Question Related to your Invoice</strong></td>
+                                                    <td>:</td>
+                                                    <td>@Model.InvoiceSettingDetail.Invoice_Email_OFR</td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="3"><em>This is System Generated Invoice. No Signature is Required</em></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td style="text-align:left;float:right; line-height:14px">
+                                            <table>
+                                                <tr><td colspan="3" style="text-decoration:underline"><strong>OFR's Bank Details </strong></td> </tr>
+                                                <tr>
+                                                    <td><strong>Bank Name</strong> </td>
+                                                    <td>:</td>
+                                                    <td>@Model.InvoiceSettingDetail.Bank_Name_OFR</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Account No</strong> </td>
+                                                    <td>:</td>
+                                                    <td>@Model.InvoiceSettingDetail.Bank_AC_OFR</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong> IFSC Code</strong></td>
+                                                    <td>:</td>
+                                                    <td>@Model.InvoiceSettingDetail.Bank_IFSC_OFR</td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <table>
+                                <tr><td></td></tr>
+                                <tr style="text-align:center;">
+                                    <td style="font-style:italic">
+                                        @Html.Raw(Model.InvoiceSettingDetail.Footer_Address_OFR)
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    if (!Model.IsGeneratingPdf)
+    {
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Guest Invoice</h4>
+        </div>
+    }
+
+    <div class="modal-body">
+
+
+        <div class="invoice-box">
+
+            <table style="border:1px ridge;" cellspacing="0" cellpadding="0">
+                <tbody>
+                    <tr>
+                        <td>
+                            <table cellpadding="0" cellspacing="0">
+
+                                <tbody>
+                                    <tr>
+                                        <td colspan="3" style="text-align:center">
+                                            <img src="@System.Configuration.ConfigurationManager.AppSettings["OFRBaseUrl"].ToString()images/logoNew.png" alt="OneFineRate Logo" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Date:</strong>  @Model.sCurrentDate</td>
+                                        <td></td>
+                                        <td style="text-align:right">
+                                            <strong>Invoice No:</strong>   @Model.sInvoiceNumber
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3">
+                                            <strong>Name :</strong>   @Model.sBooker <br />
+
+                                            @if (!string.IsNullOrEmpty(Model.sCustomerGSTINPlaceOfSupply))
+                                            {
+                                                <strong>Address :</strong> @Model.sCustomerGSTINPlaceOfSupply
+                                            }
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3">
+                                            <hr />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3">
+
+                                            <h4>Booking Information</h4>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left;">
+                                            <table style="line-height:15px" cellpadding="0" cellspacing="0" class="tdwidth18">
+                                                <tr>
+                                                    <td><strong>Booking Id </strong></td>
+                                                    <td>:</td>
+                                                    <td>@Model.iBookingId</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Booking Date </strong></td>
+                                                    <td>:</td>
+                                                    <td>@Model.dtReservationDate</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Hotel Name  </strong></td>
+                                                    <td>:</td>
+                                                    <td>@Model.sHotelName (@Model.iPropId)</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Check In Date </strong></td>
+                                                    <td>:</td>
+                                                    <td>@Model.CheckIn</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Check Out Date </strong></td>
+                                                    <td>:</td>
+                                                    <td>@Model.CheckOut</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Number of Rooms </strong></td>
+                                                    <td>:</td>
+                                                    <td>@Model.NoOfRooms</td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td></td>
+                                        <td style="text-align:right; float:right">
+                                            <table style="line-height:15px" cellpadding="0" cellspacing="0">
+
+                                                @if (!string.IsNullOrEmpty(Model.sCustomerGSTIN))
+                                                {
+                                                    <tr>
+                                                        <td><strong>Entity Name</strong></td>
+                                                        <td>:</td>
+                                                        <td>@Model.sCustomerGSTINEntityName</td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td><strong>Place of Supply</strong></td>
+                                                        <td>:</td>
+                                                        <td>
+                                                            @Model.sCustomerGSTINPlaceOfSupply
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td><strong>GSTIN</strong></td>
+                                                        <td>:</td>
+                                                        <td>@Model.sCustomerGSTIN</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Type</strong></td>
+                                                        <td>:</td>
+                                                        <td>@Model.sCustomerGSTINEntityType</td>
+                                                    </tr>
+                                                }
+
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+
+                            </table>
+
+                            <table cellpadding="0" cellspacing="0">
+
+                                <tbody>
+
+                                    <tr class="heading">
+                                        <td>
+                                            Particulars
+                                        </td>
+
+                                        <td style="text-align:right">
+                                            Amount
+                                        </td>
+                                    </tr>
+
+                                    <tr class="item">
+                                        <td>
+                                            Accomodation Charges including all applicable taxes collected on behalf of hotel
+                                        </td>
+                                        <td style="text-align:right"> @(Math.Round(Convert.ToDecimal(Model.dAccomodationChargeIncludingTax), 0)) </td>
+                                    </tr>
+                                    @if (!string.IsNullOrEmpty(Model.sOfrDiscount) && Model.cBookingType != "B" && Convert.ToDecimal(Model.sOfrDiscount) > 0)
+                                    {
+                                        <tr class="item">
+                                            <td>Effective OFR discount		</td>
+                                            <td style="text-align:right"> @OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.sOfrDiscount)) </td>
+                                        </tr>
+                                    }
+
+                                    @if (!string.IsNullOrEmpty(Model.dServiceCharge) && Convert.ToDecimal(Model.dServiceCharge) > 0)
+                                    {
+                                        <tr class="item">
+                                            <td>OFR service charge</td>
+                                            <td style="text-align:right">@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dServiceCharge))</td>
+                                        </tr>
+
+                                        if (Model.Customer_GST_Same_State)
+                                        {
+                                            var totalValue = Math.Round(Convert.ToDecimal(string.IsNullOrEmpty(Model.dGstOnServiceChargePercent) ? "0" : Model.dGstOnServiceChargePercent));
+                                            <tr class="item">
+                                                <td>
+                                                    CGST @@ @(totalValue / 2)%
+                                                </td>
+                                                <td style="text-align:right">
+                                                    @(Math.Round(Convert.ToDecimal(Model.dGstOnServiceCharge) / 2, 0))
+                                                </td>
+                                            </tr>
+                                            <tr class="item">
+                                                <td>
+                                                    SGST @@ @(totalValue / 2)%
+                                                </td>
+                                                <td style="text-align:right">
+                                                    @(Math.Round(Convert.ToDecimal(Model.dGstOnServiceCharge) / 2, 0))
+                                                </td>
+                                            </tr>
+                                        }
+                                        else
+                                        {
+                                            <tr class="item">
+                                                <td>
+                                                    IGST @@ @Model.dGstOnServiceChargePercent %
+                                                </td>
+                                                <td style="text-align:right">
+                                                    @OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dGstOnServiceCharge))
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+
+
+                                    <tr class="item">
+                                        <td style="text-align:right"><strong>Total Amount Payable </strong></td>
+                                        <td style="text-align:right">@Model.sSymbol @OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dTotalAmountPayable))</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td colspan="2">
+                                            <strong>Amount Chargeable (in words): </strong>
+                                            <em>@Model.sTotalAmountPayableInWords<em></em></em>
+                                        </td>
+                                    </tr>
+
+                                    <tr><td></td></tr>
+                                    <tr><td></td></tr>
+                                    <tr style="width:100%; text-align:center;">
+                                        <td colspan="2"><span class="red">*</span> Invoice for 'hotel accomodation charges' will be issued by hotel at the time of checkout. </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <h4 style="text-align: center; font-size:18px;">
+                                                <em><strong><u>Service Category:  Reservation Services for Accomodation	</u>	</strong>	</em>
+                                            </h4>
+                                        </td>
+                                    </tr>
+                                    <tr><td></td></tr>
+                                </tbody>
+
+                            </table>
+
+                            <table cellpadding="0" cellspacing="0">
+                                <tbody>
+                                    <tr>
+                                        <td style="text-align:left; width:70%;float: left; font-size:13px; line-height:26px;">
+
+                                            <table style="line-height:10px;" cellpadding="0" cellspacing="0">
+                                                <tr>
+                                                    <td><strong>Tax is Payable on Reverse Charge Basis</strong> </td>
+                                                    <td>:</td>
+                                                    <td>No.</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>PAN No. of OFR</strong></td>
+                                                    <td>:</td>
+                                                    <td>@Model.InvoiceSettingDetail.PAN_OFR</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>GSTIN of OFR</strong></td>
+                                                    <td>:</td>
+                                                    <td>@Model.InvoiceSettingDetail.GSTIN_OFR</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Place of Supply</strong></td>
+                                                    <td>:</td>
+                                                    <td>@Model.InvoiceSettingDetail.Place_Of_Supply_OFR</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>SAC Code</strong></td>
+                                                    <td>:</td>
+                                                    <td>@Model.InvoiceSettingDetail.SAC_Code_OFR</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>CIN Number</strong></td>
+                                                    <td>:</td>
+                                                    <td>@Model.InvoiceSettingDetail.CIN_OFR</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Question Related to your Invoice</strong></td>
+                                                    <td>:</td>
+                                                    <td>@Model.InvoiceSettingDetail.Invoice_Email_OFR</td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="3"><em>This is System Generated Invoice. No Signature is Required</em></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td style="text-align:left; width:30%;float: left; font-size:13px; line-height:26px;">
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <table>
+                                <tr style="text-align:center;">
+                                    <td>
+                                        @Html.Raw(Model.InvoiceSettingDetail.Footer_Address_OFR)
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+
+        </div>
+
+    </div>
+}
+
+@if (!Model.IsGeneratingPdf)
+{
+
+    <div class="modal-footer" style="padding-bottom:5%">
+
+        @using (Html.BeginForm("SendMailAndUpdateTaxAffectedBookings", "Bookings", FormMethod.Post, new { id = "frmSendEmailTriggerBookings" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <div style="margin-right: -15px; margin-left: -15px;">
+                <div class="col-md-8">
+                    @Html.TextBoxFor(model => model.CommaSeperatedEmail, new { @class = "form-control", placeholder = "Email or email address by comma seperated" })
+                    @Html.ValidationMessageFor(model => model.CommaSeperatedEmail, "", new { @class = "text-danger" })
+
+                    @Html.Hidden("Type", Model.HotelOrGuest)
+                    @Html.HiddenFor(model => model.iBookingId)
+                </div>
+                <div class="col-md-1">
+                    <button type="submit" class="btn btn-info"><i class="glyphicon glyphicon-send"></i> Send</button>
+                </div>
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-primary" id="btnDownloadPdf"><i class="glyphicon glyphicon-file"></i> Download As PDF</button>
+                </div>
+            </div>
+        }
+
+        <script>
+
+            $('#btnDownloadPdf').click(function () {
+
+                window.open('@Url.Action("DownloadBookingPdf", "Bookings")?bookingId=@Model.iBookingId&type=@Model.HotelOrGuest', '_blank');
+            });
+
+
+            $('#frmSendEmailTriggerBookings').submit(function (e) {
+
+                e.preventDefault();
+
+                if ($(this).valid()) {
+
+                    var frmData = $(this).serializeArray();
+
+                    $.post($(this).attr('action'), frmData).done(function (data) {
+
+                        toastr.clear($('.toast'));
+
+                        if (data.status == false) {
+                            toastr.error(data.message);
+                        }
+                        else if (data.status == true) {
+
+                            toastr.success(data.message);
+                        }
+                    });
+                }
+            });
+
+        </script>
+
+    </div>
+
+}
+
+
+

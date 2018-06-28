@@ -1,0 +1,46 @@
+﻿@model OneFineRateBLL.Entities.eTblPromotionalHotel
+@{
+    var blobUrl = System.Configuration.ConfigurationManager.AppSettings["BlobUrl"];
+}
+@using (Html.BeginForm("Index", "PromotionalHotel", FormMethod.Post, new { @class = "mappedHotelForm", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(m => m.sPosition)
+    @Html.HiddenFor(m => m.sImageUrl)
+    @Html.HiddenFor(m=>m.iId)
+
+    <div class="col-md-4 hotelbg margintop10 marginleft5">
+        <div class="col-xs-12" style="text-align:center">
+            @Html.DisplayFor(x => x.sPosition)
+        </div>
+        <div class="images-hotel" style="text-align:center">
+            @if (Model.sImageUrl != null)
+            {
+                <a href="@blobUrl@Model.sImageUrl?@DateTime.Now" rel="prettyPhoto[gallery]"> <img src="@blobUrl@Model.sImageUrl?@DateTime.Now" alt="@Model.sPosition" class="imgResponsive" onerror="this.src=''"></a>
+            }
+            else
+            {
+                <img src="http://placehold.it/165x165" alt="image" class="imgResponsive" onerror=" this.src='' ">
+            }
+            <input type="file" onchange="readURL(this)" name="file" />
+        </div>
+        <div class="row">
+
+            <div class="col-md-12">
+                <label>Property <span class="red">*</span> @Html.ValidationMessageFor(model => Model.iPropId, "", new { @class = "red" })</label>
+
+                @Html.DropDownListFor(m => Model.iPropId, new SelectList(ViewBag.PropertyList, "Key", "Value", Model.iPropId), "Select Property", new { @class = "form-control" })
+
+            </div>
+            <div class="col-md-12 ">
+                <label>Description <span class="red">*</span> @Html.ValidationMessageFor(model => Model.sDescription, "", new { @class = "red" })</label>
+                @Html.TextAreaFor(m => Model.sDescription, new { @class = "form-control", maxlength = "1000" })
+            </div>
+            <div class="col-md-6"></div>
+            <div class="col-md-6 marginbottom10 margintop10 ">
+                <input type="submit" class="btn btn-primary marginright10  pull-right" value="Update">
+            </div>
+        </div>
+    </div>
+}

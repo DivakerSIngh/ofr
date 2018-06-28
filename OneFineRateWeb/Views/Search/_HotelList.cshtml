@@ -1,0 +1,398 @@
+﻿@model OneFineRateBLL.Entities.eWebSiteSearchPage
+@{ int counter = 0;}
+
+<div style="margin-left: 0%">
+    <div class="col-md-10 col-sm-9 col-xs-12  pull-left loyality_infobg">
+        <div class="sortlist" id="propertySortDivEmpty" style="display:none;">
+            <ul>
+                <li @*style="height:25px"*@><a href="javascript:void(0)" class="sorting"></a></li>
+            </ul>
+        </div>
+        <div class="sortlist hidden-xs" id="propertySortDiv">
+            <ul>
+                <li class="noborder marginleft-20">SORT BY :</li>
+                <li><a href="javascript:void(0)" id="sortByPrice" class="sorting">PRICE</a></li>
+                <li><img style="cursor:pointer;background-color:#fff;" src="http://www.tripadvisor.com/img/cdsi/langs/en/tripadvisor_logo_transp_100x20-43524-1.png" id="sortByTripAdvisorRating" class="sorting" />	</li>
+                <li class="noborder"><a href="javascript:void(0)" id="sortByStarCategory" class="sorting">STAR CATEGORY</a></li>
+            </ul>
+        </div> 
+        <div class="dropdown hidden-lg hidden-md" id="propertySortDivMob">
+
+    <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">SORT BY<span class="caret"></span></a>
+    <ul class="dropdown-menu">
+                <li><a href="javascript:void(0)" id="sortByPrice" class="sorting">PRICE</a></li>
+                <li><img style="cursor:pointer;background-color:#fff;" src="http://www.tripadvisor.com/img/cdsi/langs/en/tripadvisor_logo_transp_100x20-43524-1.png" id="sortByTripAdvisorRating" class="sorting" />	</li>
+                <li class="noborder"><a href="javascript:void(0)" id="sortByStarCategory" class="sorting">STAR CATEGORY</a></li>
+    </ul>
+</div>
+    </div>
+    <div class="col-md-2 col-sm-3 col-xs-12" id="hotelFilterHeaderDiv">
+        <button id="mapViewLink" class="btn btn-map">
+            @*<i class="fa fa-map-o"  aria-hidden="true"></i>*@ Map View
+        </button>
+        <button id="listViewLink" style=" display:none" class="btn btn-map"><i class="fa fa-list"  aria-hidden="true"></i> List View</button>
+    </div>
+</div>
+
+<div class="clear"></div>
+
+<div class="row" id="hotelListContainer">
+
+    @if (Model != null && Model.PropertySearchedList.Count > 0)
+    {
+        foreach (var item in Model.PropertySearchedList)
+        {
+            <div class="col-md-12 lazy  marginbottom20 propertyIdDiv" data-id="@item.iPropId" data-price="@item.dPrice" data-star="@item.iStarCategoryId" data-tripadvisor="@item.rating" style="display:@(counter++>4 ? "none":"block")">
+                <div class="row border1 margintop10 boxshadow margin0">
+                    <div class="col-md-3">
+                        <div class="row">
+                            <img src="@item.sImgUrl" class="item lazy srchimgheight" onerror="this.src='/images/noImage.jpg';">
+                            @if (item.Sponsored == 1)
+                            {
+                                <span class="label label-warning padding5 sponsored-label whitetext">Sponsored</span>
+                            }
+                            @if (item.bIsTopHotel)
+                            {
+                                <span class="label label-danger padding5 tophotel-label whitetext">Top OFR Hotels</span>
+                            }
+                            @if (item.bIsPopularHotel)
+                            {
+                                <span class="label label-danger padding5 tophotel-label whitetext">OFR Popular</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="row">
+                                    <div class="col-md-9 col-xs-12">
+
+                                        <div style="cursor:pointer" data-propertyname="@item.sHotelName" class="@(Model.sRequestType == "buy" ? Html.Raw("bookNow") : Html.Raw("negotiate")) dynamicid" data-id="@item.iPropId" data-vendorid="@item.iVendorId" data-propertyid="@OneFineRateAppUtil.clsUtils.Encode(item.iPropId.ToString())">
+                                            <h3 class="mar-padd0">
+                                                @item.sHotelName
+                                                <span><img src="../images/inner-star@(item.iStarCategoryId).png" class="inner_star"></span>
+                                                @*@if (item.bIsNew && item.bIsPopularHotel)
+                                                    {
+                                                        <span class="label label-new padding5">New to OFR / OFR Popular </span>
+                                                    }
+                                                    else if (item.bIsNew)
+                                                    {
+                                                        <span class="label label-new padding5">New to OFR</span>
+                                                    }
+                                                    else if (item.bIsPopularHotel)
+                                                    {
+                                                        <span class="label label-new padding5">OFR Popular </span>
+                                                    }*@
+                                                @if (item.bIsNew)
+                                                {
+                                                    <span class="label label-new padding5">New to OFR</span>
+                                                }
+
+                                            </h3>
+                                        </div>
+
+                                        <h5>@item.sLocality</h5>
+
+                                    </div>
+
+                                    <div class="col-md-3 col-xs-12 hidden-xs">
+
+                                        @if (User.Identity.IsAuthenticated)
+                                        {
+
+                                            <div class="update-nag">
+
+                                                @if (item.bIsFavourite)
+                                                {
+                                                    <div class="update-split update-success"><i data-propertyid="@item.iPropId" data-icontype="ficon_red" class="fa fa-heart iconFavourite"></i></div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="update-split update-info"><i data-propertyid="@item.iPropId" data-icontype="ficon_black" class="fa fa-heart iconFavourite"></i></div>
+                                                }
+
+                                                @if (item.dDiscountPercent > 0)
+                                                {
+                                                    <div class="update-text">
+                                                        <h4 class="text_limit21 ">
+                                                            @Math.Ceiling(item.dDiscountPercent)% Discount
+                                                        </h4>
+                                                    </div>
+                                                }
+
+                                            </div>
+
+                                        }
+                                        else if (item.dDiscountPercent > 0)
+                                        {
+                                            <div class="pull-right ">
+                                                <div class="update-nag">
+                                                    <div class="update-text">
+                                                        <h4 class="text_limit21 ">
+                                                            @Math.Ceiling(item.dDiscountPercent)% Discount
+                                                        </h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="col-md-12">
+                                <ul class="srchofr hidden-xs">
+                                    <li class="">
+
+                                        @if (item.LastBook != null && item.LastBook != "-1" && Model.sRequestType == "negotiate")
+                                        {
+                                            <span class="red">Last bargained @item.LastBook ago !</span>
+                                        }
+                                        @if (item.LastBook != null && item.LastBook != "-1" && Model.sRequestType != "negotiate")
+                                        {
+                                            <span class="red">Last booked @item.LastBook ago !</span>
+                                        }
+                                        @if (item.LastBook != null && item.LastBook != "-1" && item.Looking != 0 && item.Looking > 1)
+                                        {
+                                            <span>|</span>
+                                        }
+                                        @if (item.Looking != 0 && item.Looking > 1)
+                                        {
+
+                                            <span class="blacktext">@item.Looking People are looking at this hotel</span>
+                                        }
+
+                                    </li>
+                                    @if (item.bIsHighDemand)
+                                    {
+                                        <li class="red pull-right"><strong>In high demand</strong></li>
+                                    }
+                                </ul>
+                                <ul class="srchofr-mobile hidden-lg hidden-md">
+                                   
+
+                                        @if (item.LastBook != null && item.LastBook != "-1" && Model.sRequestType == "negotiate")
+                                        {
+                                           <li> <span class="red">Last bargained @item.LastBook ago !</span> </li>
+                                        }
+                                        @if (item.LastBook != null && item.LastBook != "-1" && Model.sRequestType != "negotiate")
+                                        {
+                                            <li>
+                                                <span class="red">Last booked @item.LastBook ago !</span>
+                                            </li>
+                                        }
+                                               
+                                                @if (item.Looking != 0 && item.Looking > 1)
+                                                {
+
+                                                    <li>
+                                                        <span class="blacktext">@item.Looking People are looking at this hotel</span></li>
+                                                        }
+
+
+                                                        @if (item.bIsHighDemand)
+                                                        {
+<li class="red" ><strong>In high demand</strong></li>
+                                    }
+                                </ul>
+                            </div>
+                            <div class="col-xs-12" >@*style="position:relative; bottom:-15px;  "*@
+                                <img src="@item.rating_image_url" class="imgheight19">
+                            @if (!Request.Browser.IsMobileDevice)
+                            {<br>}
+                                <em class="green pull-left">@item.ranking_string</em>
+                                <div class="facilityicon pull-right">
+                                    <ul>
+                                        @foreach (var amenityUrl in item.FirstFourNonEmptyAmenity)
+                                        {
+                                            var urlArr = amenityUrl.Split(',');
+                                            <li><img src="@urlArr[1]" height="20" title="@urlArr[0]" width="20" /></li>
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 hidden-lg hidden-md">
+
+                                @if (User.Identity.IsAuthenticated)
+                                {
+
+                                    <div class="update-nag-mobile">
+
+                                        @if (item.bIsFavourite)
+                                        {
+                                            <div class="update-split update-success"><i data-propertyid="@item.iPropId" data-icontype="ficon_red" class="fa fa-heart iconFavourite"></i></div>
+                                        }
+                                        else
+                                        {
+                                            <div class="update-split update-info"><i data-propertyid="@item.iPropId" data-icontype="ficon_black" class="fa fa-heart iconFavourite"></i></div>
+                                        }
+
+                                        @if (item.dDiscountPercent > 0)
+                                        {
+                                            <div class="update-text">
+                                                <h4 class="text_limit21 ">
+                                                    @Math.Ceiling(item.dDiscountPercent)% Discount
+                                                </h4>
+                                            </div>
+                                        }
+
+                                    </div>
+
+                                }
+                                else if (item.dDiscountPercent > 0)
+                                {
+                                    <div class=" ">
+                                        <div class="update-nag-mobile">
+                                            <div class="update-text">
+                                                <h4 class="text_limit21 ">
+                                                    @Math.Ceiling(item.dDiscountPercent)% Discount
+                                                </h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-2 srchlightcream">
+                        <div class="text-center">
+
+                            @if (item.dDiscountPercent > 0)
+                            {
+                                <h4 class="srchbluestrickedtext withstrikeprice ptop10">
+                                    <strong>@Model.sCurrencySymbol @OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(item.dPriceRP)</strong>
+                                </h4>
+                                <h3 class="srchblueboldtext ptop10">
+                                    <strong>@Model.sCurrencySymbol @OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(item.dPrice)</strong>
+                                </h3>
+                            }
+                            else
+                            {
+                                <h3 class="srchblueboldtext onlyprice ptop10">
+                                    <strong>@Model.sCurrencySymbol @OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(item.dPrice)</strong>
+                                </h3>
+                            }
+
+                            @if (Model.sRequestType == "buy")
+                            {
+                                <div class="btn btn-bannerbtn marginbottom10 marginleft5 onlybuy  width100 bookNow" data-propertyname="@item.sHotelName" data-vendorid="@item.iVendorId" data-propertyid="@OneFineRateAppUtil.clsUtils.Encode(item.iPropId.ToString())">Book</div>
+                            }
+                            else
+                            {
+                                <div class=" btn btn-bannerbtn marginbottom10 marginleft5  width100 negotiate" data-propertyname="@item.sHotelName" data-propertyid="@OneFineRateAppUtil.clsUtils.Encode(item.iPropId.ToString())">Bargain</div>
+
+                                @*<div class="btn btn-bannerbtn marginbottom10 marginleft5  width100 bookNow" data-propertyname="@item.sHotelName" data-srequesttype="@Model.sRequestType" data-vendorid="@item.iVendorId" data-propertyid="@OneFineRateAppUtil.clsUtils.Encode(item.iPropId.ToString())">Buy</div>*@
+                            }
+
+                            @if (item.iInventory <= 5 && item.iInventory > 1)
+                            {
+                                <div class="red fewroom"><strong>Few rooms available</strong></div>
+                            }
+                            else if (item.iInventory == 1)
+                            {
+                                <div class="red fewroom"><strong>Last room left</strong></div>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+                @if (item.sOffer)
+                {
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div style="cursor:pointer" class="lightgry @(Model.sRequestType == "buy" ? Html.Raw("bookNow") : Html.Raw("negotiate"))" data-propertyname="@item.sHotelName" data-vendorid="@item.iVendorId" data-propertyid="@OneFineRateAppUtil.clsUtils.Encode(item.iPropId.ToString())"><strong class="red">Special Deal Available</strong></div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    }
+
+    <div class="col-md-12 marginbottom20" id="show_Waiting_Div_While_Loading_More_Hotels">
+        <div class="row border1 margintop10 boxshadow margin0" style="min-height:200px">
+            <div class="col-md-3">
+                <div class="row">
+
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="row">
+
+                </div>
+            </div>
+            <div class="col-md-2">
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+    // Update Range Slider with current ofr hotels price value while loading travelguru hotels
+
+    $(function(){
+
+        var priceListJson = [];
+
+        var MIN=500*@Model.dExchangeRate;
+        var MAX=50000*@Model.dExchangeRate;
+
+        $('.lazy').each(function(index,element){
+
+            if($(this).data('price') != undefined && $(this).data('price') != NaN)
+            {
+                var priceObj= {};
+                priceObj.dPrice= parseFloat($(this).data('price'));
+                priceListJson.push(priceObj);
+            }
+        });
+
+        MAX =  Math.round(Math.max.apply(Math,priceListJson.map(function(o){return o.dPrice;})));
+        MIN =  Math.round(Math.min.apply(Math,priceListJson.map(function(o){return o.dPrice;})));
+
+        //debugger;
+
+        if((!MIN && !MAX) || MAX == Infinity || MIN == Infinity )
+        {
+            MIN = parseInt(500 *  @Model.dExchangeRate);
+            MAX = parseInt(50000*@Model.dExchangeRate);
+        }
+
+         $("#slider-range").ionRangeSlider({
+                type: "double",
+                min: MIN,
+
+                max: MAX,
+                from:parseInt(500*@Model.dExchangeRate),
+                to: parseInt(50000 *@Model.dExchangeRate),
+                grid: false,
+                prefix: "@Model.sCurrencySymbol",
+                //onStart: function (data) {
+                //    debugger;
+                //    console.log(data);
+                //},
+                onChange: function (data) {
+                    debugger;
+                    $("#amount").val('@Model.sCurrencySymbol' + data.from + ' - @Model.sCurrencySymbol' + data.to);
+
+                    $('#hdnUpperPrice').val(data.to);
+                     $('#hdnLowerPrice').val(data.from);
+                },
+                //onFinish: function (data) {
+                //    debugger;
+                //    console.log(data);
+                //},
+                //onUpdate: function (data) {
+                //    debugger;
+                //    console.log(data);
+                //}
+            });
+
+       var slider = $("#slider-range").data("ionRangeSlider");
+             $("#amount").val('@Model.sCurrencySymbol' + slider.result.min + " - @Model.sCurrencySymbol" + slider.result.max);
+    });
+</script>

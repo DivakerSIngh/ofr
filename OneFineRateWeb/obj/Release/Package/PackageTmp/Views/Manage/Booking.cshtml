@@ -1,0 +1,456 @@
+﻿@model OneFineRateWeb.ViewModels.CustomerBookingModel
+
+@{
+    ViewBag.Title = "Booking";
+    Layout = "~/Views/Shared/_LayoutUserManagement.cshtml";
+    ViewBag.BookingsActive = "manageActive";
+}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h3 style="color: #333;">BOOKINGS</h3>
+            <hr />
+        </div>
+    </div>
+    <div class="row margintop10">
+        <div class="col-md-12">
+            <div class="">
+
+
+
+                @*@{Html.RenderAction("CustomerDetails", "Manage");}*@
+
+                @using (Html.BeginForm("Booking", "Manage", new { }, FormMethod.Get, new { id = "frmSearchBooking" }))
+                {
+
+                    @Html.ValidationSummary(true, "", new { @class = "red" })
+
+                    <div class="row">
+                        <div class="col-md-3 ">
+                            @*<div class="red margintop10" id="loginErrors"></div>*@
+                            @Html.TextBoxFor(m => m.BookingId, new { placeholder = "Booking ID", maxlength = "50", @class = "form-control " })
+                            @Html.ValidationMessageFor(m => m.BookingId, "", new { @class = "red" })
+                        </div>
+                        <div class="col-md-2 ">
+                            <input type="radio" id="radio1" name="searchBy" value="email" checked="checked">
+                            <label for="radio1">Email</label>
+                            <input type="radio" id="radio2" name="searchBy" value="mobile">
+                            <label for="radio2">Mobile</label>
+                        </div>
+                        <div class="col-md-3">
+                            @Html.TextBoxFor(m => m.Email, new { id = "txtEmail", placeholder = "Email Used for Booking", maxlength = "50", @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "red" })
+                            @Html.TextBoxFor(m => m.Mobile, new { id = "txtMobile", placeholder = "Mobile Used for Booking", style = "display:none", maxlength = "10", @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Mobile, "", new { @class = "red" })
+
+                        </div>
+                        <div class="col-md-1 ">
+                            <button type="submit" class="col-md-12 btn btn-primary mtop4">Search</button>
+                        </div>
+                        <div class="col-md-3"></div>
+                    </div>
+
+
+                }
+
+
+                <div class="margintop10 marginbottom10 zindex99" id="rating">
+
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs tablebluebg1" role="tablist">
+                        @if ((Model.PendingNegotiations.Count > 0) || Model.PastBookings.Count == 0 && Model.UnSuccessfullNegotiations.Count == 0 && Model.FutureBookings.Count == 0)
+                        {
+                            <li role="presentation" class="active"><a href="#PendingNegotiations" aria-controls="PendingNegotiations" role="tab" data-toggle="tab">Pending Negotiations</a></li>
+                        }
+                        else
+                        {
+                            <li role="presentation"><a href="#PendingNegotiations" aria-controls="PendingNegotiations" role="tab" data-toggle="tab">Pending Negotiations</a></li>
+                        }
+                        @if (Model.PendingNegotiations.Count == 0 && Model.FutureBookings.Count > 0)
+                        {
+                            <li role="presentation" class="active"><a href="#FutureBookings" aria-controls="FutureBookings" role="tab" data-toggle="tab">Future Bookings	</a></li>
+                        }
+                        else
+                        {
+                            <li role="presentation"><a href="#FutureBookings" aria-controls="FutureBookings" role="tab" data-toggle="tab">Future Bookings	</a></li>
+                        }
+                        @if (Model.PendingNegotiations.Count == 0 && Model.FutureBookings.Count == 0 && Model.PastBookings.Count > 0)
+                        {
+                            <li role="presentation" class="active"><a href="#PastBookings" aria-controls="PastBookings" role="tab" data-toggle="tab">Past Bookings</a></li>
+                        }
+                        else
+                        {
+                            <li role="presentation"><a href="#PastBookings" aria-controls="PastBookings" role="tab" data-toggle="tab">Past Bookings</a></li>
+                        }
+                        @if (Model.PendingNegotiations.Count == 0 && Model.FutureBookings.Count == 0 && Model.PastBookings.Count == 0 && Model.UnSuccessfullNegotiations.Count > 0)
+                        {
+                            <li role="presentation" class="active"><a href="#UnSuccessfullNegotiations" aria-controls="UnSuccessfullNegotiations" role="tab" data-toggle="tab">Unsuccessful Negotiation</a></li>
+                        }
+                        else
+                        {
+                            <li role="presentation"><a href="#UnSuccessfullNegotiations" aria-controls="UnSuccessfullNegotiations" role="tab" data-toggle="tab">Unsuccessful Negotiation</a></li>
+                        }
+                    </ul>
+                    <!-- Tab panes -->
+                    @if (Model != null)
+                    {
+                        <div class="tab-content">
+                            @if ((Model.PendingNegotiations.Count > 0) || Model.PastBookings.Count == 0 && Model.UnSuccessfullNegotiations.Count == 0 && Model.FutureBookings.Count == 0)
+                            {
+                                <div role="tabpanel" class="tab-pane active" id="PendingNegotiations">
+                                    @if (Model.PendingNegotiations.Count() > 0)
+                                    {
+                                        <div id="pendingNegotiations">
+                                            @{Html.RenderPartial("_PendingNegotiations", Model.PendingNegotiations);}
+                                        </div>
+                                        <div id="page-pendingNegotiations"></div>
+                                    }
+                                    else
+                                    {
+                                        <div class="border1 lineheight20 margin10">
+                                            <div class="bluetextsmall row col-md-12 ">
+                                                <div class="pull-left col-md-6 col-xs-6"><span><strong>No Pending Negotiations details found !</strong></span></div>
+                                                <div class="col-md-6 col-xs-6"><div class="pull-right"><span><strong></strong></span></div></div>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    }
+
+                                </div>
+                            }
+                            else
+                            {
+                                <div role="tabpanel" class="tab-pane" id="PendingNegotiations">
+                                    @if (Model.PendingNegotiations.Count() > 0)
+                                    {
+                                        <div id="pendingNegotiations">
+                                            @{Html.RenderPartial("_PendingNegotiations", Model.PendingNegotiations);}
+                                        </div>
+                                        <div id="page-pendingNegotiations"></div>
+                                    }
+                                    else
+                                    {
+                                        <div class="border1 lineheight20 margin10">
+                                            <div class="bluetextsmall row col-md-12 ">
+                                                <div class="pull-left col-md-6 col-xs-6"><span><strong>No Pending Negotiations details found !</strong></span></div>
+                                                <div class="col-md-6 col-xs-6"><div class="pull-right"><span><strong></strong></span></div></div>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    }
+
+                                </div>
+                            }
+                            @if (Model.PendingNegotiations.Count == 0 && Model.FutureBookings.Count > 0)
+                            {
+                                <div role="tabpanel" class="tab-pane active" id="FutureBookings">
+                                    @if (Model.FutureBookings.Count() > 0)
+                                    {
+                                        <div id="futureBookings">
+                                            @{ Html.RenderPartial("_FutureBookings", Model.FutureBookings);}
+                                        </div>
+                                        <div id="page-futureBookings"></div>
+                                    }
+                                    else
+                                    {
+                                        <div class="border1 lineheight20 margin10">
+                                            <div class="bluetextsmall row col-md-12 font12">
+                                                <div class="pull-left col-md-6 col-xs-6"><span><strong>No Future Bookings details found !</strong></span></div>
+                                                <div class="col-md-6 col-xs-6"><div class="pull-right"><span><strong></strong></span></div></div>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    }
+
+                                </div>
+                            }
+                            else
+                            {
+                                <div role="tabpanel" class="tab-pane" id="FutureBookings">
+                                    @if (Model.FutureBookings.Count() > 0)
+                                    {
+                                        <div id="futureBookings">
+                                            @{ Html.RenderPartial("_FutureBookings", Model.FutureBookings);}
+                                        </div>
+                                        <div id="page-futureBookings"></div>
+                                    }
+                                    else
+                                    {
+                                        <div class="border1 lineheight20 margin10">
+                                            <div class="bluetextsmall row col-md-12 ">
+                                                <div class="pull-left col-md-6 col-xs-6"><span><strong>No Future Bookings details found !</strong></span></div>
+                                                <div class="col-md-6 col-xs-6"><div class="pull-right"><span><strong></strong></span></div></div>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    }
+
+                                </div>
+                            }
+                            @if (Model.PendingNegotiations.Count == 0 && Model.FutureBookings.Count == 0 && Model.PastBookings.Count > 0)
+                            {
+                                <div role="tabpanel" class="tab-pane active" id="PastBookings">
+                                    @if (Model.PastBookings.Count() > 0)
+                                    {
+                                        <div id="pastBookings">
+                                            @{ Html.RenderPartial("_PastBookings", Model.PastBookings);}
+                                        </div>
+                                        <div id="page-pastBookings"></div>
+                                    }
+                                    else
+                                    {
+                                        <div class="border1 lineheight20 margin10">
+                                            <div class="bluetextsmall row col-md-12 ">
+                                                <div class="pull-left col-md-6 col-xs-6"><span><strong>No Past Bookings details found !</strong></span></div>
+                                                <div class="col-md-6 col-xs-6"><div class="pull-right"><span><strong></strong></span></div></div>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div role="tabpanel" class="tab-pane" id="PastBookings">
+                                    @if (Model.PastBookings.Count() > 0)
+                                    {
+                                        <div id="pastBookings">
+                                            @{ Html.RenderPartial("_PastBookings", Model.PastBookings);}
+                                        </div>
+                                        <div id="page-pastBookings"></div>
+                                    }
+                                    else
+                                    {
+                                        <div class="border1 lineheight20 margin10">
+                                            <div class="bluetextsmall row col-md-12 ">
+                                                <div class="pull-left col-md-6 col-xs-6"><span><strong>No Past Bookings details found !</strong></span></div>
+                                                <div class="col-md-6 col-xs-6"><div class="pull-right"><span><strong></strong></span></div></div>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    }
+                                </div>
+                            }
+                            @if (Model.PendingNegotiations.Count == 0 && Model.FutureBookings.Count == 0 && Model.PastBookings.Count == 0 && Model.UnSuccessfullNegotiations.Count > 0)
+                            {
+                                <div role="tabpanel" class="tab-pane active" id="UnSuccessfullNegotiations">
+                                    @if (Model.UnSuccessfullNegotiations.Count() > 0)
+                                    {
+                                        <div id="unSuccessfulNegotiations">
+                                            @{ Html.RenderPartial("_UnSuccessfulNegotiations", Model.UnSuccessfullNegotiations); }
+                                        </div>
+                                        <div id="page-unSuccessfulNegotiations"></div>
+                                    }
+                                    else
+                                    {
+                                        <div class="border1 lineheight20 margin10">
+                                            <div class="bluetextsmall row col-md-12 ">
+                                                <div class="pull-left col-md-6 col-xs-6"><span><strong>No Unsuccessfull Negotiations details found !</strong></span></div>
+                                                <div class="col-md-6 col-xs-6"><div class="pull-right"><span><strong></strong></span></div></div>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div role="tabpanel" class="tab-pane" id="UnSuccessfullNegotiations">
+                                    @if (Model.UnSuccessfullNegotiations.Count() > 0)
+                                    {
+                                        <div id="unSuccessfulNegotiations">
+                                            @{ Html.RenderPartial("_UnSuccessfulNegotiations", Model.UnSuccessfullNegotiations); }
+                                        </div>
+                                        <div id="page-unSuccessfulNegotiations"></div>
+                                    }
+                                    else
+                                    {
+                                        <div class="border1 lineheight20 margin10">
+                                            <div class="bluetextsmall row col-md-12 ">
+                                                <div class="pull-left col-md-6 col-xs-6"><span><strong>No Unsuccessfull Negotiations details found !</strong></span></div>
+                                                <div class="col-md-6 col-xs-6"><div class="pull-right"><span><strong></strong></span></div></div>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="divCancellationPolicyContaner" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Cancellation Policy :</h4>
+            </div>
+            <div class="modal-body">
+                <div id="divCancellationPolicyTextContainer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+
+
+
+    <script>
+
+        $(function () {
+
+
+            $('#txtMobile').keypress(function (e) {
+
+                var cursorPosition = document.getElementById('txtMobileNo').selectionStart;
+
+                if ((this.value.length == 0 || cursorPosition == 0) && e.which == 48) {
+
+                    return false;
+                }
+            });
+
+            //var lastViewedTab = localStorage.getItem('bookinglastTab');
+            //if (lastViewedTab) {
+            //    $('a[href="' + lastViewedTab + '"]').tab('show');
+            //}
+            //else {
+            //    $('a[href="#PendingNegotiations"]').tab('show');
+            //}
+
+            var config = {
+                total: 0,
+                page: 1,
+                firstLastUse: true,
+                first: 'First',
+                last: 'Last',
+                wrapClass: 'pagination',
+                activeClass: 'active',
+                disabledClass: 'disabled',
+                nextClass: 'next',
+                prevClass: 'prev',
+                lastClass: 'last',
+                firstClass: 'first',
+                maxVisible: 10
+            };
+
+
+            @if (Model.PendingNegotiationsPageCount > 1)
+            {
+
+             <text>
+
+            config.total = @Model.PendingNegotiationsPageCount;
+
+            $('#page-pendingNegotiations').bootpag(config).on('page', function (event, num) {
+
+                ////debugger;
+                var data = { 'pageNumber': num };
+                GetPartialsView('@Url.Action("GetPendingNegotiations", "Manage")', data, '#pendingNegotiations', function (data) {
+                    $('#pendingNegotiations').html(data);
+                });
+            });
+
+            </text>
+
+             }
+
+
+
+
+            @if(Model.FutureBookingsPageCount > 1)
+            {
+                   <text>
+
+
+            config.total = @Model.FutureBookingsPageCount;
+
+            $('#page-futureBookings').bootpag(config).on('page', function (event, num) {
+                var data = { 'pageNumber': num };
+                GetPartialsView('@Url.Action("GetFutureBookings", "Manage")', data, '#futureBookings', function (data) {
+                    $('#futureBookings').html(data);
+                });
+            });
+            </text>
+
+             }
+
+
+            @if (Model.PastBookingsPageCount > 1)
+             {
+                 <text>
+
+            config.total = @Model.PastBookingsPageCount
+
+            $('#page-pastBookings').bootpag(config).on('page', function (event, num) {
+                var data = { 'pageNumber': num };
+                GetPartialsView('@Url.Action("GetPastBookings", "Manage")', data, '#pastBookings', function (data) {
+                    $('#pastBookings').html(data);
+                });
+            });
+
+            </text>
+        }
+
+            @if (Model.UnSuccessfullNegotiationsPageCount > 1)
+             {
+                 <text>
+
+            config.total = @Model.UnSuccessfullNegotiationsPageCount
+
+            $('#page-unSuccessfulNegotiations').bootpag(config).on('page', function (event, num) {
+                var data = { 'pageNumber': num };
+                GetPartialsView('@Url.Action("GetUnSuccessfulNegotiations", "Manage")', data, '#unSuccessfulNegotiations', function (data) {
+                    $('#unSuccessfulNegotiations').html(data);
+                });
+            });
+
+            </text>
+    }
+
+
+
+
+            $('input:radio[name="searchBy"]').change(function () {
+                if ($(this).is(':checked') && $(this).val() == 'email') {
+                    $('#txtEmail').show();
+                    $('#txtMobile').hide();
+                    $('#txtMobile').val(null);
+                    $('#txtMobile-error').hide();
+                }
+                else if ($(this).is(':checked') && $(this).val() == 'mobile') {
+                    $('#txtMobile').show();
+                    $('#txtEmail').hide();
+                    $('#txtEmail').val(null);
+                    $('#txtEmail-error').hide();
+                }
+            });
+
+
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                localStorage.setItem('bookinglastTab', $(this).attr('href'));
+            });
+
+        });
+
+        function OpenCancellationPopup(element) {
+
+            var policy = $(element).data('policy');
+
+            $('#divCancellationPolicyTextContainer').html($('<div />').html(policy).text());
+
+            $('#divCancellationPolicyContaner').modal({
+                show: 'true'
+            });
+        }
+    </script>
+}

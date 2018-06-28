@@ -1,0 +1,201 @@
+﻿@model OneFineRateBLL.Entities.etblPropertyDiningMap
+@*<script src="~/js/jquery-1.9.1.js"></script>*@
+@*<script src="~/js/timePicker.js"></script>*@
+
+@*<script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.3/jquery.timepicker.min.js"></script>*@
+@using (Ajax.BeginForm("Add", "PropertyDining", new AjaxOptions() { InsertionMode = InsertionMode.Replace, UpdateTargetId = "targetid", HttpMethod = "POST", OnSuccess = "GetResult" }))
+{
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            @*$('#timepicker_start').timepicker({
+                timeFormat: 'HH:mm',
+                interval: 15,
+                minTime: '00',
+                maxTime: '23:59',
+                defaultTime: '@Model.sTimingFromHHOld:@Model.sTimingFromMM',
+                startTime: '00:00',
+                dynamic: false,
+                dropdown: false,
+                scrollbar: false
+            });
+
+            $('#timepicker_end').timepicker({
+                timeFormat: 'HH:mm',
+                interval: 15,
+                minTime: '00',
+                maxTime: '23:59',
+                defaultTime: '@Model.sTimingToHHOld: @Model.sTimingToMM',
+                startTime: '00:00',
+                dynamic: false,
+                dropdown: false,
+                scrollbar: false
+            });*@
+
+
+            @*$('#timepicker_start').timepicki({
+                step_size_minutes: 15,
+                show_meridian: false,
+                min_hour_value: 0,
+                max_hour_value: 23,
+                step_size_minutes: 15,
+                overflow_minutes: true,
+                increase_direction: 'up',
+                disable_keyboard_mobile: false,
+                reset: true,
+                start_time: [@Model.sTimingFromHHOld, @Model.sTimingFromMM]
+            });
+            $('#timepicker_end').timepicki({
+                step_size_minutes: 15,
+                show_meridian: false,
+                min_hour_value: 0,
+                max_hour_value: 23,
+                step_size_minutes: 15,
+                overflow_minutes: true,
+                increase_direction: 'up',
+                disable_keyboard_mobile: false,
+                reset: true,
+                start_time: [@Model.sTimingToHHOld, @Model.sTimingToMM]
+            });*@
+        });
+
+    </script>
+    @Html.HiddenFor(m => m.Mode)
+    @Html.HiddenFor(m => m.iPropId)
+    @*@Html.HiddenFor(m => m.sRestaurantName)*@
+    <!-- Modal content-->
+
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Add Dining & Restaurant @*@ViewBag.HeaderText*@</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-2">
+                        Name <span class="red">*</span>
+                    </div>
+                    <div class="col-xs-5">
+                        @if (Model.Mode == "Edit")
+                        {
+                            @Html.TextBoxFor(m => m.sRestaurantName, new { type = "text", @readonly = "readonly", @class = "form-control", oninvalid = "checkInput(this);", oninput = "checkInput(this);", maxlength = "50", required = true })
+                            @Html.ValidationMessageFor(m => m.sRestaurantName)
+                        }
+                        else
+                        {
+                            @Html.TextBoxFor(m => m.sRestaurantName, new { type = "text", oninvalid = "checkInput(this);", oninput = "checkInput(this);", maxlength = "50", required = true, @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.sRestaurantName)
+                        }
+
+                    </div>
+
+                </div>
+
+                <div class="row margintop10">
+                    <div class="col-xs-2">
+                        Cuisine <span class="red">*</span>
+                    </div>
+                    <div class="col-xs-5">
+                        @*, oninvalid = "checkInput(this);"*@
+                        @Html.TextBoxFor(m => m.sDescription, new { type = "text", @class = "form-control", oninput = "checkInput(this);", maxlength = "50", required = true })
+                        @*@Html.ValidationMessageFor(m => m.sDescription)*@
+                    </div>
+
+                </div>
+                <div class="row margintop10">
+                    <div class="col-xs-2">Type <span class="red">*</span></div>
+                    <div class="col-xs-5">
+                        @Html.DropDownListFor(m => m.cType, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="Restaurant",Value="R" },
+                                                                            new SelectListItem {Text="Bar",Value="B" },
+                                                                            new SelectListItem {Text="Coffee Shop",Value="C" },
+                                                                            new SelectListItem {Text="In The Room",Value="I" }},
+                                                                            new { @class = "form-control", required = "true" })
+                    </div>
+
+                </div>
+                <div class="row margintop10">
+
+                    <div class="col-xs-2">
+                        Timing<span class="red">*</span>
+                    </div>
+                    <div class="col-xs-5">
+                        @Html.RadioButtonFor(model => model.b24hours, true, new { id = "bTiming", @checked = "checked" })
+                        <label for="24 Hrs">24Hrs</label>
+
+                        @Html.RadioButtonFor(model => model.b24hours, false, new { id = "bTiming" })
+                        <label for="Limited">Limited</label>
+                    </div>
+
+                </div>
+                <div class="row margintop10">
+                    <div class="col-xs-3" style="width:20% !important;">Meals Served</div>
+                    <div class="col-xs-9">
+                        @Html.CheckBoxFor(m => m.bBreakfast)
+                        @Html.Label("lblBreakfast", "Breakfast", new { style = "width:20%" })
+                        @Html.CheckBoxFor(m => m.bLunch)
+                        @Html.Label("lblLunch", "Lunch", new { style = "width:20%" })
+                        @Html.CheckBoxFor(m => m.bDinner)
+                        @Html.Label("lblDinner", "Dinner", new { style = "width:20%" })
+                    </div>
+
+
+
+                </div>
+                <div class="modal-footer">
+                    @*onclick="return validate();"*@
+                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="targetid"></div>
+
+}
+
+<script>
+    $('#timepicker_start').keypress(function (e) {
+
+        return IsTime(e, this, 10);
+    })
+
+    $('#timepicker_end').keypress(function (e) {
+
+        return IsTime(e, this, 10);
+    })
+
+
+    function checkInput(textbox) {
+
+        if (textbox.value.startsWith(' ')) {
+            textbox.value = textbox.value.trim();
+        }
+
+        if (textbox.value == '') {
+            textbox.setCustomValidity('Please fill out this field');
+        }
+            //else if(!isValid(textbox.value))
+            //{
+            //    textbox.setCustomValidity('Please enter only alphanumeric');
+            //}
+            //else if (textbox.validity.typeMismatch) {
+            //    textbox.setCustomValidity('Please enter only alphanumeric');
+            //}
+            //else if (textbox.validity.patternMismatch) {
+
+            //    textbox.setCustomValidity('Please enter only alphanumeric');
+            //}
+        else {
+            textbox.setCustomValidity('');
+        }
+        // return true;
+    }
+
+    function isValid(str) {
+        return !/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(str);
+    }
+
+</script>

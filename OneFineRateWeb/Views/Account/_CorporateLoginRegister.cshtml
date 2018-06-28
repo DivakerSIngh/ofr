@@ -1,0 +1,51 @@
+﻿
+<div class="modal fade" id="corporateLoginRegisterModel" role="dialog">
+    <div class="modal-dialog modal-lg" id="corporateModelWidth">
+        <div class="modal-content row" id="spinnerContainer">
+            <div class="modal-header">               
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h5 id="congratulationMessage"></h5>
+            </div>
+            <div class="model-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div style="color: #fff !important;
+    cursor: default !important;
+    background-color: #5e2e86 !important;
+    border: 1px solid #ddd !important;
+    border-bottom-color: transparent !important;
+    border-radius: 0px !important;
+    margin-top: 5px;
+    margin-left: 2px !important; text-align:center; ">
+                            <div> Already a member?</div>
+                        </div>
+                        @{Html.RenderAction("Login", "Account");}
+                        <div class="clearfix"></div>
+                        <div id="divForgotPasswordCorporate" style="display:none">
+                            @{Html.RenderAction("ForgotPassword", "Account");}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div style="    margin-left: 2px !important;
+    margin-right: 2px !important;
+   
+    border: 1px solid transparent !important;
+    border-radius: 4px !important;
+    background: #fecb00 !important;
+   
+    border-radius: 0px !important;
+    margin-top: 5px;
+    color: #000 !important;  text-align:center; ">
+                            <div>Become a member</div>
+                        </div>
+                        @{Html.RenderAction("Register", "Account");}
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                @*<button type="button" class="btn btn-success" data-dismiss="modal">Close</button>*@
+            </div>
+        </div>
+    </div>
+</div>
+

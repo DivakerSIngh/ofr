@@ -1,0 +1,119 @@
+﻿@model OneFineRateBLL.Entities.etblPropertyTaxMap
+
+@using (Ajax.BeginForm("AddUpdate", "PropertyTaxes", new AjaxOptions() { InsertionMode = InsertionMode.Replace, UpdateTargetId = "targetid", HttpMethod = "POST", OnSuccess = "GetResult" }))
+{
+
+    <script type="text/javascript">
+
+        function GetResult(data) {
+            if (data.st == '1') {
+                toastr.success(data.msg);
+                bindgrid();
+                $('.close').click();
+            }
+            else {
+                toastr.error(data.msg);
+            }
+        }
+
+        $(document).ready(function () {
+            var d = new Date();
+            $('#txtstayfrom').datepicker({
+                startDate: d,
+                minDate: d,
+                autoclose: true,
+                defaultDate: '@Model.stayfrom',
+                dateFormat: 'dd/mm/yy'
+            })
+
+            $('#txtstayto').datepicker({
+                startDate: d,
+                minDate: d,
+                autoclose: true,
+                defaultDate: '@Model.stayto',
+                dateFormat: 'dd/mm/yy'
+            })
+        });
+    </script>
+    @Html.HiddenFor(x => x.SelectedTaxes, new { id = "hdnJson" })
+    @Html.HiddenFor(x => x.iPropTaxId)
+    @Html.HiddenFor(x => x.iPropId)
+    @Html.HiddenFor(x => x.iRPId)
+    @Html.HiddenFor(x => x.iRoomId)
+    @Html.HiddenFor(x => x.cStatus)
+    @Html.HiddenFor(x => x.dtActionDate)
+    @Html.HiddenFor(x => x.iActionBy)
+    @Html.HiddenFor(x => x.Mode)
+    @*@Html.HiddenFor(x => x.ListTaxes)*@
+    @Html.HiddenFor(x => x.heading)
+    @*@Html.HiddenFor(x => x.ListRatePlans)*@
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">@ViewBag.heading</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-8">
+                        Rate Plan
+                        @Html.DropDownListFor(m => m.PlanId, new SelectList(OneFineRateBLL.BL_tblPropertyRatePlanMap.GetAllRatePlans(), "Id", "Name"), "Select", new { @class = "form-control", required = "true" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-3">
+                        Stay From
+                        @Html.TextBoxFor(u => u.stayfrom, new { @class = "form-control", id = "txtstayfrom", onkeyup = "this.value=''", required = "true" })
+                        @Html.ValidationMessageFor(u => u.stayfrom, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-3">
+                        Stay To
+                        @Html.TextBoxFor(u => u.stayto, new { @class = "form-control", id = "txtstayto", onkeyup = "this.value=''", required = "true" })
+                    </div>
+                </div>
+                <div class="row" id="divtaxes">
+                    @foreach (var item in Model.ListTaxes)
+                    {
+                        <div class="col-xs-6 taxes">
+                            @Html.HiddenFor(u => item.iTaxId, new { @class = "hdnTaxId" })
+                            @Html.Label(item.sTaxName, item.sTaxName)
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    @{
+                        if (item.Type == "1")
+                        {
+                            <select id="ddltaxtype" name="select" class="form-control ddltype">
+                                <option value="true">%</option>
+                                <option value="false">Value</option>
+                            </select>
+                        }
+                        else
+                        {
+                            <select id="ddltaxtype" name="select" class="form-control ddltype">
+                                <option value="false">Value</option>
+                                <option value="true">%</option>
+                            </select>
+                        }
+                                    }
+
+                                </div>
+                                <div class="col-xs-6">
+                                    @Html.TextBoxFor(u => item.value, new { @class = "form-control value", pattern = "^[0-9]*$" })
+
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" onclick="return FetchData();" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+
+    </div>
+    <div id="targetid"></div>
+}

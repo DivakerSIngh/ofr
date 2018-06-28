@@ -1,0 +1,335 @@
+﻿@{
+    ViewBag.Title = "Pending Negotiations";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+
+<style>
+    .dataTables_filter, .dataTables_info, #tblData_length, .fg-button {
+        display: none;
+    }
+
+    li {
+        display: list-item;
+        list-style-type: square;
+    }
+
+    .modal-content {
+        width: 500px;
+    }
+
+    .modal-body {
+        padding: 15px 15px 0px 15px !important;
+    }
+</style>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        bindgrid(); //binding datatable
+    });
+
+    // Delete data from list
+    function Action(act, id, ActualAmount, NegotiateRate, Code) {
+        var text = act == "R" ? "Are you sure you want to reject?" : "Are you sure you want to accept?";
+        if (act == "R") {
+            bootbox.dialog({
+                title: "Provide Counter Offer",
+                //message: '<div class="row">  ' +
+                //    '<div class="col-md-12"> ' +
+                //    '<form> ' +
+                //    '<div class="col-md-4"> ' +
+                //    '<label>Counter Offer</label> </div>' +
+                //    '<div class="col-md-8"> ' +
+                //    '<input id="offer" name="offer" type="number" placeholder="Your counter offer" class="form-control input-md"> ' +
+                //    '<span class="help-block">Offer should be between ' + NegotiateRate + ' and ' + ActualAmount + '</span>' +
+                //    '</div>' +
+                //    '<div class="col-md-12"> <ul class="a">' +
+                //    '<li>Leave blank and save if you do not want to provide a counter offer </li>' +
+                //    '<li>Decimal numbers would be rounded to nearest integer.</li>' +
+                //    '<li>Counter offer should be inclusive of all taxes.</li>' +
+                //    '</ul></div>' +
+                //    '</form> </div>  </div>',
+
+                message: '<div class="row">  ' +
+                    '<div class="col-md-12"> ' +
+                    '<form> ' +
+                    '<div class="col-md-6"> ' +
+                    '<label>Display Rate : <b><span>' + Code + ' ' + ActualAmount + '</span></b></label>' +
+                    '</div>' +
+                    '<div class="col-md-6"> ' +
+                    '<label>Negotiation Amount : <b><span>' + Code + ' ' + NegotiateRate + '</span></b></label>' +
+                    '</div>' +
+                    '<div class="col-md-12" style="padding-top: 5px;"> ' +
+                    '<input type="radio" name="Counter" value="0" class="radio-inline" onclick="CounterCheck(0);" unchecked> <label>Continue with the display rate</label>' +
+                    '</div>' +
+                    '<div class="col-md-12"  style="padding-bottom: 10px;"> ' +
+                    '<input type="radio" name="Counter" value="1" class="radio-inline" onclick="CounterCheck(1);" checked> <label>Counter Offer (Excluding taxes)</label><b> <span id="Code" style="padding-left: 5px; display:none;">' + Code + ' ' + ' </span><label id="offer" class="blue"></b></label> ' +
+                    '</div>' +
+                    '<div class="col-md-3"> ' +
+                    'Discount :' +
+                    '</div>' +
+                      '<div class="col-md-1 nopadding"> ' +
+                    'Value' +
+                    '</div>' +
+                    '<div class="col-md-3 nopadding"> ' +
+                    '<input id="offerVal" name="offerVal" type="number" class="form-control input-md" onkeyup="SetPer(' + ActualAmount + ')" onchange="SetPer(' + ActualAmount + ')">' +
+                    '</div>' +
+                   '<div class="col-md-1 "> ' +
+                    '%' +
+                    '</div>' +
+                    '<div class="col-md-3 nopadding"> ' +
+                    '<input id="offerPerc" name="offerPerc" type="number" class="form-control input-md" onkeyup="SetVal(' + ActualAmount + ')" onchange="SetVal(' + ActualAmount + ')">' +
+                    '</div>' +
+                   
+                    //'<div class="col-md-6"> <ul class="a">' +
+                    //'<li>Decimal numbers would be rounded to nearest integer.</li>' +
+                    //'</ul></div>' +
+                    '<div style="font-size:12px;padding-top: 10px;"  class="red col-md-12">' +
+                    'NOTE : Decimal numbers would be rounded off.' +
+                    '</div>' +
+                    '</form> </div>  </div>',
+                buttons: {
+                    success: {
+                        label: "Save",
+                        className: "btn-success",
+                        callback: function () {
+                            var CO = $('#offer').html();
+                            var Counter = parseInt($("input[name='Counter']:checked").val());
+                            if (Counter == 0) {
+                                CO = -1;
+                            }
+                            else {
+                                if (CO == null || CO == '' || CO == undefined)
+                                {
+                                    toastr.error("Counter offer is not provided");
+                                    return false;
+                                }
+                                else if (isNaN(CO)) {
+                                    toastr.error("Counter offer is not a valid number");
+                                    return false;
+                                }
+                                if (parseInt(CO) <= NegotiateRate || parseInt(CO) >= ActualAmount) {
+                                    toastr.error("Counter Offer should be between " + NegotiateRate + " and " + ActualAmount);
+                                    return false;
+                                }
+                            }
+                            document.getElementById('Progress').style.display = 'block';
+                            var values = { id: id, act: act, CO: parseInt(CO) };
+                            var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("AcceptRejectNegotiation")", values));
+                            if (Data != null) {
+                                if (Data.st == '1') {
+                                    bindgrid();
+                                    toastr.success(Data.msg);
+                                    return true;
+                                }
+                                else if (Data.st == '0') {
+                                    toastr.error(Data.msg);
+                                    return false;
+                                }
+                            }
+                        }
+                    },
+                    danger: {
+                        label: "Cancel",
+                        className: "btn-danger",
+                        callback: function () {
+                        }
+                    }
+                }
+            }
+            );
+        }
+        else {
+            bootbox.confirm(text, function (result) {
+                if (result == true) {
+                    document.getElementById('Progress').style.display = 'block';
+                    var CO = null;
+                    var values = { id: id, act: act, CO: CO };
+                    var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("AcceptRejectNegotiation")", values));
+                    if (Data != null) {
+                        if (Data.st == '1') {
+                            bindgrid();
+                            toastr.success(Data.msg);
+                            return true;
+                        }
+                        else if (Data.st == '0') {
+                            toastr.error(Data.msg);
+                            return false;
+                        }
+
+                    }
+                }
+            });
+        }
+    }
+    function formatNumber(n) {
+        return n.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+    }
+    // bind list
+    function bindgrid() {
+
+        try {
+            var aoColumns =
+                [
+                    //{
+                    //    "sTitle": "Booking Id", "mData": "ID", "bSortable": false,
+                    //    "mRender": function (data, type, full) {
+                    //        var html = '<a data-toggle="modal" target="_blank" href="/BookingConfirmation/' + full.sID + '">' + full.ID + '</a>';
+
+                    //        return html;
+                    //    }
+
+                    //},
+                 {
+                     "sTitle": "Check In", "mData": "StayFrom", "bSortable": false,
+                     "mRender": function (data, type, full) {
+                         return getNorDateWithoutTime(data);
+                     }
+                 },
+                 {
+                     "sTitle": "Check Out", "mData": "StayTo", "bSortable": false,
+                     "mRender": function (data, type, full) {
+                         return getNorDateWithoutTime(data);
+                     }
+                 },
+                 {
+                     "sTitle": "Room Type/ Rate Plan", "mData": "RatePlanRoomType", "bSortable": false
+                 },
+                 {
+                     "sTitle": "No Of Rooms", "mData": "NoOfRooms", "bSortable": false
+                 },
+                 {
+                     "sTitle": "Display Rate", "mData": "ActualAmount", "bSortable": false,
+                     "mRender": function (data, type, full) {
+                         return     '<span >'+formatNumber(full.Code)+'</span>' + " " + data;
+                     }
+                 },
+                 {
+                     "sTitle": "Bidding Rate", "mData": "BidRate", "bSortable": false,
+                     "mRender": function (data, type, full) {
+                         if (data == '' || data == null)
+                             return '-';
+                         else
+                             return '<span >' + formatNumber(full.Code) + '</span>' + " " + data;
+                     }
+                 },
+                 {
+                     "sTitle": "Negotiation Rate", "mData": "NegotiateRate", "bSortable": false,
+                     "mRender": function (data, type, full) {
+                         return '<span   class="red">' + formatNumber(full.Code)  +' '+ data + '</span>';
+                     }
+                 },
+                 {
+                     "sTitle": "Discount", "mData": "Discount", "bSortable": false,
+                     "mRender": function (data, type, full) {
+                         if (full.ActualAmount == '' || full.ActualAmount == null || full.NegotiateRate == '' || full.NegotiateRate == null) {
+                             return '';
+                         }
+                         else {
+                             return Math.round(10000 * (full.ActualAmount - full.NegotiateRate) / full.ActualAmount) / 100 + '%';
+                         }
+                     }
+                 },
+                 {
+                     "sTitle": "Timer", "mData": "Timer", "bSortable": false
+                 },
+                 //{ "sTitle": "Attempts", "mData": "Attempts", "bSortable": false },
+                 {
+                     "sTitle": "Action", "mData": "iGroupId", "bSortable": false,
+                     "mRender": function (data, type, full) {
+                         var html = '<button type="button" onclick="Action(\'B\',' + full.ID + ',' + full.ActualAmount + ',' + full.NegotiateRate + ',\'' + full.Code + '\')"; class="btn btn-sm btn-success margintop5">Yes</button>';
+                         html += '&nbsp;<button type="button" onclick="Action(\'R\',' + full.ID + ',' + full.ActualAmount + ',' + full.NegotiateRate + ',\'' + full.Code + '\')";  class="btn btn-sm btn-danger margintop5">No</button>';
+                         return html;
+                     }
+                 }
+                ];
+            DatatableServerSide("#tblData", aoColumns, "/Services/Service.asmx/GetPendingNegotiationsByPropertyID?PropId=" + '@TempData["PropID"]');
+            //$('.dataTables_filter input').attr('title', 'Type here to search in the Group Name Column');
+        }
+        catch (e) {
+
+        }
+
+    }
+
+    function CounterCheck(a) {
+        if (a == 1) {
+            $('#offerVal').prop("disabled", false);
+            $('#offerPerc').prop("disabled", false);
+        }
+        else {
+            $('#offerVal').prop("disabled", true);
+            $('#offerPerc').prop("disabled", true);
+            $('#offerVal').val("");
+            $('#offerPerc').val("");
+            $('#offer').html("");
+            $('#Code').hide();
+        }
+    }
+
+    function SetPer(MainRate) {
+        var x = $('#offerVal').val();
+        try{
+            var Val = parseFloat(x);
+
+            var Perc = Val * 100 / MainRate;
+            $('#offerPerc').val(Perc);
+            $('#offer').html(Math.round(MainRate - Val));
+            if (isNaN(Val))
+                $('#Code').hide();
+            else
+                $('#Code').show();
+        }
+        catch(e){
+            $('#offer').html("");
+            $('#offerVal').val("");
+            $('#offerPerc').val("");
+            $('#Code').hide();
+        }
+    }
+
+    function SetVal(MainRate) {
+        var x = $('#offerPerc').val();
+        try {
+            var Perc = parseFloat(x);
+
+            var Val = MainRate * Perc / 100;
+            $('#offerVal').val(Val);
+            $('#offer').html(Math.round(MainRate - Val));
+            if (isNaN(Val))
+                $('#Code').hide();
+            else
+                $('#Code').show();
+        }
+        catch (e) {
+            $('#offer').html("");
+            $('#offerVal').val("");
+            $('#offerPerc').val("");
+            $('#Code').hide();
+        }
+    }
+
+</script>
+
+<div class="container margintop20">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-md-12">
+                    <h4 class="panel-title">
+                        Pending Negotiations
+                    </h4>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+
+            <div class="table-responsive margintop20">
+                <table class="table table-striped table-bordered table-hover display" id="tblData"></table>
+            </div>
+            <!-- End  table -->
+        </div>
+    </div>
+    <!-- container div END bottom -->
+</div>

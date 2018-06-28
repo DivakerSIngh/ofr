@@ -1,0 +1,650 @@
+﻿@using OneFineRateBLL.WebUserBL
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" user-scalable="no">
+    <title>OFR</title>
+    <link rel="shortcut icon" href="~/images/favicon.ico" />
+
+    @Styles.Render("~/Content/css")
+
+    <style>
+
+        #divwhole_Co {
+            max-height: 350px;
+            overflow: auto;
+        }
+            #divwhole_Co::-webkit-scrollbar-track {
+                -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+                border-radius: 5px;
+                background-color: #F5F5F5;
+            }
+
+            #divwhole_Co::-webkit-scrollbar {
+                width: 5px;
+                background-color: #F5F5F5;
+            }
+
+            #divwhole_Co::-webkit-scrollbar-thumb {
+                border-radius: 5px;
+                -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+                background-color: #000000;
+            }
+
+        #divwhole {
+            max-height: 350px;
+            overflow: auto;
+        }
+
+            #divwhole::-webkit-scrollbar-track {
+                -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+                border-radius: 5px;
+                background-color: #F5F5F5;
+            }
+
+            #divwhole::-webkit-scrollbar {
+                width: 5px;
+                background-color: #F5F5F5;
+            }
+
+            #divwhole::-webkit-scrollbar-thumb {
+                border-radius: 5px;
+                -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+                background-color: #000000;
+            }
+
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            padding-left: 10px;
+            /*line-height: 48px;*/
+            padding-right: 10px;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            /*background-color: #f9f9f9;
+            min-width: 160px*/
+            /*box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);*/
+            /*padding: 5px 16px;*/
+            z-index: 1;
+            color: #797979;
+            background: #fff;
+            border: 1px solid #fecb00;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        @@media only screen and (max-device-width: 375px) {
+            .dropdown {
+                padding-left: 2px;
+            }
+        }
+            @@media only screen and (max-device-width: 480px) {
+                .dropdown {
+                    padding-left: 2px;
+                }
+            }
+                @@media only screen and (max-device-width: 568px) {
+                    .dropdown {
+                        padding-left: 2px;
+                    }
+                }
+    </style>
+
+    <style>
+        #ui-datepicker-div {
+            display: none;
+        }
+
+        /*body.modal-open {
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+        }
+
+        .modal-open, .modal-open .navbar-fixed-top {
+            margin-right: 0 !important;
+            padding-right: 0 !important;
+        }*/
+
+        .modal-open {
+            -moz-appearance: menuimage;
+        }
+
+            .modal-open::-webkit-scrollbar {
+                width: 0 !important;
+            }
+
+
+        /*To show child age when > 9 (more than one digit) */
+        /*.child {
+            width: 110% !important;
+        }*/
+    </style>
+
+
+
+    <style>
+        #noscript-warning {
+            font-family: sans-serif;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 101;
+            text-align: center;
+            font-weight: bold;
+            font-size: 100%;
+            color: #FFF;
+            background-color: #AE0000;
+            padding: 0;
+        }
+    </style>
+    <link rel="stylesheet" media="print" src="~/css/print.css" />
+    <link href="~/css/responsive.css" rel="stylesheet" />
+    <link href="~/css/toastr.css" rel="stylesheet" />
+    <link href="~/css/wSelect.css" rel="stylesheet" />
+    <link href="~/Content/waitingSpinner.css" rel="stylesheet" />
+
+    <style>
+        .toast-top-center {
+            top: 50px;
+        }
+    </style>
+
+    <script src="~/js/jquery.min.js"></script>
+
+    <link href="~/Content/bootstrap-select.min.css" rel="stylesheet" />
+    <script src="~/Scripts/bootstrap-select.min.js"></script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+
+    @*@Scripts.Render("~/bundles/modernizr")*@
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script src="~/js/jquery.flagstrap.js"></script>
+    <script src="~/js/jquery.sticky.js"></script>
+    <script src="~/js/toastr.min.js"></script>
+    <script src="~/js/main.js"></script>
+    <script src="~/js/jquery.cookie.js"></script>
+    <script src="~/js/bootbox.min.js"></script>
+
+
+    @RenderSection("scripts", required: false)
+
+    <script>
+
+        var cntrlIsPressed = false;
+
+        $(document).keydown(function (event) {
+            if (event.which == "17")
+                cntrlIsPressed = true;
+        });
+
+        $(document).keyup(function () {
+            cntrlIsPressed = false;
+        });
+
+    </script>
+
+    <script src="~/Scripts/waitingSpinner.js"></script>
+
+    <script>
+        function startSpinning() {
+
+            if (cntrlIsPressed == true) {
+                cntrlIsPressed = false;
+                return false;
+            }
+
+            $('body').waitMe({
+                effect: 'ios',
+                text: 'Please wait...',
+                bg: 'rgba(255,255,255,0.6)',
+                color: '#000',
+                opacity: 0.8
+            });
+        }
+
+        function stopSpinning(divId) {
+            $('body').waitMe('hide')
+        }
+    </script>
+
+
+</head>
+<body>
+
+    <div class="overlay" style="display:none">
+
+        @if (Request.Browser.IsMobileDevice)
+        {
+            <div class="loader" style="top:40%; position:fixed;left:35%; z-index:99999999 !important;"></div>
+        }
+        else
+        {
+            <div class="loader" style="top:40%; position:fixed;left:45%; z-index:99999999 !important;"></div>
+        }
+    </div>
+
+    <script>
+        if ($.cookie("ofr.corporate.required.refresh.click") == true) {
+            $('.overlay').show();
+        }
+    </script>
+
+    <div class="modal fade" id="accountModel" role="dialog">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content row" id="spinnerContainer">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                </div>
+                <div id="accountPopupContainer">
+
+                </div>
+
+                <div class="modal-footer" id="loginModalFooter">
+
+                    <h4 class="modal-title text-center">
+
+                        Sign up for Exclusive Offers <br />
+                        <div class="small lineheight16">Exclusive  access to special offers, promotions or loyalty points.</div>
+                    </h4>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrapper">
+        <div id="divtopbanners" class="hidden-xs">
+
+        </div>
+
+        <header>
+            <nav class="navbar navbar-inverse">
+                <div class="container" style="border:0px solid red;">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="/"><img src="@Url.Content("~/images/ofrnewlogo.jpg")" class="logo" /></a>
+                    </div>
+                    <div class="collapse navbar-collapse" id="myNavbar">
+
+                        <ul class="nav navbar-nav navbar-right margintop5">
+
+                            <li class="noborder">
+                                @if (Request.IsAuthenticated)
+                                {
+                                    <img style="float:left; margin-top: 3%;" id="userProfileImage" src="@User.ProfileImageUrl()" onerror="this.src='../images/default-profile-img.png'" class="profile-img hidden-xs">
+                                    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", style = "display:none", @class = "navbar-right" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                    }
+                                    if (Request.Browser.IsMobileDevice)
+                                    {
+
+                                        <ul style="list-style-type: none;margin: 0;padding: 0;overflow: hidden;">
+                                            <li style="float:left;border-bottom: 1px solid #fecb00 !important;">
+                                                <a href="javascript:void(0)" style="display: block;text-align: center;padding: 16px;text-decoration: none;cursor:default !important ;color:black !important">Welcome @User.FullName()</a>
+                                            <li />
+                                            <li style="float:left;border-bottom: 1px solid #fecb00 !important;">
+                                                <a style="float:left; width:100%;display: block;text-align: center;padding: 16px;text-decoration: none; ;color:black !important" href="@Url.Action("Index", "Manage", routeValues: null)" title="Manage Account">
+                                                    My Account
+                                                </a>
+                                            </li>
+                                            <li style="float:left;">
+                                                <a style="float:left;display: block;text-align: center;padding: 16px;text-decoration: none; border-bottom:0px !important ;color:black !important;" href="javascript:document.getElementById('logoutForm').submit()" title="Logout">Logout</a>
+                                            </li>
+                                        </ul>
+
+                                    }
+                                    else
+                                    {
+                                        <div class="dropdown">
+                                            <a href="javascript:void(0)" style="cursor:default !important" class="lineheight48">Welcome @User.FullName()</a>
+                                            <div class="dropdown-content" style="min-width:120px">
+                                                <ul class="topmenu" style="width:100%">
+                                                    <a style="float:left; width:100%" href="@Url.Action("Index", "Manage", routeValues: null)" title="Manage Account">
+                                                        <li style="list-style:none !important;border-bottom: 1px solid #fecb00 !important;">
+                                                            My Account
+                                                        </li>
+                                                    </a>
+                                                    <li style="list-style:none !important">
+                                                        <a style="float:left; border-bottom:0px !important; color:black !important" href="javascript:document.getElementById('logoutForm').submit()" title="Logout">Logout</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+
+                                    }
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action("GetLoginRegisterForm", "Account")" data-remote="false" class='mob-Black' id="homePageLoginRegisterLink" data-buttontype="loginregister" data-toggle="modal" data-target="#accountModel"><i class="fa fa-sign-in"></i>  Sign In | Register</a>
+                                }
+
+                            </li>
+
+                            <li>
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    <a class='mob-Black' href="@Url.Action("Booking","Manage")"><i class="fa fa-pencil-square-o"></i> Manage My Booking</a>
+                                }
+                                else
+                                {
+                                    <a class="mob-Black" href="javascript:void(0);" data-remote="false" data-toggle="modal" data-buttontype="managebooking" data-target="#accountModel"><i class="fa fa-pencil-square-o"></i> Manage My Booking</a>
+                                }
+
+                            </li>
+                            <li class="padding12 mob-Black">
+                                <i class="fa fa-phone"></i> 1800-250-2601
+                            </li>
+                            <li id="Flags"> </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        @if (ViewBag.HeaderBarData != null)
+        {
+            <div class="light_header_bar">
+                <div class="container">
+                    <h4 class="msgvertical"><strong>@ViewBag.HeaderBarData</strong> </h4>
+                </div>
+            </div>
+        }
+
+        @RenderBody()
+
+        <div class="container-wrapper hidden-xs">
+            <div class="yellowbgfooter"></div>
+        </div>
+
+        <footer>
+            <div class="container">
+                <div class="col-md-2 col-xs-6">
+                    <h5><strong>The Company</strong></h5>
+                    <ul>
+                        <li><a href="@Url.Action("Index","AboutUs")">About us</a></li>
+                        <li><a href="@Url.Action("Index","ContactUs")">Contact Us</a></li>
+                        <li><a href="@Url.Action("Index","PressCenter")">Press Center</a></li>
+                        <li><a href="@Url.Action("Index", "Careers")">Careers</a></li>
+                        <li><a href="@Url.Action("Index", "Feedback")">Feedback</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2 col-xs-6">
+                    <h5><strong>Important  Information</strong></h5>
+                    <ul>
+                        @*<li><a href="@Url.Action("Index", "FAQ")">FAQ</a></li>
+                            <li><a href="@Url.Action("Index", "Sitemap")">Sitemap</a></li>*@
+                        <li><a href="@Url.Action("Index", "Terms")">Terms And Conditions</a></li>
+                        <li><a href="@Url.Action("Index", "PrivacyPolicy")">Privacy Policy</a></li>
+                        <li><a href="@Url.Action("Index", "Team")">Team</a></li>
+                    </ul>
+                </div>
+                @*<div class="col-md-1 col-xs-6">
+                    <h5><strong>How it works</strong></h5>
+                        <ul>
+                            <li><a href="#">Bid</a></li>
+                            <li><a href="#">Bargain</a></li>
+                            <li><a href="#">Book</a></li>
+                        </ul>
+                                    </div>*@
+                <div class="col-md-1"></div>
+                <div class="col-md-2 col-xs-6">
+                    <h5><strong>Hotel Partners</strong></h5>
+                    <ul>
+                        <li><a href="@Url.Action("Index", "HotelPartner")">New Hotel Partner</a></li>
+                        <li><a href="http://onefinerate.azurewebsites.net" target="_blank">Hotel Extranet</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-1"></div>
+                <div class="col-md-2 col-xs-12">
+                    <h5><strong>Pay Through</strong></h5>
+                    <div class="payment">
+                        <ul>
+                            <li><a><img src="@Url.Content("~/images/americanicn.png")" class="imgheight19"></a></li>
+                            <li><a><img src="@Url.Content("~/images/mastericn.png")" class="imgheight19"></a></li>
+                            <li><a><img src="@Url.Content("~/images/maestroicn.png")" class="imgheight19"></a></li>
+                            <li><a><img src="@Url.Content("~/images/dinersicn.png")" class="imgheight19"></a></li>
+                            <li><a><img src="@Url.Content("~/images/visaicn.png")" class="imgheight19"></a></li>
+                            <li><a><img src="@Url.Content("~/images/rupayicn.png")" class="imgheight19"></a></li>
+                        </ul>
+                        <div class="btn btn-success margintop10"><a href="@Url.Action("Index", "HotelPartner")" style="color:white;">Become a Hotel Partner </a></div>
+                        <div class="btn btn-success margintop10"><a href="@Url.Action("BecomeCorporate", "HotelPartner")" style="color:white;">Become a Corporate Partner</a></div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-xs-12">
+                    <h5><strong>Engage with us </strong></h5>
+                    <div class="social">
+                        <ul>
+                            <li><a href="https://www.facebook.com/onefinerate" target="_blank"><img src="@Url.Content("~/images/fb_icon.png")"></a></li>
+                            <li> <a href="javascript:void(0)"><img src="@Url.Content("~/images/g_plus_icon.png")"></a> </li>
+                            <li><a href="https://twitter.com/onefinerate" target="_blank"><img src="@Url.Content("~/images/twitter_icon.png")"></a> </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <div class="container">
+            <div class="col-md-2">
+                <div class="whitebgfooter   ">
+                    <img src="@Url.Content("~/images/tripadvisor-coming.jpg")">
+                </div>
+            </div>
+            <div class="col-md-8 margintop15">
+                <div class="text-center font12">Copyright  <a href="#">Onefinerate.com</a></div>
+            </div>
+        </div>
+    </div>
+
+    <a id="back-to-top" href="javascript:void(0)" class="back-to-top" role="button"><i class="fa fa-chevron-circle-up" style="font-size:54px; color:#cccccc;"></i></a>
+
+
+    <script src="~/Scripts/UserScripts/account.js"></script>
+
+    <script src="~/js/wSelect.js"></script>
+
+
+    <script type="text/javascript">
+
+            var CountryData = [];
+
+            function BindCountries() {
+                var myval='';
+                var jsonData = '@Html.Raw(@Session["CountryList"])';
+                if (jsonData != "") {
+                    CountryData = JSON.parse(jsonData);
+                    if (CountryData.length > 0) {
+                        myval+='<select id="ddlCountryFlags">';
+                        $.each(CountryData, function (index, d) {
+                            if (d.iActive) {
+                                myval+="<option selected value='" + d.sCountryCode + "' data-icon='" + d.sImg + "'>" + d.sSymbol + " " + d.sCurrencyCode + "</option>";
+                            }
+                            else {
+                                myval+= "<option value='" + d.sCountryCode + "' data-icon='" + d.sImg + "'>" + d.sSymbol + " " + d.sCurrencyCode + "</option>";
+                            }
+                        });
+                        myval+= '</select>';
+                    }
+                    $('#Flags').html(myval);
+
+                    $('#ddlCountryFlags').change(function () {
+                        AjaxCallWithDataMVC("/Home/ChangeCurrency", { CountryCode: this.value });
+                        window.location.href = window.location.href.substring(0, window.location.href.indexOf('#'));
+                    })
+
+                    $('#ddlCountryFlags').append('').wSelect('reset');
+                    $('#ddlCountryFlags').wSelect();
+
+                    $.fn.wSelect.defaults = {
+                        theme: 'classic',         // theme
+                        size: '5',                // default number of options to display (overwrite with `size` attr on `select` element)
+                        labelPosition: 'left',    // set position for label (left,top)
+                        highlight: true           // highlight fields when selected
+                    };
+                }
+            }
+
+    </script>
+
+    <link href="~/Content/waitingSpinner.css" rel="stylesheet" />
+    <script src="~/Scripts/waitingSpinner.js"></script>
+
+    <script>
+
+            $(function () {
+
+                $('a[data-toggle="modal"]').on('click', function (e) {
+
+                    var target = $(e.target).data("buttontype");
+
+                    if (target === 'managebooking') {
+
+                        $('#manageMyBooking').show();
+                        $('.nav-tabs a[href="#manageMyBooking"]').tab('show');
+                    }
+                });
+
+            });
+
+            $(function () {
+
+                $('#frmSearchBookingPopup').submit(function (e) {
+
+                    if ($(this).valid()) {
+                        var email = $('#txtEmailPopup').val();
+                        var phone = $('#txtMobilePopup').val();
+                        var bookingId = $('#BookingId').val();
+
+                        if ((email.length > 0 || phone.length > 0) && bookingId.length > 0) {
+                            return true;
+                        }
+                        else {
+                            $('#frmSearchBookingPopupValidationSummary').text('Please enter either Email or Mobile number to search for booking.');
+                            e.preventDefault();
+                            return false;
+                        }
+                    }
+                });
+
+                $('.atLeastOne').change(function () {
+
+                    $('#frmSearchBookingPopupValidationSummary').text('');
+                });
+
+            });
+
+    </script>
+
+    <noscript>
+        <div id="noscript-warning">OneFineRate works best with JavaScript enabled</div>
+    </noscript>
+
+
+    <script>
+
+            $(document).keydown(function (event) {
+
+                if (event.ctrlKey == true && (event.which == '61' || event.which == '107' || event.which == '173' || event.which == '109' || event.which == '187' || event.which == '189')) {
+                    event.preventDefault();
+                }
+
+            });
+
+            $(window).bind('mousewheel DOMMouseScroll', function (event) {
+                if (event.ctrlKey == true) {
+                    event.preventDefault();
+                }
+            });
+
+            $(function () {
+
+                BindCountries();
+
+                $(window).scroll(function () {
+                    if ($(this).scrollTop() > 50) {
+                        $('#back-to-top').fadeIn();
+                    } else {
+                        $('#back-to-top').fadeOut();
+                    }
+                });
+
+                $('#back-to-top').click(function () {
+
+                    $('body,html').animate({
+                        scrollTop: 0
+                    }, 500);
+                    return false;
+                });
+            });
+
+
+    </script>
+
+    <script>
+
+            $(function () {
+
+                var success = @((TempData["msg"] != null).ToString().ToLower());
+                if (success == true) {
+                    toastr.success('@TempData["msg"]');
+
+                }
+
+                var error = @((TempData["ERROR"] != null).ToString().ToLower());
+                if (error == true) {
+                    toastr.error('@TempData["ERROR"]');
+                }
+
+            });
+
+    </script>
+
+    <script>
+
+            $(function () {
+
+                // Google Analytics Code
+
+                (function (i, s, o, g, r, a, m) {
+                    i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                        (i[r].q = i[r].q || []).push(arguments)
+                    }, i[r].l = 1 * new Date(); a = s.createElement(o),
+                        m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+                })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+                ga('create', 'UA-96472414-1', 'auto');
+
+                ga('send', 'pageview');
+
+                GetUserSecutiyDetails({}, function (data) {
+
+                    var completeInfo = 'IP Address :' + data.ipAddress + ', Place Details : ' + data.placeDetail + ', Url : ' + window.location.href;
+                    ga('send', {
+                        hitType: 'event',
+                        eventCategory: 'User Activity Complete Info :',
+                        eventAction: completeInfo,
+                        eventLabel: 'Page View'
+                    });
+                });
+            });
+
+    </script>
+
+</body>
+</html>

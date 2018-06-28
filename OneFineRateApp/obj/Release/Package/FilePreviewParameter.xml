@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="IIS Web Application Name" description="" value="onefinerate" tags="IisApp">
+    <parameterEntry kind="ProviderPath" scope="IisApp" match="^C:\\Users\\DeepakA\.FSOFT4PDC\\Documents\\Visual\ Studio\ 2013\\Projects\\OneFineRate\\OneFineRateApp\\obj\\Release\\Package\\PackageTmp$" />
+    <parameterEntry kind="ProviderPath" scope="setAcl" match="^C:\\Users\\DeepakA\.FSOFT4PDC\\Documents\\Visual\ Studio\ 2013\\Projects\\OneFineRate\\OneFineRateApp\\obj\\Release\\Package\\PackageTmp$" />
+  </parameter>
+  <parameter name="OneFineRateEntities-Web.config Connection String" description="" value="metadata=res://*/OneFineRateModel.csdl|res://*/OneFineRateModel.ssdl|res://*/OneFineRateModel.msl;provider=System.Data.SqlClient;provider connection string=&quot;data source=ofr.database.windows.net;initial catalog=OneFineRate;user id=saofr;password=ofrsa@2016;MultipleActiveResultSets=True;App=EntityFramework&quot;" tags="">
+    <parameterEntry kind="XmlFile" scope="C:\\Users\\DeepakA\.FSOFT4PDC\\documents\\visual\ studio\ 2013\\Projects\\OneFineRate\\OneFineRateApp\\obj\\Release\\Package\\PackageTmp\\Views\\web\.config$" match="/configuration/connectionStrings/add[@name='OneFineRateEntities']/@connectionString" />
+    <parameterEntry kind="XmlFile" scope="C:\\Users\\DeepakA\.FSOFT4PDC\\documents\\visual\ studio\ 2013\\Projects\\OneFineRate\\OneFineRateApp\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='OneFineRateEntities']/@connectionString" />
+  </parameter>
+</parameters>

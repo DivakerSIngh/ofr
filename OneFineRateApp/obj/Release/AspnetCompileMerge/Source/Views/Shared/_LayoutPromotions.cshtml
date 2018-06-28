@@ -1,0 +1,213 @@
+﻿
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <!--[if IE]>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <![endif]-->
+    <title>OFR</title>
+    @*-------Styles-----------------*@
+
+    @System.Web.Optimization.Styles.Render("~/bundles/css")
+    @*-------Scripts-----------------*@
+
+    @System.Web.Optimization.Scripts.Render("~/bundles/js")
+
+    <script src="http://maps.googleapis.com/maps/api/js"></script>
+    <script>
+        function initialize() {
+            var mapProp = {
+                center: new google.maps.LatLng(51.508742, -0.120850),
+                zoom: 5,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+        }
+        google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+
+    <style>
+        .panel-heading .accordion-toggle:after {
+            /* symbol for "opening" panels */
+            font-family: 'Glyphicons Halflings'; /* essential for enabling glyphicon */
+            content: "\e114"; /* adjust as needed, taken from bootstrap.css */
+            float: right; /* adjust as needed */
+            color: grey; /* adjust as needed */
+        }
+
+        .panel-heading .accordion-toggle.collapsed:after {
+            /* symbol for "collapsed" panels */
+            content: "\e080"; /* adjust as needed, taken from bootstrap.css */
+        }
+    </style>
+    <script type="text/javascript">
+
+        $(function () {
+            //Display Result In Toastr Message
+            var success = @((TempData["msg"] != null).ToString().ToLower());
+            if (success == true) {
+                toastr.success('@TempData["msg"]');
+            }
+
+            var error = @((TempData["ERROR"] != null).ToString().ToLower());
+            if (error == true) {
+                toastr.error('@TempData["ERROR"]');
+            }
+        });
+
+    </script>
+
+
+
+</head>
+<body >
+    <header>
+        <div class="headertoprow">
+            <div class="container">
+                <div class="col-md-12  text-right">
+                    Welcome <strong>  @ViewBag.UserName  </strong><a href="#"></a>
+                    &nbsp;&nbsp;
+                    @if (Session["PropId"] != null)
+                    { <strong>|</strong> <strong>@Session["PropName"].ToString() &nbsp; @Html.ActionLink("[ Change ]", "MappedHotels", "Property")</strong> }
+
+                    <strong>|</strong> @Html.ActionLink("Change Password", "ChangePassword", "Account")&nbsp;<strong>|</strong> &nbsp;&nbsp;@Html.ActionLink("Logout", "LogOut", "Account")
+                </div>
+            </div>
+        </div>
+        <div class="mainnavbar">
+            <div class="container">
+                <div class="col-md-2"><img src="/images/logo_big.png" /></div>
+                <div class="col-md-10 text-right padding10 text-right">
+                    <a href="#" class="btn btn-danger"> View me in OFR</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- HEADER END-->
+    <div class="navbar navbar-inverse set-radius-zero">
+        <div id="dvLoading"></div>
+
+        <div id="wrapper_admin">
+
+            <div class="container">
+                <nav>
+
+                    @ViewBag.Menu
+
+                </nav>
+            </div>
+
+        </div>
+    </div>
+    <!-- LOGO HEADER END-->
+    <section class="menu-section">
+        <div class="container">
+            <div class="row">
+            </div>
+        </div>
+    </section>
+    <!-- MENU SECTION END-->
+    <div class="container margintop20">
+        <div class="panel-group">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-10">
+                            <h4 class="panel-title">
+                                <strong>Promotions and Deals </strong>
+                            </h4>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="row">
+            <div class="col-xs-12">
+
+                <table width="100%" border="0" cellspacing="0" cellpadding="0" style="border:1px solid #d9d9d9; border-radius:10px;">
+                    <tr>
+                        <td align="center" valign="middle" style="background-color:#fcfcfc"><a href="~/PromotionManagement/BasicPromotions"><img src="~/images/promo1.png"></a></td>
+                        <td align="center" valign="middle" style="background-color:#f8f6f6"><a href="~/PromotionManagement/MinimumLengthPromotion"><img src="~/images/promo2.png" width="108" height="107"></a></td>
+                        <td align="center" valign="middle" style="background-color:#efeeee"><a href="~/PromotionManagement/EarlyBookerPromotion"><img src="~/images/promo3.png" width="108" height="107"></a></td>
+                        <td align="center" valign="middle" style="background-color:#e8e8e8"><a href="~/PromotionManagement/LastMinutePromotion"><img src="~/images/promo4.png" width="108" height="107"></a></td>
+                        <td align="center" valign="middle" style="background-color:#e2e1e1"><a href="~/PromotionManagement/HrsPromotions"><img src="~/images/promo5.png" width="108" height="107"></a></td>
+                        <td align="center" valign="middle" style="background-color:#dad8d8"><a href="~/PromotionManagement/OFR"><img src="~/images/promo6.png" width="108" height="107"></a></td>
+                    </tr>
+                    <tr>
+                        <td align="center" valign="middle" style="background-color:#fcfcfc">Basic Deal </td>
+                        <td align="center" valign="middle" style="background-color:#f8f6f6">Minimum Stay </td>
+                        <td align="center" valign="middle" style="background-color:#efeeee">Early Booker</td>
+                        <td align="center" valign="middle" style="background-color:#e8e8e8">Last Minutes </td>
+                        <td align="center" valign="middle" style="background-color:#e2e1e1">24 Hrs Promotions </td>
+                        <td align="center" valign="middle" style="background-color:#dad8d8">OFR Freebies</td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                @RenderBody()
+            </div>
+        </div>
+
+    </div>
+    <!-- container div END  -->
+    <!-- CONTENT-WRAPPER SECTION END-->
+
+
+
+
+
+    <footer>
+        <div class="container">
+            <table width="20%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td valign="top"><a href="#">Contact OFR</a></td>
+                    <td><a href="#">Terms of Use</a></td>
+                </tr>
+            </table>
+            <!-- <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+            <td valign="top">
+            <h5><strong>Help and Training</strong></h5>
+            <ul>
+            <li><a href="#">Contact Expedia</a></li>
+            <li><a href="#">Help, Training, FAQs</a></li>
+            <li><a href="#">Health & Safety</a></li>
+            <li><a href="#">Terms of use</a></li>
+            </ul>
+            </td>
+            <td valign="top">
+            <h5>Marketing and Advertising</h5>
+            <ul>
+            <li><a href="#">Onefinerate Media Solutions</a></li>
+            <li><a href="#">TravelAds</a></li>
+            </ul>
+            </td>
+            <td valign="top">
+            <h5>Additional OneFineRate Offerings</h5>
+            <ul>
+            <li><a href="#">OneFineRate Connectivity Solutions</a></li>
+            <li><a href="#">Egencia Corporate Sign-up</a></li>
+            <li><a href="#">Hotwire Sign-up</a></li>
+            </ul>
+            </td>
+            </tr>
+            </table>-->
+
+        </div>
+    </footer>
+    <!-- FOOTER SECTION END-->
+</body>
+</html>

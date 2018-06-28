@@ -1,0 +1,488 @@
+﻿@model   OneFineRateBLL.Entities.eBiddingSearch
+@using OneFineRateBLL
+@using Microsoft.AspNet.Identity
+<style>
+    ul.checkbox-grid {
+        padding-left: 0px;
+    }
+
+    .checkbox-grid li {
+        display: block;
+        float: left;
+        width: 33%;
+    }
+
+    #divwhole {
+        width: 310px !important;
+        display: none;
+        border: 1px solid #d1d1d1;
+        background-color: #fff;
+        position: absolute;
+        top: 70px;
+        right: 15%;
+        height: 280px;
+        overflow: auto;
+        z-index: 9999;
+    }
+
+    .star-choice li {
+        cursor: pointer;
+    }
+
+    .childli {
+        float: left;
+        width: 115px;
+        margin-right: 14px;
+        margin-top: 10px;
+    }
+
+    .selectimg {
+        background: url(http://notrealdomain2.com/newbanner.png);
+    }
+
+    .select2 {
+        width: 50% !important;
+        float: left !important;
+    }
+
+    .select2-container--default .select2-selection--single {
+        height: 34px;
+    }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 33px;
+        }
+</style>
+<form id="frmUserDetails">
+
+    <script>
+        function SetValues() {
+
+            var type = $('#hdnPtype').val();
+            var hdnreqstatus = $("#hdnreqstatus").val();
+
+
+            if (type == 'G') {
+
+                $('#ddtitle').removeAttr('disabled');
+                $('#txtFirstName').removeAttr('disabled');
+                $('#txtLastName').removeAttr('disabled');
+                $('#txtEmailId').removeAttr('disabled');
+                $('#txtMobileNo').removeAttr('disabled');
+                $('#ddlCountryCodeBid').removeAttr('disabled');
+                $('#ddlGuestStateId').removeAttr('disabled');
+            }
+
+            if (type == 'OTP') {
+                $('#trOTP').removeAttr('style');
+                $('#txtOTP').val('');
+                $('#ddtitle').attr('disabled', 'disabled');
+                $('#txtFirstName').attr('disabled', 'disabled');
+                $('#txtLastName').attr('disabled', 'disabled');
+                $('#txtEmailId').attr('disabled', 'disabled');
+                $('#txtMobileNo').attr('disabled', 'disabled');
+                $('#ddlCountryCodeBid').attr('disabled', 'disabled');
+                $('#txtOTP').attr('required', 'required');
+
+            }
+
+            if (type == 'L') {
+
+                $('#ddtitle').removeAttr('disabled');
+                $('#txtFirstName').removeAttr('disabled');
+                $('#txtLastName').removeAttr('disabled');
+                $('#txtEmailId').removeAttr('disabled');
+                $('#txtMobileNo').removeAttr('disabled');
+                $('#txtBiddingPrice').removeAttr('disabled');
+                $('#ddlCountryCodeBid').removeAttr('disabled');
+            }
+        }
+    </script>
+
+
+
+    <div class="containersss">
+        <div class="row">
+            <div class="col-md-12">
+                <div class=" margintop10">
+                    <div class="blueheadingbg">Your Information</div>
+                    <div class=" table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th width="8%">TITLE<span class="red">*</span></th>
+                                    <th width="13%">FIRST NAME<span class="red">*</span></th>
+                                    <th width="13%">LAST NAME<span class="red">*</span></th>
+                                    <th width="18%">EMAIL ID<span class="red">*</span></th>
+                                    <th width="25%">MOBILE NO.<span class="red">*</span><small> (OTP will be sent)</small></th>
+                                    <th width="15%">STATE<span class="red">*</span></th>
+                                    <th width="6%" class="clsedit" style="display:none;">Edit</th>
+                                </tr>
+
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                         @Html.DropDownListFor(m => m.sUserTitle, new List<SelectListItem> { new SelectListItem { Value = "Mr.", Text = "Mr.", Selected = Model.sUserTitle == "Mr." }, new SelectListItem { Value = "Ms.", Text = "Ms.", Selected = Model.sUserTitle == "Ms." } }, "Select title", new { @class = "form-control mwidth110", disabled = "disabled", id = "ddtitle", required = "true" })
+
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.sUserFirstName, new { id = "txtFirstName", type = "text", placeholder = "First Name", disabled = "disabled", @class = "form-control mwidth130", required = "true" })
+
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.sUserLastName, new { id = "txtLastName", type = "text", placeholder = "Last Name", disabled = "disabled", @class = "form-control mwidth130", required = "true" })
+
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.sUserEmail, new { id = "txtEmailId", type = "email", placeholder = "Email Id", disabled = "disabled", @class = "form-control mwidth130", required = "true" })
+
+                                    </td>
+                                    <td>
+                                        <div style="width:100%">
+                                            <div style="width:50%; float:left">
+                                                @Html.DropDownListFor(model => model.sCountryPhoneCode, new SelectList(Model.CountryCodePhoneList, "sCode", "sFrontendCode", "+91"), new { style = "width:50%; float:left", @disabled = "disabled", id = "ddlCountryCodeBid", @class = "form-control" })
+                                            </div>
+                                            <div style="width:50%; float:left">
+                                                @Html.TextBoxFor(m => m.sUserMobileNo, new { id = "txtMobileNo", type = "phone", placeholder = "Mobile No,An OTP will sent", maxlength = "10", disabled = "disabled", @class = "form-control", required = "true", pattern = @"^[\-\+]?\d+$", oninvalid = "setCustomValidity('Please enter valid mobile number.')", onchange = "try{setCustomValidity('')}catch(e){}" })
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @{
+                                            var selectListItem = OneFineRateBLL.BL_Country.GetStatesByCountryId(1);
+                                            selectListItem.Insert(0, new OneFineRateBLL.Entities.eStates { iStateId = -1, sState = "Out Side India" });
+
+                                            <style>
+                                                .select2 {
+                                                    width: 100% !important;
+                                                }
+                                            </style>
+                                        }
+
+                                        @Html.DropDownListFor(model => model.iStateId, new SelectList(selectListItem, "iStateId", "sState"), "Select State", new { @class = "form-control", disabled = "disabled", style = "width:100% !important", id = "ddlGuestStateId" })
+
+
+                                    </td>
+                                    <td class="clsedit" style="display:none;">
+                                        <a href="javascript:void(0);" onclick="EditUserInformation()">Edit</a>
+                                    </td>
+                                </tr>
+                                <tr id="trOTP" style="display:none;">
+                                    <td colspan="7" align="center">
+                                        <div class="col-md-12">
+                                            Please Enter OTP :
+                                            @Html.TextBoxFor(m => m.sOTP, new { id = "txtOTP", type = "text", placeholder = "OTP", @class = "form-control width100", maxlength = "6" })
+                                        </div>
+                                        <div>
+                                            <a style="cursor:pointer; text-decoration:underline" id="btnResend">Re-Send OTP</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h3 class="whathpn">What Happens Next</h3>
+                Once you click "Continue Bid", OneFineRate will look for hotels that match your bid.
+                <ul class="whathppn">
+                    <li>
+                        <strong>If your Bid is accepted :</strong>
+                        You will see a list of hotels that are willing to match your bid. What you don’t get to know is the name of the hotel and the savings made!
+                        Make a selection from the services and facilities and Trip Advisor ratings.
+                        Pay the total amount payable and you are ready to stay on the rate that you thought was right!
+                    </li>
+                    <li>
+                        <strong>If your Bid is rejected :</strong>
+                        Don’t be disappointed! Either increase the localities to get a wider base of hotels or just increase your bid.
+                        Remember that you are allowed only three times to get the correct bid!
+                        Go ahead and try it once more for that great saving on one fine rate!
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="col-md-12 center margintop10">
+            @*<button type="button" id="btnModify" class="btn btn-success  btn-lg">Modify Search</button>*@
+            <button type="submit" id="btnChargeCard" class="btn btn-primary btn-lg marginbottom20">Continue Bid</button>
+        </div>
+    </div>
+</form>
+<!--Success pop up -->
+<div id="divPay" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Congratulation!</h4>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-6">
+                    <ul class="nomargin nopadding" id="divfeatures">
+                        <li style="list-style:disc !important; padding:0px;">
+
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="hdnPtype" value="@ViewBag.type" />
+<input type="hidden" id="hdnreqstatus" value="@ViewBag.reqstatus" />
+
+
+<script type="text/javascript">
+    var NegoCount = 0;
+    $(document).ready(function () {
+
+        $('#hdnVC').val('');
+        SetValues();
+
+        $('#btnResend').click(function (e) {
+            e.preventDefault();
+            var param = {
+                Mobile: $("#txtMobileNo").val(),
+                VC: $("#hdnVC").val()
+            }
+            var data = AjaxCallWithDataMVC('@Url.Action("ReSendOTPCode")', param);
+            if (data != null) {
+                if (data.st == '1') {
+                    $('#hdnVC').val(data.VC);
+                    toastr.success('OTP sent on mobile no: ' + $("#txtMobileNo").val() + '');
+                }
+                else {
+                    toastr.error('Kindly try after some time.')
+                }
+            }
+            else {
+                toastr.error('Kindly try after some time.')
+            }
+        });
+    });
+
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+
+
+
+</script>
+
+<script type="text/javascript">
+
+    function EditUserInformation() {
+        $('#ddtitle').removeAttr('disabled');
+        $('#txtFirstName').removeAttr('disabled');
+        $('#txtLastName').removeAttr('disabled');
+        $('#txtEmailId').removeAttr('disabled');
+        $('#txtMobileNo').removeAttr('disabled');
+        $('#ddlCountryCodeBid').removeAttr('disabled');
+        $('.clsedit').hide();
+        $('#hdnVC').val('');
+        $("#hdnreqstatus").val('');
+        $("#txtOTP").val('');
+        $('#txtOTP').removeAttr('required');
+        $('#trOTP').attr('style', 'display:none;');
+
+        $('#ddlGuestStateId').removeAttr('disabled')
+    }
+
+
+    $(function () {
+
+        $('#txtMobileNo').keypress(function (e) {
+
+            var cursorPosition = document.getElementById('txtMobileNo').selectionStart;
+
+            if ((this.value.length == 0 || cursorPosition == 0) && e.which == 48) {
+
+                return false;
+            }
+        });
+
+        $('#txtOTP').blur(function () {
+            $('#btnChargeCard').removeAttr('disabled');
+        });
+
+        $('#ddlGuestStateId').select2();
+
+
+        //on continue as Bid button click
+        $('#frmUserDetails').submit(function (event) {
+
+            try {
+
+                var checkedvalues = '';
+                $('.ChPref').each(function (i, j) {
+
+                    if ($(this).find("input:checkbox.ChPref").context.checked) {
+                        checkedvalues += $(this).find("input:checkbox.ChPref").context.value;
+                        checkedvalues += ',';
+                        $('#hdntype').val($(this)[0].attributes[1].value);
+                    }
+
+                });
+
+                $('#hdnLocalities').val(checkedvalues);
+
+                if ($(hdnStarRating).val() == '' || $(hdnStarRating).val() == '0' || $(hdnStarRating).val() == undefined) {
+                    toastr.error('Please select star category.');
+                    return false;
+                }
+
+                if ($(hdnLocalities).val() == '' || $(hdnLocalities).val() == '0' || $(hdnLocalities).val() == undefined) {
+                    toastr.error('Please select localities.')
+                    return false;
+                }
+
+                var valid = !isNaN(parseFloat($('#txtBiddingPrice').val())) && isFinite($('#txtBiddingPrice').val());
+                if (!valid) {
+                    toastr.error('Please enter valid bidding price.')
+                    return false;
+                }
+
+                if (parseFloat($('#txtBiddingPrice').val()) == 0) {
+                    EnableControls();
+                    toastr.error('Please enter valid bidding price.')
+                    return false;
+                }
+
+                var minallowedamt = parseFloat($('#hdnMinallowed').val());
+                var bidamt = parseFloat($('#txtBiddingPrice').val());
+
+                if (bidamt < minallowedamt) {
+                    toastr.error('Based on recent data, your price has almost no chance of being accepted.');
+                    EnableControls();
+                    return false;
+                }
+
+                if ($('#ddlGuestStateId').val() == '' || $('#ddlGuestStateId').val() == '0' || $('#ddlGuestStateId').val() == undefined) {
+                    toastr.error('Please select state.')
+                    return false;
+                }
+
+                event.preventDefault();
+
+                var f = document.getElementById('frmUserDetails');
+
+                if (f.checkValidity()) {
+
+                    FetchRoomDetails();
+
+                    var param = {
+                        Title: $("#ddtitle").val(),
+                        FirstName: $("#txtFirstName").val(),
+                        LastName: $("#txtLastName").val(),
+                        EmailID: $("#txtEmailId").val(),
+                        Mobile: $("#txtMobileNo").val(),
+                        VC: $("#hdnVC").val(),
+                        OTPCode: $("#txtOTP").val(),
+                        BidAmount: parseFloat($('#txtBiddingPrice').val()),
+                        RoomData: $('#hdnJson').val(),
+                        Localities: checkedvalues,
+                        RatingId: $('#hdnStarRating').val(),
+                        Type: $('#hdntype').val(),
+                        Taxes: parseFloat(0),
+                        MinRange: parseFloat($('#hdnLowerPrice').val()),
+                        MaxRange: parseFloat($('#hdnUpperPrice').val()),
+                        Symbol: $('#hdnSymbol').val(),
+                        SelectedAreaId: $('#hdnSelectedAreaId').val(),
+                        URL: window.location.href,
+                        iStateId: $('#ddlGuestStateId').val()
+                    }
+
+                    $('.overlay').show();
+
+                    setTimeout(function () {
+
+                        var result = AjaxCallWithDataMVC("@Url.Action("ValidateUserData")", param);
+
+                        $('.overlay').hide();
+
+                        if (result != null) {
+
+                            if (result.st == 0) {
+
+                                debugger;
+
+                                toastr.info(result.msg);
+                                $('#ddtitle').attr('disabled', 'disabled');
+                                $('#txtFirstName').attr('disabled', 'disabled');
+                                $('#txtLastName').attr('disabled', 'disabled');
+                                $('#txtEmailId').attr('disabled', 'disabled');
+                                $('#ddlCountryCodeBid').attr('disabled', 'disabled');
+                                $('#txtMobileNo').attr('disabled', 'disabled');
+                                $('.clsedit').show();
+                            }
+                            else if (result.st == 1) {
+
+                                toastr.success('OTP sent on mobile no: ' + $("#txtMobileNo").val() + '');
+                                $('#hdnVC').val(result.VC);
+                                $('.clsedit').show();
+                                $("#hdnPtype").val("OTP");
+                                SetValues();
+                            }
+                            else if (result.Status == 0) {
+                                EnableControls();
+                                if (result.count == 1) {
+                                    $('.warningmsg').html(result.msg);
+                                    $('#divWarning1').show();
+                                }
+                                else if (result.count == 2) {
+
+                                    $('.warningmsg').html(result.msg);
+                                    $('#divWarning1').hide();
+                                    $('.divWarning2').show();
+                                }
+                                else {
+                                    //TO DO Need to remove after test
+                                    $('.warningmsg').html(result.msg);
+                                    $('.divWarning2').show();
+                                    $('.warning3').hide();
+                                }
+
+                                $('html, body').animate({
+                                    'scrollTop': $("#divScrollHere").position().top
+                                });
+                            }
+                            else if (result.Status == 1) {
+                                FetchDataForCookie();
+                                window.location.href = '@Url.Action("BiddingInfo")';
+                            }
+                            if (result.st == 2) {
+                                $('#txtOTP').removeAttr('required');
+                                $('#trOTP').attr('style', 'display:none;');
+                            }
+                        }
+
+                    }, 100);
+                }
+
+            } catch (e) {
+                $('.overlay').hide();
+            }
+        });
+    });
+
+
+    function CallPage() {
+        var path = window.location.href;
+        var newpath = path.replace("wish-to-bid", "Search").replace("bid", "negotiate");
+        window.location.href = newpath;
+    }
+
+    $(function () {
+        $('#ddlCountryCodeBid').select2();
+    });
+
+</script>

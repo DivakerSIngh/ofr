@@ -1,0 +1,661 @@
+﻿
+@model OneFineRateBLL.Entities.PropDetailsM
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+
+    #divwhole_temp {
+        width: 290px;
+        display: none;
+        border: 1px solid #d1d1d1;
+        background-color: #fff;
+        position: absolute;
+        top: 70px;
+        right: 15%;
+        height: 280px;
+        overflow: auto;
+        color: #000;
+        z-index: 10;
+    }
+
+    .ui-menu {
+        width: 360px;
+    }
+
+    .ui-widget.ui-widget-content li {
+        border: 0px !important;
+    }
+
+    #btnModfySeach {
+        display: none;
+    }
+
+</style>
+
+<link href="~/css/jquery-ui-1.8.1.custom.css" rel="stylesheet" />
+    
+<script src="~/js/bootstrap-number-RoomsSearch.js"></script>
+
+@System.Web.Optimization.Scripts.Render("~/bundles/autofill")
+
+@if (!Request.Browser.IsMobileDevice)
+{
+    @Html.Partial("~/Views/Home/pSearchBar.cshtml")
+}
+
+@{
+    if (Model.cStatus == "A")
+    {
+        <div class="blue_header_bar">
+            @Html.Partial("~/Views/OfferReview/pvHotelHeaderDetails.cshtml")
+        </div>
+
+        <div class="container">
+            <div id="photogalleryLoacation">
+                @Html.Partial("~/Views/OfferReview/pvPhotoGalleryAndLocation.cshtml", Model)
+            </div>
+
+            
+            <div class="darkgrybg  padding20 margintop15" id="DateRange">
+
+
+                <div class="row vertical-center-row">
+                    <div class=" col-md-9" id="clsrmv">
+                        <div class="col-md-2 checkin paddingleft0 mbottom10">
+                            @Html.TextBoxFor(u => u.sCheckInDate, new { @class = "form-control  datepicker-here ", placeholder = "Check In", id = "txtfrom" })
+                        </div>
+                        <div class="col-md-2 checkin paddingleft0 mbottom10">
+                            @Html.TextBoxFor(u => u.sCheckOutDate, new { @class = "form-control  datepicker-here ", placeholder = "Check Out", id = "txtto" })
+                        </div>
+                        <div class="col-md-3 paddingleft0 mbottom10" id="adltdiv">
+                            <div id="txttotalcount_temp" class="form-control searchdiv ">2 Guests in 1 Room</div>
+                            <div id="divwhole_temp" class="addheight">
+                                <i class="sprite-booking-engine ico-be-sub-arrow"></i>
+                                <div id="roomContainerDiv_temp">
+                                    <div class="rooms">
+                                        <div class='col-md-12 col-xs-12  pull-left'>
+                                            <h5><strong>Room1:</strong></h5>
+
+                                        </div>
+                                        <div class='col-md-6 col-xs-6'>
+                                            <h5><strong>Adult</strong></h5>
+                                            <h6>Above 12 years</h6>
+
+                                            <div class='input-group width110'>
+                                                <input id="temp_adult1" class="form-control disabletxtbox adult1" itype="adult1" type="number" roomno="1" readonly="readonly" value="2" min="1" max="6" />
+                                            </div>
+                                        </div>
+                                        <div class='col-md-6 col-xs-6'>
+                                            <h5><strong>Children</strong></h5>
+                                            <h6>Below 12 years</h6>
+                                            <div class='input-group width110'>
+                                                <input id="temp_children1" class="form-control children1" readonly="readonly" roomno="1" itype="children1" type="number" value="0" min="0" max="6" />
+                                            </div>
+                                        </div>
+                                        <div class='col-md-12 col-xs-12' id="temp_divChildAge1" style="display:none;">
+
+                                            <h5><strong>Age of Childen</strong></h5>
+                                            <ul style="list-style:none; padding:0; margin:0; " id="temp_ulchilds1"></ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-md-12 col-xs-12 margintop5'>
+                                    <a id="btnaddroom_temp" href='javascript:void(0);' onclick="AddRooms_temp();">Add a room</a>
+                                    <span id="sppipe_temp" style="display:none;">|</span>
+                                    <a id="btnremoveroom_temp" href='javascript:void(0);' style="display:none;" onclick="RemoveRoom_temp();">Remove this room</a>
+                                    <hr>
+                                    <div onclick="FetchRoomDetails_temp();" class='btn btn-primary margintop5 marginbottom10 col-md-12'>Done</div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-md-2 paddingleft0 mbottom10" id="Search">
+                            <button id="btnSearch" type="submit" onclick="GetRoomData();" class="btn btn-modifysrch"> <i class="fa fa-search" aria-hidden="true"></i> <span id="spsearch"> Search Rooms</span></button>
+                            <button id="btnEdit" style="display:none;" type="submit" onclick="ModifySearch();" class="btn btn-modifysrch"> <i class="fa fa-edit" aria-hidden="true"></i><span id="spsearch"> Modify Search</span></button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            @Html.HiddenFor(m => Model.hdnJsonData, new { id = "hdnJsonNew" })
+
+            <script src="~/js/bootstrap-number_offerReview.js"></script>
+
+            <script>
+               
+                var srchpattern;
+                var pro = [];
+
+                $(document).ready(function () {
+
+                    var d = new Date(); 
+                    if ('@Html.Raw(Model.hdnJsonData)' != '') {
+                        var roomdata = JSON.parse('@Html.Raw(Model.hdnJsonData)');
+                        if (roomdata != '') {
+                            BindRoomData_temp(roomdata);
+                            $('#txtfrom').attr('disabled', 'disabled');
+                            $('#txtto').attr('disabled', 'disabled');
+                            $('#txtto').addClass('disabletxtbox');
+                            $('#txtfrom').addClass('disabletxtbox');
+                            $("#txttotalcount_temp").addClass('disabletxtbox');
+                            $("#txttotalcount_temp").attr('disabled', 'disabled');
+                            $("#txttotalcount_temp").off('click'); 
+                            $('#btnEdit').show();
+                            $('#btnSearch').hide();
+
+                        }
+                    }
+                });
+
+                function ModifySearch() {
+
+
+                    $('#divroomdata').html('');
+                    $('#divfirstroom').html('');
+                    $('#txtfrom').removeAttr('disabled');
+                    $('#txtto').removeAttr('disabled');
+                    $('#txtto').removeClass('disabletxtbox');
+                    $('#txtfrom').removeClass('disabletxtbox');
+                    $("#txttotalcount_temp").removeClass('disabletxtbox');
+                    $('#txttotalcount_temp').removeAttr('disabled');
+                    $('#btnEdit').hide();
+                    $('#btnSearch').show();
+
+
+                    var notH = 1,
+                    $pop = $('#divwhole_temp').hover(function () { notH ^= 1; });
+
+                    $(document).on('mousedown keydown', function (e) {
+                        if (notH || e.which == 27) $pop.stop().fadeOut();
+                    });
+
+                    /////// CALL POPUP
+                    $('#txttotalcount_temp').click(function () {
+                        if ($(window).scrollTop() > 600) {
+                            $("#divwhole_temp").css("top", "70px");
+                        }
+                        else {
+                            $("#divwhole_temp").css("top", "-305px");
+                        }
+                        $pop.stop().toggle('show');
+                    });
+                }
+
+                function GetRoomData() {
+
+                    var timestamp = new Date().getTime();
+
+                    if ($('#txtfrom').val() == "") {
+                        toastr.warning('Please select your Check In date.');
+                        return false;
+                    }
+                    if ($('#txtto').val() == "") {
+                        toastr.warning('Please select your Check Out date.');
+                        return false;
+                    }
+                    var din = $('#txtfrom').val().split('/');
+                    var dout = $('#txtto').val().split('/');
+                    FetchRoomDetails_temp();
+
+                    if ($('#hdnJsonNew').val() == "") {
+                        return false;
+                        toastr.warning('Please select number of rooms.')
+                    }
+                    var HId = '@(OneFineRateAppUtil.clsUtils.Encode(Model.iPropId.ToString()))';
+
+                    var data = $('#hdnJsonNew').val();
+
+                    var checkin = din[1] + '/' + din[0] + '/' + din[2];
+                    var checkout = dout[1] + '/' + dout[0] + '/' + dout[2];
+
+                    window.location.href = '/Corporate/HotelDetails?Id=' + HId + '&sCheckIn=' + $('#txtfrom').val() + '&sCheckOut=' + $('#txtto').val() + '&sRoomData=' + data + "&t=" + timestamp + '#Search';
+                    $(".overlay").show();
+                }
+            </script>
+
+
+            <div class="row margin0" id="divfirstroom">
+                @Html.Partial("_HotelRooms", Model)
+            </div>
+
+
+            <div id="divroomdata" class="row margin0">
+
+
+            </div>
+            <div class="clearfix"></div>
+            @Html.Partial("~/Views/OfferReview/pvHotelPolicies.cshtml", Model)
+
+        </div>
+        
+        <div id="RoomDetails" class="modal fade" role="dialog">
+
+        </div>
+    
+        <div id="MapDetails" class="modal fade" role="dialog">
+
+        </div>
+
+        <link href="~/Content/horizontalSlider.css" rel="stylesheet" />
+
+        <script src="~/Scripts/horizontalSlider.js"></script>
+
+        <script>
+
+            $(document).ready(function () {
+
+                $('#temp_adult1').bootstrapNumber_Rooms();
+                $('#temp_children1').bootstrapNumber_Rooms();
+
+                OverviewToggle();
+
+            });
+
+            function OpenPopUp(propid, roomid) {
+                //debugger;
+                var url = '@Url.Action("RoomInfo","OfferReview")?propid=' + propid + '&roomid=' + roomid + '';
+                $('#RoomDetails').html('');
+                //startSpinning();
+                $('#RoomDetails').modal({});
+                $("#RoomDetails").load(url, function () {
+
+                    $('#RoomDetails').modal({
+                        show: 'true'
+                    });
+
+                    //stopSpinning();
+                });
+            }
+
+            function OverviewToggle() {
+
+                var showChar = 100;
+                var ellipsestext = "...";
+                var moretext = "more";
+                var lesstext = "less";
+                $('.more').each(function () {
+                    var content = $(this).html();
+
+                    if (content.length > showChar) {
+
+                        var c = content.substr(0, showChar);
+                        var h = content.substr(showChar - 1, content.length - showChar);
+
+                        var html = c + '<span class="moreellipses">' + ellipsestext + '&nbsp;</span><span class="morecontent"><span>' + h + '</span>&nbsp;&nbsp;<a href="" class="morelink">' + moretext + '</a></span>';
+
+                        $(this).html(html);
+                    }
+
+                });
+
+                $(".morelink").click(function () {
+                    if ($(this).hasClass("less")) {
+                        $(this).removeClass("less");
+                        $(this).html(moretext);
+                    } else {
+                        $(this).addClass("less");
+                        $(this).html(lesstext);
+                    }
+                    $(this).parent().prev().toggle();
+                    $(this).prev().toggle();
+                    return false;
+                });
+            }
+
+        </script>
+    
+        <script>
+
+            $(function () {
+                
+                $('body').on('contextmenu', 'p', function (event) {
+                    event.preventDefault();
+                    $(this).remove();
+                });
+                
+
+                $('.js-top').on('mousedown', function () {
+                    window.scrollTo((document.documentElement.scrollLeft || document.body.scrollLeft), (document.documentElement.scrollTop || document.body.scrollTop) - 1);
+                });
+
+            });
+           
+            $('.btn-number').click(function (e) {
+                e.preventDefault();
+
+                fieldName = $(this).attr('data-field');
+                type = $(this).attr('data-type');
+                var input = $("input[name='" + fieldName + "']");
+                var currentVal = parseInt(input.val());
+                if (!isNaN(currentVal)) {
+                    if (type == 'minus') {
+
+                        if (currentVal > input.attr('min')) {
+                            input.val(currentVal - 1).change();
+                        }
+                        if (parseInt(input.val()) == input.attr('min')) {
+                            $(this).attr('disabled', true);
+                        }
+
+                    } else if (type == 'plus') {
+
+                        if (currentVal < input.attr('max')) {
+                            input.val(currentVal + 1).change();
+                        }
+                        if (parseInt(input.val()) == input.attr('max')) {
+                            $(this).attr('disabled', true);
+                        }
+
+                    }
+                } else {
+                    input.val(0);
+                }
+            });
+
+            $('.input-number').focusin(function () {
+                $(this).data('oldValue', $(this).val());
+            });
+
+            $('.input-number').change(function () {
+
+                minValue = parseInt($(this).attr('min'));
+                maxValue = parseInt($(this).attr('max'));
+                valueCurrent = parseInt($(this).val());
+
+                name = $(this).attr('name');
+                if (valueCurrent >= minValue) {
+                    $(".btn-number[data-type='minus'][data-field='" + name + "']").removeAttr('disabled')
+                } else {
+                    alert('Sorry, the minimum value was reached');
+                    $(this).val($(this).data('oldValue'));
+                }
+                if (valueCurrent <= maxValue) {
+                    $(".btn-number[data-type='plus'][data-field='" + name + "']").removeAttr('disabled')
+                } else {
+                    alert('Sorry, the maximum value was reached');
+                    $(this).val($(this).data('oldValue'));
+                }
+            });
+
+            $(".input-number").keydown(function (e) {
+                // Allow: backspace, delete, tab, escape, enter and .
+                if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 190]) !== -1 ||
+                    // Allow: Ctrl+A
+                    (e.keyCode == 65 && e.ctrlKey === true) ||
+                    // Allow: home, end, left, right
+                    (e.keyCode >= 35 && e.keyCode <= 39)) {
+                    // let it happen, don't do anything
+                    return;
+                }
+                // Ensure that it is a number and stop the keypress
+                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                    e.preventDefault();
+                }
+            });
+
+        </script>
+    
+        <script>
+
+            var notH = 1;
+              var $pop = $('#divwhole_temp').hover(function () { notH ^= 1; });
+
+            $(document).on('mousedown keydown', function (e) {
+                if (notH || e.which == 27) $pop.stop().fadeOut();
+            });
+
+            $('#txttotalcount_temp').click(function () {
+                
+                if ($(window).scrollTop() > 600) {
+                    $("#divwhole_temp").css("top", "70px");
+                }
+                else {
+                    $("#divwhole_temp").css("top", "-305px");
+                }
+
+                $pop.stop().toggle('show');
+            });
+           
+        </script>
+    
+        <script type="text/javascript">
+
+            $(document).ready(function () {
+
+                $('a[href^="#"]').on('click', function (e) {
+                    //e.preventDefault();
+                    var target = this.hash;
+                    var $target = $(target);
+                    $('.smoothScroll').removeClass('active');
+                    $(this).addClass('active');
+
+                    if (target == '#divFacilities') {
+                        $(".divFacility").attr("class", "tab-pane divFacility active");
+                        $(".divPolicy").attr("class", "tab-pane divPolicy");
+                        $(".divTrip").attr("class", "tab-pane divTrip");
+
+                        $(".liFac").attr("class", "liFac active");
+                        $(".liPolicy").attr("class", "liPolicy");
+                        $(".liTrip").attr("class", "liTrip");
+
+                        target = '#rating';
+                        $target = $(target);
+                    }
+
+                    else if (target == '#divPolicies') {
+                        $(".divFacility").attr("class", "tab-pane divFacility");
+                        $(".divPolicy").attr("class", "tab-pane divPolicy active");
+                        $(".divTrip").attr("class", "tab-pane divTrip");
+
+                        $(".liFac").attr("class", "liFac");
+                        $(".liPolicy").attr("class", "liPolicy active");
+                        $(".liTrip").attr("class", "liTrip");
+
+
+                        target = '#rating';
+                        $target = $(target);
+                    }
+
+                    else if (target == '#divTripadvisor') {
+                        $(".divFacility").attr("class", "tab-pane divFacility");
+                        $(".divPolicy").attr("class", "tab-pane divPolicy");
+                        $(".divTrip").attr("class", "tab-pane divTrip active");
+
+                        $(".liFac").attr("class", "liFac");
+                        $(".liPolicy").attr("class", "liPolicy");
+                        $(".liTrip").attr("class", "liTrip active");
+
+                        target = '#rating';
+                        $target = $(target);
+                    }
+                    else if (target == '#DateRange') {
+                        target = '#rooms';
+                        $target = $(target);
+                    }
+
+                    if ($target.offset() && $target.offset().top) {
+                        $('html, body').stop().animate({
+                            'scrollTop': $target.offset().top
+                        }, 600, 'swing', function () {
+                            window.location.hash = target;
+                        });
+                    }
+
+                });
+            });
+
+        </script>
+
+    <script>
+
+    $(function () {
+
+        $('#txtfrom').bind("cut copy paste", function (e) {
+            e.preventDefault();
+        });
+
+        $('#txtto').bind("cut copy paste", function (e) {
+            e.preventDefault();
+        });
+
+        $('#txtfrom').keydown(function (e) {
+            e.preventDefault();
+            return false;
+        });
+
+        $('#txtto').keydown(function (e) {
+            e.preventDefault();
+            return false;
+        });
+
+        var numberOfMonth = 2;
+
+        @if (Request.Browser.IsMobileDevice)
+                {
+                    <text> numberOfMonth = 1; </text>
+
+                }
+
+        var tomorrow = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
+        var today = new Date(),
+
+
+          from = $("#txtfrom").datepicker({
+
+              changeMonth: false,
+              numberOfMonths: numberOfMonth,
+              minDate: today,
+              dateFormat: 'dd/mm/yy',
+              onSelect: function (selected, event) {
+
+                  var selectedDate = new Date(event.selectedMonth + 1 + '/' + event.selectedDay + '/' + event.selectedYear);
+                  var oneDayAfter = selectedDate;
+                  oneDayAfter.setDate(oneDayAfter.getDate() + 1);
+
+                  to.datepicker("option", "minDate", oneDayAfter);
+
+                  var afterHalfMonth = new Date(selectedDate);
+                  afterHalfMonth.setDate(afterHalfMonth.getDate() + 45);
+                  to.datepicker("option", "maxDate", afterHalfMonth);
+
+                  var txtToSelectedVal = $('#txtto').val();
+
+                  if (txtToSelectedVal) {
+
+                      var toVal_ddmmyy = txtToSelectedVal.split('/');
+
+                      if (toVal_ddmmyy) {
+
+                          var txtToSelectedDate = new Date(toVal_ddmmyy[1] + '/' + toVal_ddmmyy[0] + '/' + toVal_ddmmyy[2])
+
+                          if (selectedDate > txtToSelectedDate) {
+
+                              var dd = txtToSelectedDate.getDate();
+                              var mm = txtToSelectedDate.getMonth() + 1;
+                              var yy = txtToSelectedDate.getFullYear();
+
+                              dd < 10 ? dd = '0' + dd : dd = dd;
+                              mm < 10 ? mm = '0' + mm : mm = mm;
+
+                              var nextDayMMDDYYFormat_txtTo = dd + '/' + mm + '/' + yy;
+                              $('#txtto').val(nextDayMMDDYYFormat_txtTo);
+                          }
+                      }
+                  }
+                  else {
+                      var dd = oneDayAfter.getDate();
+                      var mm = oneDayAfter.getMonth() + 1;
+                      var yy = oneDayAfter.getFullYear();
+
+                      dd < 10 ? dd = '0' + dd : dd = dd;
+                      mm < 10 ? mm = '0' + mm : mm = mm;
+
+                      var nextDayMMDDYYFormat = dd + '/' + mm + '/' + yy;
+                      $('#txtto').val(nextDayMMDDYYFormat);
+                  }
+
+                  setTimeout(function () {
+                      $("#txtto").datepicker('show');
+                  }, 16);
+              },
+              onClose: function (dateText, inst) {
+                  $(this).attr("disabled", false);
+              },
+              beforeShow: function (input, inst) {
+                  $(this).attr("disabled", true);
+              }
+          }),
+
+          to = $("#txtto").datepicker({
+
+              changeMonth: false,
+              minDate: tomorrow,
+              numberOfMonths: numberOfMonth,
+              dateFormat: 'dd/mm/yy',
+              onSelect: function (selected, event) {
+
+                  var selectedDate = new Date(event.selectedMonth + 1 + '/' + event.selectedDay + '/' + event.selectedYear);
+
+                  var txtFromSelectedVal = $('#txtfrom').val();
+
+                  if (txtFromSelectedVal) {
+
+                      var fromVal_ddmmyy = txtFromSelectedVal.split('/');
+
+                      if (fromVal_ddmmyy) {
+
+                          var txtFromSelectedDate = new Date(fromVal_ddmmyy[1] + '/' + fromVal_ddmmyy[0] + '/' + fromVal_ddmmyy[2])
+
+                          var oneDayBefore = selectedDate;
+                          oneDayBefore.setDate(oneDayBefore.getDate() - 1);
+
+                          if (oneDayBefore >= new Date()) {
+                              if (selectedDate < txtFromSelectedDate) {
+
+                                  var dd = oneDayBefore.getDate();
+                                  var mm = oneDayBefore.getMonth() + 1;
+                                  var yy = oneDayBefore.getFullYear();
+
+                                  dd < 10 ? dd = '0' + dd : dd = dd;
+                                  mm < 10 ? mm = '0' + mm : mm = mm;
+
+                                  var nextDayMMDDYYFormat_txtFrom = dd + '/' + mm + '/' + yy;
+                                  $('#txtfrom').val(nextDayMMDDYYFormat_txtFrom);
+                              }
+                          }
+                      }
+                  }
+              },
+              onClose: function (dateText, inst) {
+                  $(this).attr("disabled", false);
+              },
+              beforeShow: function (input, inst) {
+                  $(this).attr("disabled", true);
+              }
+          });
+        //debugger;
+
+        var date = new Date($('#txtfrom').datepicker('getDate', '+1d'));
+        date.setDate(date.getDate() + 1);
+        $('#txtto').datepicker('option', 'minDate', date);
+    });
+
+    </script>
+
+    }
+    else
+    {
+
+        <div style="height:200px; margin-top:10%; text-align:center;">
+            <div class="container">
+                <h2>
+                    Bookings on this hotel are not open right now.
+                </h2>
+            </div>
+        </div>
+    }
+}

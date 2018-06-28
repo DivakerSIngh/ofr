@@ -1,0 +1,217 @@
+﻿@model OneFineRateBLL.Entities.eWebSiteSearchPage
+
+
+@if (Model != null && Model.TGPropertySearchedList != null && Model.TGPropertySearchedList.Count > 0)
+{
+    foreach (var item in Model.TGPropertySearchedList)
+    {
+        <div class="col-md-12 lazy  marginbottom20 propertyIdDiv" data-id="@item.iPropId" data-price="@item.dPrice" data-star="@item.iStarCategoryId" data-tripadvisor="@item.rating" style="display:none">
+            <div class=" row border1 margintop10 boxshadow margin0">
+                <div class="col-md-3">
+                    <div class="row">
+                        <img src="@item.sImgUrl" class="item lazy srchimgheight" onerror="this.src='/images/noImage.jpg';">
+                        @if (item.Sponsored == 1)
+                        {
+                            <span class="label label-warning padding5 sponsored-label whitetext">Sponsored</span>
+                        }
+                        @if (item.bIsTopHotel)
+                        {
+                            <span class="label label-danger padding5 tophotel-label whitetext">Top OFR Hotels</span>
+                        }
+                        @if (item.bIsPopularHotel)
+                        {
+                            <span class="label label-danger padding5 tophotel-label whitetext">OFR Popular</span>
+                        }
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="col-md-9 col-xs-12">
+                                    <div style="cursor:pointer" class="tg_bookNow" data-propertyname="@item.sHotelName" data-srequesttype="@Model.sRequestType" data-vendorid="@item.iVendorId" data-propertyid="@OneFineRateAppUtil.clsUtils.Encode(item.iPropId.ToString())">
+                                        <h3 class="mar-padd0">
+                                            @item.sHotelName
+                                            <span><img src="../images/inner-star@(item.iStarCategoryId).png" class="inner_star"></span>
+                                        </h3>
+                                    </div>
+                                    <h5>@item.sLocality</h5>
+                                </div>
+
+                                <div class="col-md-3 col-xs-12 hidden-xs">
+
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        <div class="update-nag">
+
+                                            @if (item.bIsFavourite)
+                                            {
+                                                <div class="update-split update-success"><i data-propertyid="@item.iPropId" data-icontype="ficon_red" class="fa fa-heart iconFavourite"></i></div>
+                                            }
+                                            else
+                                            {
+                                                <div class="update-split update-info"><i data-propertyid="@item.iPropId" data-icontype="ficon_black" class="fa fa-heart iconFavourite"></i></div>
+                                            }
+
+                                            @if (item.dDiscountPercent > 0)
+                                            {
+                                                <div class="update-text">
+                                                    <h4 class="text_limit21 ">
+                                                        @item.dDiscountPercent% Discount
+                                                    </h4>
+                                                </div>
+                                            }
+
+                                        </div>
+
+                                    }
+                                    else if (item.dDiscountPercent > 0)
+                                    {
+                                        <div class="pull-right ">
+                                            <div class="update-nag">
+                                                <div class="update-text">
+                                                    <h4 class="text_limit21 ">
+                                                        @item.dDiscountPercent% Discount
+                                                    </h4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <ul class="srchofr">
+                                <li class="">
+
+                                    @if (item.LastBook != null && item.LastBook != "-1" && Model.sRequestType == "negotiate")
+                                    {
+                                        <span class="red">Last negotiated @item.LastBook ago !</span>
+                                    }
+                                    @if (item.LastBook != null && item.LastBook != "-1" && Model.sRequestType != "negotiate")
+                                    {
+                                        <span class="red">Last booked @item.LastBook ago !</span>
+                                    }
+                                    @if (item.LastBook != null && item.LastBook != "-1" && item.Looking != 0)
+                                    {
+                                        <span>|</span>
+                                    }
+                                    @if (item.Looking != 0 && item.Looking > 1)
+                                    {
+                                        <span class="blacktext">@item.Looking People are looking at this hotel</span>
+                                    }
+
+                                </li>
+                                @if (item.bIsHighDemand)
+                                {
+                                    <li class="red pull-right"><strong>In high demand</strong></li>
+                                }
+                            </ul>
+                        </div>
+                        <div class="col-xs-12" style="position:relative; bottom:-15px;  ">
+                            <img src="@item.rating_image_url" class="imgheight19">
+@if (!Request.Browser.IsMobileDevice)
+{
+    <br />
+}
+                            <em class="green pull-left">@item.ranking_string</em>
+                            <div class="facilityicon pull-right">
+                                <ul>
+                                    @foreach (var amenityUrl in item.FirstFourNonEmptyAmenity)
+                                    {
+                                        var urlArr = amenityUrl.Split(',');
+                                        <li><img src="@urlArr[1]" height="20" title="@urlArr[0]" width="20" /></li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 hidden-lg hidden-md">
+
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <div class="update-nag-mobile">
+
+                                    @if (item.bIsFavourite)
+                                    {
+                                        <div class="update-split update-success"><i data-propertyid="@item.iPropId" data-icontype="ficon_red" class="fa fa-heart iconFavourite"></i></div>
+                                    }
+                                    else
+                                    {
+                                        <div class="update-split update-info"><i data-propertyid="@item.iPropId" data-icontype="ficon_black" class="fa fa-heart iconFavourite"></i></div>
+                                    }
+
+                                    @if (item.dDiscountPercent > 0)
+                                    {
+                                        <div class="update-text">
+                                            <h4 class="text_limit21 ">
+                                                @item.dDiscountPercent% Discount
+                                            </h4>
+                                        </div>
+                                    }
+
+                                </div>
+
+                            }
+                            else if (item.dDiscountPercent > 0)
+                            {
+                                <div>
+                                    <div class="update-nag-mobile">
+                                        <div class="update-text">
+                                            <h4 class="text_limit21 ">
+                                                @item.dDiscountPercent% Discount
+                                            </h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-md-2 srchlightcream">
+                    <div class="text-center">
+
+                        @if (item.dDiscountPercent > 0)
+                        {
+                            <h4 class="srchbluestrickedtext withstrikeprice ptop10">
+                                <strong>@Model.sCurrencySymbol @OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(item.dPriceRP)</strong>
+                            </h4>
+                            <h3 class="srchblueboldtext ptop10">
+                                <strong>@Model.sCurrencySymbol @OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(item.dPrice)</strong>
+                            </h3>
+                        }
+                        else
+                        {
+                            <h3 class="srchblueboldtext onlyprice ptop10">
+                                <strong>@Model.sCurrencySymbol @OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(item.dPrice)</strong>
+                            </h3>
+                        }
+
+                        <div class="btn btn-bannerbtn marginbottom10  marginleft5 width100 tg_bookNow" data-srequesttype="@Model.sRequestType" data-vendorid="@item.iVendorId" data-propertyid="@OneFineRateAppUtil.clsUtils.Encode(item.iPropId.ToString())">Book</div>
+
+
+                        @if (item.iInventory <= 5 && item.iInventory > 1)
+                        {
+                            <div class="red fewroom"><strong>Few rooms available</strong></div>
+                        }
+                        else if (item.iInventory == 1)
+                        {
+                            <div class="red fewroom"><strong>Last room left</strong></div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+            @if (item.sOffer)
+            {
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div style="cursor:pointer" class="lightgry tg_bookNow" data-propertyname="@item.sHotelName" data-srequesttype="@Model.sRequestType" data-vendorid="@item.iVendorId" data-propertyid="@OneFineRateAppUtil.clsUtils.Encode(item.iPropId.ToString())"><strong class="red">Special Deal Available</strong></div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+}

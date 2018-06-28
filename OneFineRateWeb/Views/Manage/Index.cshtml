@@ -1,0 +1,975 @@
+﻿@model OneFineRateWeb.Models.IndexViewModel
+@using OneFineRateWeb.Models
+@using OneFineRateBLL.WebUserBL
+@{
+    Layout = "~/Views/Shared/_LayoutUserManagement.cshtml";
+    ViewBag.Title = "Dashboard";
+    ViewBag.DashboardActive = "manageActive";
+    var blobBaseUrl = System.Configuration.ConfigurationManager.AppSettings["bloburl"];
+}
+<style>
+    .error {
+        color: #bd4646 !important;
+    }
+
+    .pagination {
+        float: right;
+        margin-top: -6%;
+    }
+
+    .ui-helper-hidden-accessible {
+        display: none;
+    }
+
+    .childli {
+        float: left;
+        width: 110px;
+        margin-right: 0px;
+        margin-top: 10px;
+    }
+
+    .ui-autocomplete-category {
+        font-weight: bold;
+        padding: .2em .4em;
+        margin: .8em 0 .2em;
+        line-height: 1.5;
+    }
+
+    .ui-menu li a {
+        text-decoration: none !important;
+    }
+
+
+    .ui-corner-all {
+        text-transform: lowercase !important;
+        font-size: 15px;
+    }
+
+        .ui-corner-all::first-letter {
+            text-transform: uppercase !important;
+        }
+
+    .ui-menu {
+        width: 240px !important;
+        overflow: auto;
+        max-height: 350px;
+        height: auto !important;
+    }
+
+    .table.dataTable thead .sorting_asc {
+        background: none;
+        cursor: default;
+    }
+
+    .title-case {
+        text-transform: capitalize;
+    }
+
+    #tblCurrentNegotiation tr td:nth-child(2) {
+        text-align: right;
+    }
+
+    #tblCurrentNegotiation tr td:nth-child(3) {
+        text-align: right;
+    }
+
+    #tblPastSavings tr td:nth-child(2) {
+        text-align: right;
+    }
+
+    #tblPastSavings tr td:nth-child(3) {
+        text-align: right;
+    }
+
+    #tblPastSavings tr td:nth-child(4) {
+        text-align: right;
+    }
+
+    #divwhole {
+        width: 100%;
+    }
+</style>
+<div class="container-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h3 style="color: #333;">DASHBOARD</h3>
+                <hr />
+            </div>
+        </div>
+        <div class="row margintop10">
+            <div class="col-md-9">
+                <div class="tablebluebg">Your Current Bargain <span class="pull-right"><a href="/Manage/Booking" class="btn btn-bannerbtn btn-xs">Take action</a> &nbsp;</span></div>
+                <div class="table table-responsive">
+                    <table id="tblCurrentNegotiation" style="width:100% !important" class="table table-bordered table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th>Hotel Name, City</th>
+                                <th>Published Rate (@ViewBag.CurrencySymbol)</th>
+                                <th>Amount (@ViewBag.CurrencySymbol)</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="col-md-3 ">
+                <div class="padding10 srchpnlbox">
+                    <form action="@Url.Action(" index","search")" id="frmSearchProperty" method="get">
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <label for="LocalityCity">Which locality/city you are going?</label>
+                                    <input type="text" id="txtSearchHotel" onkeypress="return OnlyAlphabetWithSpace(this);" name="LocalityCity" placeholder="Locality/City" class="form-control autosuggest">
+                                    @Html.Hidden("hdnSelectedLocalityID")
+                                    @Html.Hidden("hdnSelectedType")
+                                    @Html.Hidden("hdnSelectedLocality")
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-6">
+                                    <label for="CheckInDate">Check-in</label>
+                                    <input type="text" onkeypress="return false" id="CheckInDate" name="CheckInDate" class="form-control date">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-6">
+                                    <label for="CheckOutDate">Check-out</label>
+                                    <input type="text" onkeypress="return false" id="CheckOutDate" name="CheckOutDate" class="form-control  date">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>&nbsp;</label>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div id="txttotalcount" class="form-control"> 2 Guests in 1 Room</div>
+                                    </div>
+                                    <div id="divwhole" class="row" style="display:none; border:1px solid #d1d1d1; z-index:9999; background-color:#fff; max-height:300px;overflow-y:auto; overflow-x:hidden; position:absolute; top:50px; left:13%;">
+                                        <i class="sprite-booking-engine ico-be-sub-arrow"></i>
+                                        <div id="roomContainerDiv">
+                                            <div class="rooms">
+                                                <div class='col-md-12 col-xs-12  pull-left'>
+                                                    <h5><strong>Room1:</strong></h5>
+
+                                                </div>
+                                                <div class='col-md-6 col-xs-6'>
+                                                    <h5><strong>Adult</strong></h5>
+                                                    <h6>Above 12 years</h6>
+
+                                                    <div class='input-group width110c'>
+                                                        <input id="adult1" class="form-control adult1" itype="adult1" type="number" readonly="readonly" roomno="1" value="2" min="1" max="6" />
+                                                    </div>
+                                                </div>
+                                                <div class='col-md-6 col-xs-6'>
+                                                    <h5><strong>Children</strong></h5>
+                                                    <h6>Below 12 years</h6>
+                                                    <div class='input-group width110c'>
+                                                        <input id="children1" class="form-control children1" readonly="readonly" itype="children1" roomno="1" type="number" value="0" min="0" max="6" />
+
+                                                    </div>
+                                                </div>
+                                                <div class='col-md-12 col-xs-12' id="divChildAge1" style="display:none;">
+
+                                                    <h5><strong>Age of Childen</strong></h5>
+                                                    <ul style="list-style:none; padding:0; margin:0; " id="ulchilds1"></ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class='col-md-12 margintop5'>
+                                            <a id="btnaddroom" href='javascript:void(0);' onclick="AddRooms();">Add a room</a>
+                                            <span id="sppipe" style="display:none;">|</span>
+                                            <a id="btnremoveroom" href='javascript:void(0);' style="display:none;" onclick="RemoveRoom();">Remove this room</a>
+                                            <hr>
+                                            <div onclick="FetchRoomDetails();" class='btn btn-primary margintop5 marginbottom10 col-md-12'>Done</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group marginbottom20">
+                                <div class="col-md-12 text-center">
+                                    <div class="form-inline text-center">
+
+                                        <button class="btn btn-bannerbtn frm_btnSearch" data-name="bid" type="submit">Bid</button>
+                                        <a href="javascript:void(0);" data-toggle="popover" title="" data-trigger="hover" data-placement="bottom" data-content="Get a steal of a deal at OneFineRate, when you place a blind bid for your choice of star hotel category and location.">
+                                            <img src="@Url.Content("~/images/info.png")" class="bnego infoiconpos-20">
+                                        </a>
+
+                                        <button class="btn btn-bannerbtn frm_btnSearch" data-name="negotiate" type="submit">Bargain</button>
+                                        <a href="javascript:void(0);" data-toggle="popover" title="" data-trigger="hover" data-placement="bottom" data-content="Let us know the price you wish to pay for your preferred room at your choice of hotel. Let OneFineRate negotiate for you!">
+                                            <img src="@Url.Content("~/images/info.png")" class="bnego infoiconpos-20">
+                                        </a>
+
+                                        <button class="btn btn-bannerbtn frm_btnSearch" data-name="buy" type="submit">Book</button>
+                                        <a href="javascript:void(0);" data-toggle="popover" title="" data-trigger="hover" data-placement="bottom" data-content="Book any room at OneFineRate offered by the hotel.">
+                                            <img src="@Url.Content("~/images/info.png")" class="bnego infoiconpos-20">
+                                        </a>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="padding10 ofrpointbox">
+                    <div class="row text-center	">
+                        <div class="col-md-2 col-xs-2">@*<div class="border1 margintop30"></div>*@</div>
+                        <div class="col-md-8 col-xs-8"><h3>You have <span class="blueboldtext"><strong>@Model.OFRPoints</strong></span> Ofr Points.</h3></div>
+                        <div class="col-md-2 col-xs-2">@*<div class="border1 margintop30"></div>*@</div>
+                    </div>
+                    <div class="row text-center	">
+                        <div class="col-md-12">
+                            <h5>
+                                Earn <strong>
+                                    @Model.EarnPoint
+                                </strong>
+                                @if (Model.EarnMoney > 0)
+                                {
+                                    <text>points</text>
+                                }
+                                else
+                                {
+                                    <text>point</text>
+                                }
+                                for each <strong>INR @Model.EarnMoney</strong> spent on OnefineRate.
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row margintop10">
+            <div class="col-md-6">
+                <div class="tablebluebg">Your Past Saving</div>
+                <div class="table table-responsive">
+                    <table id="tblPastSavings" style="width:100% !important" class="table table-bordered table-hover table-striped table-responsive">
+                        <thead>
+                            <tr>
+                                <th valign="top" style="vertical-align:text-top;">Hotel Name, City</th>
+                                <th>Published Rate (@ViewBag.CurrencySymbol)</th>
+                                <th>Your Amount (@ViewBag.CurrencySymbol)</th>
+                                <th>You Saved (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="tablebluebg"> Recently viewed</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12" style="overflow-x:auto;">
+                        <ul>
+                            @if (Model.RecentlyViewedItems != null)
+                            {
+                                foreach (var item in Model.RecentlyViewedItems)
+                                {
+                                    var url = string.Empty;
+
+                                    if (item.bIsTG == true)
+                                    {
+                                        url = "/OfferReviewTG" + "?Id=" + item.iVendorId;
+                                        <li style="display:inline-block;">
+
+                                            <a href="@url">
+
+                                                <div class="property-box propertySearch-box">
+                                                    <div class="img-con">
+
+                                                        <img src="@item.sImageUrl" alt="Hotel Image">
+
+                                                        <span class="hoteltitles">@item.sHotelName</span>
+                                                    </div>
+                                                    <div class="caption">
+                                                        <div class="row" style="padding-left:5px;">
+                                                            <div class="col-md-4 col-sm-4 col-xs-4">
+                                                                <img src="../images/inner-star@(item.iStarCategoryId).png" class="small_star">
+                                                                @*<div class="font14 blacktext">@item.sCity</div>*@
+                                                            </div>
+                                                            <div class="col-md-8  col-sm-8 col-xs-8">
+                                                                <h4 class="blueboldtextsmall pull-right" style="padding-right:5px;">@ViewBag.CurrencySymbol @OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Math.Round(item.dPrice))</h4>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        var propId = OneFineRateAppUtil.clsUtils.Encode(item.iPropId.ToString());
+                                        url = "/OfferReview" + "?Id=" + propId;
+
+                                        <li style="display:inline-block;">
+
+                                            <a href="@url">
+
+                                                <div class="property-box propertySearch-box">
+                                                    <div class="img-con">
+
+                                                        <img src="@item.sImageUrl" alt="Hotel Image">
+
+                                                        <span class="hoteltitles">@item.sHotelName</span>
+                                                    </div>
+                                                    <div class="caption">
+                                                        <div class="row" style="padding-left:5px;">
+                                                            <div class="col-md-4 col-sm-4 col-xs-4">
+                                                                <img src="../images/inner-star@(item.iStarCategoryId).png" class="small_star">
+                                                                @*<div class="font14 blacktext">@item.sCity</div>*@
+                                                            </div>
+                                                            <div class="col-md-8  col-sm-8 col-xs-8">
+                                                                <h4 class="blueboldtextsmall pull-right" style="padding-right:5px;">@(item.sRoomRate != null ? item.sRoomRate.Replace(".00", "") : item.sRoomRate)</h4>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    }
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        @*<div class="row margintop10">
+            <div class="col-md-12 ">
+        *@
+
+        <div class="row margintop10">
+            <div class="col-md-12 ">
+                <div class="tablebluebg">You may also like this !</div>
+            </div>
+        </div>
+        <div class="row ">
+            <div class="col-md-12">
+                <ul class="youmaylikeimg">
+                    @if (Model.UserMayLikeItems != null)
+                    {
+
+                        foreach (var item in Model.UserMayLikeItems)
+                        {
+                            var url = string.Empty;
+
+                            if (item.bIsTG == true)
+                            {
+                                url = "/OfferReviewTG" + "?Id=" + item.iVendorId;
+                                <li>
+                                    <a href="@url">
+                                        <div class="property-box propertySearch-box">
+                                            <div class="img-con">
+
+                                                <img src="@item.sImageUrl" alt="Hotel Image">
+
+                                                <span class="hoteltitles">@item.sHotelName</span>
+                                            </div>
+                                            <div class="caption">
+                                                <div class="row" style="padding-left:5px;">
+                                                    <div class="col-md-4 col-sm-4 col-xs-4">
+                                                        <img src="../images/inner-star@(item.iStarCategoryId).png" class="small_star">
+                                                        @*<div class="font14 blacktext">@item.sCity</div>*@
+                                                    </div>
+                                                    <div class="col-md-8  col-sm-8 col-xs-8">
+                                                        <h4 class="blueboldtextsmall pull-right" style="padding-right:5px;">@ViewBag.CurrencySymbol @Math.Round(item.dPrice)</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                var propId = OneFineRateAppUtil.clsUtils.Encode(item.iPropId.ToString());
+                                url = "/OfferReview" + "?Id=" + propId;
+                                <li>
+                                    <a href="@url">
+                                        <div class="property-box propertySearch-box">
+                                            <div class="img-con">
+
+                                                <img src="@item.sImageUrl" alt="Hotel Image">
+
+                                                <span class="hoteltitles">@item.sHotelName</span>
+                                            </div>
+                                            <div class="caption">
+                                                <div class="row" style="padding-left:5px;">
+                                                    <div class="col-md-4 col-sm-4 col-xs-4">
+                                                        <img src="../images/inner-star@(item.iStarCategoryId).png" class="small_star">
+                                                        @*<div class="font14 blacktext">@item.sCity</div>*@
+                                                    </div>
+                                                    <div class="col-md-8  col-sm-8 col-xs-8">
+                                                        <h4 class="blueboldtextsmall pull-right" style="padding-right:5px;"> @(item.sRoomRate.Replace(".00", ""))</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                            }
+
+
+
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+        @*
+                </div>
+            </div>*@
+    </div>
+
+</div>
+
+<div style="display:none" id="bidPopover">
+    <div class="modal-header">
+        <h4 class="modal-title">what is bid</h4>
+    </div>
+    <div class="modal-body">
+        <p>write up about bid display here</p>
+    </div>
+</div>
+
+<div style="display:none" id="buyPopover">
+    <div class="modal-header">
+        <h4 class="modal-title">what is buy</h4>
+    </div>
+    <div class="modal-body">
+        <p>write up about Negotiate buy here</p>
+    </div>
+</div>
+
+<div style="display:none" id="negotiatePopover">
+    <div class="modal-header">
+        <h4 class="modal-title">what is Negotiate</h4>
+    </div>
+    <div class="modal-body">
+        <p>write up about Negotiate display here</p>
+    </div>
+</div>
+
+<!-- Taxes pop up -->
+<div id="divbid" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">what is bid</h4>
+            </div>
+            <div class="modal-body">
+                <p>write up about bid display here</p>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- Taxes pop up -->
+<div id="divnego" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">what is Negotiate</h4>
+            </div>
+            <div class="modal-body">
+                <p>write up about Negotiate display here</p>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- Taxes pop up -->
+<div id="divbuy" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">what is buy</h4>
+            </div>
+            <div class="modal-body">
+                <p>write up about Negotiate buy here</p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+
+    <script type="text/javascript">
+        $.widget("custom.catcomplete", $.ui.autocomplete, {
+
+            _create: function () {
+                this._super();
+                this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
+            },
+
+            _resizeMenu: function () {
+                this.menu.element.outerWidth(470).outerHeight(300);
+            },
+
+            _renderMenu: function (ul, items) {
+                var that = this,
+               currentCategory = "";
+
+                $.each(items, function (index, item) {
+                    var li;
+                    if (item.category != currentCategory) {
+                        ul.append("<li class='ui-autocomplete-category " + item.category + "'>" + item.category + "</li>");
+                        currentCategory = item.category;
+                    }
+
+                    li = that._renderItemData(ul, item);
+
+                    if (item.category) {
+                        li.attr("aria-label", item.category + " : " + item.label);
+                    }
+                });
+            },
+
+            _renderItem: function (ul, item) {
+                return $("<li>")
+                .addClass(item.category)
+                .attr("data-value", item.value)
+                .append($("<a>").text(item.label))
+                .appendTo(ul);
+            }
+        });
+
+    </script>
+
+    <script type="text/javascript">
+
+        //var popover = $("[rel='popover']").popover({
+        //    trigger: 'hover',
+        //    placement: 'bottom',
+        //    html: 'true'
+        //}).on('show.bs.popover', function () {
+        //    popover.attr('data-content', $('#' + $(this).data('id')).html());
+        //});
+
+
+        $(document).ready(function () {
+            $('[data-toggle="popover"]').popover();
+
+        });
+
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        });
+
+        $(document).ready(function () {
+
+
+
+            //$('.bbuy').click(function () {
+
+            //    $('#divbuy').modal({
+            //        show: 'true'
+            //    });
+            //});
+            //$('.bbid').click(function () {
+
+            //    $('#divbid').modal({
+            //        show: 'true'
+            //    });
+            //});
+
+            //$('.bnego').click(function () {
+            //    $('#divnego').modal({
+            //        show: 'true'
+            //    });
+
+            //});
+        });
+
+        var srchdetails;
+        var pro = [];
+
+        $(function () {
+
+            $("#tblCurrentNegotiation").DataTable({
+                "responsive": true,
+                "bLengthChange": false,
+                "pagingType": "simple_numbers",
+                "iDisplayLength": 5,
+                "processing": true,
+                "serverSide": true,
+                "filter": false,
+                "orderMulti": false,
+                "ajax": {
+                    "url": "/Manage/LoadCurrentNegotationData",
+                    "type": "POST",
+                    "datatype": "json",
+                    "data": function (d) {
+
+                    },
+                    'error': function (jqXHR, textStatus, errorThrown) {
+                        $('#tblCurrentNegotiation').DataTable().clear();
+                    }
+                },
+                "language": {
+                    "emptyTable": function () {
+                        $('#tblCurrentNegotiation_info').hide();
+                        $('#tblCurrentNegotiation_paginate').hide();
+                        return 'No Data found!'
+                    }
+                },
+                "columns": [
+                        { "data": "sHotelName", "name": "Hotel Name, City", "orderable": false, "width": "25%", "aTargets": ["_all"] },
+                        { "data": "sTotalAmount", "name": "Published Rate", "orderable": false, "width": "14%" },
+                        { "data": "sTotalNegotiateAmount", "name": "Amount", "orderable": false, "width": "10%" },
+                        { "data": "BookingStatus", "name": "Status", "orderable": false, "width": "30%" }
+                ],
+                fixedHeader: {
+                    header: true,
+                    footer: true
+                }
+            });
+
+
+            $("#tblPastSavings").DataTable({
+                "responsive": true,
+                "bLengthChange": false,
+                "pagingType": "simple_numbers",
+                "iDisplayLength": 5,
+                "processing": true,
+                "serverSide": true,
+                "filter": false,
+                "orderMulti": false,
+                "ajax": {
+                    "url": "/Manage/LoadPastSavingData",
+                    "type": "POST",
+                    "datatype": "json",
+                    "data": function (d) {
+
+                    },
+                    'error': function (jqXHR, textStatus, errorThrown) {
+                        $('#tblPastSavings').DataTable().clear();
+                    }
+                },
+                "language": {
+                    "emptyTable": function () {
+                        $('#tblPastSavings_info').hide();
+                        $('#tblPastSavings_paginate').hide();
+                        return 'No Data found!';
+                    }
+                },
+                "columns": [
+                       { "data": "sHotelName", "name": "Hotel Name, City", "orderable": false, "width": "38%", "aTargets": ["_all"] },
+                        { "data": "sTotalAmount", "name": "Published Rate", "orderable": false, "width": "22%" },
+                        { "data": "sTotalNegotiateAmount", "name": "Your Amount", "orderable": false, "width": "22%" },
+                       // { "data": "sBidAmount", "name": "Bid Amount", "orderable": false, "autoWidth": true },
+                        { "data": "sSavingsInPercentage", "name": "You Saved", "orderable": false, "width": "18%" }
+                ],
+                fixedHeader: {
+                    header: true,
+                    footer: true
+                }
+            });
+
+
+            //bind autocomplete event on locality,city and macro area textbox on load
+            $("#txtSearchHotel").catcomplete({
+                delay: 0,
+                source: function (request, response) {
+                    response([{ label: "", loading: true }]);
+                    $.ajax({
+                        url: "/Home/GetSearchData",
+                        contentType: "application/json; charset=utf-8",
+                        data: { txt: request.term },
+                        dataType: "json",
+                        type: "GET",
+                        async: false,
+                        success: function (data) {
+                            $('#hdnSelectedLocalityID').val('');
+                            $('#hdnSelectedType').val('');
+                            $('#hdnSelectedLocality').val('');
+
+                            if (!data.length) {
+
+                                var result = [
+                                 {
+                                     value: response.term,
+                                     category: "No Matches Found!"
+                                 }
+                                ];
+                                response(result);
+                            }
+                            else {
+                                response($.map(data, function (item) {
+                                    return {
+                                        label: item.label,
+                                        category: item.category,
+                                        value: item.Id
+                                    }
+                                }));
+                            }
+                        }
+                    });
+                },
+                minLength: 1,
+                //autoFocus: true,
+                select: function (event, ui) {
+
+                    $('#txtSearchHotel').val(ToTitleCase(ui.item.label));
+                    $('#hdnSelectedLocalityID').val(ui.item.value.trim());
+                    $('#hdnSelectedType').val(ui.item.category);
+                    $('#hdnSelectedLocality').val(ui.item.label);
+                    event.preventDefault();
+
+                    if ($('#CheckInDate').val() == undefined || $('#CheckOutDate').val() == "") {
+                        $('#CheckInDate').focus();
+                    }
+                },
+                focus: function (event, ui) {
+                    event.preventDefault();
+                    //  $(".autosuggest").val(ui.item.label);
+                    return false;
+                }
+            });
+
+            $('.customtooltip').tooltip();
+
+            $('.frm_btnSearch').click(function (e) {
+
+                e.preventDefault();
+                var buttonName = $(this).data('name');
+                FetchRoomDetails();
+                var IsNegoValid = FetchRoomDetails();   //Check for more than 3 room for a valid negotiation
+                if (buttonName == "negotiate") {
+
+                    if (IsNegoValid == false) {
+                        toastr.warning('Bargain not allowed on more than 3 rooms.');
+                        return false;
+                    }
+                }
+
+                if ($('#frmSearchProperty').valid()) {
+
+                    var values = { cid: $('#hdnSelectedLocalityID').val().trim(), ctype: $('#hdnSelectedType').val(), cname: $('#hdnSelectedLocality').val(), sCheckIn: $('#CheckInDate').val(), sCheckOut: $('#CheckOutDate').val(), sRoomData: $("#hdnJson").val(), sRequestType: buttonName };
+                    $.removeCookie('srchdetails');
+                    pro = [];
+                    pro.push(JSON.stringify(values));
+                    $.cookie("srchdetails", pro, { expires: 2, path: '/' });
+                    startSpinning($('body'));
+                    if (buttonName == 'bid')
+                        window.location.href = '@Url.Action("Index", "Bidding")?cid=' + values.cid + '&ctype=' + values.ctype + '&cname=' + values.cname + '&sCheckIn=' + values.sCheckIn + '&sCheckOut=' + values.sCheckOut + '&sRoomData=' + values.sRoomData + '&sRequestType=' + values.sRequestType;
+                    else
+                        window.location.href = '@Url.Action("Index", "Search")?cid=' + values.cid + '&ctype=' + values.ctype + '&cname=' + values.cname + '&sCheckIn=' + values.sCheckIn + '&sCheckOut=' + values.sCheckOut + '&sRoomData=' + values.sRoomData + '&sRequestType=' + values.sRequestType;
+
+                }
+                else {
+
+                    return false;
+                }
+
+            });
+
+
+            $("#frmSearchProperty").validate({
+                rules: {
+
+                    LocalityCity: { required: true, maxlength: 50, message: false },
+                    CheckInDate: { date: false, required: true, maxlength: 50 },
+                    CheckOutDate: { date: false, required: true, maxlength: 50 }
+                },
+                errorPlacement: function (error, element) { },
+                highlight: function (element) {
+                    $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+
+                },
+                unhighlight: function (element) {
+                    $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+                }
+            });
+        });
+
+        var numberOfMonth = 2;
+
+        @if (Request.Browser.IsMobileDevice)
+    {
+        <text> numberOfMonth = 1; </text>
+
+    }
+
+        $(function () {
+
+            $('#CheckInDate').bind("cut copy paste", function (e) {
+                e.preventDefault();
+            });
+
+            $('#CheckOutDate').bind("cut copy paste", function (e) {
+                e.preventDefault();
+            });
+
+            $('#CheckInDate').keydown(function (e) {
+                e.preventDefault();
+                return false;
+            });
+
+            $('#CheckOutDate').keydown(function (e) {
+                e.preventDefault();
+                return false;
+            });
+
+            var tomorrow = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
+            var today = new Date(),
+
+              from = $("#CheckInDate").datepicker({
+
+                  changeMonth: false,
+                  numberOfMonths: numberOfMonth,
+                  minDate: today,
+                  dateFormat: 'dd/mm/yy',
+                  onSelect: function (selected, event) {
+
+                      var selectedDate = new Date(event.selectedMonth + 1 + '/' + event.selectedDay + '/' + event.selectedYear);
+                      var oneDayAfter = selectedDate;
+                      oneDayAfter.setDate(oneDayAfter.getDate() + 1);
+
+                      to.datepicker("option", "minDate", oneDayAfter);
+
+                      var afterHalfMonth = new Date(selectedDate);
+                      afterHalfMonth.setDate(afterHalfMonth.getDate() + 45);
+                      to.datepicker("option", "maxDate", afterHalfMonth);
+
+                      var txtToSelectedVal = $('#CheckOutDate').val();
+
+                      if (txtToSelectedVal) {
+
+                          var toVal_ddmmyy = txtToSelectedVal.split('/');
+
+                          if (toVal_ddmmyy) {
+
+                              var txtToSelectedDate = new Date(toVal_ddmmyy[1] + '/' + toVal_ddmmyy[0] + '/' + toVal_ddmmyy[2])
+
+                              if (selectedDate > txtToSelectedDate) {
+
+                                  var dd = txtToSelectedDate.getDate();
+                                  var mm = txtToSelectedDate.getMonth() + 1;
+                                  var yy = txtToSelectedDate.getFullYear();
+
+                                  dd < 10 ? dd = '0' + dd : dd = dd;
+                                  mm < 10 ? mm = '0' + mm : mm = mm;
+
+                                  var nextDayMMDDYYFormat_txtTo = dd + '/' + mm + '/' + yy;
+                                  $('#CheckOutDate').val(nextDayMMDDYYFormat_txtTo);
+                              }
+                          }
+                      }
+                      else {
+                          var dd = oneDayAfter.getDate();
+                          var mm = oneDayAfter.getMonth() + 1;
+                          var yy = oneDayAfter.getFullYear();
+
+                          dd < 10 ? dd = '0' + dd : dd = dd;
+                          mm < 10 ? mm = '0' + mm : mm = mm;
+
+                          var nextDayMMDDYYFormat = dd + '/' + mm + '/' + yy;
+                          $('#CheckOutDate').val(nextDayMMDDYYFormat);
+                      }
+
+                      setTimeout(function () {
+                          $("#CheckOutDate").datepicker('show');
+                      }, 16);
+                  },
+                  onClose: function (dateText, inst) {
+                      $(this).attr("disabled", false);
+                  },
+                  beforeShow: function (input, inst) {
+                      $(this).attr("disabled", true);
+                  }
+              }),
+
+              to = $("#CheckOutDate").datepicker({
+
+                  changeMonth: false,
+                  minDate: tomorrow,
+                  numberOfMonths: numberOfMonth,
+                  dateFormat: 'dd/mm/yy',
+                  onSelect: function (selected, event) {
+
+                      var selectedDate = new Date(event.selectedMonth + 1 + '/' + event.selectedDay + '/' + event.selectedYear);
+
+                      var txtFromSelectedVal = $('#CheckInDate').val();
+
+                      if (txtFromSelectedVal) {
+
+                          var fromVal_ddmmyy = txtFromSelectedVal.split('/');
+
+                          if (fromVal_ddmmyy) {
+
+                              var txtFromSelectedDate = new Date(fromVal_ddmmyy[1] + '/' + fromVal_ddmmyy[0] + '/' + fromVal_ddmmyy[2])
+
+                              var oneDayBefore = selectedDate;
+                              oneDayBefore.setDate(oneDayBefore.getDate() - 1);
+
+                              if (oneDayBefore >= new Date()) {
+                                  if (selectedDate < txtFromSelectedDate) {
+
+                                      var dd = oneDayBefore.getDate();
+                                      var mm = oneDayBefore.getMonth() + 1;
+                                      var yy = oneDayBefore.getFullYear();
+
+                                      dd < 10 ? dd = '0' + dd : dd = dd;
+                                      mm < 10 ? mm = '0' + mm : mm = mm;
+
+                                      var nextDayMMDDYYFormat_txtFrom = dd + '/' + mm + '/' + yy;
+                                      $('#CheckInDate').val(nextDayMMDDYYFormat_txtFrom);
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  onClose: function (dateText, inst) {
+                      $(this).attr("disabled", false);
+                  },
+                  beforeShow: function (input, inst) {
+                      $(this).attr("disabled", true);
+                  }
+              });
+        });
+
+        function ToTitleCase(str) {
+            return str.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
+        }
+
+    </script>
+}
+
+@*@section signalRScript{
+
+            @Scripts.Render("~/bundles/signalr");
+    <script src="@Url.Content(" ~ />signalr/hubs")"></script>
+
+    <script type="text/javascript">
+                $(function () {
+                    // Reference the auto-generated proxy for the hub.
+                    var userActivity = $.connection.userActivityHub;
+                    // Create a function that the hub can call back to display messages.
+                    userActivity.client.updateUsersOnlineCount = function (count) {
+                        $('#userCount').text(count);
+                    };
+                    $.connection.hub.start();
+                });
+    </script>
+
+        }*@
+
+

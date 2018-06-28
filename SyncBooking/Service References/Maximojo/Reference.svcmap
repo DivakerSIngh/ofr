@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="a21aacc1-4d7e-4f48-821f-43df13c6a85a" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://staging.platform.maximojo.com/HTNG/Server.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="Server.xsd" MetadataType="Schema" ID="b9b1a003-8af2-4552-856c-7fed180d73ed" SourceId="1" SourceUrl="http://staging.platform.maximojo.com/HTNG/Server.svc?xsd=xsd1" />
+    <MetadataFile FileName="Server1.xsd" MetadataType="Schema" ID="4ece6491-8200-43da-a6ad-ffb829177b6d" SourceId="1" SourceUrl="http://staging.platform.maximojo.com/HTNG/Server.svc?xsd=xsd0" />
+    <MetadataFile FileName="Server.disco" MetadataType="Disco" ID="08e8e048-4ca9-4b7e-bd75-b735b0aed135" SourceId="1" SourceUrl="http://staging.platform.maximojo.com/HTNG/Server.svc?disco" />
+    <MetadataFile FileName="Server.wsdl" MetadataType="Wsdl" ID="802e4494-dd81-4dc7-9984-483fbdd59337" SourceId="1" SourceUrl="http://staging.platform.maximojo.com/HTNG/Server.svc?wsdl" />
+    <MetadataFile FileName="Server1.wsdl" MetadataType="Wsdl" ID="6b551962-905a-420c-9cc9-dc75e1a88ded" SourceId="1" SourceUrl="http://staging.platform.maximojo.com/HTNG/Server.svc?wsdl=wsdl0" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

@@ -1,0 +1,56 @@
+﻿@model OneFineRateBLL.Entities.eMacroAreaM
+
+<!-- Add/Update Macro Area -->
+@using (Ajax.BeginForm("AddMacroArea", "MacroAreaAjax", new AjaxOptions() { InsertionMode = InsertionMode.Replace, UpdateTargetId = "AddMacroArea", HttpMethod = "POST", OnComplete = "alert('');" }))
+{
+
+
+    <div id="AddMacroArea" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Macro Area</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="col-xs-4">
+                            Country
+                            @Html.DropDownListFor(model => model.iCountryId, new SelectList(OneFineRateBLL.BL_Country.GetAllRecords(), "iCountryId", "sCountry"), "", new { @class = "form-control", id = "ddlCountry", oninvalid = "setCustomValidity('Please select country')", onchange = "try{setCustomValidity('')}catch(e){}", required = true })
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-4">
+                            State
+                            @Html.DropDownListFor(model => model.iStateId, new SelectList(Model.StateList, "Value", "Text"), new { @class = "form-control", id = "ddlState", oninvalid = "setCustomValidity('Please select state')", onchange = "try{setCustomValidity('')}catch(e){}", required = true })
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-4">
+                            City
+                            @Html.DropDownListFor(model => model.iCityId, new SelectList(Model.CityList, "Value", "Text"), new { @class = "form-control", id = "ddlCity", oninvalid = "setCustomValidity('Please select city')", onchange = "try{setCustomValidity('')}catch(e){}", required = true })
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-4">
+                            Macro Area Name
+                            @Html.TextBoxFor(model => model.sArea, null, new { @class = "form-control", oninvalid = "setCustomValidity('Please enter only alphabets')", onchange = "try{setCustomValidity('')}catch(e){}", pattern = "[A-Za-z ]+", maxlength = "50", required = true })
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="btnSubmit" class="btn btn-primary">SAVE</button>
+                    <button type="button" class="btn btn-danger btnCancel">CANCEL</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+}
+

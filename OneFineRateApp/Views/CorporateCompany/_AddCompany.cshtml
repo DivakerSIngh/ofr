@@ -1,0 +1,798 @@
+﻿@model OneFineRateBLL.Entities.eCorporateCompanyM
+
+<style>
+    .countryCodeRespectiveTextBox {
+        width: 50% !important;
+        float: left;
+    }
+
+    .deletableRow .col-md-10 {
+        margin-bottom: 5px !important;
+    }
+
+    .modal-dialog {
+        overflow-y: initial !important;
+    }
+
+    /*.modal-body {
+        max-height: 450px;
+        overflow-y: auto;
+    }*/
+
+    #frmAddUpdateCompany .bootstrap-select {
+        width: 50% !important;
+        float: left !important;
+    }
+
+    #frmAddUpdateCompany .dropdown-menu {
+        max-height: 200px;
+        overflow: hidden;
+        min-height: 100px;
+        width: 250%;
+    }
+
+    #s2id_ddlCountry, #s2id_ddlState, #s2id_ddlCity, #s2id_ddlEmailsOrDomains {
+        margin-bottom: 0 !important;
+    }
+
+    /*#GstnNumber {
+        text-transform: uppercase
+    }*/
+</style>
+
+@using (Html.BeginForm("AddUpdateCompany", "CorporateCompany", FormMethod.Post, new { id = "frmAddUpdateCompany" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Add/Update Company</h4>
+    </div>
+    <div class="modal-body">
+        <div class="form-horizontal">
+            @if (Model != null && Model.iCompanyId != 0)
+            {
+                @Html.HiddenFor(m => m.iCompanyId)
+                @Html.HiddenFor(m => m.cStatus)
+            }
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="row">
+                <div class="col-md-6">
+                    @Html.LabelFor(model => model.sCompanyName, htmlAttributes: new { @class = "control-label" }) <span class="red">*</span>
+                    @Html.EditorFor(model => model.sCompanyName, new { htmlAttributes = new { maxlength = "200", @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.sCompanyName, "", new { @class = "red" })
+                </div>
+                <div class="col-md-6">
+                    @Html.LabelFor(model => model.GstnEntityName) <span style="display:none" class="red conditionalShow">*</span>
+                    @Html.TextBoxFor(model => model.GstnEntityName, new { placeholder = "Entity Name", maxlength = "100", @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.GstnEntityName, "", new { @class = "red" })
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    @Html.LabelFor(model => model.sPrimaryContact, htmlAttributes: new { @class = "control-label" }) <span class="red">*</span>
+                    @Html.EditorFor(model => model.sPrimaryContact, new { htmlAttributes = new { maxlength = "100", @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.sPrimaryContact, "", new { @class = "red" })
+                </div>
+                <div class="col-md-6">
+                    <label>Country</label> <span class="red">*</span>
+                    @Html.DropDownListFor(m => m.CountryId, new SelectList(OneFineRateBLL.BL_Country.GetAllRecords(), "iCountryId", "sCountry"), "Select", new { @class = "form-control", Id = "ddlCountry" })
+                    @Html.ValidationMessageFor(model => model.CountryId, "", new { @class = "red" })
+                </div>
+            </div>
+
+            <div class="row canHideWhenOtherCountry" style="display:none">
+
+                <div class="col-md-6">
+
+                    @Html.LabelFor(model => model.GstnNumber) <span style="display:none" class="red conditionalShow">*</span>
+                    @Html.TextBoxFor(model => model.GstnNumber, new { placeholder = "GST Number", minlength = "15", maxlength = "15", @class = "form-control", @readonly = "" })
+                    @Html.ValidationMessageFor(model => model.GstnNumber, "", new { @class = "red" })
+
+                </div>
+
+                <div class="col-md-6">
+
+                    @Html.LabelFor(model => model.GstnEntityType) <span style="display:none" class="red conditionalShow">*</span>
+
+                    <input type="text" id="txtGstnEntityType" readonly class="form-control" placeholder="Entity Type" />
+
+                    @Html.DropDownListFor(model => model.GstnEntityType, new SelectList(new List<SelectListItem> {
+
+                   new SelectListItem{ Text = "Person/Individual",Value="p" },
+                    new SelectListItem{ Text = "Company",Value="c" },
+                     new SelectListItem{ Text = "HUF",Value="h" },
+                      new SelectListItem{ Text = "Firm",Value="f" },
+                       new SelectListItem{ Text = "Association of Person (AOP)",Value="a" },
+                        new SelectListItem{ Text = "AOP (Trust)",Value="t" },
+                         new SelectListItem{ Text = "Body of Individuals (BOI)",Value="b" },
+                          new SelectListItem{ Text = "Local Authorithy",Value="l" },
+                           new SelectListItem{ Text = "Artifical Juridical Person",Value="j" },
+                            new SelectListItem{ Text = "Government",Value="g" },
+
+
+                   }, "Value", "Text"), "Select", new { @class = "form-control hide", id = "GstnEntityType" })
+
+                    @Html.ValidationMessageFor(model => model.GstnEntityType, "", new { @class = "red" })
+
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-4">
+                    <label>State</label> <span style="display:none" class="red conditionalShow">*</span>
+                    @if (Model.CountryId.HasValue)
+                    {
+                        @Html.DropDownListFor(model => model.StateId, new SelectList(OneFineRateBLL.BL_Country.GetStatesByCountryId(Model.CountryId.Value), "iStateId", "sState", Model.StateId), "Select State", new { @class = "form-control", id = "ddlState", @readonly = "readonly" })
+                    }
+                    else
+                    {
+                        @Html.DropDownListFor(model => model.StateId, Enumerable.Empty<SelectListItem>(), "Select State", new { @class = "form-control", id = "ddlState", @readonly = "readonly" })
+                    }
+                    @Html.ValidationMessageFor(model => model.StateId, "", new { @class = "red" })
+
+                </div>
+
+                <div class="col-md-5">
+
+                    @Html.LabelFor(model => model.CityId) <span style="display:none" class="red conditionalShow">*</span>
+
+                    @if (Model.StateId.HasValue)
+                    {
+                        @Html.DropDownListFor(model => model.CityId, new SelectList(OneFineRateBLL.BL_Country.GetCitiesByStateId(Model.StateId.Value), "iCityId", "sCity", Model.CityId), "Select City", new { @class = "form-control", id = "ddlCity" })
+                    }
+                    else
+                    {
+                        @Html.DropDownListFor(model => model.CityId, Enumerable.Empty<SelectListItem>(), "Select City", new { @class = "form-control", id = "ddlCity" })
+                    }
+
+                    @Html.ValidationMessageFor(model => model.CityId, "", new { @class = "red" })
+
+                </div>
+
+                <div class="col-md-3">
+
+                    @Html.LabelFor(model => model.PinCode) <span style="display:none" class="red conditionalShow">*</span>
+                    @Html.TextBoxFor(model => model.PinCode, new { placeholder = "Pin Code", maxlength = "6", @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.PinCode, "", new { @class = "red" })
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+
+                    @Html.LabelFor(model => model.Address) <span class="red">*</span>
+                    @Html.TextAreaFor(model => model.Address, new { rows = "2", placeholder = "Address", maxlength = "500", @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Address, "", new { @class = "red" })
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    @Html.LabelFor(model => model.sMobileNumber, htmlAttributes: new { @class = "control-label" }) <span class="red">*</span>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-12">
+                            @Html.DropDownListFor(model => model.sCountryCode, new SelectList(Model.CountryCodePhoneList, "sCode", "sFrontendCode", "+91"), new { data_live_search = "true", id = "ddlCountryCode", @class = "form-control selectpicker" })
+                            @Html.EditorFor(model => model.sMobileNumber, new { htmlAttributes = new { maxlength = "10", id = "txtMobileNumber", @class = "form-control countryCodeRespectiveTextBox" } })
+                        </div>
+                    </div>
+                    @Html.ValidationMessageFor(model => model.sMobileNumber, "", new { @class = "red" })
+
+
+                </div>
+                <div class="col-md-6">
+                    @Html.LabelFor(model => model.sTelephoneNumber, htmlAttributes: new { @class = "control-label" }) <span class="red">*</span>
+                    @Html.EditorFor(model => model.sTelephoneNumber, new { htmlAttributes = new { maxlength = "12", @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.sTelephoneNumber, "", new { @class = "red" })
+                </div>
+
+
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    @Html.LabelFor(model => model.sEmailAddress, htmlAttributes: new { @class = "control-label" }) <span class="red">*</span>
+
+                    @Html.EditorFor(model => model.sEmailAddress, new { htmlAttributes = new { maxlength = "100", @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.sEmailAddress, "", new { @class = "red" })
+                </div>
+
+
+                <div class="col-md-6">
+                    @Html.LabelFor(model => model.DomainType, htmlAttributes: new { @class = "control-label" }) <span class="red">*</span>
+                    @Html.EnumDropDownListFor(model => model.DomainType, new { maxlength = "100", @class = "form-control", id = "ddlEmailsOrDomains" })
+                    @Html.ValidationMessageFor(model => model.DomainType, "", new { @class = "red" })
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-10">
+                    @Html.LabelFor(model => model.sDomainNames, htmlAttributes: new { @class = "control-label" }) <span class="red">*</span>
+
+                    <input type="text" class="form-control" id="txtAddDomain" />
+                    <small class="red"> eg:yourdomain.com / email@yourdomain.com</small>
+                    <div class="clearfix"></div>
+                    @Html.ValidationMessageFor(model => model.sDomainNames, "", new { maxlength = "100", @class = "red" })
+                    @Html.TextBoxFor(model => model.sDomainNames, new { id = "hdnDomainNames", style = "visibility:hidden;" })
+                </div>
+                <div class="col-md-2">
+                    <button type="button" style="margin-top: 37px;" id="btnAddDomain" class="btn btn-primary">Add</button>
+                </div>
+            </div>
+
+            <div class="row" id="divDomainTextContainer">
+                @if (Model != null && Model.sDomainNames != null)
+                {
+                    var domainList = Model.sDomainNames.Split(',').ToList();
+
+                    foreach (var item in domainList)
+                    {
+                        <div class="deletableRow">
+                            <div class="col-md-10">
+                                <input type="text" readonly class="form-control" value="@item" />
+                                <input type="hidden" data-type="1" readonly class="hdnDomainNameItem" value="@item" />
+                            </div>
+                            <div class="col-md-2"> <button type="button" class="btn btn-danger btnDeleteDomainMap">Delete</button></div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" id="btnSubmit" class="btn btn-primary">Save</button>
+        <button type="button" data-dismiss="modal" id="btnCancel" class="btn btn-danger">Cancel</button>
+    </div>
+}
+
+<script src="~/js/jquery.mask.js"></script>
+@System.Web.Optimization.Scripts.Render("~/bundles/validation")
+
+
+<script>
+
+    $(function () {
+
+        var stateCode;
+
+        @if(Model.CountryId == 1)
+{
+       <text>
+        $('.canHideWhenOtherCountry').show();
+        $('.conditionalShow').show();
+        $("#GstnNumber").attr("readonly", false);
+
+        </text>
+}
+
+        $('#txtGstnEntityType').val($('#GstnEntityType option:selected').text());
+
+        $('#ddlCountryCode').selectpicker();
+
+        $('#ddlEmailsOrDomains').select2();
+
+        $('#GstnEntityType').select2();
+
+        $('#ddlEmailsOrDomains').change(function (e) {
+
+            var dropDown = this;
+
+            var currenValueBeforeChange = $(dropDown).val();
+
+            //if (currenValueBeforeChange != 0) {
+
+            //    $("#addCompanyFormContainer span[data-valmsg-for='DomainType']").hide();
+            //}
+            //else {
+            //    $("#addCompanyFormContainer span[data-valmsg-for='DomainType']").show();
+            //}
+
+            var already_AddedDomain_Textbox_Shouldbe_Remove = false;
+
+            if ($(".hdnDomainNameItem") && $(".hdnDomainNameItem").length) {
+
+                var addedDomainType_Previous = $(".hdnDomainNameItem:first").data('type');
+
+                if (currenValueBeforeChange != addedDomainType_Previous) {
+                    already_AddedDomain_Textbox_Shouldbe_Remove = true;
+                }
+            }
+
+            if (already_AddedDomain_Textbox_Shouldbe_Remove) {
+
+                if (confirm("Are you sure? Previously added domain would be removed!")) {
+
+                    $("#divDomainTextContainer").html('');
+                    $("#txtAddDomain").val('');
+
+                }
+                else {
+
+                    var index = 0;
+
+                    currenValueBeforeChange == 1 ? index = 2 : index = 1;
+
+                    $('#ddlEmailsOrDomains').prop('selectedIndex', index).trigger('change.select2');
+
+                }
+            }
+        });
+
+        $('#txtAddDomain,#sEmailAddress').on('keypress', function (e) {
+            if (e.which == 32)
+                return false;
+        });
+
+        $('#btnAddDomain').click(function (e) {
+
+            var isDuplicate = false;
+
+            var dropdownValue = $('#ddlEmailsOrDomains').val();
+
+            if (dropdownValue.trim() == '0') {
+                toastr.clear($('.toast'));
+                toastr.error('Please select domain type!');
+                $('#ddlEmailsOrDomains').focus();
+                return false;
+            }
+
+            $("#addCompanyFormContainer span[data-valmsg-for='sDomainNames']").hide();
+            $("#addCompanyFormContainer span[data-valmsg-for='DomainType']").hide();
+
+            if ($(".hdnDomainNameItem") && $(".hdnDomainNameItem").length) {
+
+                $(".hdnDomainNameItem").each(function (i, obj) {
+
+                    var hiddenVal = $(this).val().trim();
+                    var textBoxValue = $('#txtAddDomain').val().trim();
+
+                    if (hiddenVal == textBoxValue) {
+                        toastr.clear($('.toast'));
+                        toastr.error('Duplicate entry can not be added!');
+                        isDuplicate = true;
+                        return false;
+                    }
+
+                });
+            }
+
+            if (!isDuplicate) {
+
+                toastr.clear($('.toast'));
+
+                var domainValue = $('#txtAddDomain').val().trim();
+
+
+                if ($('#divDomainTextContainer .btnDeleteDomainMap').length > 5) {
+
+                    toastr.error('Can not add more than 5 domain.');
+                    return false;
+                }
+
+                if (domainValue == '') {
+
+                    toastr.error('Please enter domain names in the domain field.');
+                    $('#txtAddDomain').focus();
+                    return false;
+                }
+
+
+                if (dropdownValue == 1 && !validateDomain(domainValue)) {
+                    toastr.error('Please enter a valid domain name.');
+                    $('#txtAddDomain').focus();
+                    return false;
+                }
+
+
+                if (dropdownValue == 2 && !isValidEmailAddress(domainValue)) {
+                    toastr.error('Please enter a valid email address.');
+                    $('#txtAddDomain').focus();
+                    return false;
+                }
+
+
+                else {
+
+                    var htmlToAppend = '<div class="deletableRow">' +
+                        '<div class="col-md-10">' +
+                        '<input type="text" readonly class="form-control" value="' + domainValue + '"/>' +
+                        '<input type="hidden" data-type="' + dropdownValue + '" class="hdnDomainNameItem" value="' + domainValue + '"/>' +
+                        '</div>' +
+                        '<div class="col-md-2">' +
+                        '<button type="button" class="btn btn-danger btnDeleteDomainMap">Delete</button>' +
+                        '</div></div>';
+
+                    $('#divDomainTextContainer').append(htmlToAppend)
+                    $("#txtAddDomain").val('');
+                }
+            }
+
+        });
+
+        $(document).on('click', '.btnDeleteDomainMap', function () {
+
+            var closestRow = $(this).closest('.deletableRow');
+
+            closestRow.remove();
+        });
+
+        $('#frmAddUpdateCompany').submit(function (e) {
+
+            e.preventDefault();
+            //debugger;
+            toastr.clear($('.toast'));
+
+            var sDomainString = '';
+            if ($('#txtAddDomain').val() != '') {
+                toastr.error('Please add Domain Name.');
+                return false;
+            }
+
+            if ($(".hdnDomainNameItem").length) {
+                $(".hdnDomainNameItem").each(function () {
+
+                    var hiddenVal = $(this).val().trim();
+                    sDomainString += hiddenVal + ',';
+
+                });
+            }
+            else {
+
+                sDomainString = $('#txtAddDomain').val();
+            }
+
+            $('#hdnDomainNames').val(sDomainString);
+
+
+            if ($(this).valid()) {
+
+                $("#addCompanyFormContainer span[data-valmsg-for='sDomainNames']").hide();
+
+                if (sDomainString.trim() == "") {
+                    toastr.clear($('.toast'));
+                    toastr.error('Please enter domain names in the domain field.');
+                    $('#txtAddDomain').focus();
+                    return false;
+                }
+
+                var frmData = $(this).serializeArray();
+
+                $.post($(this).attr('action'), frmData).done(function (data) {
+
+                    toastr.clear($('.toast'));
+
+                    if (data.status == false) {
+                        toastr.error(data.Msg);
+                    }
+                    else if (data.status == true) {
+
+                        $('#addCompanyModal').modal('hide');
+
+                        BindCoporateComapanyGrid();
+                        toastr.success(data.Msg);
+
+                    }
+                });
+            }
+            else {
+
+                if ($('#txtAddDomain').val().trim() == '') {
+
+                    $("#addCompanyFormContainer span[data-valmsg-for='sDomainNames']").show();
+
+                    return false;
+                }
+            }
+        });
+
+        $('#txtMobileNumber').keypress(function (e) {
+
+            var cursorPosition = document.getElementById('txtMobileNumber').selectionStart;
+
+            if ((this.value.length == 0 || cursorPosition == 0) && e.which == 48) {
+
+                return false;
+            }
+        });
+
+        $("#txtMobileNumber,#sTelephoneNumber").keydown(function (e) {
+            // Allow: backspace, delete, tab, escape, enter and .
+            if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+                // Allow: Ctrl+A, Command+A
+                (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) ||
+                // Allow: home, end, left, right, down, up
+                (e.keyCode >= 35 && e.keyCode <= 40)) {
+                // let it happen, don't do anything
+                return;
+            }
+            // Ensure that it is a number and stop the keypress
+            if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                e.preventDefault();
+            }
+        });
+
+        $('#ddlCountry').select2();
+
+        $("#ddlCountry").change(function () {
+
+            var ddlCountry = "#ddlCountry";
+            var ddlState = "#ddlState";
+            var ddlCity = "#ddlCity";
+
+            var val = $(ddlCountry).val();
+
+            $(ddlState).html("<option selected value=''>Select State </option>").change();
+
+            $(ddlCity).html("<option selected value=''>Select City </option>").change();
+            
+            if (val != '') {
+              
+                if (val == "1") {
+
+                    $('.conditionalShow').show();
+                    ShowGstControls();
+                }
+                else {
+
+                    $('.conditionalShow').hide();
+                    HideGstControls();
+
+                    var url = '/CorporateCompany/BindStates';
+
+                    $.ajax({
+                        type: "GET",
+                        global: false,
+                        url: url,
+                        data: { countryId: val },
+                        success: function (data) {
+                            
+                            $.each(data.results, function (index, optionData) {
+                                $(ddlState).append("<option value='" + optionData.iStateId + "'>" + optionData.sState + "</option>");
+                            });
+                        },
+                        error: function (x, e) {
+                        }
+                    });
+                }
+            }
+            else {
+
+                $('.conditionalShow').hide();
+                HideGstControls();
+            }
+        });
+
+        $('#ddlState').select2();
+
+        $("#ddlState").change(function () {
+
+            var ddlState = "#ddlState";
+            var ddlCity = "#ddlCity";
+
+            if ($(ddlState).val()) {
+
+                $('span[data-valmsg-for="StateId"]').hide();
+
+                var url = '/CorporateCompany/BindCity';
+
+                $.ajax({
+                    type: "GET",
+                    global: false,
+                    url: url,
+                    data: { stateId: $(ddlState).val() },
+                    success: function (data) {
+
+                        $(ddlCity).empty();
+                        $(ddlCity).append("<option value=''>Select City</option>");
+                        $.each(data.results, function (index, optionData) {
+                            $(ddlCity).append("<option value='" + optionData.iCityId + "'>" + optionData.sCity + "</option>");
+                        });
+                    }
+                });
+            }
+            else {
+                $(ddlCity).empty();
+            }
+        });
+
+        $('#ddlCity').select2();
+
+        $("#ddlCity").change(function () {
+
+            if ($(this).val() != '') {
+
+                $('span[data-valmsg-for="City"]').hide();
+            }
+        });
+
+        $('#GstnNumber').keyup(function (e) {
+
+            //debugger;
+
+            $(this).val($(this).val().toUpperCase());
+
+            var $thisVal = $(this).val().trim();
+
+            var ddlState = "#ddlState";
+
+            if ($thisVal.length >= 2) {
+
+                var firstTwoDigit = $thisVal.substring(0, 2);
+
+                if ($.isNumeric(firstTwoDigit)) {
+
+                    var url = '@Url.Action("GetStatesByGST", "CorporateCompany")'
+
+                    $.ajax({
+                        type: "GET",
+                        global: false,
+                        url: url,
+                        data: { gstFirstTwoDigit: firstTwoDigit },
+                        success: function (data) {
+
+                            //debugger;
+
+                            if (data.results && data.results.iStateId != 0) {
+
+                                $(ddlState).html("<option selected value='" + data.results.iStateId + "'>" + data.results.sState + "</option>").change();
+
+                                $('#txtGstnEntityType').val($('#GstnEntityType option:selected').text());
+                            }
+                            else {
+                                $(ddlState).html("<option selected value=''>Select State </option>").change();
+                            }
+                        }
+                    });
+
+                }
+                else {
+
+                    $(ddlState).html("<option selected value=''>Select State </option>").change();
+                }
+
+                try {
+
+                    var validEntityType = ['c', 'p', 'h', 'f', 'a', 't', 'b', 'l', 'j', 'g', 'k'];
+
+                    var sixthChar = $thisVal.charAt(5).toString().toLowerCase();
+
+                    $('#GstnEntityType').val(sixthChar).change();
+
+                    $('#txtGstnEntityType').val($('#GstnEntityType option:selected').text());
+                }
+                catch (e) {
+
+                }
+            }
+            else {
+
+                $('#GstnEntityType').val('').change();
+
+                if ($thisVal.length < 2) {
+                    $(ddlState).html("<option value=''>Select State</option>");
+                    $(ddlState).change();
+                    $('#txtGstnEntityType').val($('#GstnEntityType option:selected').text());
+                }
+
+                if ($thisVal.length < 6 && $thisVal.length >= 2) {
+
+                    $('#GstnEntityType').val('').change();
+                }
+            }
+        });
+
+
+        $('#GstnNumber').blur(function (e) {
+
+            $('#GstnNumber').keyup();
+        });
+    });
+
+
+    function ShowGstControls() {
+
+        $("#frmAddUpdateCompany").validate();
+
+        $("#GstnEntityType").rules("add", { required: true, messages: { required: "Please specify entity type" } });
+        $("#GstnEntityName").rules("add", { required: true, messages: { required: "Please specify entity name" } });
+        $("#GstnNumber").rules("add", { required: true, messages: { required: "Please specify GST number" } });
+        //$("#ddlCountry").rules("add", { required: true, messages: { required: "Please select country" } });
+        $("#ddlState").rules("add", { required: true, messages: { required: "Please select city" } });
+        $("#ddlCity").rules("add", { required: true, messages: { required: "Please select city" } });
+        $("#PinCode").rules("add", { required: true, messages: { required: "Please specify PIN Code" } });
+
+
+        ////Option 1
+        //$('.canHideWhenOtherCountry').slideDown();
+
+        //Option 2
+        $("#GstnEntityType").val('').attr("readonly", false);
+        //$("#GstnEntityName").val('').attr("readonly", false);
+        $("#GstnNumber").attr("readonly", false);
+
+        $('.canHideWhenOtherCountry').slideDown();
+
+        //$("#ddlCity").val('').attr("readonly", false);
+        //$("#PinCode").val('').attr("readonly", false);
+
+    }
+
+    function HideGstControls() {
+        
+        clearValidation('#frmAddUpdateCompany');
+        $("#frmAddUpdateCompany").validate();
+
+        $("#GstnEntityType").rules("remove", "required");
+        $("#GstnEntityName").rules("remove", "required");
+        $("#GstnNumber").rules("remove", "required");
+        $("#ddlState").rules("remove", "required");
+        $("#ddlCity").rules("remove", "required");
+        $("#PinCode").rules("remove", "required");
+
+        ////Option 1
+        //$('.canHideWhenOtherCountry').slideUp();
+
+        //Option 2
+        $("#GstnEntityType").val('').attr("readonly", true);
+        //$("#GstnEntityName").val('').attr("readonly", true);
+        $("#GstnNumber").val('').attr("readonly", true);
+
+        $('.canHideWhenOtherCountry').slideUp();
+
+        //$("#PinCode").val('').attr("readonly", true);
+
+        //$('span[data-valmsg-for="GstnEntityType"]').hide();
+        //$('span[data-valmsg-for="GstnEntityName"]').hide();
+        ////$('span[data-valmsg-for="GstnNumber"]').hide();
+        //$('span[data-valmsg-for="PinCode"]').hide();
+        //$('span[data-valmsg-for="ddlCity"]').hide();
+
+    }
+
+    function clearValidation(formElement) {
+        //Internal $.validator is exposed through $(form).validate()
+        var validator = $(formElement).validate();
+        //Iterate through named elements inside of the form, and mark them as error free
+        $('[name]', formElement).each(function () {
+            validator.successList.push(this);//mark as error free
+            validator.showErrors();//remove error messages if present
+        });
+        validator.resetForm();//remove error class on name elements and clear history
+        validator.reset();//remove all error and success data
+    }
+
+    function validateDomain(v) {
+        if (!v) return false;
+        var re = /^(?!:\/\/)([a-zA-Z0-9-]+\.){0,5}[a-zA-Z0-9-][a-zA-Z0-9-]+\.[a-zA-Z]{2,64}?$/gi;
+        return re.test(v);
+    }
+
+    function validateGSIN(v) {
+        if (!v) return false;
+        var re = /\d{2}[A-Z]{5}\d{4}[A-Z]{1}\d[Z]{1}[A-Z\d]{1}/
+        return re.test(v);
+    }
+
+    //function validateDomain(url) {
+    //    debugger;
+    //    url = url.replace("http://", "");
+    //    url = url.replace("www.", "");
+
+    //    var reg = /^[a-zA-Z0-9]{0}[a-zA-Z0-9-]{1,61}[a-zA-Z0-9]{0}\.[a-zA-Z]{2,}$/;
+    //    return reg.test(url);
+    //}
+
+    function isValidEmailAddress(emailAddress) {
+        var pattern = /^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
+        return pattern.test(emailAddress);
+    };
+
+</script>

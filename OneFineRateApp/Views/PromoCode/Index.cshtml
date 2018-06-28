@@ -1,0 +1,281 @@
+﻿@model OneFineRateBLL.Entities.ePromoCode
+@{
+    ViewBag.Title = "Promo Code";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+
+
+@*<link href="~/css/jquery-ui.css" rel="stylesheet" />*@
+<script src="~/js/Jquery1.10.3.js"></script>
+<script src="~/js/jquery.validate.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/js/jquery-ui.js"></script>
+
+<link href="~/css/highCheckTree.css" rel="stylesheet" />
+<script src="~/js/highchecktree.js"></script>
+<style>
+    .changeCursor {
+    cursor:text;
+    }
+</style>
+
+<script type="text/javascript">
+    function OpenPopUp() {
+        var url = '@Url.Action("Add")';
+        $("#AddPromoCode").load(url);
+        $('#AddPromoCode').modal({
+            show: 'true'
+        });
+    }
+    function EditData(Id) {
+        var url = '@Url.Action("Edit")' + "/" + Id;
+        $("#AddPromoCode").load(url);
+        $('#AddPromoCode').modal({
+            show: 'true'
+        });
+    }
+
+    function UpdateStatus(id, status) {
+        bootbox.confirm("Are you sure, you want to '" + fnButtonname(status) + "' this record?", function (result) {
+            if (result == true) {
+                var values = { id: id, status: fnStatuscode(status) };
+                var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("UpdateStatus")", values));
+                if (Data != null) {
+                    if (Data.st == '1') {
+                        bindgrid();
+                        $('.close').click();
+                        toastr.success(Data.msg);
+                        return true;
+                    }
+                    else if (Data.st == '0') {
+                        toastr.error(Data.msg);
+                        return false;
+                    }
+
+                }
+            }
+        });
+    }
+
+    // bind list
+
+    function fnButtonname(cStatus) {
+        return (cStatus == 'Live' ? 'Disable' : 'Enable');
+    }
+    function fnStatuscode(cStatus) {
+        return (cStatus == 'Live' ? 'I' : 'A');
+    }
+    $(document).ready(function () {
+        bindgrid(); //binding datatable
+    });
+
+    function bindgrid() {
+
+        try {
+
+            var aoColumns =
+                [
+                    //{ "sTitle": "iPromoCodeId", "bSortable": false, "bVisible": false, "mData": "iPromoCodeId" },
+                    // { "sTitle": "Title", "bSortable": true, "mData": "sPromoTitle", "bVisible": false },
+                     { "sTitle": "Promo Code", "bSortable": true, "mData": "sPromoCode" },
+                     { "sTitle": "Description", "bSortable": false, "mData": "sPromoDescription" },
+                 { "sTitle": "Amenity/ Discount", "bSortable": false, "mData": "sAmenityName" },
+                 {
+                     "sTitle": "Booking Date From", "mData": "dtBookingFrom", "bSortable": true,
+                     "mRender": function (data, type, full) {
+                         return getNorDateWithoutTime(data);
+                     }
+                 },
+                 {
+                     "sTitle": "Booking Date To", "mData": "dtBookingTo", "bSortable": true,
+                     "mRender": function (data, type, full) {
+                         return getNorDateWithoutTime(data);
+                     }
+                 },
+                 {
+                     "sTitle": "Stay From", "mData": "dtStayFrom", "bSortable": true,
+                     "mRender": function (data, type, full) {
+                         return getNorDateWithoutTime(data);
+                     }
+                 },
+                 {
+                     "sTitle": "Stay To", "mData": "dtStayTo", "bSortable": true,
+                     "mRender": function (data, type, full) {
+                         return getNorDateWithoutTime(data);
+                     }
+                 },
+                 { "sTitle": "Status", "bSortable": true, "mData": "cStatus" },
+                 { "sTitle": "Action By", "bSortable": true, "mData": "ActionBy" },
+                 {
+                     "sTitle": "Action Date", "bSortable": true, "mData": "dtActionDate",
+                     "mRender": function (data, type, full) {
+                         return getNorDateTime(data);
+                     }
+                 },
+                 {
+                     "sTitle": "Hotel Count", "mData": "HotelCount", "bSortable": false,
+                     "mRender": function (data, type, full) {
+                         var html = '<a href="#" style="color:Black;" onclick="ShowPromoMappedHotels(' + encodeURIComponent(full.iPromoCodeId) + ')">' + data + '</a>';
+                         return html;
+                     }
+                 },
+                 {
+                     "sTitle": "Edit", "bSortable": false, "mData": "iPromoCodeId",
+                     "mRender": function (data, type, full) {
+                         var html = '<button type="button" onclick="EditData(' + full.iPromoCodeId + ')";  class="btn btn-warning width90 btn-xs">Edit</button>&nbsp';
+                         html += '<a href="/PromoHotelMap/index?id=' + full.iPromoCodeId + '&fname=' + encodeURIComponent(full.sPromoCode) + '&lname=' + encodeURIComponent(full.sPromoTitle) + '"><input type="button" value="Map Hotels"  class="btn btn-primary margintop10 btn-xs"/></a><br/>';
+                         if (full.cStatus == "Live") {
+                             html += '<button type="button" onclick="UpdateStatus(' + full.iPromoCodeId + ',\'' + full.cStatus + '\')";  class="btn btn-danger btn-xs  width90 margintop10">Disable</button>';
+                         }
+                         else {
+                             html += '<button type="button" onclick="UpdateStatus(' + full.iPromoCodeId + ',\'' + full.cStatus + '\')";  class="btn btn-success btn-xs  width90 margintop10">Enable</button>';
+                         }
+
+                         return html;
+
+                     }
+                 }
+                ];
+
+            DatatableServerSide("#tblData", aoColumns, "/Services/Service.asmx/GetAllPromoCodes");
+            $('.dataTables_filter input').attr('title', 'Promo Code');
+        }
+        catch (e) {
+        }
+    }
+
+
+    function minmax(value, min, max) {
+        if ($('#cPercentageValue option:selected').text() == '%') {
+            if (parseInt(value) < min || isNaN(value))
+                return 0;
+            else if (parseInt(value) > max) {
+                $("#dValue").val(null);
+                return null;
+            }
+            else {
+                $("#dValue").val(value);
+                return value;
+            }
+        }
+        else {
+            $("#dValue").val(value);
+            return value;
+        }
+    }
+
+    function ddListChange() {
+        if ($('#cPercentageValue option:selected').text() == '%') {
+            var v = $("#dValue").val();
+            minmax(v, 0, 100);
+        }
+
+    }
+
+    function ShowPromoMappedHotels(id) {
+
+        var mns = AjaxCallWithDataGET("/Services/Service.asmx/GetPromoMappedHotels?id=" + id);
+        var menus = $.parseJSON(mns.d);
+
+        console.log(menus)
+        // return false;
+        var chkData = "", PrevParent = "", onlyHotelsWithoutChain = true;
+
+        var mockData = [], children = [];
+        var parentitem;
+        for (var i = 0; i < menus.length; i++) {
+            if (menus[i].checked == '1') {
+                if (menus[i].parent != "") {
+                    onlyHotelsWithoutChain = false;
+                    if (PrevParent == menus[i].parent) {
+
+                        children.push({ "item": { "id": "" + menus[i].id, "label": menus[i].name, checked: menus[i].checked == 0 ? false : true } });
+                    }
+                    else {
+                        if (PrevParent != "") {
+                            mockData.push({ "item": { "id": "Parent" + i, "label": PrevParent, checked: false }, children: children });
+                        }
+                        children = [];
+                        children.push({ "item": { "id": "" + menus[i].id, "label": menus[i].name, checked: menus[i].checked == 0 ? false : true } });
+                        PrevParent = menus[i].parent;
+                    }
+                }
+                else {
+                    mockData.push({ "item": { "id": "" + menus[i].id, "label": menus[i].name, checked: menus[i].checked == 0 ? false : true } });
+                }
+            }
+        }
+        if (!onlyHotelsWithoutChain)
+            mockData.push({ "item": { "id": "Parent" + menus.length + 1, "label": PrevParent, checked: false }, children: children });
+
+        var chkData = "";
+        $("#chkdivMap").html(chkData);
+
+        
+        $('#chkdivMap').highCheckTree({
+            data: mockData,
+            ReadOnly: true
+        });
+
+        $(".expanded").click();
+
+        $('#UsersMapping').modal({
+            show: 'true'
+        });
+    }
+</script>
+
+<div class="container margintop20">
+    <div class="row panel panel-default">
+        <div class="container panel-heading">
+            <div class="col-md-6">
+                <h4 class="panel-title">
+                    Promo Code
+                </h4>
+            </div>
+            <div class="col-md-6">
+                <button type="button" class="pull-right btn btn-warning" onclick="OpenPopUp();"><i class="fa fa-plus"></i> Add Promo </button>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div style="width:1107px !important; border:0px solid green; overflow-y:hidden; overflow-x:auto;">
+                <div class="table-responsive margintop20">
+                    <table class="table table-striped table-bordered table-hover display" id="tblData"></table>
+                </div>
+            </div>
+            <!-- End  table -->
+        </div>
+    </div>
+    <!-- container div END bottom -->
+</div>
+<!-- Add Chain -->
+
+<div id="AddPromoCode" class="modal fade" role="dialog">
+
+</div>
+
+
+<!--Show MApping-->
+
+<form id="frmUsersMapping">
+    <div id="UsersMapping" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Mapped Hotels and Chains</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div id="chkdivMap" class="col-xs-12"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="btnUpdate" class="btn btn-primary" onclick="$('.close').click();">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

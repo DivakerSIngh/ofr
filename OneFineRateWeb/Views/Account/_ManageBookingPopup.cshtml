@@ -1,0 +1,114 @@
+﻿@using OneFineRateWeb.Models
+@model ManageBooking
+
+
+<div role="tabpanel" id="manageMyBooking" class="tab-pane">
+
+    @using (Html.BeginForm("Modify", "Booking", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Get, new { id = "frmSearchBookingPopup" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "red" })
+        <div class="row">
+            <div class="col-md-offset-2 col-xs-offset-1">
+                <div class="col-md-10 col-xs-11 margintop10">
+                    <label class="red" id="frmSearchBookingPopupValidationSummary"></label>
+
+                    <div class="red margintop10" id="loginErrors"></div>
+                    @Html.TextBoxFor(m => m.BookingId, new { placeholder = "Booking ID", maxlength = "50", @class = "form-control atLeastOne" })
+                    @Html.ValidationMessageFor(m => m.BookingId, "", new { @class = "red" })    
+                    <div class="clearfix"></div>              
+                    <input type="radio" id="p1" name="searchByQ" value="email" checked="checked">
+                    <label for="p1">Email</label>
+                    <input type="radio" id="p2" name="searchByQ" value="mobile">
+                    <label for="p2">Mobile</label>
+                    @Html.TextBoxFor(m => m.Email, new { id = "txtEmailPopup", placeholder = "Provide the email used for booking", maxlength = "50", @class = "form-control margintop10 atLeastOne" })
+                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "red" })
+                    @Html.TextBoxFor(m => m.Mobile, new { id = "txtMobilePopup", style = "display:none", placeholder = "Provide the mobile no. used for booking", maxlength = "10", @class = "form-control margintop10 atLeastOne" })
+                    @Html.ValidationMessageFor(m => m.Mobile, "", new { @class = "red" })
+
+                    <div class="modal-footer  noborder">
+                        <div class="row form-inline">
+                            <div class="col-md-12 text-center">
+                                <button type="submit" class="col-md-12 btn btn-primary btnManageBooking">Submit</button>
+                            </div>
+                        </div>
+                        @*<div class="row" style="text-align:center;margin-top: 5%;">
+                                <a href="javascript:void()" data-dismiss="modal">close</a>
+                            </div>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+
+
+<script>
+    $('#txtMobilePopup').keypress(function (e) {
+
+        var cursorPosition = document.getElementById('txtMobilePopup').selectionStart;
+
+        if ((this.value.length == 0 || cursorPosition == 0) && e.which == 48) {
+
+            return false;
+        }
+    });
+</script>
+
+
+@*<div class="modal fade modal" id="accountModelBooking" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content row">
+                <div class="mynewclassclose"><img data-dismiss="modal" src="~/images/close-button.png" /></div>
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active" style="width:50%"><a href="#signinBookingPopup" aria-controls="Sign In" role="tab" style="padding-left:34%" data-toggle="tab">Sign In</a></li>
+
+                </ul>
+                <div class="model-body ">
+                    <div class="tab-content">
+
+
+                        <div role="tabpanel" id="manageMyBooking" class="tab-pane">
+
+                            @using (Html.BeginForm("Booking", "Manage", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Get, new { id = "frmSearchBookingPopup" }))
+                            {
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary(true, "", new { @class = "red" })
+
+                            <div class="col-md-12 margintop-10">
+                                <label class="red" id="frmSearchBookingPopupValidationSummary"></label>
+
+                                <div class="red margintop10" id="loginErrors"></div>
+                                @Html.TextBoxFor(m => m.BookingId, new { placeholder = "Booking ID", maxlength = "50", @class = "form-control atLeastOne" })
+                                @Html.ValidationMessageFor(m => m.BookingId, "", new { @class = "red" })
+                                <br />
+                                <input type="radio" id="p1" name="searchByQ" value="email" checked="checked">
+                                <label for="p1">Email</label>
+                                <input type="radio" id="p2" name="searchByQ" value="mobile">
+                                <label for="p2">Mobile</label>
+                                @Html.TextBoxFor(m => m.Email, new { id = "txtEmailPopup", placeholder = "Email / Mobile Used for Booking", maxlength = "50", @class = "form-control margintop10 atLeastOne" })
+                                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "red" })
+                                @Html.TextBoxFor(m => m.Mobile, new { id = "txtMobilePopup", style = "display:none", placeholder = "Email / Mobile Used for Booking", maxlength = "50", @class = "form-control margintop10 atLeastOne" })
+                                @Html.ValidationMessageFor(m => m.Mobile, "", new { @class = "red" })
+
+                                <div class="modal-footer  noborder">
+                                    <div class="row form-inline">
+                                        <button type="submit" class="col-md-12 btn btn-success btnManageBooking">SUBMIT</button>
+                                    </div>
+                                    <div class="row" style="text-align:center;margin-top: 5%;">
+                                        <a href="javascript:void()" data-dismiss="modal">close</a>
+                                    </div>
+                                </div>
+                            </div>
+                            }
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+

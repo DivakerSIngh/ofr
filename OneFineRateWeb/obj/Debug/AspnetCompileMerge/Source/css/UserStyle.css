@@ -1,0 +1,168 @@
+﻿
+.logouser{    margin-top: 4px;
+    margin-left: -12px;}
+.header_bar {
+    background: #fecb00;
+       padding-bottom: 0px;
+}
+.profilepicdiv{    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin: auto;
+    overflow: hidden;}
+.profilepicdiv img{width:100%;}
+/*.profilepic {
+    height: 115px;
+    width: auto;
+}*/
+/*.rightwhitebox label {
+    font-size: 13px;
+}*/
+ul.prefer{display:inline; }
+ul.prefer li {display:inline; padding:10px}
+.tablebluebg {
+    background-color: #0f204b;
+    color: #fff;
+    padding-left:5px;
+    font-size:17px;
+}
+.tabsbg {
+    background-color: #0f204b;
+    color: #fff;
+    padding-left:5px;
+    padding-bottom:4px;
+    padding-top:4px;
+}
+.ofrpointbox {
+   border: 1px solid #ddd;
+    background-color: #fff;
+    /*min-height:298px;
+    padding-top:30%;*/
+    background-color: #f9f9f9 !important;
+  
+}
+    
+
+.srchpnlbox {
+   border: 1px solid #ddd;
+    background-color: #fff;
+}
+.bookingbxbg {
+     border-top: 4px solid #0f204b !important;
+   border-bottom: #e7e6e6 1px solid !important;
+   border-left: #e7e6e6 1px solid !important;
+   border-right: #e7e6e6 1px solid !important;
+    /*background-color: #f9f9f9 !important;*/
+    /*font-size: 14px;*/ 
+ 
+}
+
+
+.bookingbxbghighlight {
+    background-color: #f4f4f4;
+    border: 1px solid #f1f1f1;
+    min-height:113px;
+}
+.bookingbxbghighlight1 {
+    background-color: #f4f4f4;
+    border: 1px solid #f1f1f1;
+    min-height:140px;
+}
+.bookingbxbghighlight2 {
+    background-color: #f4f4f4;
+    border: 1px solid #f1f1f1;
+    min-height:160px;
+}
+.img120 {
+    width: 170px;
+    height: 120px;
+    padding-left:6px;
+}
+.img140 {
+    width: 186px;
+    height: 140px;
+    padding-left:6px;
+}
+.font15a {
+    font-size: 19px;
+    font-weight: 500;
+    color:#2a75ac;
+    float:left;
+}
+.rscolor{color:#2a75ac;}
+.bookingstar {
+    float:left;
+    padding-left:10px;
+    width: 48px;
+    height: auto;
+    margin-bottom: 4px;
+}
+.property-box {
+    position: relative;
+    display: block;
+    border-radius: 2px;
+    border: solid #d1cbcb 1px;
+    margin: 10px 0;
+
+width:auto;
+height:160px;
+}
+/*	width:264px;*/
+.property-box.propertySearch-box .img-con {
+    height: auto;
+}
+.property-box .img-con {
+    clear: both;
+    margin: 0px;
+    padding: 0px;
+
+    overflow: hidden;
+	
+	  
+}
+#propertyListings .property-box .img-con img, #feturedPropertyBlock .property-box .img-con img {
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
+}
+.property-box .img-con img {
+    width: 180px;
+    height:125px;
+    margin: 0px;
+    padding: 0px;
+    float: left;
+}
+.img-con {
+    position: relative;
+	overflow:hidden;
+}
+
+ul.youmaylikeimg{}
+ul.youmaylikeimg li{display:inline-block; padding-left:6px;}
+ul.youmaylikeimg li:first-child{display:inline-block; padding-left:0px;}
+
+.hoteltitles {    width: 100%;
+    padding: 10px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    /*font-size: 16px;*/
+    font-weight: 100;
+    line-height: 1;
+    max-height: 86px;
+    position: absolute;
+    overflow: hidden;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    color: white;
+    background: rgba(0,0,0,0.5);
+}
+	/*.blueboldtextsmall{color:#2a75ac; font-size: 14px; margin-top:10px;}*/
+/*common*/
+.infoiconpos-20 {
+    position: relative;
+    top: -20px;
+
+}
+/**/

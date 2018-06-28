@@ -1,0 +1,37 @@
+﻿@model OneFineRateBLL.Entities.eRefundModel
+@{
+    ViewBag.Title = "Refund";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="light_header_bar">
+    <div class="container">
+        <div class="col-md-12">
+            <h4 class="padddingbottom10">Refund</h4>
+        </div>
+    </div>
+</div>
+
+
+<div class="container"> 
+    <div class="row" style="padding:5%">
+        <div class="alert alert-warning fade in alert-dismissable" style="display:@(!string.IsNullOrEmpty(Model.sRefundWarningMsg) ? Html.Raw("block") : Html.Raw("none"))">
+            <a href="javascript:void(0)" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+            <strong>@Model.sRefundWarningMsg !</strong>
+        </div>
+        <div class="col-md-6 col-xs-12 col-lg-6 col-md-offset-3">
+            <div class="well well-sm" style="text-align:center">
+                <h2>Thank you for using OneFineRate!</h2>                
+                <div class="content">
+
+                    <p>@Html.Raw(Model.sRefundStatusMsg)</p>
+
+                    <div class="clear clearfix"></div>
+
+                    <a href="~/" class="btn btn-primary">Go Back to Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

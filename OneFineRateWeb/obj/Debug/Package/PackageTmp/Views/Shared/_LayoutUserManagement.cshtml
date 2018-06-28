@@ -1,0 +1,435 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" user-scalable="no">
+    <title>OFR - @ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/userManagementCss")
+
+    <link href="~/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="~/css/jquery.dataTables.responsive.css" rel="stylesheet" />
+
+    <style>
+        #divwhole::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+            border-radius: 5px;
+            background-color: #F5F5F5;
+        }
+
+        #divwhole::-webkit-scrollbar {
+            width: 5px;
+            background-color: #F5F5F5;
+        }
+
+        #divwhole::-webkit-scrollbar-thumb {
+            border-radius: 5px;
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+            background-color: #000000;
+        }
+
+
+        #ui-datepicker-div {
+            display: none;
+        }
+
+        .manageActive {
+            background-color: #ba9604;
+        }
+
+        /*.modal-open, .modal-open .navbar-fixed-top {
+            margin-right: 0 !important;
+            padding-right: 0 !important;
+        }*/
+
+        /*To show child age when > 9 (more than one digit) */
+        .child {
+            width: 110% !important;
+        }
+
+        .toast-top-center {
+            top: 50px;
+        }
+    </style>
+    <link rel="stylesheet" media="print" src="~/css/print.css" />
+    <link href="~/css/responsive.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container-wrapper">
+        <div class="overlay" style="display:none">
+            <div class="loader" style="top:40%; position:fixed;left:45%; z-index:99999999 !important;"></div>
+        </div>
+
+        <header>
+            <nav class="navbar navbar-inverse whitebg">
+                <div class="container">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a href="@Url.Action("index","home")"><img src="@Url.Content("~/images/logoNew.png")" alt="" class="logouser"></a>
+                    </div>
+                    <div class="collapse navbar-collapse" id="myNavbar">
+                        <ul class="nav navbar-nav navbar-right margintop5" style="list-style:none !important">
+                            <li class="noborder">
+                                @Html.Partial("_LoginPartial")
+                            </li>
+
+                            <li>
+                                <a href="@Url.Action("Booking","Manage")"><i class="fa fa-pencil-square-o"></i> Manage My Booking</a>
+                                @*<a href="javascript:void(0);" data-remote="false" data-toggle="modal" data-buttontype="managebooking" data-target="#accountModel"><i class="fa fa-pencil-square-o"></i> Manage My Booking</a>*@
+                            </li>
+                            <li>
+                                <a href="@Url.Action("Index","Home")"><i class="fa fa-phone"></i> 1800-250-2601</a>
+                            </li>
+                            <li>
+                                <select id="ddlCountryFlags"></select>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <div class="header_bar">
+            <div class="container">
+
+                <nav>
+                    <a id="resp-menu" class="responsive-menu" href="#"><i class="fa fa-reorder"></i> Menu</a>
+                    <ul class="menu">
+
+                        <li id="li_Dashboard">
+                            @Html.ActionLink("Dashboard", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Dashboard", @class = ViewBag.DashboardActive })
+                        </li>
+
+                        <li id="li_Booking">
+                            @Html.ActionLink("Bookings ", "Booking", "Manage", routeValues: null, htmlAttributes: new { @class = ViewBag.BookingsActive, title = "Bookings" })
+
+                        </li>
+
+                        <li id="li_MyAccount">
+                            @Html.ActionLink("Profile ", "MyAccount", "Manage", routeValues: null, htmlAttributes: new { @class = "dropbtn " + ViewBag.ProfileActive, title = "My Account" })
+                            <ul class="sub-menu">
+
+                                <li>
+                                    <a class="smothScroll" href="@Url.Action("MyAccount", "Manage")#MyProfile">Profile</a>
+                                </li>
+                                <li>
+                                    <a class="smothScroll" href="@Url.Action("MyAccount", "Manage")#MyPreference">Preferences</a>
+                                </li>
+                                <li>
+                                    <a class="smothScroll" href="@Url.Action("MyAccount", "Manage")#GovernmentIds">Govt. Approved ID</a>
+                                </li>
+                                <li>
+                                    <a class="smothScroll" href="@Url.Action("MyAccount", "Manage")#Password">Password</a>
+                                </li>
+                                @*<li>
+                                        <a class="smothScroll" href="#ManageLoginsDiv">Manage Logins</a>
+                                    </li>*@
+                            </ul>
+                        </li>
+                        <li id="li_WishList">
+                            @Html.ActionLink("My Wishlists ", "WishList", "Manage", routeValues: null, htmlAttributes: new { @class = "dropbtn " + ViewBag.WishlistActive, title = "Wish List" })
+                        </li>
+                        <li id="li_ReferralCode">
+                            @Html.ActionLink("Manage Referral Code", "ReferralCode", "Manage", routeValues: null, htmlAttributes: new { @class = "dropbtn " + ViewBag.ReferralCodeActive, title = "Manage Referral Code" })
+                        </li>
+                        <li id="li_RewardPoints">
+                            @Html.ActionLink("Reward points", "RewardPoints", "Manage", routeValues: null, htmlAttributes: new { @class = "dropbtn " + ViewBag.RewardPointsActive, title = "Manage Reward points" })
+                        </li>
+                    </ul>
+
+                </nav>
+
+            </div>
+        </div>
+        @Html.Hidden("hdnJson")
+        @Html.Hidden("hdnJsonNew")
+        @RenderBody()
+
+        <div class="marginbottom20">&nbsp;</div>
+    </div>
+
+    <div class="container-wrapper">
+        <div class="yellowbgfooter"><img src="@Url.Content("~/images/yellow-bg.png")" class="img-responsive"></div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="col-md-2 col-xs-6">
+                <h5><strong>The Company</strong></h5>
+                <ul>
+                    <li><a href="@Url.Action("Index","AboutUs")">About us</a></li>
+                    <li><a href="@Url.Action("Index","ContactUs")">Contact Us</a></li>
+                    <li><a href="@Url.Action("Index","PressCenter")">Press Center</a></li>
+                    <li><a href="@Url.Action("Index", "Careers")">Careers</a></li>
+                    <li><a href="@Url.Action("Index", "Feedback")">Feedback</a></li>
+                </ul>
+            </div>
+            <div class="col-md-2 col-xs-6">
+                <h5><strong>Important  Information</strong></h5>
+                <ul>
+                    <li><a href="@Url.Action("Index", "FAQ")">FAQ</a></li>
+                    <li><a href="@Url.Action("Index", "Sitemap")">Sitemap</a></li>
+                    <li><a href="@Url.Action("Index", "Terms")">Terms And Conditions</a></li>
+                    <li><a href="@Url.Action("Index", "PrivacyPolicy")">Privacy Policy</a></li>
+                    <li><a href="@Url.Action("Index", "Team")">Team</a></li>
+                </ul>
+            </div>
+            <div class="col-md-2 col-xs-6">
+                <h5><strong>How it works</strong></h5>
+                <ul>
+                    <li><a href="#">Bid</a></li>
+                    <li><a href="#">Negotiate</a></li>
+                </ul>
+            </div>
+            <div class="col-md-2 col-xs-6">
+                <h5><strong>Hotel Partners</strong></h5>
+                <ul>
+                    <li><a href="#">New Hotel Partner</a></li>
+                    <li><a href="#">Hotel Extranet</a></li>
+                </ul>
+            </div>
+            <div class="col-md-2 col-xs-12">
+                <h5><strong>Pay Through</strong></h5>
+                <div class="payment">
+                    <ul>
+                        <li><a><img src="@Url.Content("~/images/americanicn.png")" class="imgheight19"></a></li>
+                        <li><a><img src="@Url.Content("~/images/mastericn.png")" class="imgheight19"></a></li>
+                        <li><a><img src="@Url.Content("~/images/maestroicn.png")" class="imgheight19"></a></li>
+                        <li><a><img src="@Url.Content("~/images/dinersicn.png")" class="imgheight19"></a></li>
+                        <li><a><img src="@Url.Content("~/images/visaicn.png")" class="imgheight19"></a></li>
+                        <li><a><img src="@Url.Content("~/images/rupayicn.png")" class="imgheight19"></a></li>
+                    </ul>
+                    <div class="btn btn-success margintop10"><a href="@Url.Action("Index", "HotelPartner")" style="color:white;">Become a hotel partner !!</a></div>
+                </div>
+            </div>
+            <div class="col-md-2 col-xs-12">
+                <h5><strong>Engage with us</strong></h5>
+                <div class="social">
+                    <ul>
+                        <li><a href="https://www.facebook.com/onefinerate" target="_blank"><img src="@Url.Content("~/images/fb_icon.png")"></a></li>
+                        <li> <a href="#"><img src="@Url.Content("~/images/g_plus_icon.png")"></a> </li>
+                        <li><a href="https://twitter.com/onefinerate" target="_blank"><img src="@Url.Content("~/images/twitter_icon.png")"></a> </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div class="container-fluid ">
+        <div class="col-md-10">
+            <div class="whitebgfooter   ">
+                <img src="@Url.Content("~/images/tripadvisor-coming.jpg")">
+                @*<ul>
+
+                    <li> <img src="@Url.Content("~/images/ta_logo.jpg")" style="width:100%"></li>
+                    <li> <img src="@Url.Content("~/images/trustwave_logo.jpg")" style="width:100%"></li>
+                        <li> <img src="@Url.Content("~/images/tids_logo.jpg")" style="width:100%"></li>
+                        <li> <img src="@Url.Content("~/images/travel_icon.jpg")" style="width:100%"></li>
+                </ul>*@
+            </div>
+        </div>
+        <div class="col-md-2 margintop15">
+            <div class="pull-right font12">Copyright  <a href="#">Onefinerate.com</a></div>
+        </div>
+    </div>
+
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/userManagementJs")
+    <script src="~/Scripts/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/jquery.dataTables.responsive.js"></script>
+    <link href="~/Content/bootstrap-select.min.css" rel="stylesheet" />
+    <script src="~/Scripts/bootstrap-select.min.js"></script>
+
+    <script>
+
+        $(function(){
+
+            $('a[data-toggle="modal"]').on('click', function (e) {
+
+                var target = $(e.target).data("buttontype");
+
+                if (target === 'managebooking') {
+
+                    $('#manageMyBooking').show();
+                    $('.nav-tabs a[href="#manageMyBooking"]').tab('show');
+                }
+            });
+
+        });
+
+
+
+        (function BindCountries() {
+            var jsonData = '@Html.Raw(@Session["CountryList"])';
+            if (jsonData != "") {
+                CountryData = JSON.parse(jsonData);
+                if (CountryData.length > 0) {
+                    $.each(CountryData, function (index, d) {
+                        if (d.iActive) {
+                            $("#ddlCountryFlags").append("<option selected value='" + d.sCountryCode + "' data-icon='" + d.sImg + "'>" + d.sSymbol + " " + d.sCurrencyCode + "</option>");
+                        }
+                        else {
+                            $("#ddlCountryFlags").append("<option value='" + d.sCountryCode + "' data-icon='" + d.sImg + "'>" + d.sSymbol + " " + d.sCurrencyCode + "</option>");
+                        }
+                    });
+                }
+                $('#ddlCountryFlags').append('').wSelect('reset');
+
+                $('#ddlCountryFlags').wSelect();
+
+                $.fn.wSelect.defaults = {
+                    theme: 'classic',
+                    size: '4',
+                    labelPosition: 'left',
+                    highlight: true
+                };
+            }
+
+        })();
+
+        $(function () {
+
+            var menu 	= $('.menu');
+
+            $('#resp-menu').on('click', function(e) {
+                e.preventDefault();
+                menu.slideToggle();
+            });
+
+            $(window).resize(function(){
+                var w = $(window).width();
+                if(w > 767 && menu.is(':hidden')) {
+                    menu.removeAttr('style');
+                }
+            });
+
+            $(".alert").fadeTo(5000, 500).slideUp(500, function () {
+                $('.alert').slideUp(500);
+            });
+
+
+            var success = @((TempData["msg"] != null).ToString().ToLower());
+
+            if (success == true) {
+
+                showalert('@TempData["msg"]','alert-info');
+            }
+
+            function showalert(message,alerttype) {
+
+                $('#alert_placeholder').append('<div id="alertdiv" class="alert ' +  alerttype + '"><a class="close" data-dismiss="alert">x</a><span>'+message+'</span></div>')
+
+                setTimeout(function() {
+
+                    $("#alertdiv").slideUp( "slow", function() {
+
+                    });
+
+                }, 10000);
+            }
+
+            $('.smothScroll').smoothScroll();
+
+            $('.tabScroll').click(function () {
+
+                var dataid = $(this).attr('data-id');
+                if (dataid) {
+                    $('a[href="' + dataid + '"]').click();
+                }
+            });
+
+            $(document).mouseup(function (e) {
+
+                var container = $('.dropdown-menua');
+
+                if (!container.is(e.target) && container.has(e.target).length === 0) {
+                    container.hide();
+                    $.cookie('shownMenuId', undefined);
+                }
+            });
+
+
+            $('#ddlCountryFlags').change(function () {
+                $.post("/Home/ChangeCurrency", { CountryCode: this.value }, function () {
+                    window.location.href = window.location.href.substring(0, window.location.href.indexOf('#'));
+                });
+            });
+
+            $('#frmSearchBookingPopup').submit(function (e) {
+
+                if ($(this).valid()) {
+                    var email = $('#txtEmailPopup').val();
+                    var phone = $('#txtMobilePopup').val();
+                    var bookingId = $('#BookingId').val();
+
+                    if (email.length > 0 || phone.length > 0 || bookingId.length > 0) {
+                        return true;
+                    }
+                    else {
+                        $('#frmSearchBookingPopupValidationSummary').text('Please enter either BookingId, Email or Mobile number to search for booking.');
+                        e.preventDefault();
+                        return false;
+                    }
+                }
+            });
+
+            $('.atLeastOne').change(function () {
+
+                $('#frmSearchBookingPopupValidationSummary').text('');
+            });
+
+            $('input:radio[name="searchByQ"]').change(function () {
+                if ($(this).is(':checked') && $(this).val() == 'email') {
+                    $('#txtEmailPopup').show();
+                    $('#txtMobilePopup').hide();
+                    $('#txtMobilePopup').val(null);
+                    $('#txtMobilePopup-error').hide();
+                }
+                else if ($(this).is(':checked') && $(this).val() == 'mobile') {
+                    $('#txtMobilePopup').show();
+                    $('#txtEmailPopup').hide();
+                    $('#txtEmailPopup').val(null);
+                    $('#txtEmailPopup-error').hide();
+                }
+            });
+        });
+
+    </script>
+
+    @RenderSection("Scripts", required: false)
+
+    <div class="modal fade" id="genericModalPopupDiv" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content row">
+                <div class="mynewclassclose"><img data-dismiss="modal" src="~/images/close-button.png" /></div>
+                <div id="genericModalPopupContainer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(function () {
+
+            var success = @((TempData["msg"] != null).ToString().ToLower());
+            if (success == true) {
+                toastr.success('@TempData["msg"]');
+
+            }
+
+            var error = @((TempData["ERROR"] != null).ToString().ToLower());
+            if (error == true) {
+                toastr.error('@TempData["ERROR"]');
+            }
+        });
+    </script>
+
+</body>
+</html>

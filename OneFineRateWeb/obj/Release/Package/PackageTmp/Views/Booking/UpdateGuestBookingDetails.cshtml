@@ -1,0 +1,1349 @@
+﻿@model OneFineRateBLL.Entities.BookingGuestDetails
+@using OneFineRateAppUtil
+
+@{
+    ViewBag.Title = "UpdateGuestBookingDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    label.error {
+        color: red !important;
+    }
+
+    .ptype {
+        width: 100% !important;
+    }
+
+    .redtext {
+        color: red;
+    }
+
+    #frmBookingAmend .select2 {
+        width: 50% !important;
+        float: left !important;
+    }
+
+    .select2-container--default .select2-selection--single {
+        height: 34px;
+    }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 33px;
+        }
+</style>
+@*<script src="~/js/Jquery1.10.3.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>*@
+@*<script>
+        function GetResult(data) {
+            if (data.st == '1') {
+                toastr.success(data.msg);
+                stopSpinning();
+            }
+            else {
+                toastr.error(data.msg);
+                stopSpinning();
+
+            }
+        }
+    </script>*@
+
+@*@using (Ajax.BeginForm("UpdateGuestInformation", "Booking", new AjaxOptions() { InsertionMode = InsertionMode.Replace, UpdateTargetId = "targetid", HttpMethod = "POST", OnSuccess = "GetResult", OnBegin = "startSpinning();" }))
+    {*@
+@using (Html.BeginForm("UpdateGuestInformationAmmend", "Booking", FormMethod.Post, new { id = "frmBookingAmend" }))
+{
+    @Html.HiddenFor(m => Model.sPropertyName)
+    @Html.HiddenFor(m => Model.sPropertyAddress)
+    @Html.HiddenFor(m => Model.iStarCategory)
+
+    @Html.HiddenFor(m => Model.objBooking.iBookingId)
+    @Html.HiddenFor(m => Model.objBooking.iPropId)
+    @Html.HiddenFor(m => Model.objBooking.iCustomerId)
+    @Html.HiddenFor(m => Model.objBooking.iGuestId)
+    @Html.HiddenFor(m => Model.objBooking.iCountryOffset)
+    @Html.HiddenFor(m => Model.objBooking.sCountryTimeZone)
+    @Html.HiddenFor(m => Model.objBooking.dtCheckIn)
+    @Html.HiddenFor(m => Model.objBooking.dtChekOut)
+    @Html.HiddenFor(m => Model.objBooking.dtReservationDate)
+    @Html.HiddenFor(m => Model.objBooking.cBookingType)
+    @Html.HiddenFor(m => Model.objBooking.iNegotiateAttempts)
+    @Html.HiddenFor(m => Model.objBooking.sPromoCode)
+    @Html.HiddenFor(m => Model.objBooking.bPromoDiscount)
+    @Html.HiddenFor(m => Model.objBooking.bPromoAmenity)
+    @Html.HiddenFor(m => Model.objBooking.sTitleOFR)
+    @Html.HiddenFor(m => Model.objBooking.sFirstNameOFR)
+    @Html.HiddenFor(m => Model.objBooking.sLastNameOFR)
+    @Html.HiddenFor(m => Model.objBooking.sEmailOFR)
+    @Html.HiddenFor(m => Model.objBooking.sMobileOFR)
+    @Html.HiddenFor(m => Model.objBooking.dtActionDate)
+    @Html.HiddenFor(m => Model.objBooking.iActionBy)
+    @Html.HiddenFor(m => Model.objBooking.BookingStatus)
+    @Html.HiddenFor(m => Model.objBooking.PaymentStatus)
+    @Html.HiddenFor(m => Model.objBooking.ActualBookingType)
+    @Html.HiddenFor(m => Model.objBooking.dTotalNegotiateAmount)
+    @Html.HiddenFor(m => Model.objBooking.dAdvNegotiateAmount)
+    @Html.HiddenFor(m => Model.objBooking.dBidAmount)
+    @Html.HiddenFor(m => Model.objBooking.dTotalAmount)
+    @Html.HiddenFor(m => Model.objBooking.dTotalComm)
+    @Html.HiddenFor(m => Model.objBooking.dTaxes)
+    @Html.HiddenFor(m => Model.objBooking.dTaxesForHotel)
+    @Html.HiddenFor(m => Model.objBooking.dTotalExtraBedAmount)
+    @Html.HiddenFor(m => Model.objBooking.dDiscountedBidPrice)
+    @Html.HiddenFor(m => Model.objBooking.dCustomerPayable)
+    @Html.HiddenFor(m => Model.objBooking.bIsFeedBackEmailSent)
+    @Html.HiddenFor(m => Model.objBooking.bIsCustSmsSent)
+    @Html.HiddenFor(m => Model.objBooking.bIsHotelSmsSent)
+    @Html.HiddenFor(m => Model.objBooking.iCounterOffer)
+    @Html.HiddenFor(m => Model.objBooking.iLinkedBookingId)
+    @Html.HiddenFor(m => Model.objBooking.bInvBlocked)
+    @Html.HiddenFor(m => Model.objBooking.sExtra1)
+    @Html.HiddenFor(m => Model.objBooking.dccPrice)
+    @Html.HiddenFor(m => Model.objBooking.dccDiscount)
+    @Html.HiddenFor(m => Model.objBooking.dSafeguardComm)
+    @Html.HiddenFor(m => Model.objBooking.ccType)
+    @Html.HiddenFor(m => Model.objBooking.dTotalCommOriginal)
+    @Html.HiddenFor(m => Model.objBooking.dTaxesOriginal)
+    @Html.HiddenFor(m => Model.objBooking.sProvisionalBookingIdTG)
+    @Html.HiddenFor(m => Model.objBooking.sProvisionalTrxnTypeTG)
+    @Html.HiddenFor(m => Model.objBooking.sFinalTrxnTypeTG)
+    @Html.HiddenFor(m => Model.objBooking.sFinalBookingIdTG)
+    @Html.HiddenFor(m => Model.objBooking.bSyncToChannelMgr)
+    @Html.HiddenFor(m => Model.objBooking.dtSyncToChannelMgr)
+    @Html.HiddenFor(m => Model.objBooking.cSyncStatus)
+    @Html.HiddenFor(m => Model.objBooking.iBidStarCategory)
+    @Html.HiddenFor(m => Model.objBooking.sBidType)
+    @Html.HiddenFor(m => Model.objBooking.sIDs)
+    @Html.HiddenFor(m => Model.objBooking.dRefundAmount)
+    @Html.HiddenFor(m => Model.objBooking.cRefundStatus)
+    @Html.HiddenFor(m => Model.objBooking.cAmendStatus)
+    @Html.HiddenFor(m => Model.objBooking.sPaymentMode)
+    @Html.HiddenFor(m => Model.objBooking.sOAuth)
+    @Html.HiddenFor(m => Model.objBooking.sExtra2)
+    @Html.HiddenFor(m => Model.objBooking.sExtra3)
+    @Html.HiddenFor(m => Model.objBooking.sExtra4)
+    @Html.HiddenFor(m => Model.objBooking.sCurrencyCode)
+
+
+
+
+
+    @Html.HiddenFor(m => Model.GuestData, new { id = "hdnJson" })
+    for (int hdni = 0; hdni < Model.lsttblBookDetails.Count; hdni++)
+    {
+        @Html.HiddenFor(m => Model.lsttblBookDetails[hdni].iBookingDetailsID)
+        @Html.HiddenFor(m => Model.lsttblBookDetails[hdni].iBookingId)
+        @Html.HiddenFor(m => Model.lsttblBookDetails[hdni].iRoomId)
+        @Html.HiddenFor(m => Model.lsttblBookDetails[hdni].iRPId)
+        @Html.HiddenFor(m => Model.lsttblBookDetails[hdni].iRooms)
+    }
+
+
+
+    <div class="container margintop10" style="border:0px solid red;">
+        <div class="row">
+
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-4 col-xs-12">
+
+                        <img src='@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()@Model.sMainImgUrl' onerror="this.src='@Url.Content("~/images/noimage.jpg")'" id="imagePreview" class="imgheight114">
+
+                    </div>
+                    <div class="col-md-6 col-xs-12">
+                        <h3 class="mar-padd0"><strong>@Model.sPropertyName</strong></h3>
+                        <div class="margintop-5"><img src="~/images/inner-star@(Model.iStarCategory).png" class="srchinner_star"></div>
+
+                        <address>
+                            @Model.sPropertyAddress
+                            <div class="row margintop10">
+                                @*<div class="col-lg-4 col-md-3 col-sm-3  col-xs-3">Facilities:</div>*@
+                                <div class="col-md-5 col-xs-12 facilityicon">
+                                    <ul>
+                                        @for (int i = 0; i < Model.lstetblHotelFacilities.Count; i++)
+                                        {
+                                            <li><img src='@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()@Model.lstetblHotelFacilities[i].sImgUrl' onerror="this.src='@Url.Content("~/images/noimage.jpg")'" id="iconPreview" title="@Model.lstetblHotelFacilities[i].sHotelFacilites" style="height: 20px; width: 20px"></li>
+                                        }
+                                    </ul>
+                                </div>
+                                <div class="col-md-7 col-xs-12 facilityicon">
+                                    @if (!string.IsNullOrEmpty(Model.RatingImageUrl))
+                                    {
+                                        <img src="@Model.RatingImageUrl" /><br />
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.RatingString))
+                                    {
+                                        <em class="green">
+                                            @Model.RatingString
+                                        </em>
+                                    }
+                                </div>
+                                </div>
+                            <hr>
+                        </address>
+                        <div class="row margintop-10">
+                            <div class="col-md-12">
+                                <div class="table-responsive noborder  info">
+                                    <table class="table">
+                                        <tr>
+                                            <td>Check In:</td>
+                                            <td><strong>@Model.scheckIn</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Check Out:</td>
+                                            <td><strong>@Model.scheckOut </strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Room(s):</td>
+                                            <td><strong>@Model.iNoOfRooms</strong></td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-xs-12">
+                <div class="row ">
+                    <div class="col-md-12">
+                        <h4 class="center">Total Summary </h4>
+                        <hr>
+                        @{
+    String GrandTotal = "";
+                        }
+
+                        @{
+    if (Model.objBooking.cBookingType == "N")
+    {
+        <div class="row">
+            <div class="col-md-4 col-xs-5 pull-left">Rooms Rate</div>
+            <div class="col-md-1 col-xs-1">:</div>
+            @{
+
+        if (Model.objBooking.BookingStatus == "NP")
+        {
+            GrandTotal = clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(@Model.objBooking.dTotalNegotiateAmount + @Model.objBooking.dTaxes));
+            <div class="col-md-7  col-xs-5 pull-right"><strong>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.objBooking.dTotalNegotiateAmount))</strong></div>
+        }
+        else if (Model.objBooking.BookingStatus == "CP")
+        {
+            if (Model.objBooking.ccType == "CA")
+            {
+                GrandTotal = clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(@Model.objBooking.dTotalNegotiateAmount + @Model.objBooking.dTaxes));
+                <div class="col-md-7  col-xs-5 pull-right"><strong>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.objBooking.dTotalNegotiateAmount))</strong></div>
+            }
+            if (Model.objBooking.ccType == "CR")
+            {
+                GrandTotal = clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(@Model.objBooking.dccPrice + @Model.objBooking.dTaxes));
+                <div class="col-md-7  col-xs-5 pull-right"><strong>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.objBooking.dccPrice))</strong></div>
+            }
+            else
+            {
+                GrandTotal = clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(@Model.objBooking.iCounterOffer + @Model.objBooking.dTaxes));
+                <div class="col-md-7  col-xs-5 pull-right"><strong>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.objBooking.iCounterOffer))</strong></div>
+            }
+
+        }
+        else if (Model.objBooking.BookingStatus == "PC")
+        {
+            if (Model.objBooking.ccType == "RR")
+            {
+                <div class="col-md-7 col-xs-5 pull-right"><strong>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.objBooking.dTotalAmount) + Convert.ToDecimal(@Model.objBooking.dTotalExtraBedAmount))</strong></div>
+                GrandTotal = clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(@Model.objBooking.dTotalAmount + @Model.objBooking.dTotalExtraBedAmount + @Model.objBooking.dTaxes) - Convert.ToDecimal(@Model.objBooking.dccDiscount));
+            }
+            else if (Model.objBooking.ccType == "RA")
+            {
+                <div class="col-md-7 col-xs-5 pull-right"><strong>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.objBooking.dTotalNegotiateAmount))</strong></div>
+                GrandTotal = clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(@Model.objBooking.dTotalNegotiateAmount + @Model.objBooking.dTaxes));
+            }
+            else if (Model.objBooking.ActualBookingType == "B")
+            {
+                GrandTotal = clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(@Model.objBooking.dCustomerPayable) + Convert.ToDecimal(@Model.objBooking.dTaxes) + Convert.ToDecimal(@Model.objBooking.dAdvNegotiateAmount));
+                <div class="col-md-7 col-xs-5 pull-right"><strong>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.objBooking.dCustomerPayable) + Convert.ToDecimal(@Model.objBooking.dAdvNegotiateAmount))</strong></div>
+            }
+
+        }
+        else if (Model.objBooking.BookingStatus == "FA")
+        {
+            <div class="col-md-7 col-xs-5 pull-right"><strong>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.objBooking.dccPrice))</strong></div>
+            GrandTotal = clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(@Model.objBooking.dTotalAmount + @Model.objBooking.dccPrice + @Model.objBooking.dTaxes) - Convert.ToDecimal(@Model.objBooking.dccDiscount));
+        }
+            }
+
+        </div>
+
+    }
+    else if (Model.objBooking.cBookingType == "B")
+    {
+        <div class="row">
+            <div class="col-md-4 col-xs-5 pull-left">Rooms Rate</div>
+            <div class="col-md-1 col-xs-1">:</div>
+
+            @{
+
+                <div class="col-md-7  col-xs-5 pull-right"><strong>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.objBooking.dBidAmount))</strong></div>
+        GrandTotal = clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(@Model.objBooking.dBidAmount + @Model.objBooking.dTaxes));
+
+            }
+
+
+        </div>
+
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-4 col-xs-5 pull-left">Rooms Rate</div>
+            <div class="col-md-1 col-xs-1">:</div>
+
+            @{
+
+                <div class="col-md-7  col-xs-5 pull-right"><strong>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.objBooking.dTotalAmount))</strong></div>
+        GrandTotal = clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(@Model.objBooking.dTotalAmount + @Model.objBooking.dTotalExtraBedAmount + @Model.objBooking.dTaxes));
+
+            }
+
+
+        </div>
+                            <div class="row">
+                                <div class="col-md-4  col-xs-5">Extra Bed Charges </div>
+                                <div class="col-md-1 col-xs-1">:</div>
+                                <div class="col-md-7  col-xs-5  pull-right"><strong>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.objBooking.dTotalExtraBedAmount)) </strong></div>
+                            </div>
+
+    }
+                        }
+
+                        <div class="row">
+                            <div class="col-md-4  col-xs-5">Services & Taxes </div>
+                            <div class="col-md-1 col-xs-1">:</div>
+                            <div class="col-md-7  col-xs-5  pull-right"><strong>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.objBooking.dTaxes))</strong></div>
+                        </div>
+                        @{
+    if (Model.objBooking.ccType == "RR")
+    {
+        <div class="row">
+            <div class="col-md-4  col-xs-5">Hotel Discount</div>
+            <div class="col-md-1 col-xs-1">:</div>
+            <div class="col-md-7  col-xs-5  pull-right"><strong>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.objBooking.dccDiscount))</strong></div>
+        </div>
+    }
+
+                        }
+
+                        @if (Model.objBooking.cBookingType == "R")
+                        {
+                            if (Model.objBooking.bPromoDiscount == true)
+                            {
+                                <div class="row">
+                                    <div class="col-md-4  col-xs-5">Discount</div>
+                                    <div class="col-md-1 col-xs-1">:</div>
+                                    <div class="col-md-7  col-xs-5  pull-right"><strong>@Model.Symbol @OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.objBooking.dDiscountedBidPrice))</strong></div>
+                                </div>
+                                GrandTotal = clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal((@Model.objBooking.dTotalAmount + @Model.objBooking.dTotalExtraBedAmount + @Model.objBooking.dTaxes) - Convert.ToDecimal(@Model.objBooking.dDiscountedBidPrice)));
+                            }
+                            else if (Model.objBooking.bPromoDiscount == false)
+                            {
+                                <div class="row">
+                                    <div class="col-md-4  col-xs-5">Offer Given</div>
+                                    <div class="col-md-1 col-xs-1">:</div>
+                                    <div class="col-md-7  col-xs-5  pull-right"><strong> @Model.objBooking.bPromoAmenity</strong></div>
+                                </div>
+                            }
+
+
+                        }
+
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-4  col-xs-5">Total</div>
+                            <div class="col-md-1  col-xs-2">:</div>
+                            <div class="col-md-7  col-xs-5  pull-right"><strong>@Model.Symbol @GrandTotal</strong></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+        <!--next section-->
+        <!--2nd row row end-->
+        <!--3rd row row start-->
+    <div class="container  margintop30">
+        <div class=" greybg-lighter">
+
+            <h4 id="checkur">
+                Are you the guest?
+                <span class="paddingleft10">
+                    @Html.RadioButtonFor(model => model.objBooking.bSelfTravelling, true, new { @class = "radio-inline", @checked = "checked" })
+                    <label for="Yes">Yes</label>
+                    @Html.RadioButtonFor(model => model.objBooking.bSelfTravelling, false, new { @class = "radio-inline" })
+                    <label for="No">No</label>
+                </span>
+            </h4>
+
+        </div>
+    </div>
+
+
+    <div class="container">
+        <div class=" margintop30">
+            <div class="tablebluebg">Guest Information</div>
+            <div class=" table-responsive  table-bordered  padding15 lightgrybg">
+                <table class="table  table-bordered table-hover" id="tblmainrooms">
+                    <thead>
+                        <tr>
+                            <th style="width:15%;">Room</th>
+                            <th style="width:15%;"> Guest Name<span class="red">*</span></th>
+                            <th style="width:15%;">Mail Id<span class="red">*</span>	</th>
+                            <th style="width:25%;"> Mobile<span class="red">*</span></th>
+                            <th style="width:10%;">Bed Preference </th>
+                            <th style="width:20%;">Add accompanying guest</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @{
+                        int CountIndex = 0;
+                        int iRooms = 0;
+                        int r = 0;
+                        int guestCount = 1;
+                        bool IsPrimary = true;
+                        }
+
+                        @for (int k = 0; k < Model.lsttblBookDetails.Count; k++)
+                        {
+                            int BookingDetailId = Convert.ToInt16(Model.lsttblBookDetails[k].iBookingDetailsID);
+                            iRooms = Convert.ToInt16(Model.lsttblBookDetails[k].iRooms);
+
+                            var occupancy = @Model.lsttblBookDetails[k].iOccupancy;
+
+                            <tr class="newtr room@(iRooms)">
+
+                                @{
+                            if (iRooms != r)
+                            {
+                                IsPrimary = true;
+                                r = iRooms;
+                            }
+                            else
+                            {
+                                IsPrimary = false;
+                                r = iRooms;
+                            }
+                                }
+
+                                <td>
+                                    <label>Room @(iRooms) </label>
+
+
+                                    @if (IsPrimary)
+                                    {
+                                        guestCount = 1;
+                                        <br /> @Model.lsttblBookDetails[k].sRoomName
+                                    }
+                                    @if (!IsPrimary)
+                                    {
+                                        guestCount++;
+                                    }
+                                    @Html.HiddenFor(m => Model.lsttblBookDetails[k].iBookingDetailsID, new { @class = "hdnBookingDetailId" })
+                                </td>
+                                <td><input id="@(IsPrimary?"gname_"+iRooms:"gnameo_" + iRooms + "" + guestCount)" type="text" name="@(IsPrimary?"gname_"+iRooms:"gnameo_" + iRooms + "" + guestCount)" class="form-control gname" value="@Model.lsttblBookDetails[k].sGuestName" maxlength="50" placeholder="Name"></td>
+                                <td><input id="@(IsPrimary ? "gemail_" + iRooms : "gemailo_" + iRooms + "" + guestCount)" name="@(IsPrimary ? "gemail_" + iRooms : "gemailo_" + iRooms + "" + guestCount)" type="email" class="@(IsPrimary ? "form-control gemail" : "form-control gemailo")" value="@Model.lsttblBookDetails[k].sGuestEmail" maxlength="100" placeholder="Email"></td>
+                                <td>
+                                    @Html.DropDownListFor(model => model.lsttblBookDetails[k].sCountryPhoneCode, new SelectList(Model.CountryCodePhoneList, "sCode", "sFrontendCode", !string.IsNullOrEmpty(Model.lsttblBookDetails[k].sCountryPhoneCode) ? Model.lsttblBookDetails[k].sCountryPhoneCode : "+91"), new { style = "width:50%; float:left", id = "countryCodeType" + (CountIndex + 1), maxlength = "20", @class = (IsPrimary ? "form-control ddlCountryCodeUpdate" : "form-control ptypedefault") })
+
+                                    <input type="text" id="@(IsPrimary ? "gphone_" + iRooms : "gphoneo_" + iRooms + "" + guestCount)" name="@(IsPrimary ? "gphone_" + iRooms : "gphoneo_" + iRooms + "" + guestCount)" style="width:50%; float:left" pattern=" ^[\-\+]?\d+$" class="form-control @(IsPrimary?"gphone":"gphoneo") mwidth130" value="@Model.lsttblBookDetails[k].sGuestMobile" maxlength="10" placeholder="Phone No.">
+
+                                </td>
+                                <td>
+
+
+                                    @{
+                                    var data = Model.lsttblBookDetails[k].sBedPreference;
+                                    if (data == "King Bed")
+                                    {
+                                        @Html.DropDownListFor(m => m.lsttblBookDetails[k].sBedPreference, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="Twin Bed",Value="Twin Bed" },
+                                                                            new SelectListItem {Text="King Bed",Value="King Bed",Selected=true } }, "Select",
+                                                                                new { @class = (IsPrimary ? "form-control ptype" : "form-control ptypeo"), id = "ptype" + iRooms + "" })
+                                    }
+                                    else if (data == "Twin Bed")
+                                    {
+                                        @Html.DropDownListFor(m => m.lsttblBookDetails[k].sBedPreference, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="Twin Bed",Value="Twin Bed",Selected=true },
+                                                                            new SelectListItem {Text="King Bed",Value="King Bed" } }, "Select",
+                                                                                     new { @class = (IsPrimary ? "form-control ptype" : "form-control ptypeo"), id = "ptype" + iRooms + "" })
+                                    }
+                                    else
+                                    {
+                                        @Html.DropDownListFor(m => m.lsttblBookDetails[k].sBedPreference, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="Twin Bed",Value="Twin Bed" },
+                                                                            new SelectListItem {Text="King Bed",Value="King Bed" } }, "Select",
+                                                                                     new { @class = (IsPrimary ? "form-control ptype" : "form-control ptypeo"), id = "ptype" + iRooms + "" })
+                                    }
+
+                                    }
+
+
+                                </td>
+                                @{
+
+                            if (IsPrimary)
+                            {
+                                <td id="tddefault@(iRooms)">
+                                    <div class="margintop10"><a id="ancroom@(iRooms)" rid="@(Model.lsttblBookDetails[k].iBookingDetailsID)" roomcount="@(iRooms)" occupancy="@occupancy" rname="@Model.lsttblBookDetails[k].sRoomName" onclick="return AddGuest(this);" class="showpointer">Add accompanying guest</a></div>
+                                    <div class="margintop10"><a class="clean showpointer" data-parent="ancroom@(iRooms)">Delete Information</a></div>
+                                </td>
+                            }
+                            else
+                            {
+                                <td id="tddefault@(iRooms)">
+                                    <div class="margintop10"><a class="clean showpointer">Delete Information</a></div>
+                                </td>
+                            }
+                                }
+
+
+                            </tr>
+                            <tr>
+                                <td colspan="6" id="divRoom@(iRooms)"></td>
+                            </tr>
+
+                            CountIndex++;
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+            <div class="redtext">*Confirmation letter will be sent to all above contact details</div>
+        </div>
+    </div>
+    <div class="container">
+
+        <div class="tablebluebg">Preferences</div>
+        <div class=" table-responsive table-bordered padding10 lightgrybg">
+            <div class="col-md-6">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class=" table-responsive noborder">
+                            <table class="table">
+                                <thead class="noborder">
+                                    <tr>
+                                        <th>Preferences</th>
+                                        <th>Yes</th>
+                                        <th>No</th>
+                                        <th>NA</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="noborder">
+
+                                    <tr>
+                                        <td>Are you a single lady traveller?</td>
+                                        <td>@Html.RadioButtonFor(model => model.objBooking.spref_single_lady, "Yes", new { @class = "radio-inline" })</td>
+                                        <td>@Html.RadioButtonFor(model => model.objBooking.spref_single_lady, "No", new { @class = "radio-inline" })</td>
+                                        <td>@Html.RadioButtonFor(model => model.objBooking.spref_single_lady, "NA", new { @class = "radio-inline" })</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>Do you want room away from elevator?</td>
+                                        <td>@Html.RadioButtonFor(model => model.objBooking.spref_away_elevator, "Yes", new { @class = "radio-inline" })</td>
+                                        <td>@Html.RadioButtonFor(model => model.objBooking.spref_away_elevator, "No", new { @class = "radio-inline" })</td>
+                                        <td>@Html.RadioButtonFor(model => model.objBooking.spref_away_elevator, "NA", new { @class = "radio-inline" })</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Do you want a smoking room?</td>
+                                        <td>@Html.RadioButtonFor(model => model.objBooking.spref_smoking_room, "Yes", new { @class = "radio-inline" })</td>
+                                        <td>@Html.RadioButtonFor(model => model.objBooking.spref_smoking_room, "No", new { @class = "radio-inline" })</td>
+                                        <td>@Html.RadioButtonFor(model => model.objBooking.spref_smoking_room, "NA", new { @class = "radio-inline" })</td>
+                                    </tr>
+                                    @*<tr>
+                                            <td>Do you want a quiet room?</td>
+                                            <td>@Html.RadioButtonFor(model => model.objBooking.spref_quiet_room, "Yes", new { @class = "radio-inline" })</td>
+                                            <td>@Html.RadioButtonFor(model => model.objBooking.spref_quiet_room, "No", new { @class = "radio-inline" })</td>
+                                            <td>@Html.RadioButtonFor(model => model.objBooking.spref_quiet_room, "NA", new { @class = "radio-inline" })</td>
+                                        </tr>*@
+
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <strong>Are you travelling on for any special occasion?</strong>
+                        <div class="form-inline">
+                            @Html.CheckBoxFor(m => m.objBooking.Birthday, new { @class = "checkbox" })
+                            @Html.Label("lblBirthday", "Birthday")
+                            @Html.CheckBoxFor(m => m.objBooking.Anniversary, new { @class = "checkbox" })
+                            @Html.Label("lblAnniversary", "Anniversary")
+                            @Html.CheckBoxFor(m => m.objBooking.Honeymoon, new { @class = "checkbox" })
+                            @Html.Label("lblHoneymoon", "Honeymoon")
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class=" table-responsive noborder">
+                            <table class="table">
+                                <thead class="noborder">
+                                    <tr>
+                                        <th></th>
+                                        <th>Yes</th>
+                                        <th>No</th>
+                                        <th>NA</th>
+                                    </tr>
+
+                                </thead>
+                                <tbody class="noborder">
+                                    <tr id="divpickup">
+                                        <td>Car transfers required ?</td>
+                                        <td>@Html.RadioButtonFor(model => model.objBooking.spref_pickup, "Yes", new { @class = "radio-inline" })</td>
+                                        <td>@Html.RadioButtonFor(model => model.objBooking.spref_pickup, "No", new { @class = "radio-inline" })</td>
+                                        <td>@Html.RadioButtonFor(model => model.objBooking.spref_pickup, "NA", new { @class = "radio-inline" })</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <strong>Special Requests (100 characters)</strong>
+
+
+                            @Html.TextAreaFor(m => m.objBooking.sSpecialRequests, new { @class = "form-control height100", maxlength = "100" })
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class=" form-inline">
+                            <strong>Expected Check-in time</strong>
+                            @Html.DropDownListFor(m => m.objBooking.sExpectedCheckIn, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="I am not sure",Value="I am not sure" },
+                                                                            new SelectListItem {Text="00:00 - 01:00",Value="00:00 - 01:00" },new SelectListItem {Text="01:00 - 02:00",Value="01:00 - 02:00" },new SelectListItem {Text="02:00 - 03:00",Value="02:00 - 03:00" },
+                                                                            new SelectListItem {Text="03:00 - 04:00",Value="03:00 - 04:00" },new SelectListItem {Text="04:00 - 05:00",Value="04:00 - 05:00" },new SelectListItem {Text="05:00 - 06:00",Value="05:00 - 06:00" },
+                                                                            new SelectListItem {Text="06:00 - 07:00",Value="06:00 - 07:00" },new SelectListItem {Text="07:00 - 08:00",Value="07:00 - 08:00" },new SelectListItem {Text="08:00 - 09:00",Value="08:00 - 09:00" },
+                                                                            new SelectListItem {Text="09:00 - 10:00",Value="09:00 - 10:00" },new SelectListItem {Text="10:00 - 11:00",Value="10:00 - 11:00" },new SelectListItem {Text="11:00 - 12:00",Value="11:00 - 12:00" },
+                                                                            new SelectListItem {Text="12:00 - 13:00",Value="12:00 - 13:00" },new SelectListItem {Text="13:00 - 14:00",Value="13:00 - 14:00" },new SelectListItem {Text="14:00 - 15:00",Value="14:00 - 15:00" },
+                                                                            new SelectListItem {Text="15:00 - 16:00",Value="15:00 - 16:00" },new SelectListItem {Text="16:00 - 17:00",Value="16:00 - 17:00" },new SelectListItem {Text="17:00 - 18:00",Value="17:00 - 18:00" },
+                                                                            new SelectListItem {Text="18:00 - 19:00",Value="18:00 - 19:00" },new SelectListItem {Text="19:00 - 20:00",Value="19:00 - 20:00" },new SelectListItem {Text="20:00 - 21:00",Value="20:00 - 21:00" },
+                                                                            new SelectListItem {Text="21:00 - 22:00",Value="21:00 - 22:00" },new SelectListItem {Text="22:00 - 23:00",Value="22:00 - 23:00" },new SelectListItem {Text="23:00 - 00:00",Value="23:00 - 00:00" },
+                                                                            new SelectListItem {Text="00:00 - 01:00(the next day)",Value="00:00 - 01:00(the next day)" },new SelectListItem {Text="01:00 - 02:00(the next day)",Value="01:00 - 02:00(the next day)" }},
+                                                                            new { @class = "form-control" })
+                        </div>
+                        <p>
+                            <span class="red">*</span> Please note that the check-in time of the hotel is <strong>1200hrs</strong>. Early check-in will be subject to availability
+                            and may incur extra charges.
+                        </p>
+                        <div class=" table-responsive noborder">
+                            <table id="tblpickup" style="display:none;" class="table">
+                                <tr>
+                                    <td style="vertical-align:middle; width:20%;">Transfer details</td>
+                                    <td colspan="4">@Html.TextBoxFor(m => m.objBooking.sFlightNumber, new { @class = "form-control ", maxlength = "200" })</td>
+                                </tr>
+                                <tr>
+                                    <td style="vertical-align:middle;width:17%;">Arrival Time</td>
+                                    <td>@Html.TextBoxFor(m => m.objBooking.sEstArrivalTime, new { @class = "form-control ", maxlength = "10" })</td>
+                                    <td style="vertical-align:middle; width:16%; ">Type Of Car</td>
+                                        <td>
+                                        @Html.DropDownListFor(m => m.objBooking.sTypeOfCar, new SelectList(OneFineRateBLL.BL_tblPropertyAmenitiesMap.GetPropertyParkingList(@Convert.ToInt32(Model.iPropId)), "sCarName", "sCarName"), "", new { @class = "form-control " })
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="container">
+        <div class="col-md-12 t-c">
+
+            <p>
+                <span class="red">*</span>
+                Please note that all preferences will be subject to availability & at the sole description of the hotel. You can also directly contact the hotel. For
+                any further assistance..
+            </p>
+        </div>
+        <div class="container">
+            <div class="col-md-12 center margintop20">
+
+                <button type="submit" class="btn btn-primary  btn-lg">Update</button>
+            </div>
+        </div>
+        <!--footer-start here-->
+        <div class="marginbottom20">&nbsp;</div>
+    </div>
+
+}
+<script src="~/Scripts/additional-methods.js"></script>
+
+<script type="text/javascript">
+    $(function () {
+        // when page loads
+        $("#tblmainrooms :input[type='text']").each(function (index) {
+            // For debugging purposes...
+            localStorage.setItem($(this).attr('id'), $(this).attr('value'));
+        });
+        $("#tblmainrooms :input[type='email']").each(function (index) {
+            // For debugging purposes...
+            localStorage.setItem($(this).attr('id'), $(this).attr('value'));
+        });
+        $("#tblmainrooms").find("select").each(function (i) {
+            debugger;
+            var drpid = $(this).attr('id');
+            localStorage.setItem(drpid, $('#' + drpid + ' option:selected').val());
+        });
+        $("input[type=radio][name='objBooking.bSelfTravelling']").change(function () {
+            var selectedDropdown = $(this).next('label:first').text();
+            if (selectedDropdown == 'No') {
+               
+            }
+            else {
+                $("#tblmainrooms :input[type='text']").each(function (index) {
+                    // For debugging purposes...
+                    var id = $(this).attr('id');
+                    $('#' + id).val(localStorage.getItem(id))
+
+                });
+                $("#tblmainrooms :input[type='email']").each(function (index) {
+                    // For debugging purposes...
+                    var id = $(this).attr('id');
+                    $('#' + id).val(localStorage.getItem(id))
+
+                });
+                $("#tblmainrooms").find("select").each(function (i) {
+                    debugger;
+                    var drpid = $(this).attr('id');
+                    $('#' + drpid).val(localStorage.getItem(drpid)).change();
+                });
+            }
+
+        });
+    });
+    $('#frmBookingAmend').validate({
+    });
+    $("input[name^='gemail_']").each(function () {
+        $(this).rules("add",
+                {
+                    required: true,
+                    email: true,
+                    messages: {
+                        required: "Please enter Mail Id.",
+                        email: "Please enter valid Mail Id."
+                    }
+                })
+    });
+
+
+    $("input[name^='gname_']").each(function () {
+        $(this).rules("add",
+                {
+                    required: true, lettersonly: true,
+                    messages: {
+                        required: "Please enter Guest Name.",
+                    }
+                })
+    });
+    $("input[name^='gphone_']").each(function () {
+        $(this).rules("add",
+                {
+                    required: true,
+                    phoneIndia: true,
+                    messages: {
+                        required: "Please enter Mobile Number.",
+                        phoneIndia: "Please enter valid Mobile Number."
+                    }
+                })
+    });
+    $("input[name^='gemailo_']").each(function () {
+        $(this).rules("add",
+                {
+                    email: true,
+                    messages: {
+                        email: "Please enter valid Mail Id."
+                    }
+                })
+    });
+    $("input[name^='gnameo_']").each(function () {
+        $(this).rules("add",
+                {
+                    required: true,
+                    messages: {
+                        required: "Please enter Guest Name.",
+                    }
+                })
+    });
+    $("input[name^='gphoneo_']").each(function () {
+        $(this).rules("add",
+                {
+                    phoneIndia: true,
+                    messages: {
+                        phoneIndia: "Please enter valid Mobile Number."
+                    }
+                })
+    });
+    $(function () {
+        $("input[name^='gname_']").each(function () {
+            $(this).keypress(function (e) {
+                debugger;
+                var cursorPosition = $(this).getCursorPosition();
+
+                if ((this.value.length == 0 || cursorPosition == 0) && e.which == 32) {
+
+                    return false;
+                }
+            });
+        });
+    });
+    $(function () {
+        $("input[name^='gphone_']").each(function () {
+            $(this).keypress(function (e) {
+                debugger;
+                var cursorPosition = $(this).getCursorPosition();
+
+                if ((this.value.length == 0 || cursorPosition == 0) && e.which == 32) {
+
+                    return false;
+                }
+            });
+        });
+    });
+    $(function () {
+        $("input[name^='gemail_']").each(function () {
+            $(this).keypress(function (e) {
+                debugger;
+                var cursorPosition = $(this).getCursorPosition();
+
+                if ((this.value.length == 0 || cursorPosition == 0) && e.which == 32) {
+
+                    return false;
+                }
+            });
+        });
+    });
+
+    $(function () {
+        $("input[name^='gemailo_']").each(function () {
+            $(this).keypress(function (e) {
+                debugger;
+                var cursorPosition = $(this).getCursorPosition();
+
+                if ((this.value.length == 0 || cursorPosition == 0) && e.which == 32) {
+
+                    return false;
+                }
+            });
+        });
+    });
+
+    $(function () {
+        $("input[name^='gnameo_']").each(function () {
+            $(this).keypress(function (e) {
+                debugger;
+                var cursorPosition = $(this).getCursorPosition();
+
+                if ((this.value.length == 0 || cursorPosition == 0) && e.which == 32) {
+
+                    return false;
+                }
+            });
+        });
+    });
+    $(function () {
+        $("input[name^='gphoneo_']").each(function () {
+            $(this).keypress(function (e) {
+                debugger;
+                var cursorPosition = $(this).getCursorPosition();
+
+                if ((this.value.length == 0 || cursorPosition == 0) && e.which == 32) {
+
+                    return false;
+                }
+            });
+        });
+    });
+
+
+    function isEmail(email) {
+        var regex = /^([a-zA-Z0-9_.+-])+\@@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+        return regex.test(email);
+    }
+
+    function validatePhone(txtPhone) {
+        var filter = /^[0-9-+]+$/;
+        if (filter.test(txtPhone)) {
+            if (txtPhone.length != 10) {
+                return false;
+            }
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+
+    $(function () {
+
+        $('.ddlCountryCodeUpdate').select2();
+        $('.ptypedefault').select2();
+    });
+
+
+    var d = new Date();
+    var dCheckIn = '';
+    var dCheckOut = '';
+    var newroomcount = '';
+    var Data = [];
+    $('#tblmainrooms tr .clean').click(function (e) {
+        debugger;
+        e.preventDefault();
+        if ($(this).data('parent') != undefined) {
+           // if ($(this).closest('tr').index() == 0) {
+                // clearing the information
+                //   var clean=$(this).find('.clean');
+
+                $($(this).parent().parent().parent()[0].cells).each(function () {
+                    //$(this).find("input").val('');
+                    $(this).find("input.gname").val('');
+                    $(this).find("input.gemail").val('');
+                    $(this).find("input.gphone").val('');
+                   // $(this).find('select.ptypedefault').prop('selectedIndex', 0);
+                    $(this).find('select.ptype').prop('selectedIndex', 0).change();
+                });
+          //  }
+            
+        }
+        else {
+            //deleting the row
+            $(this).closest('tr').remove();
+        }
+    });
+
+
+    //$('.clean').click(function (e) {
+    //    e.preventDefault();
+    //    //$($(this).parent().parent().parent()[0].cells).each(function () {
+    //    //    //$(this).find("input").val('');
+    //    //    $(this).find("input.gname").val('');
+    //    //    $(this).find("input.gemail").val('');
+    //    //    $(this).find("input.gphone").val('');
+    //    //    $(this).find('select.ptypedefault').prop('selectedIndex', 0);
+    //    //});
+    //
+    //    var ii = $(this).eq(0);
+    //    if ($(this).closest('tr').is(":first")) {
+    //
+    //        alert("yes");
+    //    }
+    //    $(this).closest('tr').remove();
+    //});
+
+    function AddGuest(obj) {
+        var roomcount = $(obj).attr('roomcount');
+        var rid = $(obj).attr('rid');
+        var occupancy = $(obj).attr('occupancy');
+        var rname = $(obj).attr('rname');
+        var ptypevalue = $('#ptype' + roomcount + '').val();
+
+
+        var selectCountryCodeType = $('#countryCodeType' + roomcount + ' :selected').val();
+        var selectCountryCodeText = $('#countryCodeType' + roomcount + ' :selected').text();
+
+
+        newroomcount = roomcount + 1;
+        var totalguest = $('#tblmainrooms tr.room' + roomcount + '').length;
+        var guestcount = totalguest + 1;
+        if (totalguest >= occupancy) {
+            toastr.warning('More name cannot be added.')
+            return false;
+        }
+        var myval = '';
+        var tableRoomId = "tblRoom" + guestcount;
+        var txtGNameId = "gnameo_" + roomcount + '' + guestcount;
+        var txtGEmailId = "gemailo_" + roomcount + '' + guestcount;
+        var txtGPhoneNo = "gphoneo_" + roomcount + '' + guestcount;
+        myval += '<table  class="table  table-bordered table-hover" id="tblRoom' + guestcount + '"><tbody>';
+        myval += '<tr class="newtr room' + roomcount + '">';
+        myval += '<td style="width:15%;"><label>Room ' + roomcount + '<br/>' + rname + '</label><input type="hidden" value="' + rid + '" class="hdnBookingDetailId" /></td>';
+        myval += '<td  style="width:15%;"><div class="form-group"><input id="' + txtGNameId + '" name="' + txtGNameId + '" type="text"  class="form-control gname mwidth130" maxlength="50" placeholder="Name" ></div></td>';
+        myval += '<td  style="width:15%;"><div class="form-group"><input id="' + txtGEmailId + '"  name="' + txtGEmailId + '" type="email" class="form-control gemailo mwidth130" maxlength="100" placeholder="Email" ></div></td>';
+        myval += '<td  style="width:25%;"><div class="form-group">' +
+           '<select style="float:left; width:50%" class="form-control ptypedefault"></select>' +
+                                 '<input id="' + txtGPhoneNo + '" name="' + txtGPhoneNo + '" type="text" style="width:50%; float:left" pattern="^[\-\+]?\d+$" class="form-control gphoneo mwidth130" maxlength="10" placeholder="Phone No." >' +
+                                 '</div></td>';
+        myval += '<td  style="width:10%;">';
+        myval += '<div class="form-group">';
+        myval += '<select disabled class="form-control ptypeo mwidth130"><option value="">Select</option>';
+        if (ptypevalue == 'Twin Bed') {
+            myval += '<option value="Twin Bed" selected>Twin Bed</option>';
+        }
+        else {
+            myval += '<option value="Twin Bed">Twin Bed</option>';
+        }
+        if (ptypevalue == 'King Bed') {
+            myval += '<option value="King Bed" selected>King Bed</option></select>';
+        }
+        else {
+            myval += '<option value="King Bed">King Bed</option></select>';
+        }
+        myval += '</div>';
+
+        myval += '</td>';
+        myval += '<td  style="width:15%;">';
+        myval += '<div class="margintop10"><a class="delete1 showpointer" href="#">Delete</a></div>';
+        myval += '</td>';
+        myval += '</tr>';
+        myval += '</tbody></table>';
+
+        $('#divRoom' + roomcount + '').append("" + myval + "");
+        var $row = $("#tblmainrooms tr.newtr.room" + roomcount + ":first");
+        debugger;
+        $($row).find('select.ddlCountryCodeUpdate option').clone().appendTo($("#" + tableRoomId + " tr.room" + roomcount).find('.ptypedefault'));
+        $("#" + tableRoomId + " tr.room" + roomcount).find('.ptypedefault').select2();
+        $("#" + tableRoomId + " tr.room" + roomcount).find('.ptypedefault').val('+91').change();
+        // adding rules for inputs with class 'comment'
+        $("#" + txtGEmailId).rules("add", {
+            email: true
+                , messages: {
+                    email: "Please enter valid Mail Id."
+                }
+        });
+        $("#" + txtGPhoneNo).rules("add", {
+            phoneIndia: true,
+            messages: {
+                phoneIndia: "Please enter valid Mobile Number."
+            }
+        });
+        $("#" + txtGNameId)
+            .rules("add",
+                    {
+                        required: true,
+                        messages: {
+                            required: "Please enter Guest Name.",
+                        }
+                    });
+        $("#" + txtGNameId)
+           .bind("keypress",
+                   function (e) {
+                       var cursorPosition = $(this).getCursorPosition();
+                       if ((this.value.length == 0 || cursorPosition == 0) && e.which == 32) {
+                           return false;
+                       }
+                   });
+        $("#" + txtGPhoneNo)
+          .bind("keypress",
+                  function (e) {
+                      var cursorPosition = $(this).getCursorPosition();
+                      if ((this.value.length == 0 || cursorPosition == 0) && e.which == 32) {
+                          return false;
+                      }
+                  });
+        $("#" + txtGEmailId)
+          .bind("keypress",
+                  function (e) {
+                      var cursorPosition = $(this).getCursorPosition();
+                      if ((this.value.length == 0 || cursorPosition == 0) && e.which == 32) {
+                          return false;
+                      }
+                  });
+
+        $('.delete1').click(function (e) {
+            e.preventDefault();
+            $(this).closest('table').remove();
+        });
+    }
+
+
+    function AddGuestDetails(obj) {
+        var roomcount = $(obj).attr('roomcount');
+        var dcount = $(obj).attr('guestcount');
+        var rid = $(obj).attr('rid');
+        var occupancy = $(obj).attr('occupancy');
+        var rname = $(obj).attr('rname');
+
+        newroomcount = roomcount + 1;
+        var guestcount = dcount + 1;
+        var oldguestcount = $('#tblmainrooms tr.room' + roomcount + '').length;
+
+        if (oldguestcount >= occupancy) {
+            toastr.warning('More name cannot be added.')
+            return false;
+        }
+        var myval = '';
+        myval += '<tr class="newtr room' + roomcount + '">';
+        myval += '<td><label>Room ' + roomcount + '<br/>' + rname + '</label><input type="hidden" value="' + rid + '" class="hdnBookingDetailId" /></td>';
+        myval += '<td><div class="form-group"><input type="text" class="form-control gname" maxlength="50" placeholder="Name" ></div></td>';
+        myval += '<td><div class="form-group"><input type="email" class="form-control gemail" maxlength="100" placeholder="Email" ></div></td>';
+        myval += '<td><div class="form-group"><input type="text" pattern="^[\-\+]?\d+$" class="form-control gphone" maxlength="10" placeholder="Phone No." ></div></td>';
+        myval += '<td>';
+        myval += '<div class="form-group">';
+        myval += '<select class="form-control ptype"><option value="" >Select</option>';
+        myval += '<option value="Single">Single</option>';
+        myval += '<option value="Double">Double</option>';
+        myval += '<option value="King Size">King Size</option></select>';
+        myval += '</div>';
+
+        myval += '</td>';
+        myval += '<td>';
+        myval += '</td>';
+        myval += '<div class="margintop-10"><a id="ancroom' + roomcount + '' + guestcount + '"  rid="' + rid + '" roomcount="' + roomcount + '" guestcount="' + guestcount + '" occupancy="' + occupancy + '"  rname="' + rname + '" onclick="AddGuestDetails(this)">Add name of the accompanying guest</a></div>';
+        myval += '</tr>';
+        $('#ancroom' + roomcount + '' + dcount + '').html('Delete');
+        $('#ancroom' + roomcount + '' + dcount + '').removeAttr('onclick');
+        $('#ancroom' + roomcount + '' + dcount + '').addClass("delete1");
+
+        $('#tblRoom' + roomcount + '').append(myval);
+
+        $('.delete1').click(function (e) {
+            e.preventDefault();
+            //$(this).closest('tr').remove();
+            $($(this).parent().parent().parent()[0].cells).each(function () {
+                //$(this).find("input").val('');
+                $(this).find("input.gname").val('');
+                $(this).find("input.gemail").val('');
+                $(this).find("input.gphone").val('');
+                $(this).find('select.ptype').prop('selectedIndex', 0).change();
+            });
+        });
+    }
+    $('#frmBookingAmend').submit(function (e) {
+
+        if (!$(this).valid()) {
+            e.preventDefault();
+            return false;
+        }
+        var valid = true;
+        $("#tblmainrooms tr.newtr").each(function () {
+            if ($(this).find('select').hasClass('ddlCountryCodeUpdate')) {
+                debugger;
+                var BookingDetailId = $(this).find("input:hidden.hdnBookingDetailId").val();
+                var gname = $(this).find("input:text.gname").val();
+                var gemail = $(this).find("input.gemail").val();
+                var gphone = $(this).find("input:text.gphone").val();
+                var ptype = $(this).find('select.ptype option:selected').val();
+                var countryPhoneCode = $(this).find('select.ddlCountryCodeUpdate').val();
+                Data.push({
+                    BookingDetailId: BookingDetailId,
+                    gname: gname,
+                    gemail: gemail,
+                    gphone: gphone,
+                    ptype: ptype,
+                    countryPhoneCode: countryPhoneCode
+                });
+            }
+            else {
+                var BookingDetailId = $(this).find("input:hidden.hdnBookingDetailId").val();
+                var gname = $(this).find("input:text.gname").val();
+                var gemailo = $(this).find("input.gemailo").val();
+                var gphoneo = $(this).find("input:text.gphoneo").val();
+                var ptypeo = $(this).find('select.ptypeo option:selected').val();
+                var countryPhoneCodeO = $(this).find('select.ptypedefault option:selected').val();
+                Data.push({
+                    BookingDetailId: BookingDetailId,
+                    gname: gname,
+                    gemail: gemailo,
+                    gphone: gphoneo,
+                    ptype: ptypeo,
+                    countryPhoneCode: countryPhoneCodeO
+                });
+            }
+            //    debugger;
+            //    if (gemailo != undefined && gemailo.trim() != '' && !isEmail(gemailo.trim())) {
+            //        toastr.error('Please enter valid email address.');
+            //        $(this).focus();
+            //        valid = false;
+            //    }
+
+            //    else if (gphoneo != undefined && gphoneo.trim() != '' && !validatePhone(gphoneo.trim())) {
+            //        toastr.error('Please enter valid phone number.');
+            //        valid = false;
+            //    }
+            //    else if (gemailo != undefined && gname != undefined && gphoneo != undefined && gname.trim() != '' && gemailo.trim() != '' && gphoneo.trim() != '' && isEmail(gemailo.trim()) && validatePhone(gphoneo.trim())) {
+
+            //        Data.push({
+            //            BookingDetailId: BookingDetailId,
+            //            gname: gname,
+            //            gemail: gemailo,
+            //            gphone: gphoneo,
+            //            ptype: ptypeo,
+            //            countryPhoneCode: countryPhoneCodeO
+            //        });
+            //        valid = true;
+            //    }
+            //    else if (gname != undefined && gphoneo != undefined && gname.trim() != '' && gphoneo.trim() != '' && validatePhone(gphoneo.trim())) {
+
+            //        Data.push({
+            //            BookingDetailId: BookingDetailId,
+            //            gname: gname,
+            //            gemail: gemailo,
+            //            gphone: gphoneo,
+            //            ptype: ptypeo,
+            //            countryPhoneCode: countryPhoneCodeO
+            //        });
+            //        valid = true;
+            //    }
+            //    else if (gname != undefined && gemailo != undefined && gname.trim() != '' && gemailo.trim() != '' && isEmail(gemailo.trim())) {
+
+            //        Data.push({
+            //            BookingDetailId: BookingDetailId,
+            //            gname: gname,
+            //            gemail: gemailo,
+            //            gphone: gphoneo,
+            //            ptype: ptypeo,
+            //            countryPhoneCode: countryPhoneCodeO
+            //        });
+            //        valid = true;
+            //    }
+            //    else if (gname != undefined && gemailo != undefined && gname.trim() != '' && gemailo.trim() != '' && isEmail(gemailo.trim())) {
+
+            //        Data.push({
+            //            BookingDetailId: BookingDetailId,
+            //            gname: gname,
+            //            gemail: gemailo,
+            //            gphone: gphoneo,
+            //            ptype: ptypeo,
+            //            countryPhoneCode: countryPhoneCodeO
+            //        });
+            //        valid = true;
+            //    }
+            //    else if (gname != undefined && gemail != undefined && gphone != undefined && gname.trim() != '' && gemail.trim() != '' && gphone.trim()!=''&&validatePhone(gphone.trim()) && isEmail(gemail.trim())) {
+
+            //        Data.push({
+            //            BookingDetailId: BookingDetailId,
+            //            gname: gname,
+            //            gemail: gemail,
+            //            gphone: gphone,
+            //            ptype: ptype,
+            //            countryPhoneCode: countryPhoneCode
+            //        });
+            //        valid = true;
+            //    }
+            //    else if (gname != undefined && gname.trim() != '') {
+
+            //        Data.push({
+            //            BookingDetailId: BookingDetailId,
+            //            gname: gname,
+            //            gemail: gemailo,
+            //            gphone: gphoneo,
+            //            ptype: ptypeo,
+            //            countryPhoneCode: countryPhoneCodeO
+            //        });
+            //        valid = true;
+            //    }
+            //    else {
+
+            //        Data = [];
+
+            //        e.preventDefault();
+
+            //        toastr.clear();
+
+            //        var $this = $(this);
+
+            //        if (gname != undefined && gname.trim() == '') {
+            //            toastr.error('Please enter the guest name.');
+            //            $this.find("input:text.gname").focus();
+            //            valid = false;
+            //        }
+
+            //        else if (gemail != undefined && gemail.trim() == '') {
+
+            //            toastr.error('Please enter the email address.');
+            //            $this.find(".gemail").focus();
+            //            valid = false;
+            //        }
+
+
+            //        else if (gemail != undefined && gemail.trim() != '' && !isEmail(gemail.trim())) {
+            //            toastr.error('Please enter a valid email address.');
+            //            $this.find(".gemail").focus();
+            //            valid = false;
+
+            //        }
+            //        else if (gemailo != undefined && gemailo.trim() != '' && !isEmail(gemailo.trim())) {
+            //            toastr.error('Please enter a valid email address.');
+            //            $this.find(".gemailo").focus();
+            //            valid = false;
+
+            //        }
+
+
+            //        else if (gphone.trim() == '') {
+            //            toastr.error('Please enter the mobile number.');
+            //            $this.find("input:text.gphone").focus();
+            //            valid = false;
+            //        }
+
+            //        else if (gphone != undefined && gphone.trim() != '' && !validatePhone(gphone.trim())) {
+            //            toastr.error('Please enter a valid phone number.');
+            //            $this.find("input:text.gphone").focus();
+            //            valid = false;
+
+            //        }
+            //        else if (gphoneo != undefined && gphoneo.trim() != '' && !validatePhone(gphoneo.trim())) {
+            //            toastr.error('Please enter a valid phone number.');
+            //            $this.find("input:text.gphone").focus();
+            //            valid = false;
+            //        }
+            //    }
+            //});
+
+            $("#hdnJson").val(JSON.stringify(Data));
+            $('.overlay').show();
+            return valid;
+
+        });
+
+    });
+
+
+    var pickup = '@Model.objBooking.spref_pickup';
+    if (pickup == "Yes")
+        $('#tblpickup').show();
+    $('#divpickup input[type="radio"]').click(function () {
+        if (this.value == "No" || this.value == "NA")
+            $('#tblpickup').hide();
+        else
+            $('#tblpickup').show();
+    });
+
+    $('#checkur input[type="radio"]').click(function () {
+        if (this.value == 'False') {
+            $("#tblmainrooms tr.newtr").each(function () {
+                $(this).find("input.gname").val('');
+                $(this).find("input.gemail").val('');
+                $(this).find("input.gphone").val('');
+                $(this).find('select.ptype').prop('selectedIndex', 0);
+            });
+        }
+        else {
+            @*$("#tblmainrooms tr.newtr").each(function () {
+                        $(this).find("input:text.gname").val('@Model.objBooking.sFirstNameOFR @Model.objBooking.sLastNameOFR');
+                        $(this).find("input.gemail").val('@Model.objBooking.sEmailOFR');
+                        $(this).find("input:text.gphone").val('@Model.objBooking.sMobileOFR');
+                    });*@
+        }
+    });
+
+    $('.gphone').keypress(function (e) {
+        var cursorPosition = $(this).getCursorPosition();
+
+        if ((this.value.length == 0 || cursorPosition == 0) && e.which == 48) {
+
+            return false;
+        }
+    });
+</script>

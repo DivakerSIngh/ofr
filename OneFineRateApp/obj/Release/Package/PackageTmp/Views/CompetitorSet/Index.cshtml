@@ -1,0 +1,253 @@
+﻿@model OneFineRateBLL.Entities.etblPropertyCompetitorSet
+@{
+    
+    Layout = "~/Views/Shared/_LayoutProperty.cshtml";
+}
+
+@*<link href="~/css/jquery-ui-1.8.1.custom.css" rel="stylesheet" />*@
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+
+@*//Scripts for autofill through ajax call*@
+
+@System.Web.Optimization.Scripts.Render("~/bundles/autofill")
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+
+<script type="text/javascript">
+    var testme = false;
+    var Data = [];
+
+    function getproperty(value) {
+        $(".autosuggest").autocomplete({
+            source: function (request, response) {
+                response([{ label: "Loading...", loading: true }]);
+                $.ajax({
+                    url: "/CompetitorSet/GetAllProperty",
+                    contentType: "application/json; charset=utf-8",
+                    data: "{txt: '" + value + "'}",
+                    dataType: "json",
+                    type: "POST",
+                    success: function (data) {
+                        $('#hdnpropid').val("");
+
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.Name,
+                                value: item.Id
+                            }
+                        }));
+                    }
+                });
+            },
+            minLength: 2,
+            autoFocus: true,
+            select: function (event, ui) {
+                event.preventDefault();
+                $(".autosuggest").val(ui.item.label);
+                $('#hdnpropid').val(ui.item.value);
+            }
+        });
+    }
+
+    $(document).ready(function () {
+       
+        //Get competitor sets of  and bind table
+        var jsonData = '@Html.Raw(@ViewBag.PropertyCompetitorSet)';
+        if (jsonData != "") {
+            Data = JSON.parse(jsonData);
+            BindData(Data);
+        }
+
+        //Add dynamic columns to add new competitor set
+        $('#btnadd').click(function () {
+
+            if (checkcountvalid())
+            {
+                toastr.warning('Maximum 8 competitor hotel can be added.')
+                return false;
+            }
+
+           
+            var cpropid = $('#hdnpropid').val();
+            var ctext = $('#txtproperty').val();
+            if (cpropid != '') {
+
+                if (!isExist(ctext)) {
+                    var i = $('#tblcompetitor tr.trc').length + 1;
+                    var myval = '';
+                    myval += '<tr class="trc" id="competitor' + i + '">';
+                    myval += '<td>';
+                    myval += i;
+                    myval += '</td>';
+                    myval += '<td>'+ctext+'</td>';
+                    myval += '<td>';
+                    myval += '<input type="hidden" class="hdval" value="' + cpropid + '" />';
+                    myval += '<a href="#" class="delete" style="cursor: pointer;" id="btnDelete' + i + '"><i class="fa fa-times-circle red"></i></a>';
+                    myval += '</td>';
+                    myval += '</tr>';
+
+                    myval += '';
+                    $('#tblcompetitor').append("" + myval + "");
+                    $('#txtproperty').val('');
+                    $('#hdnpropid').val('');
+                }
+                else {
+                    toastr.warning('This competitor hotel has already been added.')
+                }
+            }
+            else {
+                toastr.info('Hotel not found in OFR database.')
+            }
+
+        });
+
+        // Delete dynamic row of competitor set
+        $('#tblcompetitor').on('click', '.delete', function (e) {
+            e.preventDefault();
+            $(this).closest('tr').remove();
+            return false;
+        });
+
+    });
+
+    //bind table 
+    function BindData(pdata) {
+        var myval = '';
+            $.each(pdata, function (key, value) {
+                var i = $('#tblcompetitor tr.trc').length + 1;
+                var myval = '';
+                myval += '<tr class="trc" id="competitor' + i + '">';
+                myval += '<td>';
+                myval += i;
+                myval += '</td>';
+                myval += '<td>' + value.Name + '</td>';
+                myval += '<td>';
+                myval += '<input type="hidden" class="hdval" value="' + value.Id + '" />';
+                myval += '<a href="#" class="delete" style="cursor: pointer;" id="btnDelete' + i + '"><i class="fa fa-times-circle red"></i></a>';
+                myval += '</td>';
+                myval += '</tr>';
+                myval += '';
+                $('#tblcompetitor').append("" + myval + "");
+            });
+      
+    }
+    //get  result on button Save click
+    function GetResult(data) {
+        if (data.st == '1') {
+            toastr.success(data.msg);
+        }
+        else {
+            toastr.error(data.msg);
+        }
+    }
+    //Fetch data on button click before calling controller
+    function FetchData() {
+
+        if (checkcountvalid_Minimum()) {
+            toastr.warning('Minimum 4 competitor hotel has to be added.')
+            return false;
+        }
+
+        var Data = [];
+        $("#tblcompetitor tr.trc").each(function () {
+            var value = $(this).find("input:hidden.hdval").val();
+
+            if (parseFloat(value) > 0) {
+                Data.push({
+                    value: value
+                });
+            }
+        });
+        $("#hdnJson").val(JSON.stringify(Data));
+        return true;
+
+    }
+
+   
+    function isExist(strd) {
+        testme = false;
+        $('tr[id*=competitor]').each(function () {
+            if ($('td:nth(1)', $(this)).html() == strd) {
+                testme = true;
+            }
+        })
+        return testme;
+    }
+    function checkcountvalid() {
+        testme = false;
+        var count = 0;
+        $('tr[id*=competitor]').each(function () {
+            count++;
+        })
+        if (count == 8) {
+            testme = true;
+        }
+        return testme;
+    }
+    function checkcountvalid_Minimum() {
+        testme = false;
+        var count = 0;
+        $('tr[id*=competitor]').each(function () {
+            count++;
+        })
+        if (count < 4 ) {
+            testme = true;
+        }
+        return testme;
+    }
+
+</script>
+@using (Ajax.BeginForm("AddUpdate", "CompetitorSet", new AjaxOptions() { InsertionMode = InsertionMode.Replace, UpdateTargetId = "targetid", HttpMethod = "POST", OnSuccess = "GetResult" }))
+{
+    @Html.HiddenFor(x => x.SelectedCompetitorSet, new { id = "hdnJson" })
+<div class="panel panel-default">
+    <div class="panel-heading">
+        Competitor Set
+    </div>
+    <div class="panel-body">
+
+
+
+
+        <div class="table-responsive" style="height:300px;">
+            <table class="table table-striped table-bordered table-hover" id="tblcompetitor">
+                <thead>
+                    <tr>
+                        <th>No. </th>
+                        <th>Hotel Name </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>(New)</td>
+                        <td>
+                            <input id="txtproperty" class="form-control autosuggest" onkeyup="getproperty(this.value);" />
+                            <input type="hidden" id="hdnpropid" value="" />
+                        </td>
+                        <td><button type="button" id="btnadd" class="btn btn-info">Add</button>   </td>
+                    </tr>
+                    @*<tr class="trc">
+                        <td>
+                            1
+                            <input type="hidden" class="hdval" />
+                        </td>
+                        <td>Latest Change </td>
+                        <td></td>
+                    </tr>*@
+                </tbody>
+            </table>
+            <div class="pull-left"> Note:  click save button after adding or deleting competitor set</div>
+           
+            
+        </div>
+       
+        <!-- End  table -->
+    </div>
+    <div class="pull-right marginbottom10 margintop10">
+
+        <button type="submit" onclick="return FetchData();" class="btn btn-primary">Save</button>
+    </div>
+</div>
+    <div id="targetid"></div>
+<!-- container div END bottom -->
+}

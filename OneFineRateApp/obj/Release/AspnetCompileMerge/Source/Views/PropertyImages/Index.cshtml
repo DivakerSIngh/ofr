@@ -1,0 +1,354 @@
+﻿@model OneFineRateApp.ViewModels.PropertyImageMapViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutProperty.cshtml";
+}
+
+<div id="tempMessageError field-validation-error">@ViewBag.Error</div>
+<div id="tempMessageSuccess label-success">@ViewBag.Message</div>
+
+
+<div class="panel-group">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                Photos
+            </h4>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Edit Photos</a></li>
+                    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Upload Photos</a></li>
+                    <li class="red" style="line-height:14px; font-size:11px;">
+                        *Recommended High Definition 1366x1024px<br>
+                        *Minimum recommended dimension:800x600px<br>
+                        *Supported file formats: jpg and png <br>
+                    </li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+
+
+
+                    @{
+                        if (Session["PropId"] != null)
+                        {
+                            Html.RenderAction("AllUploadedMappedHotelImages", "PropertyImages");
+                        }
+                    }
+
+                    <div role="tabpanel" class="tab-pane" id="profile">
+
+                        <div class="jumbotron">
+                            @using (Html.BeginForm("Index", "PropertyImages", FormMethod.Post, new { @class = "dropzone", id = "dropzoneForm", enctype = "multipart/form-data" }))
+                            {
+                                <div class="fallback col-md-12 padding10">
+                                    <label>Select your image for upload</label>
+                                    <input type="file" multiple id="uploadedFiles" name="file">
+                                </div>
+                            }
+
+                            <div class="col-md-12 ">
+                                <div class="">
+                                    <input id="btnFilesSubmit" type="submit" class="btn btn-primary  pull-left" value="START">
+                                    <input id="btnFilesCancel" type="button" class="btn btn-danger  marginleft5" value="CANCEL">
+                                </div>
+                            </div>
+                        </div>
+                        <div id="divUnmappedReload" class="panel-body">
+                            @{
+                                if (Session["PropId"] != null)
+                                {
+                                    Html.RenderAction("AllUploadedUnmappedHotelImages", "PropertyImages");
+                                }
+                            }
+                        </div>
+
+                    </div>
+                    <!--tab two completed-->
+                </div>
+
+            </div>
+        </div>
+        <script>
+            if (sessionStorage.getItem('isProfileTabAcive')) {
+                $('.nav-tabs a[href="#profile"]').tab('show');
+            }
+            else if (sessionStorage.getItem('isHomeTabAcive')) {
+                $('.nav-tabs a[href="#home"]').tab('show');
+            }
+        </script>
+
+        <!--<div class="col-xs-12">
+        <div class="subheadcolor"><h4>Full Services Spa</h4></div>
+          <hr/>
+          </div> -->
+        <!-- Panel 1 div END  -->
+        <!-- Panel group div END  -->
+    </div>
+</div>
+
+
+<style type="text/css">
+    .dz-max-files-reached {
+        background-color: red;
+    }
+</style>
+
+
+
+<script>
+
+
+    $(function () {
+
+        function toggleChevron(e) {
+            $(e.target)
+                .prev('.panel-heading')
+                .find("i.indicator")
+                .toggleClass('glyphicon-chevron-down glyphicon-chevron-up');
+        }
+
+        $('#accordion').on('hidden.bs.collapse', toggleChevron);
+        $('#accordion').on('shown.bs.collapse', toggleChevron);
+
+
+        $('.ddlCategory').change(function () {
+            var categoryId = $(this).val();
+            var respectiveSubCategoryHolder = $(this).attr('refId');
+
+            $('#s2id_' + respectiveSubCategoryHolder).find('.select2-chosen').val('').text('Select subcategory');
+
+            if (categoryId) {
+                $.get("@Url.Action("GetSubCategoryList", "PropertyImages")?categoryId=" + categoryId, function (subCategoryList) {
+
+                    $("#" + respectiveSubCategoryHolder).html("");
+
+                    try {
+                        $.each(subCategoryList, function (i, subCategory) {
+
+                            $("#" + respectiveSubCategoryHolder).append($('<option></option>').val(subCategory.iPhotoCatId).html(subCategory.sPhotoCatName));
+                        });
+                    }
+                    catch (e) {
+
+                        alert('Error in data loading !')
+                    }
+
+                    $("#" + respectiveSubCategoryHolder).append($('<option></option>').val('').html('Select subcategory').prop("selected", "selected"));
+
+                });
+            }
+
+        });
+
+        $('.deletePhotoMap').click(function (e) {
+
+            e.preventDefault();
+            var cnfrm = confirm('Are you sure you want to delete this photo ?')
+            if (cnfrm === true) {
+                var href = $(this).attr('href');
+                var respectiveDiv = $(this).attr('data-divRef');
+                $.post(href, function (response) {
+                    if (response) {
+                        $('#' + respectiveDiv).remove();
+                        window.location.reload();
+
+                    }
+                });
+            }
+            else {
+                return false;
+            }
+        });
+
+        $('.mappedHotelForm').on("submit", function (event) {
+            event.preventDefault()
+            if ($(this).valid()) {
+                var mappedHotelPhotoModel = {
+                    iPropId: $(this).find('input[name="item.iPropId"]').val(),
+                    iPhotoId: $(this).find('input[name="item.iPhotoId"]').val(),
+                    iPhotoCatId: $(this).find('[name="item.iPhotoCatId"] option:selected').val(),
+                    iPhotoSubCatId: $(this).find('[name="item.iPhotoSubCatId"] option:selected').val(),
+                    bIsPrimaryH: $(this).find('input[name="item.bIsPrimaryH"]:checked').val(),
+                    bIsPrimaryR: $(this).find('input[name="item.bIsPrimaryR"]').val(),
+                    bIsHighRes: $(this).find('input[name="item.bIsHighRes"]').val(),
+                    sImgUrl: $(this).find('input[name="item.sImgUrl"]').val(),
+                    dtActionDate: $(this).find('input[name="item.dtActionDate"]').val(),
+                    iActionBy: $(this).find('input[name="item.iActionBy"]').val(),
+                    bIsMapped: $(this).find('input[name="item.bIsMapped"]').val(),
+                    iResolutionW: $(this).find('input[name="item.iResolutionW"]').val(),
+                    iResolutionH: $(this).find('input[name="item.iResolutionH"]').val(),
+                }
+
+                $.post($(this).attr('action'), mappedHotelPhotoModel).done(function (data) {
+                    if (data == true) {
+                        window.location.reload();
+                    }
+
+                });
+            }
+        });
+
+
+        $('.mappedRoomTypeForm').on("submit", function (event) {
+            event.preventDefault()
+
+            if ($(this).valid()) {
+
+                var mappedRoomTypePhotoModel = {
+                    iPropId: $(this).find('input[name="item.iPropId"]').val(),
+                    iPhotoId: $(this).find('input[name="item.iPhotoId"]').val(),
+                    iPhotoCatId: $(this).find('[name="item.iPhotoCatId"] option:selected').val(),
+                    iPhotoSubCatId: $(this).find('[name="item.iPhotoSubCatId"] option:selected').val(),
+                    bIsPrimaryH: $(this).find('input[name="item.bIsPrimaryH"]').val(),
+                    bIsPrimaryR: $(this).find('input[name="item.bIsPrimaryR"]:checked').val(),
+                    bIsHighRes: $(this).find('input[name="item.bIsHighRes"]').val(),
+                    sImgUrl: $(this).find('input[name="item.sImgUrl"]').val(),
+                    dtActionDate: $(this).find('input[name="item.dtActionDate"]').val(),
+                    iActionBy: $(this).find('input[name="item.iActionBy"]').val(),
+                    bIsMapped: $(this).find('input[name="item.bIsMapped"]').val(),
+                    iResolutionW: $(this).find('input[name="item.iResolutionW"]').val(),
+                    iResolutionH: $(this).find('input[name="item.iResolutionH"]').val(),
+                }
+
+                $.post($(this).attr('action'), mappedRoomTypePhotoModel).done(function (data) {
+                    if (data == true) {
+                        window.location.reload();
+                    }
+                });
+            }
+        });
+
+
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            var target = $(e.target).attr("href") // activated tab
+            if (target == '#profile') {
+                sessionStorage.clear();
+                sessionStorage.setItem('isProfileTabAcive', true);
+            }
+            else if (target == '#home') {
+                sessionStorage.clear();
+                sessionStorage.setItem('isHomeTabAcive', true);
+            }
+        });
+
+
+
+        //$('a[data-toggle="collapse"]').on('show.bs.collapse', function (e) {
+        //    var target = $(e.target).attr("href")
+        //    if (target == '#profile') {
+        //        sessionStorage.clear();
+        //        sessionStorage.setItem('isProfileTabAcive', true);
+        //    }
+        //    else if (target == '#home') {
+        //        sessionStorage.clear();
+        //        sessionStorage.setItem('isHomeTabAcive', true);
+        //    }
+        //});
+
+
+        //setTimeout(function () {
+        //    $('#tempMessageError').fadeOut();
+        //    $('#tempMessageSuccess').fadeOut();
+        //}, 2000);
+
+
+        //$('#btnFilesCancel').click(function () {
+
+        //    $('#divUploadedFileTemplateHolder').html('');
+        //    $('#validationMessage').text('');
+        //    document.getElementById("uploadedFiles").value = '';
+        //});
+
+    });
+
+</script>
+
+@section ValidationScript
+{
+    @System.Web.Optimization.Scripts.Render("~/bundles/validation")
+}
+
+@section DropZoneScripts{
+
+    @System.Web.Optimization.Scripts.Render("~/bundles/dropzonescripts")
+
+    <script type="text/javascript">
+
+        $(function () {
+
+            try {
+                Dropzone.options.dropzoneForm = {
+                    maxFiles: 10,
+                    autoProcessQueue: false,
+                    paramName: 'photos',
+                    acceptedFiles: '.jpg,.jpeg,.png,.bmp',
+                    addRemoveLinks: true,
+                    init: function () {
+                        var rejectedFile = false;
+                        var totalFiles = 0, completeFiles = 0;
+                        var myDropzone = this;
+
+                        myDropzone.on("maxfilesexceeded", function (data) {
+                            //var res = eval('(' + data.xhr.responseText + ')');
+                            alert('Maximum 10 files allowed at a time');
+                        });
+
+                        myDropzone.on("addedfile", function (file) {
+                            totalFiles += 1;
+                        });
+                        myDropzone.on("removed file", function (file) {
+                            totalFiles -= 1;
+                        });
+                        myDropzone.on("complete", function (file) {
+                            completeFiles += 1;
+                            if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0 && completeFiles === totalFiles && rejectedFile == false) {
+                                window.location.reload();
+                            }
+                        });
+
+                        var submitButton = document.querySelector("#btnFilesSubmit");
+
+                        var cancelButton = document.querySelector("#btnFilesCancel");
+
+
+                        submitButton.addEventListener("click", function () {
+                            myDropzone.options.autoProcessQueue = true;
+                            myDropzone.processQueue();
+                        });
+
+                        cancelButton.addEventListener("click", function () {
+                            if (confirm('Are you sure you want to remove all the photos from dropped area !')) {
+                                myDropzone.removeAllFiles();
+                            }
+                        });
+
+                        myDropzone.on("thumbnail", function (img) {
+                            if (img.width < 800 || img.height < 600) {
+                                rejectedFile = true;
+                                img.rejectDimensions()
+
+                            }
+                            else {
+                                img.acceptDimensions();
+                            }
+                        });
+
+                    },
+                    accept: function (file, done) {
+                        file.acceptDimensions = done;
+
+                        file.rejectDimensions = function () { done("Image too small, Minimum dimension should be of 800 * 600 px"); rejectedFile = true; };
+                    }
+                };
+            } catch (e) {
+                alert('Opps something went wrong, Please refresh the page')
+            }
+        });
+    </script>
+}

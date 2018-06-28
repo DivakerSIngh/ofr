@@ -1,0 +1,174 @@
+﻿@model OneFineRateBLL.Entities.etblAdditionalCommission
+@System.Web.Optimization.Scripts.Render("~/bundles/validation")
+
+
+<style>
+    .datepicker {
+        z-index: 1151 !important;
+    }
+</style>
+
+@using (Html.BeginForm("AddEditCommission", "BankDetail", FormMethod.Post, new { id = "frmAddCommission" }))
+{
+    <div class="modal-dialog">
+
+        @Html.HiddenFor(u => u.iPropId);
+        @Html.HiddenFor(u => u.iAdditionalCommisionId)
+        @Html.HiddenFor(u => u.bActive)
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">@ViewBag.HeaderText</h4>
+            </div>
+            <div class="modal-body">
+               
+                <div class="row margintop10">
+                    <div class="col-xs-8">
+                        Base Commission : @Html.DisplayFor(m => m.baseDCommission) %
+                    </div>
+                </div>
+                <div class="row margintop10">
+                    <div class="col-xs-3">
+                        Start Date <span style="color:red">* </span>
+                        @Html.TextBoxFor(m => m.dtCommisionStartDate, new { @class = "form-control ", id = "dateFrom", onkeyup = "this.value=''", required = true, maxlength = "100", placeholder = "Start Date" })
+                        @Html.ValidationMessageFor(m => m.dtCommisionStartDate, "", new { @class = "red" })
+                    </div>
+                    <div class="col-xs-3">
+                        End Date <span style="color:red">*</span>
+                        @Html.TextBoxFor(m => m.dtCommisionEndDate, new { @class = "form-control ", id = "dateTo", onkeyup = "this.value=''", required = true, maxlength = "100", placeholder = "End Date" })
+                        @Html.ValidationMessageFor(m => m.dtCommisionEndDate, "", new { @class = "red" })
+                    </div>
+                    <div class="col-xs-4">
+                        Additional Commission % <span style="color:red">*</span>
+                        @Html.TextBoxFor(m => m.dCommission, new { @class = "form-control txtOnlyDecimalAllowed", style = "width: 80px;", data_val_number = "Please enter a valid number.", maxlength = "5", placeholder = "%" })
+                        @Html.ValidationMessageFor(m => m.dCommission, "", new { @class = "red" })
+                    </div>
+                </div>
+                <div class="row margintop10">
+                    <div class="col-md-12">
+                        <div class="alert alert-danger fade in" style="display:none">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+                            <strong>Error !</strong> <span id="addUpdateCommissionError"></span>
+                        </div>
+                    </div>
+                </div>
+              
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+}
+
+
+<script>
+
+    $(function () {
+
+        var d = new Date();
+
+        var ThreeYearDate = new Date();
+        var a = ThreeYearDate.getFullYear();
+        ThreeYearDate.setFullYear(a + 3);
+
+        $('#dateFrom').datepicker({
+            startDate: d,
+            minDate: d,
+            maxDate: ThreeYearDate,
+            autoclose: true,
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true,
+            onClose: function (selectedDate) {
+
+                $("#dateTo").datepicker("option", "minDate", selectedDate);
+            }
+        });
+        $('#dateTo').datepicker({
+            startDate: d,
+            minDate: d,
+            maxDate: ThreeYearDate,
+            autoclose: true,
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true,
+            onClose: function (selectedDate) {
+
+                var dateToValue = $("#dateTo").val();
+                var dateFromValue = $("#dateFrom").val();
+
+                if (dateFromValue) {
+                    if (toDate(dateFromValue) > toDate(dateToValue)) {
+
+                        $("#dateFrom").datepicker("option", "minDate", dateToValue);
+                    }
+                    else {
+                        return false;
+                    }
+                }
+                else {
+                    $("#dateFrom").datepicker("option", "minDate", dateToValue);
+                }
+            }
+        });
+
+    });
+
+    function toDate(dateStr) {
+        var parts = dateStr.split("/");
+        return new Date(parts[2], parts[1] - 1, parts[0]);
+    }
+
+    $('#frmAddCommission').submit(function (e) {
+
+        if ($(this).valid()) {
+            e.preventDefault();
+            $.post($(this).attr('action'), $(this).serialize()).done(function (data) {
+
+                if (data.status == 0) {
+                    $('#addUpdateCommissionError').html(data.msg);
+                    $('.alert').show()
+                }
+                else if (data.status == 1) {
+                    bindgrid();
+                    toastr.success(data.msg)
+                    $('.close').click();
+                }
+                else if (data.status == -1) {
+                    toastr.error(data.msg)
+                }
+            });
+        }
+    });
+
+
+    function GetResult(data) {
+        if (data.st == '1') {
+            toastr.success(data.msg);
+            bindgrid();
+            $('.close').click();
+        }
+        else {
+            toastr.error(data.msg);
+        }
+    }
+
+    var txtOnlyDecimalAllowed = document.getElementsByClassName('txtOnlyDecimalAllowed');
+
+    for (var i = 0; i < txtOnlyDecimalAllowed.length; i++) {
+
+        txtOnlyDecimalAllowed[i].addEventListener('input', function (prev) {
+            return function (evt) {
+                if (!/^\d{0,2}(?:\.\d{0,2})?$/.test(this.value)) {
+                    this.value = prev;
+                }
+                else {
+                    prev = this.value;
+                }
+            };
+        }(txtOnlyDecimalAllowed[i].value), false);
+
+    }
+</script>

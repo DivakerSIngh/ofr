@@ -1,0 +1,335 @@
+﻿@model OneFineRateBLL.Entities.etblMasterTaxMap
+
+
+@using (Html.BeginForm("AddUpdate", "MasterTax", FormMethod.Post, new { @class = "form-horizontal", id = "frmAddUpdateMasterTaxMap" }))
+{
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Master Tax Mapping</h4>
+    </div>
+
+    <div class="modal-body">
+
+        @Html.HiddenFor(model => model.iId)
+        @Html.HiddenFor(model => model.iMasterTaxId)
+        @Html.HiddenFor(model => model.IsAllStates)
+
+        <div class="row">
+            <div class="col-md-6">
+                <label> Select States </label> <spam class="red">*</spam>
+
+                @Html.ListBoxFor(model => model.iStateIds, new SelectList(OneFineRateBLL.BL_Country.GetStatesByCountryId(1), "iStateId", "sState"), new
+           {
+               @class = "form-control notSelect2",
+               data_actions_box = "true",
+               data_live_search = "true",
+               multiple = "",
+               title = "-Select State-",
+               id = "ddlState"
+           })
+
+                @Html.ValidationMessageFor(model => model.iStateIds, "", new { @class = "red" })
+            </div>
+            <div class="col-md-3">
+                <label> Stay From </label> <spam class="red">*</spam>
+                @Html.TextBoxFor(model => model.sStayFrom, new { placeholder = "Stay From", @class = "form-control", onkeyup = "this.value=''", id = "txtStayFrom" })
+                @Html.ValidationMessageFor(model => model.sStayFrom, "", new { @class = "red" })
+            </div>
+
+            <div class="col-md-3">
+                <label> Stay To </label> <spam class="red">*</spam>
+                @Html.TextBoxFor(model => model.sStayTo, new { placeholder = "Stay To", @class = "form-control", onkeyup = "this.value=''", id = "txtStayTo" })
+                @Html.ValidationMessageFor(model => model.sStayTo, "", new { @class = "red" })
+            </div>
+        </div>
+
+        <div class="row">
+
+            <div class="col-md-6">
+                <label> Room Rate Range </label> <spam class="red">*</spam>
+                @Html.DropDownListFor(model => model.iRangeId, new SelectList(Model.ListRoomRateRange, "iRangeId", "sRangeValue"), "-Select Range-", new
+           {
+               @class = "form-control",
+               id = "ddlRoomRateRange",
+               data_live_search = "true",
+           })
+                @Html.ValidationMessageFor(model => model.iRangeId, "", new { @class = "red" })
+            </div>
+
+        </div>
+
+        <div class="row" id="divtaxes">
+            <br />
+
+            @for (int i = 0; i < Model.ListTaxes.Count; i++)
+            {
+                <div class="cl-md-12" style="margin-bottom:1.5%">
+
+                    @Html.HiddenFor(u => Model.ListTaxes[i].iTaxId, new { @class = "hdnTaxId" })
+
+                    <div class="col-md-4" style="max-width:23%">
+                        @Html.Label(Model.ListTaxes[i].sTaxName)
+                    </div>
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(model => Model.ListTaxes[i].Type, new SelectList(new List<SelectListItem>() {
+
+                        new SelectListItem{ Text = "%",Value="p" },
+                         new SelectListItem{ Text = "Value",Value="v" }
+
+                        }, "Value", "Text", Model.ListTaxes[i].Type), new { @class = "form-control ddlTaxType", data_taxid = Model.ListTaxes[i].iTaxId })
+
+                    </div>
+                    <div class="col-md-5">
+                        @Html.TextBoxFor(u => Model.ListTaxes[i].value, new { id = "txtValue" + Model.ListTaxes[i].iTaxId, data_taxid = Model.ListTaxes[i].iTaxId, @class = "form-control txtTaxValue value txtOnlyDecimalAllowed", @required = "", maxlength = "8", placeholder = "%" })
+                        @Html.ValidationMessageFor(model => Model.ListTaxes[i].value, "", new { @class = "red" })
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            }
+
+        </div>
+    </div>
+
+    <div class="modal-footer">
+
+        @if (Model.iId > 0)
+        {
+            <button type="submit" id="btnSubmit" class="btn btn-primary">Update</button>
+        }
+        else
+        {
+            <button type="submit" id="btnSubmit" class="btn btn-primary">Save</button>
+        }
+
+        <button type="button" data-dismiss="modal" class="btn btn-danger">Cancel</button>
+
+    </div>
+}
+
+<script>
+
+    $('#ddlState').selectpicker();
+
+    $('#ddlRoomRateRange').selectpicker();
+
+    //$('#ddlRoomRateRange').on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
+
+    //    $('[data-valmsg-for="iRangeId"]').hide();
+    //});
+
+    $(".bs-select-all").on('click', function () {
+        $('#IsAllStates').val(true);
+    });
+
+    $(".bs-deselect-all").on('click', function () {
+        $('#IsAllStates').val(false);
+    });
+
+    var isAllSelected = true;
+   
+    $('#ddlState').on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
+
+        $('#ddlState option').each(function () {
+            if (!this.selected)
+                isAllSelected = false;
+        });
+
+        $('#IsAllStates').val(isAllSelected);
+
+    });
+    
+
+    $("#txtAmountFrom, #txtAmountTo, #txtCGSTAmount, #txtSGSTAmount, .txtOnlyDecimalAllowed").keydown(function (event) {
+
+        if (event.shiftKey == true) {
+            event.preventDefault();
+        }
+
+        if ((event.keyCode >= 48 && event.keyCode <= 57)
+            || (event.keyCode >= 96 && event.keyCode <= 105)
+            || event.keyCode == 8 || event.keyCode == 9
+            || event.keyCode == 37 || event.keyCode == 39
+            || event.keyCode == 46 || event.keyCode == 190) {
+
+        } else {
+            event.preventDefault();
+        }
+
+        if ($(this).val().indexOf('.') !== -1 && event.keyCode == 190)
+            event.preventDefault();
+    });
+
+    //$('#ddlState').on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
+
+    //    $('[data-valmsg-for="iStateIds"]').hide();
+    //});
+
+    $('#frmAddUpdateMasterTaxMap').submit(function (e) {
+
+        e.preventDefault();
+
+        var isAllSelected = true;
+
+        $('#ddlState option').each(function () {
+            if (!this.selected)
+                isAllSelected = false;
+        });
+
+        $('#IsAllStates').val(isAllSelected);
+
+        toastr.clear($('.toast'));
+
+        var $this = $(this);
+
+        if ($this.valid()) {
+
+            var isAllTaxValid = true;
+
+            $(".ddlTaxType").get().forEach(function (entry, index, array) {
+
+                if ($(entry).val() == 'p') {
+
+                    var dataTaxId = $(entry).data('taxid');
+
+                    var respectiveTextBox = $('input[data-taxid="' + dataTaxId + '"]');
+
+                    var respectiveTextBoxVal = parseFloat(respectiveTextBox.val());
+
+                    if (respectiveTextBoxVal >= 100) {
+
+                        isAllTaxValid = false;
+                        return false;
+                    }
+                }
+            });
+
+            if (!isAllTaxValid) {
+                toastr.error('Tax value can not be greater than or equal to 100%');
+                return false;
+            }
+
+            var frmData = $this.serializeArray();
+
+            $.post($this.attr('action'), frmData).done(function (data) {
+
+                BindMasterTaxList();
+
+                $('#addUpdateMasterTaxMapModal').modal('hide');
+
+                if (data.status == false) {
+                    toastr.error(data.Msg);
+                }
+                else if (data.status == true && data.statusCode == 2) {
+                    toastr.success(data.Msg);
+                }
+                else if (data.status == true && data.statusCode == 1) {
+
+                    bootbox.confirm(data.Msg, function (result) {
+
+                        if (result == true) {
+
+                            window.location.href = '@Url.Action("Index","TaxAffectedBookings")';
+                        }
+                    });
+                }
+            });
+        }
+    });
+
+
+    function calendar() {
+
+        var d = new Date();
+
+        $('#txtStayFrom').datepicker({
+            startDate: d,
+            minDate: d,
+            autoclose: true,
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true,
+            yearRange: "-0:+2",
+            onClose: function (selectedDate) {
+                if (selectedDate)
+                    $("#txtStayTo").datepicker("option", "minDate", selectedDate);
+            },
+            onSelect: function () {
+               // $('[data-valmsg-for="sStayFrom"]').hide();
+            }
+        });
+
+        $('#txtStayTo').datepicker({
+            startDate: d,
+            minDate: d,
+            autoclose: true,
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true,
+            yearRange: "-0:+2",
+            onClose: function (selectedDate) {
+                //$("#txtStayFrom").datepicker("option", "maxDate", selectedDate);
+            },
+            onSelect: function () {
+                //$('[data-valmsg-for="sStayTo"]').hide();
+            }
+        });
+
+
+        $("#txtStayFrom").each(function () {
+            var selecteddate = $("#txtStayFrom").datepicker("getDate");
+            var dateString = $.datepicker.formatDate('dd/mm/yy', selecteddate);
+            if (dateString == "01/01/2001") {
+                $("#txtStayFrom").datepicker('setDate', new Date('dd/mm/yy'));
+            }
+            $('#txtStayFrom').attr('disable', true);
+        });
+
+        $("#txtStayTo").each(function () {
+            var selecteddate = $("#txtStayTo").datepicker("getDate");
+            var dateString = $.datepicker.formatDate('dd/mm/yy', selecteddate);
+            if (dateString == "01/01/2001") {
+                $("#txtStayTo").datepicker('setDate', new Date('dd/mm/yy'));
+            }
+        });
+
+        $("#ui-datepicker-div").hide();
+    }
+
+    calendar();
+
+
+    $(".ddlTaxType").get().forEach(function (entry, index, array) {
+
+        if ($(entry).val() == 'p') {
+
+            var dataTaxId = $(entry).data('taxid');
+
+            var respectiveTextBox = $('input[data-taxid="' + dataTaxId + '"]');
+
+            var respectiveTextBoxVal = parseFloat(respectiveTextBox.val());
+
+            if (respectiveTextBoxVal >= 100) {
+
+                isAllTaxValid = false;
+                return false;
+            }
+        }
+    });
+
+    $('.ddlTaxType').change(function () {
+
+        var $this = $(this);
+        var value = $this.val();
+        var dataTaxId = $this.data('taxid');
+        var respectiveTextBox = $('input[data-taxid="' + dataTaxId + '"]');
+
+        if (value == 'v') {
+
+            respectiveTextBox.prop('placeholder', 'Value');
+        }
+        else {
+            respectiveTextBox.prop('placeholder', '%');
+        }
+    });
+
+</script>

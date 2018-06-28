@@ -1,0 +1,178 @@
+﻿@model OneFineRateApp.ViewModels.PropertyImageMapViewModel
+@{
+    var blobUrl = System.Configuration.ConfigurationManager.AppSettings["BlobUrl"];
+
+    if (Model != null)
+    {
+        <div role="tabpanel" class="tab-pane active" id="home">
+            <div class="panel-group" id="accordion">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                All Hotels (@Model.MappedEtblPropetyPhotoList.Count Photos)
+                            </a><a href="#" data-toggle="tooltip" data-placement="top" title="@Model.MappedEtblPropetyPhotoList.Where(x=>x.bIsHighRes==false).ToList().Count Low Res">
+                                <div class="red-box pull-right"></div>
+                            </a> <a href="#" data-toggle="tooltip" data-placement="top" title="@Model.MappedEtblPropetyPhotoList.Where(x=>x.bIsHighRes==true).ToList().Count High Res">
+                                <div class="green-box  pull-right"></div>
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseOne" class="panel-collapse collapse in">
+                        <div class="panel-body">
+
+                            @foreach (var item in Model.MappedEtblPropetyPhotoList)
+                            {
+                                using (Html.BeginForm("UpdatePropertyPhotoMap", "PropertyImages", FormMethod.Post, new { @class = "mappedHotelForm" }))
+                                {
+                                    @Html.HiddenFor(m => item.iPropId)
+                                    @Html.HiddenFor(m => item.iPhotoId)
+                                    @Html.HiddenFor(m => item.sImgUrl)
+                                    @Html.HiddenFor(m => item.iActionBy)
+                                    @Html.HiddenFor(m => item.bIsPrimaryR)
+                                    @Html.HiddenFor(m => item.bIsHighRes)
+                                    @Html.HiddenFor(m => item.bIsMapped)
+
+                                    <div id="mappedDiv_@item.iPhotoId" class="col-md-4 hotelbg margintop10 marginleft5">
+                                        <div class="images-hotel">
+                                            <img src="@blobUrl@Url.Content(item.sImgUrl)" alt="" width="100%" height="140px">
+                                            <span class="del_image">
+                                                <a class="deletePhotoMap" data-divref="mappedDiv_@item.iPhotoId" href="@Url.Action("DeletePropertyPhotoMap", "PropertyImages", new { propertyPhotoMapId = item.iPhotoId })">
+                                                    <img src="~/images/cross.jpg" alt="">
+                                                </a>
+                                            </span>
+                                        </div>
+                                        <div class="row">
+
+                                            <div class="col-md-12">
+                                                <div class="pull-right">
+                                                    @if (item.bIsHighRes.HasValue && item.bIsHighRes.Value)
+                                                    {
+                                                        <div class="green-box">&nbsp;</div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="red-box">&nbsp;</div>
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label>Category</label>
+                                            </div>
+                                            <div class="col-md-9">
+                                                @Html.DropDownListFor(m => item.iPhotoCatId, new SelectList(ViewBag.categoryList, "iPhotoCatId", "sPhotoCatName", item.iPhotoCatId),
+                                     "Select category", new { @class = "form-control ddlCategory", refId = "mappedSubcat_" + item.iPhotoId })
+                                                @Html.ValidationMessageFor(model => item.iPhotoCatId, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 ">
+
+                                            @Html.DropDownListFor(m => item.iPhotoSubCatId, new SelectList(item.ddliPhotoSubCatId, "iPhotoCatId", "sPhotoCatName", item.iPhotoSubCatId), "Select Subcategory", new { id = "mappedSubcat_" + item.iPhotoId, @class = "form-control select2-offscreen" })
+
+                                            @Html.ValidationMessageFor(model => item.iPhotoSubCatId, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="col-md-12 marginbottom10 ">
+                                            <div>
+                                                Primary :  @Html.CheckBoxFor(m => item.bIsPrimaryH, new { @class = "chkDefault" })
+                                                <br />
+                                                <input type="submit" class="btn btn-primary  pull-right" value="Update">
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                @foreach (var room in Model.MappedRoomTypePhotoList)
+                {
+                    var roomTypeList = Model.MappedEtblPropetyPhotoList.Where(x => x.iPhotoCatId == 1 && x.iPhotoSubCatId == room.iRoomId).ToList();
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse_@room.iRoomId">
+                                    @room.sRoomName (@roomTypeList.Count Photos)
+                                </a><a href="#" data-toggle="tooltip" data-placement="top" title="@roomTypeList.Where(x => x.bIsHighRes == false).ToList().Count Low Res">
+                                    <div class="red-box pull-right"></div>
+                                </a>
+                                <a href="#" data-toggle="tooltip" data-placement="top" title="@roomTypeList.Where(x => x.bIsHighRes == true).ToList().Count High Res">
+                                    <div class="green-box  pull-right"></div>
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapse_@room.iRoomId" class="panel-collapse collapse">
+                            <div class="panel-body">
+
+                                @foreach (var item in roomTypeList)
+                                {
+                                    using (Html.BeginForm("UpdatePropertyPhotoMap", "PropertyImages", FormMethod.Post, new { @class = "mappedRoomTypeForm" }))
+                                    {
+                                        @Html.HiddenFor(m => item.iPropId)
+                                        @Html.HiddenFor(m => item.iPhotoId)
+                                        @Html.HiddenFor(m => item.sImgUrl)
+                                        @Html.HiddenFor(m => item.iActionBy)
+                                        @Html.HiddenFor(m => item.bIsPrimaryH)
+                                        @Html.HiddenFor(m => item.bIsHighRes)
+                                        @Html.HiddenFor(m => item.bIsMapped)
+
+                                        <div id="mappedDeluxeDiv_@item.iPhotoId" class="col-md-4 hotelbg margintop10 marginleft5">
+                                            <div class="images-hotel">
+                                                <img src="@blobUrl@Url.Content(item.sImgUrl)" alt="" width="100%" height="140px">
+                                                <span class="del_image">
+                                                    <a class="deletePhotoMap" data-divref="mappedDeluxeDiv_@item.iPhotoId" href="@Url.Action("DeletePropertyPhotoMap", "PropertyImages", new { propertyPhotoMapId = item.iPhotoId })">
+                                                        <img src="~/images/cross.jpg" alt="">
+                                                    </a>
+                                                </span>
+                                            </div>
+                                            <div class="row">
+
+                                                <div class="col-md-12">
+                                                    <div class="pull-right">
+                                                        @if (item.bIsHighRes.HasValue && item.bIsHighRes.Value)
+                                                        {
+                                                            <div class="green-box">&nbsp;</div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="red-box">&nbsp;</div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label>Category</label>
+                                                </div>
+                                                <div class="col-md-9">
+                                                    @Html.DropDownListFor(m => item.iPhotoCatId, new SelectList(ViewBag.categoryList, "iPhotoCatId", "sPhotoCatName", item.iPhotoCatId),
+                                                "Select category", new { @class = "form-control select2-offscreen ddlCategory", refId = "mappedDeluxeSubcat_" + item.iPhotoId })
+                                                    @Html.ValidationMessageFor(model => item.iPhotoCatId, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 ">
+                                                <div class="col-md-6">
+                                                    <label>SubCategory</label>
+                                                </div>
+                                                @Html.DropDownListFor(m => item.iPhotoSubCatId, new SelectList(item.ddliPhotoSubCatId, "iPhotoCatId", "sPhotoCatName", item.iPhotoSubCatId), "Select subcategory", new { id = "mappedDeluxeSubcat_" + item.iPhotoId, @class = "form-control select2-offscreen" })
+
+                                                @Html.ValidationMessageFor(model => item.iPhotoSubCatId, "", new { @class = "text-danger" })
+
+                                            </div>
+                                            <div class="col-md-12 marginbottom10 ">
+                                                <div>
+                                                    Primary :  @Html.CheckBoxFor(m => item.bIsPrimaryR, new { @class = "" })
+                                                    <br />
+                                                    <input type="submit" class="btn btn-primary  pull-right" value="Update">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+}

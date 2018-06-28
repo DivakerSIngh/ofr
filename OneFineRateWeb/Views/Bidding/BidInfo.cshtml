@@ -1,0 +1,390 @@
+﻿@model OneFineRateBLL.Entities.BiddingHotelsUpgrade
+@using OneFineRateAppUtil
+@{
+    ViewBag.Title = "Bidding";
+    Layout = null;
+}
+<div class="modal-dialog width80percent">
+    <!-- Modal content-->
+
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            @*<h4 class="hoteltitles">Upgrade Room</h4>*@
+        </div>
+        <div class="modal-body">
+
+            <div class="row border1 margintop10 boxshadow margin0">
+                <div class="col-md-3">
+                    <div class="row">
+                        <img src="@Model.objBidRoomsData.sImgUrl" class="item lazy srchimgheight">
+                        @if (Model.objBidRoomsData.bIsTopHotel == true)
+                        {
+                            <span class="label label-danger padding5 tophotel-label whitetext">Top Hotel</span>
+                        }
+
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div style="cursor:pointer" class="bookNow" data-srequesttype="bid" data-roomid="@OneFineRateAppUtil.clsUtils.Encode(Model.objBidRoomsData.iRoomId.ToString())" data-propertyid="@OneFineRateAppUtil.clsUtils.Encode(Model.objBidRoomsData.iPropId.ToString())">
+                                        <h3 class="mar-padd0">
+                                            @Model.objBidRoomsData.sHotelName
+
+                                            <span><img src="../images/inner-star@(Model.objBidRoomsData.iStarCategoryId).png" class="inner_star"></span>
+
+                                        </h3>
+                                    </div>
+
+                                    <h5>@Model.objBidRoomsData.sLocality</h5>
+
+                                </div>
+
+
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <ul class="srchofr">
+                                <li class="">
+                                    @if (Model.objBidRoomsData.LastBook != "-1")
+                                    {
+                                        if (Model.objBidRoomsData.LastBook != null)
+                                        {
+                                            <span class="red">Last Bid @Model.objBidRoomsData.LastBook ago !</span>
+                                        }
+                                        if (Model.objBidRoomsData.LastBook != null && Model.objBidRoomsData.Looking != null && Model.objBidRoomsData.Looking != 0)
+                                        {
+                                            <span>|</span>
+                                        }
+                                        if (Model.objBidRoomsData.Looking != null && Model.objBidRoomsData.Looking != 0)
+                                        {
+                                            <span class="blacktext">@Model.objBidRoomsData.Looking People are viewing</span>
+                                        }
+                                    }
+
+                                </li>
+                                @if (Model.objBidRoomsData.bIsHighDemand == true)
+                                {
+                                    <li class="red pull-right"><strong>In High Demand</strong></li>
+                                }
+                            </ul>
+                        </div>
+                        <div class="col-xs-12">
+
+                            @{
+                                if (!String.IsNullOrEmpty(@Model.objBidRoomsData.rating_image_url))
+                                {
+                                    <img src="@Model.objBidRoomsData.rating_image_url" class="imgheight19"><br>
+                                    <em class="green pull-left">@Model.objBidRoomsData.ranking_string</em>
+                                }
+                            }
+
+                            <div class="facilityicon pull-right">
+                                <ul>
+                                    @foreach (var amenityUrl in Model.objBidRoomsData.GetFirstFourAmenityUrl())
+                                    {
+                                        var urlArr = amenityUrl.Split(',');
+                                        <li><img src="@urlArr[1]" height="20" title="@urlArr[0]" width="20" /></li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-md-2 text-center paddingtop30 lightcream ">
+                    @if (Model.objBidRoomsData.bUpgrade == true)
+                    {
+                        <span class="fontsize18a ">
+                            Upgrade Now! at further discounted rates.
+                        </span>
+                    }
+
+                </div>
+
+                <div class="col-md-12 lightgry">
+
+                    @{
+
+                        var bDiscount = false;
+
+                        if (@Model.objBidRoomsData.Discount > 0)
+                        {
+                            bDiscount = true;
+                            @Html.Raw("You are saving")
+                            <strong class="srchblueboldtext1 ">@Model.objBidRoomsData.Discount %</strong>
+                        }
+                    }
+
+
+
+                    @{
+                        System.Text.StringBuilder str = new System.Text.StringBuilder();
+                        if (@Model.objBidRoomsData.lstBidAmenAppl.Count > 0)
+                        {
+
+                            foreach (var item in @Model.objBidRoomsData.lstBidAmenAppl)
+                            {
+                                str.Append(",");
+                                str.Append(" " + item.Amen+ " (" + item.Appl + ")");
+
+                            }
+                            if (bDiscount == true)
+                            {
+                                @Html.Raw("and getting")
+                            }
+                            else
+                            {
+                                @Html.Raw("You are getting")
+                            }
+
+
+                            <strong class="srchblueboldtext1">
+                                @Html.Raw(str.ToString().TrimStart(','))
+                            </strong>
+
+                        }
+                    }
+                </div>
+
+            </div>
+
+
+            @{
+                var Count = 0;
+
+
+                if (Model.lstRoomsData.Count > 0)
+                {
+                    foreach (var item in Model.lstRoomsData.OrderBy(x => x.TotalDifferenceConverted))
+                    {
+                        Count++;
+                        <div class="row border1 margintop10 boxshadow margin0">
+                            <div class="col-md-3 ">
+                                <img src="@(string.IsNullOrEmpty(item.sImgUrl) ?( item.lstImages.FirstOrDefault()==null?Url.Content("~/images/noimage.jpg"): item.lstImages.FirstOrDefault().Image) : item.sImgUrl)" id="@string.Concat("imgMain", @Count)" class="item lazy updatermimgheight">
+                                <ul class="updateroom">
+                                    @foreach (var itemimage in item.lstImages)
+                        {
+                                        <li><img style="cursor:pointer;" ccount="@Count" src="@itemimage.Image" onclick="SetAsMain(this);" alt="Image" width="40" height="40"></li>
+                                    }
+                                </ul>
+                            </div>
+                            <div class="col-md-7">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h4><a class="hoteltitles">@item.sRoomName</a></h4>
+                                        <div class=" facilityicon margintop-10">
+                                            <ul>
+                                                @foreach (var amenityUrl in item.GetFirstFourAmenityUrl())
+                        {
+                            var urlArr = amenityUrl.Split(',');
+                                                    <li><img src="@urlArr[1]" title="@urlArr[0]" style="height: 20px; width: 20px" /></li>
+                                                }
+
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4"><b>Room Size</b> <br />@item.dSizeSqft Sq.ft - @item.dSizeMtr Sq/mt</div>
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-1 col-xs-2"><b>View</b></div>
+                                    <div class="col-md-11 col-xs-10">
+                                        @{
+                                                System.Text.StringBuilder strviews = new System.Text.StringBuilder();
+                                                if (@item.lstViews.Count > 0)
+                                                {
+                                                    foreach (var itemViews in @item.lstViews)
+                                                    {
+                                                        strviews.Append(",");
+                                                        strviews.Append(" " + itemViews.sView);
+
+                                                    }
+
+                }
+                @Html.Raw(strviews.ToString().TrimStart(','))
+
+                                        }
+
+
+                                    </div>
+                                    <div class="col-md-12"><b>Room Features</b></div>
+                                    <div class="col-md-12">
+                                        @{
+                        var dclass = String.Concat(Count, "roomfacility");
+                                        }
+                                        <ul class="@dclass updateroomfeature">
+                                            @if (item.lstfacilities.ToList().Count > 0)
+                {
+                    foreach (var itemfeatures in item.lstfacilities)
+                    {
+                                                    <li>@itemfeatures.sFacility</li>
+                                                }
+
+                }
+                                        </ul>
+                                        <script>
+
+                                            if ($('.@dclass li').length > 6) {
+                                                $('.@dclass li').hide().filter(':lt(6)').show();
+                                                $('.@dclass').append('<div style="float: right;"><a href="javascrip:void(0)" id="@dclass" style="text-decoration: underline !important;">more</a></div>').find('div:last').click(function () {
+                                                    $(this).siblings(':gt(5)').slideToggle(50, function () {
+                    });
+                });
+
+                                                $('#@dclass').click(function () {
+                    if ($(this).text() === 'more') {
+                                                        $(this).text('less');
+                    }
+                                                    else {
+                                                        $(this).text('more');
+                    }
+                    return true;
+                });
+                                            }
+
+                                        </script>
+
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-2 srchlightcream srchlightcream-mob">
+                                <div class="text-center">
+
+                                    @if (!item.IsUpgradedRoom)
+                {
+                    if (item.TotalDifferenceConverted > 0)
+                    {
+                                                <div>
+                                                    @*<strong class="margintop30 fontsize18a ">Currently Offered</strong>
+                                                    <br />*@
+                                                    Additional Taxes payable for the room
+                                                    <br />
+                                                    <strong class="fontsize18a ">
+                                                        @item.Symbol  @clsUtils.ConvertNumberToCommaSeprated(Math.Round(item.TotalDifferenceConverted))
+                                                    </strong>
+                                                    <br />
+                                                    @*as tax difference to get this room.*@
+                                                    <div class="margintop74 text-center">
+
+                                                        @using (Html.BeginForm("GetLeftPayment", "Bidding", FormMethod.Post, new { id = "myformNew", role = "form" }))
+                                                        {
+
+                                                            @Html.HiddenFor(u => u.iBookingId)
+                                                            @Html.HiddenFor(u => u.iPropId)
+                                                            @Html.HiddenFor(u => u.iRoomId, new { @class = "hdnRoomId" })
+                                                            @Html.HiddenFor(u => u.BIdUpgradeHotels)
+                                                            <button type="submit" onclick="GetAmount(this);" iroomid="@item.iRoomId" class=" btn btn-bannerbtn marginbottom10 updateroompaynow  width100 ">Pay Now</button>
+                                                        }
+                                                    </div>
+                                                </div>
+                                        }
+                                        else
+                                        {
+                                            @*<strong class="margintop30 fontsize18a ">Currently Offered</strong>*@
+                                            <div class="margintop74 text-center">
+
+                                                @using (Html.BeginForm("UpdateBookingOnUpgrade", "Bidding", FormMethod.Post, new { id = "myformUpgrdae", role = "form" }))
+                                                {
+
+                                                    @Html.HiddenFor(u => u.iBookingId)
+                                                    @Html.HiddenFor(u => u.iPropId)
+                                                    @Html.HiddenFor(u => u.BIdUpgradeHotels)
+                                                    if (Request.Browser.IsMobileDevice)
+                                                    {
+                                                        <button type="button" class="btn btn-bannerbtn marginbottom10 marginleft5  width100 btnUpgradeSubmit" style="margin-bottom: -96px !important;">Select</button>
+
+                                                    }
+                                                    else
+                                                    {
+                                                        <button type="button" class="btn btn-bannerbtn marginbottom10 marginleft5  width100 btnUpgradeSubmit" >Select</button>
+
+                                                    }
+
+                                                }
+                                            </div>
+                                        }
+
+
+                                    }
+                                    else
+                                    {
+                                        <div>
+                                            Upgrade at
+                                            <br />
+                                            <strong class="fontsize18a ">@item.Symbol @clsUtils.ConvertNumberToCommaSeprated(Math.Round(item.TotalDifferenceConverted))</strong>
+                                            <br />
+                                            Including taxes.
+                                            @using (Html.BeginForm("GetLeftPayment", "Bidding", FormMethod.Post, new { id = "myformNew", role = "form" }))
+                                            {
+
+                                                @Html.HiddenFor(u => u.iBookingId)
+                                                @Html.HiddenFor(u => u.iPropId)
+                                                @Html.HiddenFor(u => u.iRoomId, new { @class = "hdnRoomId" })
+                                                @Html.HiddenFor(u => u.BIdUpgradeHotels)
+                                                <button type="submit" onclick="GetAmount(this);" iroomid="@item.iRoomId" class=" btn btn-bannerbtn marginbottom10 updateroompaynow  width100 ">Pay Now</button>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+
+            }
+
+
+
+
+
+
+
+        </div>
+    </div>
+</div>
+<script>
+
+    $('.btnUpgradeSubmit').click(function (e) {
+        e.preventDefault();
+
+        //Hotel and Room once confirmed can not be undone
+
+        if (confirm("Are you sure you want to select this room?\nHotel and Room once confirmed can not be undone.")) {
+            //startSpinning();
+            $('#myformUpgrdae').submit();
+        }
+
+        //bootbox.confirm("<b>Are you sure you want to select this hotel?</b><br/> This action can not be undone.", function (result) {
+
+        //    if (result == true) {
+        //        startSpinning();
+        //        $('#myformUpgrdae').submit();
+        //    }
+
+        //});
+    });
+
+
+    function GetAmount(obj) {
+        var id = $(obj).attr('iroomid');
+        $('.hdnRoomId').val(id);
+
+    }
+
+    function SetAsMain(obj) {
+        var srcimg = $(obj).attr('src');
+        var ccount = $(obj).attr('ccount');
+
+        var targetid = $('#imgMain' + ccount + '');
+        targetid.removeAttr('src');
+        targetid.attr('src', srcimg);
+    }
+</script>

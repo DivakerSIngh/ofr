@@ -1,0 +1,73 @@
+﻿@model OneFineRateApp.ViewModels.PropertyImageMapViewModel
+
+@if (Model != null && Model.UnMappedEtblPropetyPhotoList.Count > 0)
+{
+    using (Html.BeginForm("MapPropetyImages", "PropertyImages", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        var count = Model.UnMappedEtblPropetyPhotoList.Count;
+        var blobUrl = System.Configuration.ConfigurationManager.AppSettings["BlobUrl"];
+
+        for (int i = 0; i < count; i++)
+        {
+            @Html.HiddenFor(m => Model.UnMappedEtblPropetyPhotoList[i].iPropId)
+            @Html.HiddenFor(m => Model.UnMappedEtblPropetyPhotoList[i].iPhotoId)
+            @Html.HiddenFor(m => Model.UnMappedEtblPropetyPhotoList[i].sImgUrl)
+            @Html.HiddenFor(m => Model.UnMappedEtblPropetyPhotoList[i].iActionBy)
+            @Html.HiddenFor(m => Model.UnMappedEtblPropetyPhotoList[i].bIsHighRes)
+            @Html.HiddenFor(m => Model.UnMappedEtblPropetyPhotoList[i].bIsMapped)
+            @Html.HiddenFor(m => Model.UnMappedEtblPropetyPhotoList[i].UniqueAzureFileName)
+            @Html.HiddenFor(m => Model.UnMappedEtblPropetyPhotoList[i].iResolutionH)
+            @Html.HiddenFor(m => Model.UnMappedEtblPropetyPhotoList[i].iResolutionW)
+
+            <div id="div_@i" class="col-md-4 hotelbg margintop10 marginleft5">
+                <div class="images-hotel" style="text-align:center">
+                    @{
+            var cuurentItem = Model.UnMappedEtblPropetyPhotoList[i];
+            string previewImageUrl = cuurentItem.iPropId + "/" + Path.GetFileNameWithoutExtension(cuurentItem.UniqueAzureFileName) + Path.GetExtension(cuurentItem.UniqueAzureFileName);
+            string thumbImageUrl = cuurentItem.iPropId + "/" + Path.GetFileNameWithoutExtension(cuurentItem.UniqueAzureFileName) + "_thumb" + Path.GetExtension(cuurentItem.UniqueAzureFileName);
+                    }
+                    <a href="@blobUrl@Url.Content(previewImageUrl)" rel="prettyPhoto[galleryUnmapped]"><img src="@blobUrl@Url.Content(thumbImageUrl)" class="imgResponsive" alt="image" onerror="this.src=''"></a>
+
+                    <span class="del_image">
+                        <a class="deletePhotoMap" data-divref="div_@i" href="@Url.Action("DeletePropertyPhotoMap", "PropertyImages", new { propertyPhotoMapId = Model.UnMappedEtblPropetyPhotoList[i].iPhotoId })">
+                            <img src="~/images/cross.jpg" alt="">
+                        </a>
+                    </span>
+                </div>
+                <div class="row">
+
+                    <div class="col-md-12">
+                        <div class="pull-right">
+                            @if (Model.UnMappedEtblPropetyPhotoList[i].bIsHighRes.HasValue && Model.UnMappedEtblPropetyPhotoList[i].bIsHighRes.Value)
+                            {
+                                <div class="green-box">&nbsp;</div>
+                            }
+                            else
+                            {
+                                <div class="red-box">&nbsp;</div>
+                            }
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label>Category <span class="red">*</span> @Html.ValidationMessageFor(model => model.UnMappedEtblPropetyPhotoList[i].iPhotoCatId, "", new { @class = "red" })</label>
+                        @Html.DropDownListFor(m => Model.UnMappedEtblPropetyPhotoList[i].iPhotoCatId, new SelectList(ViewBag.categoryList, "iPhotoCatId", "sPhotoCatName"),
+                    "Select category", new { @class = "form-control select2-offscreen ddlCategory", refId = "subcat_" + i })
+
+                    </div>
+                    <div class="col-md-12 ">
+                        <label>Sub Category <span class="red">*</span> @Html.ValidationMessageFor(model => model.UnMappedEtblPropetyPhotoList[i].iPhotoSubCatId, "", new { @class = "red" })</label>
+                        @Html.DropDownListFor(m => Model.UnMappedEtblPropetyPhotoList[i].iPhotoSubCatId, new SelectList(Enumerable.Empty<SelectListItem>()),
+                    "Select Subcategory", new { @class = "form-control ", id = "subcat_" + i })
+
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="col-md-12">
+            <input id="btnSubmit" type="submit" class="btn btn-primary margintop10 pull-left" value="Save">
+        </div>
+    }
+
+}

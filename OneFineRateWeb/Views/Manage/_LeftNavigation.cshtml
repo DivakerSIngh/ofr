@@ -1,0 +1,204 @@
+﻿
+@*<script src="~/js/prefixfree.min.js"></script>*@
+@*<script src="~/js/modernizr.js"></script>*@
+@*<script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>*@
+@*<link href="~/css/usermenu.css" rel="stylesheet" />*@
+
+@*<style>
+    .dropdown-submenu {
+        position: relative;
+    }
+
+        .dropdown-submenu > .dropdown-menu {
+            top: 0;
+            left: 50%;
+            margin-top: -6px;
+            margin-left: -1px;
+            -webkit-border-radius: 0 6px 6px 6px;
+            -moz-border-radius: 0 6px 6px 6px;
+        }
+
+        .dropdown-submenu:hover > .dropdown-menu {
+            display: block;
+        }
+
+
+        .dropdown-submenu > a:after {
+            display: block;
+            content: " ";
+            float: right;
+            width: 0;
+            height: 0;
+            border-color: transparent;
+            border-style: solid;
+            border-width: 5px 0 5px 5px;
+            border-left-color: #cccccc;
+            margin-top: 5px;
+            margin-right: -10px;
+        }
+
+    .dropdown-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        z-index: 1000;
+        display: none;
+        float: left;
+        min-width: 160px;
+        padding: 5px 0;
+        margin: 2px 0 0;
+        font-size: 14px;
+        text-align: left;
+        list-style: none;
+        background-color: #fff;
+        /*-webkit-background-clip: padding-box;
+    background-clip: padding-box;*/
+        border: 0px solid #ccc !important;
+        border: 0px solid rgba(0,0,0,.15) !important;
+        border-radius: 0px !important;
+        -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+        box-shadow: 0 6px 12px rgba(0,0,0,.175);
+    }
+
+    .dropdowna:hover {
+        background-color: #2575b2;
+    }
+
+
+        .dropdowna:hover a {
+            color: white;
+        }
+
+    /*NEw Added*/
+</style>
+<div class="left-nav">
+
+    <ul>
+        <li id="li_Dashboard" class="dropdowna">
+            @Html.ActionLink("Dashboard", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Dashboard" })
+        </li>
+
+        <li id="li_Booking" class="dropdowna">
+            @Html.ActionLink("Bookings ", "Booking", "Manage", routeValues: null, htmlAttributes: new { title = "Bookings" })
+            <ul class="dropdown-menua">
+                <li>
+                    <a href="javascript:void" class="tabScroll" data-id="#PendingNegotiations">Pending Negotiations</a>
+                </li>
+                <li>
+                    <a href="javascript:void" class="tabScroll" data-id="#FutureBookings">Future Bookings</a>
+                </li>
+                <li>
+                    <a href="javascript:void" class="tabScroll" data-id="#PastBookings">Past Bookings</a>
+                </li>
+                <li>
+                    <a href="javascript:void" class="tabScroll" data-id="#UnSuccessfullNegotiations">Unsucessfull Negotiations</a>
+                </li>
+            </ul>
+        </li>
+
+        <li id="li_MyAccount" class="dropdowna">
+            @Html.ActionLink("Profile ", "MyAccount", "Manage", routeValues: null, htmlAttributes: new { @class = "dropbtn", title = "My Account" })
+            <ul class="dropdown-menua">
+
+                <li>
+                    <a class="smothScroll" href="#UserProfileDiv">Profile</a>
+                </li>
+                <li>
+                    <a class="smothScroll" href="#UserPreferenceDiv">Preferences</a>
+                </li>
+                <li>
+                    <a class="smothScroll" href="#GovernmentApprovedIdDiv">Govt. Approved ID</a>
+                </li>
+                <li>
+                    <a class="smothScroll" href="#PasswordDiv">Password & Currency</a>
+                </li>
+                <li>
+                    <a class="smothScroll" href="#ManageLoginsDiv">Manage Logins</a>
+                </li>
+            </ul>
+        </li>
+        <li id="li_WishList" class="dropdowna">
+            @Html.ActionLink("My Wishlists ", "WishList", "Manage", routeValues: null, htmlAttributes: new { @class = "dropbtn", title = "Wish List" })
+        </li>
+        <li id="li_ReferralCode" class="dropdowna">
+            @Html.ActionLink("Manage Referral Code", "ReferralCode", "Manage", routeValues: null, htmlAttributes: new { @class = "dropbtn", title = "Manage Referral Code" })
+        </li>
+        <li id="li_RewardPoints" class="dropdowna">
+            @Html.ActionLink("Reward points", "RewardPoints", "Manage", routeValues: null, htmlAttributes: new { @class = "dropbtn", title = "Manage Reward points" })
+        </li>
+    </ul>
+
+
+</div>*@
+
+
+<div class="header_bar">
+    <div class="container">
+        <nav>
+            <a id="resp-menu" class="responsive-menu" href="#"><i class="fa fa-reorder"></i> Menu</a>
+            <ul class="menu">
+
+                <li id="li_Dashboard">
+                    @Html.ActionLink("Dashboard", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Dashboard" })
+                </li>
+
+                <li id="li_Booking">
+                    @Html.ActionLink("Bookings ", "Booking", "Manage", routeValues: null, htmlAttributes: new { title = "Bookings" })
+
+                </li>
+
+                <li id="li_MyAccount">
+                    @Html.ActionLink("Profile ", "MyAccount", "Manage", routeValues: null, htmlAttributes: new { @class = "dropbtn", title = "My Account" })
+                    <ul class="sub-menu">
+
+                        <li>
+                            <a class="smothScroll" href="#UserProfileDiv">Profile</a>
+                        </li>
+                        <li>
+                            <a class="smothScroll" href="#UserPreferenceDiv">Preferences</a>
+                        </li>
+                        <li>
+                            <a class="smothScroll" href="#GovernmentApprovedIdDiv">Govt. Approved ID</a>
+                        </li>
+                        <li>
+                            <a class="smothScroll" href="#PasswordDiv">Password & Currency</a>
+                        </li>
+                        @*<li>
+                                <a class="smothScroll" href="#ManageLoginsDiv">Manage Logins</a>
+                            </li>*@
+                    </ul>
+                </li>
+                <li id="li_WishList">
+                    @Html.ActionLink("My Wishlists ", "WishList", "Manage", routeValues: null, htmlAttributes: new { @class = "dropbtn", title = "Wish List" })
+                </li>
+                <li id="li_ReferralCode">
+                    @Html.ActionLink("Manage Referral Code", "ReferralCode", "Manage", routeValues: null, htmlAttributes: new { @class = "dropbtn", title = "Manage Referral Code" })
+                </li>
+                <li id="li_RewardPoints">
+                    @Html.ActionLink("Reward points", "RewardPoints", "Manage", routeValues: null, htmlAttributes: new { @class = "dropbtn", title = "Manage Reward points" })
+                </li>
+            </ul>
+
+        </nav>
+    </div>
+</div>
+<script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+<script>
+$(document).ready(function(){
+	var touch 	= $('#resp-menu');
+	var menu 	= $('.menu');
+
+	$(touch).on('click', function(e) {
+		e.preventDefault();
+		menu.slideToggle();
+	});
+
+	$(window).resize(function(){
+		var w = $(window).width();
+		if(w > 767 && menu.is(':hidden')) {
+			menu.removeAttr('style');
+		}
+	});
+
+});
+</script>

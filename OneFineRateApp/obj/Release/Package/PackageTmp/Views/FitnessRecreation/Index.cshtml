@@ -1,0 +1,98 @@
+﻿@using MvcCheckBoxList.Model
+@model OneFineRateBLL.Entities.etblPropertyRecreationMap
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutProperty.cshtml";
+}
+<style>
+    label {
+        padding-left: 5px !important;
+    }
+     .alinghTable td {
+        width: 30%;
+    }
+</style>
+@using (Html.BeginForm("Modify", "FitnessRecreation", FormMethod.Post, new { ReturnUrl = ViewBag.ReturnUrl, id = "myform", role = "form" }))
+{ 
+    @Html.HiddenFor(u => u.iPropId);
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+
+                     Fitness and Recreation
+                </h4>
+            </div>
+            <div>
+                <div class="panel-body">
+
+
+
+
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="subheadcolor">
+                                <h4>On-site recreation facilities </h4>
+                            </div>
+                            <hr />
+
+                            @{ var putCheckBoxesIntoTable = new HtmlListInfo(HtmlTag.table, 3, new { @class = "alinghTable", style = "width:100%;" }); }
+                            @Html.CheckBoxListFor(m => m.SelectedOnSiteRecreationfacilities, m => m.OnSiteRecreationfacilitiesItems,
+                    group => group.Value,
+                    group => group.Text,
+                    m => m.Selected,
+                   putCheckBoxesIntoTable)
+
+                        </div>
+                    </div>
+
+
+                    <!-- Basic room ends -->
+                    <!-- Land Activities start-->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="subheadcolor"><h4>Land Activities</h4></div>
+                            <hr />
+
+                            @Html.CheckBoxListFor(m => m.SelectedLandActivities, m => m.LandActivitiesItems,
+                    group => group.Value,
+                    group => group.Text,
+                    m => m.Selected,
+                    putCheckBoxesIntoTable)
+                        </div>
+
+                    </div>
+
+                    <!-- Bathroom start-->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="subheadcolor"><h4>Golf</h4></div>
+                            <hr />
+
+                            @Html.CheckBoxListFor(m => m.SelectedGolf, m => m.GolfItems,
+                    group => group.Value,
+                    group => group.Text,
+                    m => m.Selected,
+                    MvcCheckBoxList.Model.Position.Horizontal,
+                    x => new { @class = "CheckBoxList" })
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <!-- Panel 1 div END  -->
+
+
+    </div>
+    <div class="row marginbottom10" style="text-align:right">
+        <div class="col-xs-12 ">
+            <input type="submit" class="btn btn-primary marginright10" value="Save">
+
+        </div>
+    </div>
+    <!-- Panel group div END  -->
+}

@@ -1,0 +1,244 @@
+﻿@{
+    ViewBag.Title = "Service Charge";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+
+<style>
+    .dataTables_filter {
+        display: none !important
+    }
+</style>
+
+
+<div class="container margintop20">
+    <div class="row panel panel-default">
+        <div class="container panel-heading">
+            <div class="col-md-6">
+                <h4 class="panel-title">
+                    Service Charge Management
+                </h4>
+            </div>
+            <div class="col-md-6">
+                <button type="button" class="pull-right btn btn-warning" data-toggle="modal" id="addUpdateServiceCharge" data-target="#addUpdateServiceChargeModal"><i class="fa fa-plus"></i> Add Service Charge </button>
+            </div>
+        </div>
+        <div class="panel-body">
+
+            <div class="table-responsive margintop20">
+                <table class="table table-striped table-bordered table-hover display" id="tblServiceChargeData"></table>
+            </div>
+            <!-- End  table -->
+        </div>
+    </div>
+    <!-- container div END bottom -->
+</div>
+
+<div id='addUpdateServiceChargeModal' class='modal fade in'>
+    <div class="modal-dialog">
+        <div id='addUpdateServiceChargeModalContainer' class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+@System.Web.Optimization.Scripts.Render("~/bundles/ajaxpostform")
+@System.Web.Optimization.Scripts.Render("~/bundles/validation")
+
+
+@section scripts{
+
+    <script type="text/javascript">
+
+
+        $(function () {
+
+            BindServiceChargeGrid();
+
+            $('#addUpdateServiceCharge').click(function () {
+
+                //debugger;
+
+                var url = '@Url.Action("AddUpdate")';
+
+                $.get(url, function (data) {
+
+                    $('#addUpdateServiceChargeModalContainer').html(data);
+
+                    $('#btnSubmit').text("Save");
+
+                    $('#addUpdateServiceChargeModal').modal('show');
+
+                    $.validator.unobtrusive.parse("#frmAddUpdateServiceCharge");
+
+                });
+            });
+
+
+            $(document).on('click', '.btnEditServiceCharge', function (e) {
+
+                var url = '@Url.Action("AddUpdate")' + '?Id=' + $(this).data('id');
+
+                $.get(url, function (data) {
+
+                    $('#addUpdateServiceChargeModalContainer').html(data);
+
+                    $('#btnSubmit').text("Update");
+
+                    $('#addUpdateServiceChargeModal').modal('show');
+
+                    $.validator.unobtrusive.parse("#frmAddUpdateServiceCharge");
+
+                });
+            });
+
+            $(document).on('click', '.btnToggleStatus', function (e) {
+
+                var id = $(this).data('id');
+                var type = $(this).data('type');
+
+
+                toastr.clear($('.toast'));
+
+                bootbox.confirm("Do you want to " + type + " this record?", function (result) {
+
+                    if (result == true) {
+
+                        //debugger;
+
+                        $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("ToggleStatus")",
+                            data: { id: id, status: type == 'disable' ? false : true },
+                            datatype: "json",
+                            success: function (data) {
+
+                                BindServiceChargeGrid();
+
+                                if (data.status == 1) {
+
+                                    toastr.success(data.Msg);
+                                }
+                                else if (data.status == -1) {
+
+                                    toastr.error(data.Msg);
+                                }
+                                else {
+                                    toastr.error('An unknow error has occured! Kindly try after some time.');
+                                }
+                            },
+                            error: function (er) {
+                                toastr.error("An error occured!");
+                            }
+                        });
+                    }
+                });
+            });
+
+
+            $(document).on('click', '.btnDeleteServiceCharge', function (e) {
+
+                var id = $(this).data('id');
+
+                toastr.clear($('.toast'));
+
+                bootbox.confirm("Do you want to delete this record?", function (result) {
+
+                    if (result == true) {
+
+                        $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("DeleteServiceCharge")",
+                            data: { id: id },
+                            datatype: "json",
+                            success: function (data) {
+
+                                BindServiceChargeGrid();
+
+                                if (data.status == 1) {
+
+                                    toastr.success('Record deleted successfullty!');
+                                }
+                                else if (data.status == -1) {
+
+                                    toastr.error('Can not delete the record.');
+                                }
+                                else {
+                                    toastr.error('An unknow error has occured! Kindly try after some time.');
+                                }
+                            },
+                            error: function (er) {
+                                toastr.error("An error occured!");
+                            }
+                        });
+                    }
+                });
+            });
+        });
+
+
+        function BindServiceChargeGrid() {
+
+            try {
+                var aoColumns =
+                    [
+                        { "sTitle": "ID", "mData": "ServiceChargeId" },
+
+                        {
+                            "sTitle": "From", "mData": "dtFrom", "mRender": function (data, type, full) {
+                                return getNorDateWithoutTime(data);
+                            }
+                        },
+
+                        {
+                            "sTitle": "To.", "mData": "dtTo", "mRender": function (data, type, full) {
+                                return getNorDateWithoutTime(data);
+                            }
+                        },
+
+                        { "sTitle": "Service Charge", "mData": "ServiceCharge" },
+
+                        {
+                            "sTitle": "GST Value Type", "mData": "GstValueType",
+                            "mRender": function (data, type, full) {
+                                return data == 'p' ? 'Percent ' : 'Value';
+                            }
+                        },
+
+                       { "sTitle": "GST Value", "mData": "GstValue" },
+
+                      {
+                          "sTitle": "Status", "mData": "Status",
+                          "mRender": function (data, type, full) {
+                              return data == 'I' ? 'Disabled ' : 'Live';
+                          }
+                      },
+                       {
+                           "sTitle": "Action Date", "mData": "ActionDate", "bSortable": false,
+                           "mRender": function (data, type, full) {
+                               return getNorDateWithoutTime(data);
+                           }
+                       },
+
+                       { "sTitle": "Action By", "mData": "ActionByName", "bSortable": false },
+
+                     {
+                         "sTitle": "Action", "mData": "ServiceChargeId", "bSortable": false,
+                         "mRender": function (data, type, full) {
+                             var html = '<button type="button"  data-id=' + data + ' class="btn btn-warning btnEditServiceCharge">Edit</button>&nbsp';
+                             html += full.Status == 'I' ? '<button data-id=' + data + ' class="btn btn-success btnToggleStatus" data-type="enable">Enable</button> '
+                                 : '<button data-id=' + data + ' class="btn btn-danger btnToggleStatus" data-type="disable">Disable</button>&nbsp';
+                             html += '<button type="button" data-id=' + data + ' class="btn btn-danger btnDeleteServiceCharge">Delete</button>';
+                             return html;
+                         }
+                     }
+                    ];
+
+                DatatableServerSide("#tblServiceChargeData", aoColumns, "/Services/Service.asmx/GetServiceChargeData");
+            }
+            catch (e) {
+
+            }
+        }
+
+    </script>
+}

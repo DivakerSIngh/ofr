@@ -1,0 +1,39 @@
+﻿
+@model OneFineRateWeb.Models.VerifyEmailViewModel
+@{
+    ViewBag.Title = "Verify Email Address";
+}
+
+
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active" style="width:100%"><a href="#verifyEmailAddress" role="tab" style="padding-left:34%" data-toggle="tab">Verify Email Address</a></li>
+</ul>
+<div class="model-body ">
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="verifyEmailAddress">
+
+            @using (Html.BeginForm("VerifyEmail", "Manage", FormMethod.Post, new { id = "frmVerifyEmailAddress", @class = "form-horizontal", role = "form" }))
+            {
+              @Html.HiddenFor(model=>model.HiddenCode)
+                @Html.AntiForgeryToken()
+                @Html.Hidden("EmailId", Model.EmailId)
+
+                <div class="col-md-12" style="color:red" id="verifyEmailAddressError">
+                    <label>An OTP sent to your Email. <span id="mobileNumberSpan"> <b>@Model.EmailId</b>  </span><br /> Please Verify your Email Address</label>
+                </div>
+                <hr />
+                <div class="col-md-12">
+                    @Html.TextBoxFor(m => m.Code, new { @class = "form-control", placeholder = "Enter OTP Code"})
+                    @Html.ValidationMessageFor(x => x.Code, "", new { @class = "red" })
+                </div>
+                <div class="col-md-12 margintop30">
+                    <button type="submit" class="col-md-12 btn btn-success">Verify</button>
+                </div>
+                <div class="modal-footer  noborder">
+                    <a href="javascript:void(0)" id="resendEmailOTP">Resend OTP?</a>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>

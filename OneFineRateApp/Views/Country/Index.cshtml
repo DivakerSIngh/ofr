@@ -1,0 +1,214 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+
+<script type="text/javascript">
+
+
+    $(document).ready(function () {
+
+        bindgrid(); //binding datatable
+
+        //Inserting data through Ajax
+        document.getElementById('frmCountry').onsubmit = function (e) {
+            e.preventDefault();
+            var f = document.getElementById('frmCountry');
+            if (f.checkValidity()) {
+                var values = { name: $("#txtCountry").val(), countryname: $("#txtCountry").val() };
+                var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("AddCountry")", values));
+                if (Data != null) {
+                    if (Data.st == '1') {
+                        bindgrid();
+                        resetform('frmCountry');
+                        $('.close').click();
+                        toastr.success(Data.msg);
+                        return true;
+                    }
+                    else if (Data.st == '0') {
+                        toastr.error(Data.msg);
+                        return false;
+                    }
+                }
+
+            }
+        }
+
+        //Updating data through Ajax
+        document.getElementById('frmCountryUpdate').onsubmit = function (e) {
+            e.preventDefault();
+            var f = document.getElementById('frmCountryUpdate');
+            if (f.checkValidity()) {
+                var values = { name: $("#txtCountryup").val(), id: $('#hdnId').val()};
+                var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("UpdateCountry")", values));
+                if (Data != null) {
+                    if (Data.st == '1') {
+                        bindgrid();
+                        resetform('frmCountryUpdate');
+                        $('.close').click();
+                        toastr.success(Data.msg);
+                        return true;
+                    }
+                    else if (Data.st == '0') {
+                        toastr.error(Data.msg);
+                        return false;
+                    }
+                }
+
+            }
+        }
+
+        //Pop up cancel button click event
+        $('#btnCancel').click(function () {
+            resetform('frmCountry');
+            $('.close').click();
+        });
+    })
+
+    // Delete data from list
+    function DeleteData(id) {
+        bootbox.confirm("Are you sure?", function (result) {
+            if (result == true) {
+                var values = { id: id };
+                var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("DeleteCountry")", values));
+               // var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("DeleteCountry")", values));
+                if (Data != null) {
+                    if (Data.st == '1') {
+                        bindgrid();
+                        $('.close').click();
+                        toastr.success(Data.msg);
+                        return true;
+                    }
+                    else if (Data.st == '0') {
+                        toastr.error(Data.msg);
+                        return false;
+                    }
+
+                }
+            }
+        });
+    }
+
+    // bind list
+    function bindgrid() {
+
+        try {
+            var aoColumns =
+                [
+                 { "sTitle": "sCountry", "mData": "sCountry" },
+                 { "sTitle": "cStatus", "mData": "cStatus" },
+                  {
+                      "sTitle": "Created On", "mData": "dtActionDate",
+                      "mRender": function (data, type, full) {
+                          return getNorDateTime(data);
+                      }
+                  },
+                  {
+                      "sTitle": "Edit", "mData": "iCountryId",
+                      "mRender": function (data, type, full) {
+                          var html = '<button type="button" onclick="EditData(this)"; ename=' + full.sCountry + ' eid=' + full.iCountryId + ' class="btn btn-warning">Edit</button>&nbsp';
+                          html += '<button type="button" onclick="DeleteData(' + data + ')";  class="btn btn-danger">Delete</button>';
+                          return html;
+                      }
+                  }
+
+
+                ];
+            DatatableServerSide("#tblData", aoColumns, "http://localhost:59421/ExtranetSrv.svc/GetAllRecords1");
+            //DatatableServerSide("#tblData", aoColumns, "OFRApi/ExtranetSrv.svc/GetAllRecords1?id=1");
+        }
+        catch (e) {
+
+        }
+
+    }
+    //fill form on click edit in the list
+    function EditData(obj) {
+        $('#hdnId').val($(obj).attr('eid'));
+        $("#txtCountryup").val($(obj).attr('ename'))
+        $('#UpdateCountry').modal({
+            show: 'true'
+        });
+
+    }
+
+
+
+</script>
+
+<div class="container margintop20">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <strong>Countries</strong>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#AddPolicy"><i class="fa fa-plus"></i> Add Country </button>
+            </h4>
+
+        </div>
+        <div class="panel-body">
+
+            <div class="table-responsive margintop20">
+                <table class="display" id="tblData"></table>
+            </div>
+            <!-- End  table -->
+        </div>
+    </div>
+    <!-- container div END bottom -->
+</div>
+<!-- Add Policy -->
+<form id="frmCountry">
+    <div id="AddPolicy" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Countries</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-4">
+                            Country Name
+                            @Html.TextBox("txtCountry", null, new { @class = "form-control", oninvalid = "setCustomValidity('Please enter only alphabets')", onchange = "try{setCustomValidity('')}catch(e){}", pattern = "[A-Za-z ]+", maxlength = "50", required = true })
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="btnSubmit" class="btn btn-primary">SAVE</button>
+                    <button type="button" id="btnCancel" class="btn btn-danger">CANCEL</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+<!-- Update Countries -->
+<form id="frmCountryUpdate">
+    @Html.Hidden("hdnId");
+    <div id="UpdateCountry" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Update Countries</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-4">
+                            Country Name
+                            @Html.TextBox("txtCountryup", null, new { @class = "form-control", oninvalid = "setCustomValidity('Please enter only alphabets')", onchange = "try{setCustomValidity('')}catch(e){}", pattern = "[A-Za-z ]+", maxlength = "50", required = true })
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="btnUpdate" class="btn btn-primary">Update</button>
+                    <button type="button" id="btnCancel" class="btn btn-danger">CANCEL</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+

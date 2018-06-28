@@ -1,0 +1,178 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<div class="main-wrapper">
+    <div class="blue_header_bar">
+        <div class="container">
+            <div class="row">
+
+                <h2>The Company</h2>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container marginbottom10">
+    <div class="row col-md-12">
+        <div class="col-md-3 col-xs-12">
+            <div class="left-nav margintop20">
+                <nav>
+                    @if (Request.Browser.IsMobileDevice)
+                    {
+                        <a id="resp-menu" class="responsive-menu" href="#"><i class="fa fa-reorder"></i> Menu</a>
+
+                        <ul class="menu" style="display:none">
+                            <li><a href="@Url.Action("Index","AboutUs")">About us</a></li>
+                            <li><a href="@Url.Action("Index","ContactUs")">Contact Us</a></li>
+                            <li><a href="@Url.Action("Index","PressCenter")">Press Center</a></li>
+                            <li><a href="@Url.Action("Index", "Careers")">Careers</a></li>
+                            <li><a href="@Url.Action("Index", "Feedback")">Feedback</a></li>
+                            @*<li><a href="@Url.Action("Index", "FAQ")">FAQ</a></li>
+                            <li><a href="@Url.Action("Index", "Sitemap")">Sitemap</a></li>*@
+                            <li><a href="@Url.Action("Index", "Terms")">Terms And Conditions</a></li>
+                            <li><a href="@Url.Action("Index", "PrivacyPolicy")">Privacy Policy</a></li>
+                            <li><a href="@Url.Action("Index", "Team")">Team</a></li>
+                        </ul>
+                    }
+                    else
+                    {
+                        <ul class="menu">
+                            <li><a href="@Url.Action("Index","AboutUs")">About us</a></li>
+                            <li><a href="@Url.Action("Index","ContactUs")">Contact Us</a></li>
+                            <li><a href="@Url.Action("Index","PressCenter")">Press Center</a></li>
+                            <li><a href="@Url.Action("Index", "Careers")">Careers</a></li>
+                            <li><a href="@Url.Action("Index", "Feedback")">Feedback</a></li>
+                            @*<li><a href="@Url.Action("Index", "FAQ")">FAQ</a></li>
+                            <li><a href="@Url.Action("Index", "Sitemap")">Sitemap</a></li>*@
+                            <li><a href="@Url.Action("Index", "Terms")">Terms And Conditions</a></li>
+                            <li><a href="@Url.Action("Index", "PrivacyPolicy")">Privacy Policy</a></li>
+                            <li><a href="@Url.Action("Index", "Team")">Team</a></li>
+                        </ul>
+                    }
+
+                </nav>
+            </div>
+        </div>
+        <div class="col-md-9 col-xs-12 margintop5">
+            <h4><strong>Privacy Policy</strong></h4>
+            <hr>
+            <p>This Privacy Policy is subject to the terms and conditions of the Terms of Use of www.onefinerate.com (the &ldquo;Website&rdquo;) which is available at https://onefinerate.com. This policy is effective from the date and time a user accepts the terms and conditions as laid out in the Terms of Use.</p>
+
+            <p>Any reference to the &ldquo;Company&rdquo;, &ldquo;us&rdquo;, &ldquo;we&rdquo; and &ldquo;our&rdquo; means Samaara Hotels and Services Pvt Ltd, having its registered office at 150, Tatvam Villas, Sohna Road, Sector 48, Gurgaon, Haryana. 122002.&nbsp;&nbsp;</p>
+
+            <p><strong>1. What information do we collect?</strong></p>
+
+            <p>While you may have access to some sections of the Website without being a registered member, access to certain sections and/or services and performance of certain activities do require registration.&nbsp;</p>
+
+            <p>When registering on the Website, we may ask you to disclose, including but not limited to, your:</p>
+
+            <p>-Name,</p>
+
+            <p>-E-mail address</p>
+
+            <p>-Mailing Address</p>
+
+            <p>-Pin Code</p>
+
+            <p>-Phone Number</p>
+
+            <p>-Gender</p>
+
+            <p>-Professional Interests</p>
+
+            <p>-Education</p>
+
+            <p>-Occupation</p>
+
+            <p>-Passport details</p>
+
+            <p>-Travel preferences</p>
+
+            <p>-Travel dates</p>
+
+            <p>-Booking details</p>
+
+            <p>-Social Media Sign up</p>
+
+            <p>We may also identify and use your IP address to help diagnose problems with our server, and to administer our Website. Your IP address is also used to help identify you and to gather broad demographic information.</p>
+
+            <p><strong>2. What do we use your information for?</strong></p>
+
+            <p>Any of the information we collect from you may be used, including but not limited to, in the following ways: to personalize your experience, to improve the Website, to improve customer service, to process transactions, to administer a contest, promotion, survey, advertisement or other Website feature, to send periodic emails, marketing purposes, and other collateral website specific activities.</p>
+
+            <p>You understand and agree that certain information, including but not limited to, your name, profile picture, posts, videos, pictures, travel preferences and other such information that you post and/or submit to the Website may be visible to other users in order to facilitate user interaction on the Website.</p>
+
+            <p>You agree that the Company may use your personal information to contact you and deliver information to you that, in some cases, are targeted to your interests, such as targeted banner advertisements, administrative notices, product offerings, and communications relevant to your use of the Website.</p>
+
+            <p>By accepting the Terms of Use and Privacy Policy, you expressly agree to receive this information. If you do not wish to receive these communications, we encourage you to opt out of the receipt of certain communications in your profile. You may make changes to your profile at any time.</p>
+
+            <p><strong>3. How do we protect your information?</strong></p>
+
+            <p>Every effort will be made to keep the information provided by you in a safe manner. We implement a variety of security measures to maintain the safety of your personal information when you enter, submit, or access your personal information.</p>
+
+            <p>We offer the use of a secure server. All supplied sensitive and personally identifiable information is transmitted via secure technology and then encrypted into our database to be only accessed by persons authorized with special access rights to our systems. Such persons are under strict instructions to keep the information confidential.</p>
+
+            <p><strong>4. Opt-out Mechanism </strong></p>
+
+            <p>You may, at any time while accessing the Website and/or availing the services or otherwise, decide to withdraw your consent towards letting the Company have access to and/or store information collected from you. A notice for such withdrawal of consent shall have to be e-mailed by you to us at assiatnce@onefinerate.com. We shall make all efforts to respond to you within 30 days from receipt of such notice, notifying our acknowledgment and acceptance of such notice (&ldquo;Response&rdquo;).</p>
+
+            <p>After receiving the Response, you may not use and/or access the Website and/or any services provided therein or any part thereof.</p>
+
+            <p><strong>5. Do we use cookies?</strong></p>
+
+            <p>Yes. Cookies are small files that a site or its service provider transfers to your computer&rsquo;s hard drive through your Web browser (if allowed by you) that enables the sites or service providers systems to recognize your browser and capture and remember certain information.</p>
+
+            <p>We use cookies to understand and save your preferences for future visits.</p>
+
+            <p>However, we may also use a third party advertisement company to display advertisements on the Website. These advertisements may contain cookies. Cookies received with banner advertisements are collected by such third party advertisement company, and we do not have access to this information.</p>
+
+            <p><strong>6. Do we disclose any information to outside parties?</strong></p>
+
+            <p>Yes. You hereby expressly agree to allow us to share information collected from you, including without limitation, your personal information/personally identifiable information with third parties for marketing purposes or where the disclosure is necessary for compliance of a legal obligation.</p>
+
+            <p>We may disclose all or part of the information collected from you in response to a request from the law enforcement authorities or in a case of bonafide requirement to prevent an imminent breach of the law.</p>
+
+            <p><strong>7. Third party links</strong></p>
+
+            <p>Occasionally, at our discretion, we may include or offer third party products or services on the Website. These third party websites have separate and independent privacy policies. We therefore have no responsibility or liability for the content and activities of these linked websites. Nonetheless, we seek to protect the integrity of the Website and welcome any feedback about these websites.</p>
+
+            <p><strong>8. Online Privacy Policy Only</strong></p>
+
+            <p>This online privacy policy applies only to information collected through the Website and not to information collected offline.</p>
+
+            <p><strong>9. Your Consent</strong></p>
+
+            <p>By accessing and/or using the Website and/or any services provided therein or any part thereof, you consent to our Privacy Policy.</p>
+
+            <p><strong>10. Changes to our Privacy Policy</strong></p>
+
+            <p>If we change our Privacy Policy, we will prominently post a link to those changes on the Website so that you are always aware of what information we collect, how we use it, and under what circumstances, if any, we disclose it.</p>
+
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+
+        var menu = $('.menu');
+
+        $('#resp-menu').on('click', function (e) {
+
+           // alert()
+            e.preventDefault();
+            menu.slideToggle();
+        });
+
+        $(window).resize(function () {
+            var w = $(window).width();
+            if (w > 767 && menu.is(':hidden')) {
+                menu.removeAttr('style');
+            }
+        });
+    });
+</script>

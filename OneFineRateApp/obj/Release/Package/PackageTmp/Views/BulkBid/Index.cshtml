@@ -1,0 +1,1647 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+@*<link href="~/css/jquery-ui.css" rel="stylesheet" />*@
+<script src="~/js/Jquery1.10.3.js"></script>
+<script src="~/js/jquery.validate.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script src="~/js/jquery-ui.js"></script>
+<script type="text/javaScript">
+
+    var dates = [], rangejson = [], EditRange = [];
+    function makeCalendar(dateFrom, dateTo, controlId, sDates, yDates, ddays) {
+        ddays = (ddays == undefined) ? [] : ddays;
+        var bg = "#FFFFE1",
+        fs = 3,
+        flg = 0,
+        M = new Array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"),
+        D = new Array("S", "M", "T", "W", "T", "F", "S"),
+        pdy, pmo, pyr, yr, bgn, mo, dy, d, ld, pos, ctr;
+        function calendarWork() {
+            var html = "";
+            var df = dateFrom.split("/"),
+                dt = dateTo.split("/");
+            pdy = new Date(df[2], df[0] - 1, df[1]),
+            pdt = new Date(dt[2], dt[0] - 1, dt[1]),
+            pmo = pdy.getMonth();    // present month
+            pyr = pdy.getYear();     // present year
+            var tempsDates = sDates,
+            tempyDates = yDates;
+            if (pyr < 2000)
+                pyr = pyr + 1900;
+            //html += '<TABLE BORDER=0 class="table"><TR>';
+            html += '<div class="row"><div class="col-md-2">';
+
+            var months;
+            var MonthDiff = 12 * (pdt.getYear() - pdy.getYear());
+            if (MonthDiff == 0) {
+                MonthDiff = 12;
+            }
+            if (((pdt.getYear() + 1900) - pyr) > 0) {
+                months = MonthDiff - pdy.getMonth() + pdt.getMonth();
+            } else {
+                months = pdt.getMonth() - pdy.getMonth();
+            }
+            for (var m = 0; m <= months; m++) {
+                //html += '</TD><TD VALIGN=TOP>';
+                if (m > 0) {
+                    if (m % 6 == 0) {
+                        html += '</div></div><div class="row"><div class="col-md-2">';
+                    }
+                    else {
+                        html += '</div><div class="col-md-2">';
+                    }
+                }
+                yr = pyr; // last month's year
+                mo = pmo + m;
+                if (mo > 11) {
+                    mo = mo - 12;
+                    yr = yr + 1;
+                }
+                if (mo > 11) {
+                    mo = mo - 12;
+                    yr = yr + 1;
+                }
+                bgn = new Date(M[mo] + " 1," + yr);
+                var selectDate = {
+                    green: [],
+                    yellow: []
+                };
+                for (var k = 0; k < tempsDates.length; k++) {
+                    var sd = new Date(tempsDates[k]);
+
+                    if (sd.getMonth() === mo && (sd.getYear() + 1900) === yr) {
+                        selectDate.green.push(sd.getDate());
+                    }
+                }
+                for (var k = 0; k < tempyDates.length; k++) {
+                    var sd = new Date(tempyDates[k]);
+
+                    if (sd.getMonth() === mo && (sd.getYear() + 1900) === yr) {
+                        selectDate.yellow.push(sd.getDate());
+                    }
+                }
+
+
+                if (months === 0) {
+                    html += getCalendar(selectDate, pdy.getDate(), 'beforeafter', pdy.getDate(), pdt.getDate());
+                } else {
+                    if (yr === pyr && mo === pmo) {
+                        html += getCalendar(selectDate, pdy.getDate(), 'before');
+                    } else if (yr === (pdt.getYear() + 1900) && mo === pdt.getMonth()) {
+                        html += getCalendar(selectDate, pdt.getDate(), 'after');
+                    } else {
+                        html += getCalendar(selectDate);
+                    }
+                }
+
+            }
+            //html += '</TD></TR></TABLE>';
+            html += '</div></div>';
+            document.getElementById(controlId).innerHTML = html;
+            var prependZero = function (number) {
+                return number < 10 ? '0' + number : number;
+            },
+            days = document.getElementsByClassName("day");
+            for (var i = 0, j = days.length; i < j; i++) {
+                days[i].addEventListener('click', function (e) {
+                    var x = e.target.parentElement.parentElement.parentElement.title.split('-'),
+                    month = parseInt(x[0], 10),
+                    day = parseInt(e.target.innerHTML, 10),
+                    year = parseInt(x[1], 10),
+                    date = prependZero(month) + '/' + prependZero(day) + '/' + year;
+                    if (e.target.style.backgroundColor == 'lightgreen') {
+                        e.target.style.backgroundColor = '';
+                        if (dates.length > 0) {
+                            var index = dates.indexOf(date)
+                            if (index > -1) {
+                                dates.splice(index, 1);
+                                document.getElementById('SavedDates').value = dates.join('$');
+
+                            }
+                        }
+
+                    } else {
+                        var d1 = dateFrom.split("/"),
+                        d2 = dateTo.split("/"),
+                        from = new Date(d1[2], d1[0] - 1, d1[1]),
+                        to = new Date(d2[2], d2[0] - 1, d2[1]),
+                        check = new Date(year, month - 1, day);
+                        if (check >= from && check <= to) {
+                            e.target.style.backgroundColor = 'lightgreen';
+                            dates.push(date);
+                            document.getElementById('SavedDates').value = dates.join('$');
+                        }
+                    }
+
+                }, false);
+            }
+        }
+
+        function getCalendar(sds, dd, mode, before, after) {
+            var html = "";
+            dy = bgn.getDay();
+            yr = eval(yr);
+            d = "312831303130313130313031";
+            if (yr / 4 == Math.floor(yr / 4)) {
+                d = d.substring(0, 2) + "29" + d.substring(4, d.length);
+            }
+            pos = (mo * 2);
+            ld = eval(d.substring(pos, pos + 2));
+            html += "<TABLE class='month' title= '" + (mo + 1) + '-' + yr + "' BORDER=0" + " BGCOLOR='" + bg + "'><TR><TD ALIGN=CENTER COLSPAN=7  style='background-color: gray; color: white;' class='monthClick' p= '" + (mo + 1) + '-' + yr + "'>" + "<FONT SIZE=" + fs + ">" + M[mo] + " " + yr + "</FONT></TD></TR><TR><TR class='weeks'>";
+            for (var i = 0; i < 7; i++) {
+                html += "<TD class='days'>" + D[i] + "</TD>";
+            }
+            html += "</TR><TR>";
+            ctr = 0;
+
+
+
+            var x = ld;
+            //if (dy > 4 && ld > 30) {
+            //    x--;
+            //}
+            //if (dy > 5 && ld > 29) {
+            //    x -= 1;
+            //}
+
+            var checkClass = function (y, selDate) {
+                var cls = '';
+                if (selDate) {
+                    cls = ' ofrday';
+                } else {
+                    if (sds.green.indexOf(y) != -1) {
+                        cls = 'selected day';
+                    }
+                    else if (sds.yellow.indexOf(y) != -1) {
+                        cls = 'less-than-five day';
+                    }
+                    else if (mode) {
+                        if (mode == 'before' && y < dd) {
+                            cls += ' ofrday';
+                        } else if (mode === 'after' && y > dd) {
+                            cls += ' ofrday';
+                        }
+                        else if (mode === 'beforeafter' && (y < before || y > after)) {
+                            cls += ' ofrday';
+                        }
+                        else {
+                            cls += 'zero day';
+                        }
+                    } else {
+                        cls += 'zero day';
+                    }
+                }
+                var y1 = y < 10 ? "0" + y : y;
+                var mo1 = (mo + 1) < 10 ? "0" + (mo + 1) : (mo + 1);
+                var tempid = y1 + "-" + mo1 + "-" + yr;
+                html += "<TD id=" + tempid + " class='" + cls + "'>" + y + "</TD>";
+            },
+            fillHtml1 = function (i1, selDate) {
+                if (i1 < dy) {
+
+                    if (dy > 4 && ld > 30 && x < ld) {
+                        if (x <= ld) {
+                            x++;
+                            checkClass(x, selDate);
+                        }
+                    }
+                    else if (dy > 5 && ld > 29 && x < ld) {
+                        if (x <= ld) {
+                            x++;
+                            checkClass(x, selDate);
+                        }
+                    } else {
+                        html += "<TD></TD>";
+                    }
+                }
+                else {
+                    ctr++;
+                    checkClass(ctr, selDate);
+                }
+            },
+            fillHtml2 = function (selDate) {
+                ctr++;
+                if (ctr > ld) {
+                    html += "<TD>" + " </TD>";
+                }
+                else {
+                    checkClass(ctr, selDate);
+                }
+            };
+
+
+
+            for (var i = 0; i < 7; i++) {
+                if (ddays.indexOf(i) != -1) {
+                    fillHtml1(i, true);
+                } else {
+                    fillHtml1(i, false);
+                }
+            }
+            html += "</TR><TR>";
+            var rows = 0;
+            while (rows < 5) {
+                for (var i = 0; i < 7; i++) {
+                    if (ddays.indexOf(i) != -1) {
+                        fillHtml2(true);
+                    }
+                    else {
+                        fillHtml2(false);
+                    }
+                }
+                html += "</TR><TR>";
+
+                rows++;
+            }
+            html += "</TR></TABLE>";
+            return html;
+        }
+
+        calendarWork();
+    }
+
+    function ReadyForCalendar() {
+        var FromDate, ToDate;
+        var NoOfMonths = parseInt($("input[name='months']:checked").val());
+        var date = new Date();
+        var firstDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        var lastDay = "";
+        var Y = date.getFullYear();
+        var M = date.getMonth();
+        if (NoOfMonths + M > 23) {
+            lastDay = new Date(Y + 2, M + NoOfMonths - 24, 0);
+        }
+        else if (NoOfMonths + M > 11) {
+            lastDay = new Date(Y + 1, M + NoOfMonths - 12, 0);
+        }
+        else {
+            lastDay = new Date(Y, M + NoOfMonths, 0);
+        }
+
+        // Set last date for calendars
+
+        var d = new Date();
+        $('#FromDate').removeClass('hasDatepicker').datepicker({
+            startDate: d,
+            minDate: d,
+            autoclose: true,
+            maxDate: lastDay,
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true,
+            onClose: function (selectedDate) {
+                $("#ToDate").datepicker("option", "minDate", selectedDate);
+            }
+        });
+
+        $('#ToDate').removeClass('hasDatepicker').datepicker({
+            startDate: d,
+            minDate: d,
+            autoclose: true,
+            maxDate: lastDay,
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true,
+            onClose: function (selectedDate) {
+                $("#FromDate").datepicker("option", "maxDate", selectedDate);
+            }
+        });
+
+        //End
+
+        var firstDate = (firstDay.getMonth() + 1) + '/' + firstDay.getDate() + '/' + firstDay.getFullYear();
+        var lastDate = (lastDay.getMonth() + 1) + '/' + lastDay.getDate() + '/' + lastDay.getFullYear();
+
+        var OffDays = [], SelectedDates = [];
+
+        $("input[name='Date']:not(:checked)").each(function () {
+            OffDays.push(parseInt($(this).val()));
+        });
+
+        if ($('#FromDate').val() == '' && $('#ToDate').val() != '') {
+            toastr.warning('Please provide Start Date');
+            return;
+        }
+
+        if ($('#FromDate').val() != '' && $('#ToDate').val() == '') {
+            toastr.warning('Please provide End Date');
+            return;
+        }
+
+        if ($('#FromDate').val() != '' && $('#ToDate').val() != '') {
+            var FD = $('#FromDate').val().split("/");
+            var TD = $('#ToDate').val().split("/");
+
+            FromDate = new Date(FD[2], FD[1] - 1, FD[0]);
+            ToDate = new Date(TD[2], TD[1] - 1, TD[0]);
+
+            if ((FromDate < firstDay && ToDate < firstDay) || (FromDate > lastDay && ToDate > lastDay)) {
+                toastr.warning('Dates are out of range');
+                return;
+            }
+
+            if (FromDate >= ToDate) {
+                toastr.warning('End Date should be greater than Start Date');
+                return;
+            }
+
+            if (FromDate < firstDay) {
+                FromDate = firstDay;
+            }
+
+            if (ToDate > lastDay) {
+                ToDate = lastDay;
+            }
+        }
+        dates.length = 0;
+        makeCalendar(firstDate, lastDate, 'calendarControl', SelectedDates, [], OffDays);
+
+        //SelectedDates.push(FromDate);
+        while (FromDate <= ToDate) {
+            var y1 = FromDate.getDate() < 10 ? "0" + FromDate.getDate() : FromDate.getDate();
+            var mo1 = (FromDate.getMonth() + 1) < 10 ? "0" + (FromDate.getMonth() + 1) : (FromDate.getMonth() + 1);
+            var tempid = y1 + "-" + mo1 + "-" + FromDate.getFullYear();
+            FromDate = new Date(FromDate.getFullYear(), FromDate.getMonth(), FromDate.getDate() + 1);
+            var l = document.getElementById(tempid);
+            l.click();
+        }
+
+        $(".monthClick").click(function () {
+            var a = $(this).attr("p");
+
+            var SelectedMonth = a.split("-")[0];
+            var SelectedYear = a.split("-")[1];
+
+            var FromDate = new Date(SelectedYear, SelectedMonth - 1, 1);
+            var ToDate = new Date(SelectedYear, SelectedMonth, 0);
+
+            //console.log(FromDate);
+            //console.log(ToDate);
+
+            var AA = $("td[id$='" + a + "']").filter('.day');
+
+            var selected = [], unselected = [];
+
+            for (var i = 0; i < AA.length; i++) {
+                if (AA[i].style.backgroundColor == 'lightgreen')
+                    selected.push(AA[i].id);
+                else
+                    unselected.push(AA[i].id);
+            }
+
+            if (unselected.length > 0)
+                for (var i = 0; i < unselected.length; i++) {
+                    var l = document.getElementById(unselected[i]);
+                    l.click();
+                }
+            else
+                for (var i = 0; i < selected.length; i++) {
+                    var l = document.getElementById(selected[i]);
+                    l.click();
+                }
+        });
+    }
+
+    function validate(obj, max, min) {
+        if (!obj.checkValidity()) {
+            toastr.warning('Value can only be between ' + min + ' and ' + max);
+            obj.focus();
+        }
+    }
+
+    function checkMain(cb) {
+        if (!cb.checked) {
+            $("input[name=" + cb.value + "]").each(function () {
+                $(this).prop("checked", cb.checked);
+            });
+        }
+    }
+
+    function checkAll(cb) {
+        $("input[name=" + cb.name + "]").each(function () {
+            $(this).prop("checked", cb.checked);
+        });
+
+        $("input[value=" + cb.name + "]").prop("checked", true);
+    }
+
+    function RoomCheck(cb) {
+        $("input[value=" + cb.name + "]").prop("checked", true);
+    }
+
+
+
+    function SetTableRows() {
+        var rowtext = '';
+        if (rangejson.length > 0) {
+            for (var i = 0; i < rangejson.length; i++) {
+
+                rowtext += '<tr>';
+                rowtext += '<td>' + rangejson[i].from + '</td>';
+                rowtext += '<td>' + rangejson[i].to + '</td>';
+                rowtext += '<td>' + rangejson[i].discount + '</td>';
+                rowtext += '<td>' + (rangejson[i].Amenity1 == 0 ? '' : rangejson[i].AmenText1) + '</td>';
+                rowtext += '<td>' + (rangejson[i].Applicability1 == 0 ? '' : rangejson[i].ApplicabilityText1) + '</td>';
+                rowtext += '<td>' + (rangejson[i].Amenity2 == 0 ? '' : rangejson[i].AmenText2) + '</td>';
+                rowtext += '<td>' + (rangejson[i].Applicability2 == 0 ? '' : rangejson[i].ApplicabilityText2) + '</td>';
+                rowtext += '<td><button type="button" onclick="DeleteOrEdit(\'edit\',' + i + ')";  class="btn btn-warning">Edit</button> &nbsp; <button type="button" onclick="DeleteOrEdit(\'delete\',' + i + ')";  class="btn btn-danger">Delete</button></td>';
+                rowtext += '</tr>';
+            }
+        }
+        $("#RangeTable tbody").html(rowtext);
+    }
+
+    function DeleteOrEdit(act, i) {
+
+        if (act == "edit") {
+            $('#TableFrom').val(rangejson[i].from);
+            $('#TableTo').val(rangejson[i].to);
+            $('#TableDisc').val(rangejson[i].discount);
+
+            $("#TableAmen1 option[value='" + rangejson[i].Amenity1 + "']").prop("selected", true);
+            $('#s2id_TableAmen1').find('span.select2-chosen').text(rangejson[i].AmenText1);
+
+            $("#TableAppl1 option[value='" + rangejson[i].Applicability1 + "']").prop("selected", true);
+            $('#s2id_TableAppl1').find('span.select2-chosen').text(rangejson[i].ApplicabilityText1);
+
+            $("#TableAmen2 option[value='" + rangejson[i].Amenity2 + "']").prop("selected", true);
+            $('#s2id_TableAmen2').find('span.select2-chosen').text(rangejson[i].AmenText2);
+
+            $("#TableAppl2 option[value='" + rangejson[i].Applicability2 + "']").prop("selected", true);
+            $('#s2id_TableAppl2').find('span.select2-chosen').text(rangejson[i].ApplicabilityText2);
+
+            $('#Cancel').show();
+            EditRange = rangejson.splice(i, 1);
+        }
+        else {
+            rangejson.splice(i, 1);
+        }
+
+        SetTableRows();
+    }
+
+    $(document).ready(function () {
+
+        var date = new Date();
+        var firstDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        var lastDay = "";
+        var Y = date.getFullYear();
+        var M = date.getMonth();
+        if (6 + M > 11) {
+            lastDay = new Date(Y + 1, M + 6 - 12, 0);
+        }
+        else {
+            lastDay = new Date(Y, M + 6, 0);
+        }
+
+        // Set last date for calendars
+
+        var d = new Date();
+        $('#FromDate').datepicker({
+            startDate: d,
+            minDate: d,
+            autoclose: true,
+            maxDate: lastDay,
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true,
+            onClose: function (selectedDate) {
+                $("#ToDate").datepicker("option", "minDate", selectedDate);
+            }
+        });
+
+        $('#ToDate').datepicker({
+            startDate: d,
+            minDate: d,
+            autoclose: true,
+            maxDate: lastDay,
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true,
+            onClose: function (selectedDate) {
+                $("#FromDate").datepicker("option", "maxDate", selectedDate);
+            }
+        });
+
+        $("input[name='months']").change(function () {
+            ReadyForCalendar();
+        });
+
+        ReadyForCalendar();
+
+        var Data1 = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("GetAmenitiesList")"));
+        var Data2 = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("GetApplicabilitiesList")"));
+
+        var Amenityoutput = [], Applicabilityoutput = [];
+        Amenityoutput.push('<option value="0" Selected>--Select--</option>');
+        Applicabilityoutput.push('<option value="0" Selected>--Select--</option>');
+
+        $.each($.parseJSON(Data1.msg), function () {
+            Amenityoutput.push('<option value="' + this.iAmenityId + '">' + this.sAmenityName + '</option>');
+        });
+        $("select[name='Amenity']").html(Amenityoutput.join(''));
+
+        $.each($.parseJSON(Data2.msg), function () {
+            Applicabilityoutput.push('<option value="' + this.iApplicabilityId + '">' + this.sApplicability + '</option>');
+        });
+        $("select[name='Applicability']").html(Applicabilityoutput.join(''));
+
+        $('#AddRange').click(function () {
+
+            var from = parseInt($('#TableFrom').val());
+            var to = parseInt($('#TableTo').val());
+            var disc = parseFloat($('#TableDisc').val());
+            var amen1 = parseInt($('#TableAmen1').val());
+            var amentext1 = $("#TableAmen1 option:selected").text();
+            var app1 = parseInt($('#TableAppl1').val());
+            var apptext1 = $("#TableAppl1 option:selected").text();
+            var amen2 = parseInt($('#TableAmen2').val());
+            var amentext2 = $("#TableAmen2 option:selected").text();
+            var app2 = parseInt($('#TableAppl2').val());
+            var apptext2 = $("#TableAppl2 option:selected").text();
+
+            //Check that range is provided
+            if (isNaN(to) || isNaN(from)) {
+                toastr.error('Please provide a range.');
+                return;
+            }
+
+            // Check that Discount is provided
+            if (isNaN(disc)) {
+                toastr.error('Please provide a discount.');
+                return;
+            }
+            // Checking for range - can be equal or lower to higher
+            if (to < from) {
+                toastr.error('Range cannot be from higher number to lower number.');
+                return;
+            }
+
+            if (from < 1) {
+                toastr.error('Range should be between numbers greater than 1.');
+                return;
+            }
+
+            if (disc < 0) {
+                toastr.error('Discount cannot be negative.');
+                return;
+            }
+
+            if (disc >= 100) {
+                toastr.error('Discount should be less than 100.');
+                return;
+            }
+
+            // Checking that both (rate inclusion) or (amenity) and applicability should be provided or none should be provided
+            if ((amen1 == 0 && app1 != 0) || (amen1 != 0 && app1 == 0) || (amen2 == 0 && app2 != 0) || (amen2 != 0 && app2 == 0)) {
+                toastr.error('Both rate inclusion and applicability should be provided for a pair.');
+                return;
+            }
+
+            // Rate Inclusion cannot be same
+            if ((amen1 == amen2) && (amen1 != 0) && (amen2 != 0)) {
+                toastr.error('Both the rate inclusions cannot be same.');
+                return;
+            }
+
+            // Checking that range should not interfere with already existing one
+            if (rangejson.length > 0) {
+                for (var i = 0; i < rangejson.length; i++) {
+                    if ((from < rangejson[i].from && to < rangejson[i].from) || (from > rangejson[i].to && to > rangejson[i].to)) {
+                        continue;
+                    }
+                    else {
+                        toastr.error('Range between ' + rangejson[i].from + ' and ' + rangejson[i].to + ' already exists.');
+                        return;
+                    }
+                }
+            }
+
+            var values = {
+                from: from,
+                to: to,
+                discount: disc,
+                Amenity1: amen1,
+                AmenText1: amentext1,
+                Applicability1: app1,
+                ApplicabilityText1: apptext1,
+                Amenity2: amen2,
+                AmenText2: amentext2,
+                Applicability2: app2,
+                ApplicabilityText2: apptext2
+            };
+
+            rangejson.push(values);
+            EditRange = [];
+
+            ClearTableInsertValues();
+
+            SetTableRows();
+            $('#Cancel').hide();
+        });
+
+        $('#Cancel').click(function () {
+            rangejson.push(EditRange[0]);
+            EditRange = [];
+            ClearTableInsertValues();
+            SetTableRows();
+            $('#Cancel').hide();
+        });
+
+        function ClearTableInsertValues() {
+            $('#TableFrom').val("");
+            $('#TableTo').val("");
+            $('#TableDisc').val("");
+
+            $("#TableAmen1 option[value='']").prop("selected", true);
+            $('#s2id_TableAmen1').find('span.select2-chosen').text("");
+
+            $("#TableAppl1 option[value='']").prop("selected", true);
+            $('#s2id_TableAppl1').find('span.select2-chosen').text("");
+
+            $("#TableAmen2 option[value='']").prop("selected", true);
+            $('#s2id_TableAmen2').find('span.select2-chosen').text("");
+
+            $("#TableAppl2 option[value='']").prop("selected", true);
+            $('#s2id_TableAppl2').find('span.select2-chosen').text("");
+        }
+
+        $("input[name='discount']").change(function () {
+
+            $('.HideDiv').hide();
+
+            var id = this.value;
+            switch (id) {
+                case "3":
+                    $('#Weekend').show();
+                    break;
+                case "5":
+                    $('#basicdiscount').show();
+                    break;
+                default:
+                    $('#leaddiscount').show();
+                    break;
+            }
+        });
+
+        $("input[type='checkbox'][value='Date']").click(function () {
+            var id = $(this).attr("id");
+            if (id.indexOf("Weekend") > -1) {
+                var newID = id.replace("Weekend", "Weekday");
+                $('#' + newID).prop("checked", false);
+            }
+            else {
+                var newID = id.replace("Weekday", "Weekend");
+                $('#' + newID).prop("checked", false);
+            }
+        });
+
+        $("#ui-datepicker-div").hide();
+
+    });
+
+    function save() {
+        if (dates.length == 0) {
+            toastr.error('Please select a date from calendar.');
+            return;
+        }
+
+        if (dates.length > 94) {
+            toastr.error('Maximum 94 days can be selected at a time from calendar. Currently ' + dates.length + ' days have been selected.');
+            return;
+        }
+        else {
+            var RadioId = $("input[name='discount']:checked").val();
+            var CloseOut = $('#CloseOut').val().trim();
+            var CTA = $('#CTA').val().trim();
+            var CTD = $('#CTD').val().trim();
+
+            switch (RadioId) {
+                case "1":
+                    if (EditRange.length > 0) {
+
+                        toastr.error('Cannot save range when in Edit Mode.');
+                        return;
+                    }
+                    if (rangejson.length == 0 && CloseOut == "" && CTA == "" && CTD == "") {
+                        toastr.error('No command provided.');
+                        return;
+                    }
+
+                    var values = {
+                        dates: dates.join('$'),
+                        CloseOut: CloseOut,
+                        CTA: CTA,
+                        CTD: CTD,
+                        Lead: JSON.stringify(rangejson),
+                        typ: $("input[name='DiscType']:checked").val()
+                    }
+
+                    document.getElementById('Progress').style.display = 'block';
+                    setTimeout(function () {
+                        var Data = $.parseJSON(AjaxCallWithDataMVCPOST("@Url.Action("SaveLead")", values));
+                        if (Data != null) {
+                            if (Data.st == '1') {
+                                //$('#UpdateUsers').modal({
+                                //    show: 'true'
+                                //});
+                                //return false;
+                                CheckExistingBidDates();
+                            }
+                            else if (Data.st == '0') {
+                                toastr.error(Data.msg);
+                                return false;
+                            }
+                        }
+                    }, 200);
+
+                    break;
+                case "2":
+                    if (EditRange.length > 0) {
+                        toastr.error('Cannot save range when in Edit Mode.');
+                        return;
+                    }
+
+                    if (rangejson.length == 0 && CloseOut == "" && CTA == "" && CTD == "") {
+                        toastr.error('No command provided.');
+                        return;
+                    }
+
+                    var values = {
+                        dates: dates.join('$'),
+                        CloseOut: CloseOut,
+                        CTA: CTA,
+                        CTD: CTD,
+                        LOS: JSON.stringify(rangejson),
+                        typ: $("input[name='DiscType']:checked").val()
+                    }
+
+
+                    document.getElementById('Progress').style.display = 'block';
+                    setTimeout(function () {
+                        var Data = $.parseJSON(AjaxCallWithDataMVCPOST("@Url.Action("SaveLOS")", values));
+                        if (Data != null) {
+                            if (Data.st == '1') {
+                                //$('#UpdateUsers').modal({
+                                //    show: 'true'
+                                //});
+                                //return false;
+                                CheckExistingBidDates();
+                            }
+                            else if (Data.st == '0') {
+                                toastr.error(Data.msg);
+                                return false;
+                            }
+                        }
+                    }, 200);
+
+                    break;
+
+                case "3":
+                    var DayDisc = [];
+                    if ($("input[type='checkbox'][name='Weekend']:checked").length > 0) {
+                        var disc = parseFloat($('#WeekendDisc').val());
+                        if (isNaN(disc)) {
+                            toastr.error('Please provide a weekend discount.');
+                            return;
+                        }
+
+                        if (disc < 0) {
+                            toastr.error('Discount cannot be negative.');
+                            return;
+                        }
+
+                        if (disc >= 100) {
+                            toastr.error('Discount should be less than 100.');
+                            return;
+                        }
+
+                        var amen1 = parseInt($('#WeekendAmenity1').val());
+                        var app1 = parseInt($('#WeekendAppl1').val());
+                        var amen2 = parseInt($('#WeekendAmenity2').val());
+                        var app2 = parseInt($('#WeekendAppl2').val());
+
+                        // Checking that both amenity and applicability should be provided or none should be provided
+                        if ((amen1 == 0 && app1 != 0) || (amen1 != 0 && app1 == 0) || (amen2 == 0 && app2 != 0) || (amen2 != 0 && app2 == 0)) {
+                            toastr.error('WEEKEND : Both rate inclusion and applicability should be provided for a pair.');
+                            return;
+                        }
+
+                        // Amenities cannot be same
+                        if ((amen1 == amen2) && (amen1 != 0) && (amen2 != 0)) {
+                            toastr.error('WEEKEND : Both the rate inclusions cannot be same.');
+                            return;
+                        }
+
+                        $("input[type='checkbox'][name='Weekend']:checked").each(function () {
+                            var id = $(this).attr("id");
+                            var values = {
+                                id: id.replace("Weekend_", ""),
+                                disc: disc,
+                                amen1: amen1,
+                                app1: app1,
+                                amen2: amen2,
+                                app2: app2,
+                                Weekend: 1
+                            }
+
+                            DayDisc.push(values);
+
+                        });
+                    }
+
+                    if ($("input[type='checkbox'][name='Weekday']:checked").length > 0) {
+                        var disc = parseFloat($('#WeekdayDisc').val());
+                        if (isNaN(disc)) {
+                            toastr.error('Please provide a Weekday discount.');
+                            return;
+                        }
+
+                        if (disc < 0) {
+                            toastr.error('Discount cannot be negative.');
+                            return;
+                        }
+
+                        if (disc >= 100) {
+                            toastr.error('Discount should be less than 100.');
+                            return;
+                        }
+
+                        var amen1 = parseInt($('#WeekdayAmenity1').val());
+                        var app1 = parseInt($('#WeekdayAppl1').val());
+                        var amen2 = parseInt($('#WeekdayAmenity2').val());
+                        var app2 = parseInt($('#WeekdayAppl2').val());
+
+                        // Checking that both amenity and applicability should be provided or none should be provided
+                        if ((amen1 == 0 && app1 != 0) || (amen1 != 0 && app1 == 0) || (amen2 == 0 && app2 != 0) || (amen2 != 0 && app2 == 0)) {
+                            toastr.error('WEEKDAY : Both rate inclusion and applicability should be provided for a pair.');
+                            return;
+                        }
+
+                        // Amenities cannot be same
+                        if ((amen1 == amen2) && (amen1 != 0) && (amen2 != 0)) {
+                            toastr.error('WEEKDAY : Both the rate inclusions cannot be same.');
+                            return;
+                        }
+
+                        $("input[type='checkbox'][name='Weekday']:checked").each(function () {
+                            var id = $(this).attr("id");
+                            var values = {
+                                id: id.replace("Weekday_", ""),
+                                disc: disc,
+                                amen1: amen1,
+                                app1: app1,
+                                amen2: amen2,
+                                app2: app2,
+                                Weekend: 0
+                            }
+
+                            DayDisc.push(values);
+
+                        });
+                    }
+
+                    if (DayDisc.length == 0 && CloseOut == "" && CTA == "" && CTD == "") {
+                        toastr.error('No command provided.');
+                        return;
+                    }
+
+                    var values = {
+                        dates: dates.join('$'),
+                        CloseOut: CloseOut,
+                        CTA: CTA,
+                        CTD: CTD,
+                        Days: JSON.stringify(DayDisc),
+                        typ: $("input[name='DiscType']:checked").val()
+                    }
+
+                    document.getElementById('Progress').style.display = 'block';
+                    setTimeout(function () {
+                        var Data = $.parseJSON(AjaxCallWithDataMVCPOST("@Url.Action("SaveDays")", values));
+                        if (Data != null) {
+                            if (Data.st == '1') {
+                                //$('#UpdateUsers').modal({
+                                //    show: 'true'
+                                //});
+                                //return false;
+                                CheckExistingBidDates();
+                            }
+                            else if (Data.st == '0') {
+                                toastr.error(Data.msg);
+                                return false;
+                            }
+                        }
+                    }, 200);
+
+                    break;
+
+                case "4":
+                    if (EditRange.length > 0) {
+                        toastr.error('Cannot save range when in Edit Mode.');
+                        return;
+                    }
+
+                    if (rangejson.length == 0 && CloseOut == "" && CTA == "" && CTD == "") {
+                        toastr.error('No command provided.');
+                        return;
+                    }
+
+                    var values = {
+                        dates: dates.join('$'),
+                        CloseOut: CloseOut,
+                        CTA: CTA,
+                        CTD: CTD,
+                        Rooms: JSON.stringify(rangejson),
+                        typ: $("input[name='DiscType']:checked").val()
+                    }
+
+                    document.getElementById('Progress').style.display = 'block';
+                    setTimeout(function () {
+                        var Data = $.parseJSON(AjaxCallWithDataMVCPOST("@Url.Action("SaveRooms")", values));
+                        if (Data != null) {
+                            if (Data.st == '1') {
+                                //$('#UpdateUsers').modal({
+                                //    show: 'true'
+                                //});
+                                //return false;
+                                CheckExistingBidDates();
+                            }
+                            else if (Data.st == '0') {
+                                toastr.error(Data.msg);
+                                return false;
+                            }
+                        }
+                    }, 200);
+
+                    break;
+                case "5": // Basic discount
+                    var disc = parseFloat($('#Disc_basic').val());
+
+                    if (isNaN(disc) && CloseOut == "" && CTA == "" && CTD == "") {
+                        toastr.error('No command provided.');
+                        return;
+                    }
+
+                    if (disc < 0) {
+                        toastr.error('Discount cannot be negative.');
+                        return;
+                    }
+
+                    if (disc >= 100) {
+                        toastr.error('Discount should be less than 100.');
+                        return;
+                    }
+
+                    var values = {
+                        dates: dates.join('$'),
+                        CloseOut: CloseOut,
+                        CTA: CTA,
+                        CTD: CTD,
+                        Basic: disc,
+                        typ: $("input[name='DiscType']:checked").val()
+                    };
+
+                    document.getElementById('Progress').style.display = 'block';
+                    setTimeout(function () {
+                        var Data = $.parseJSON(AjaxCallWithDataMVCPOST("@Url.Action("SaveBasic")", values));
+                        if (Data != null) {
+                            if (Data.st == '1') {
+                                //$('#UpdateUsers').modal({
+                                //    show: 'true'
+                                //});
+                                //return false;
+                                CheckExistingBidDates();
+                            }
+                            else if (Data.st == '0') {
+                                toastr.error(Data.msg);
+                                return false;
+                            }
+                        }
+                    }, 200);
+
+
+                    break;
+                default:
+                    if (CloseOut == "" && CTA == "" && CTD == "") {
+                        toastr.error('No command provided.');
+                        return;
+                    }
+                    else {
+                        var values = {
+                            dates: dates.join('$'),
+                            CloseOut: CloseOut,
+                            CTA: CTA,
+                            CTD: CTD,
+                            typ: $("input[name='DiscType']:checked").val()
+                        };
+
+                        document.getElementById('Progress').style.display = 'block';
+                        setTimeout(function () {
+                            var Data = $.parseJSON(AjaxCallWithDataMVCPOST("@Url.Action("SaveForAll")", values));
+                            if (Data != null) {
+                                if (Data.st == '1') {
+                                    //$('#UpdateUsers').modal({
+                                    //    show: 'true'
+                                    //});
+                                    //return false;
+                                    CheckExistingBidDates();
+                                }
+                                else if (Data.st == '0') {
+                                    toastr.error(Data.msg);
+                                    return false;
+                                }
+                            }
+                        }, 200);
+                    }
+                    break;
+            }
+        }
+    }
+
+    function CheckExistingBidDates() {
+        var values = {
+            dates: dates.join('$')
+        };
+
+        document.getElementById('Progress').style.display = 'block';
+        setTimeout(function () {
+            var Data = $.parseJSON(AjaxCallWithDataMVCPOST("@Url.Action("CheckExistingBidDates")", values));
+            if (Data != null) {
+                if (Data.st == '2') {
+
+                    $('.ShowSuccess').show();
+                    $('.ShowAttention').hide();
+
+                    $('#UpdateUsers').modal({
+                        show: 'true'
+                    });
+                    return false;
+                }
+                else if (Data.st == '1') {
+                    var InvDates = $.parseJSON(Data.msg);
+                    var html = "";
+                    $('#DatesHere').html(html);
+
+
+
+                    html += "You have provided discounts for some dates (shown below) that do not have a bidding room & Rate plan assigned yet. We have saved these discounts for you. Please load bidding tariff for these dates.";
+                    html += "<div class=\"table-responsive\" id=\"tables\">";
+                    html += "<table id=\"table\" class=\" table table-striped table-bordered table-hover\" style=\"font-size: 13px;\">";
+                    var NoOfCols = 6;
+                    if (NoOfCols > InvDates.length)
+                        NoOfCols = InvDates.length;
+                    var ExtraCols = InvDates.length % NoOfCols;
+                    var Rows = (ExtraCols) == 0 ? (InvDates.length / NoOfCols) : ((InvDates.length - ExtraCols) / NoOfCols) + 1;
+                    var Index = 0;
+                    for (var i = 0; i < Rows; i++) {
+                        html += "<tr>";
+
+                        for (var j = 0; j < NoOfCols; j++, Index++) {
+                            if (Index >= InvDates.length) {
+                                html += "<td></td>";
+                            }
+                            else {
+                                html += "<td style=\"text-align: center;\">";
+                                html += InvDates[Index].Dates;
+                                html += "</td>";
+                            }
+                        }
+                        html += "</tr>";
+                    }
+                    html += "</table>";
+                    html += "</div>";
+
+
+                    $('.ShowSuccess').hide();
+                    $('.ShowAttention').show();
+
+                    $('#DatesHere').html(html);
+                    $('#UpdateUsers').modal({
+                        show: 'true'
+                    });
+                    return false;
+                }
+                else if (Data.st == '0') {
+                    toastr.error(Data.msg);
+                    return false;
+                }
+            }
+        }, 200);
+
+    }
+    function Simulator() {
+        //debugger;
+        var BookingDate = $("#FromDate").val();
+      //  BookingDate = GetFormatedDatemmddyyy(BookingDate);
+        var EndDate = $('#ToDate').val();
+       // EndDate = GetFormatedDatemmddyyy(EndDate);
+        var LOS=2;
+        var Rooms=1;
+        var Occupancy=2;
+        var Type = $("input[name='DiscType']:checked").val();
+
+        window.location.href = '/Simulator?BookingDate=' + BookingDate + "&ArrivalDate=" + EndDate + "&LOS=" + LOS + "&Rooms=" + Rooms + "&Occupancy=" + Occupancy + "&Type=" + Type;
+    }
+    function GetFormatedDatemmddyyy(date) {
+        var Ad = new Date(date.split("/").reverse().join("-"));
+        var Add = Ad.getDate();
+        var Amm = Ad.getMonth()+1;
+        var Ayy = Ad.getFullYear();
+        Arrivaldate = Amm + "/" + Add + "/" + Ayy;
+        return Arrivaldate;
+    }
+    function Overview() {
+        var StartDate = $('#FromDate').val();
+        window.location.href = '/BulkBid/GoToOverview?StartDate=' + StartDate;
+        //var EndDate = $('#EndDate').val();
+        //window.location.href = '/BulkBid/GoToOverview?StartDate=' + StartDate;
+    }
+
+    function LoadTariff() {
+        window.location.href = "/LoadBiddingRate";
+    }
+
+    function RefreshAndStay() {
+
+        $('.HideDiv').hide();
+        $('input[name="discount"]:checked').each(function () {
+            $(this).prop("checked", false);
+        });
+
+        $('.decimalType').each(function () {
+            $(this).val("");
+        });
+
+        $('select:not([id="CTA"]):not([id="CTD"]):not([id="CloseOut"])').each(function () {
+            $('#' + $(this).attr("id") + ' option[value="0"]').prop("selected", true);
+        });
+
+        $('select[id="CTA"],[id="CTD"],[id="CloseOut"]').each(function () {
+            $('#' + $(this).attr("id") + ' option[value=""]').prop("selected", true);
+        });
+
+        $('span.select2-chosen').each(function () {
+            $(this).text("");
+        });
+
+        $('[value="Date"').each(function () {
+            $(this).prop("checked", false);
+        });
+
+        rangejson.length = 0;
+
+        SetTableRows();
+        $('.close').click();
+    }
+
+
+    $(function () {
+
+        $('#btnSelectPeriod').click();
+    });
+
+</script>
+
+<div class="container margintop20">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4>Bulk Update (Bidding Model)</h4>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-8 lightblue">
+
+                    Select the dates for your update:<br>
+                    <strong>(A)</strong> Use the start and end dates then click Select Period OR <strong>(B)</strong> Click dates directly within the calendar.
+
+                </div>
+                <div class="col-md-4 lightgreybg ">
+                    <strong>View</strong> <br>
+                    <input type="radio" name="months" value="6" class="radio-inline" unchecked>
+                    6 Months
+                    <input type="radio" name="months" value="12" class="radio-inline" checked>
+                    12 Months
+                    <input type="radio" name="months" value="18" class="radio-inline" unchecked>
+                    18 Months
+                </div>
+                <!--Rate & Availability overview section Start-->
+                <div class="col-md-12">
+                    <h4>Rate & Availability Overview</h4>
+                    <hr>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="col-xs-2">
+                        Start Date
+                        <input type="text" id="FromDate" onkeyup="this.value=''" value="@ViewBag.StartDate" name="textfield" class="form-control width65">
+                    </div>
+                    <div class="col-xs-2">
+                        End Date
+                        <input type="text" id="ToDate" name="textfield" onkeyup="this.value=''" value="@ViewBag.EndDate" class="form-control width65">
+                    </div>
+                </div>
+                <div class="col-md-6 margintop10">
+                    <strong> Include: </strong>
+                    <input type="checkbox" name="Date" value="1" class="checkbox-inline" checked="checked">
+                    MON
+                    <input type="checkbox" name="Date" value="2" class="checkbox-inline" checked="checked">
+                    TUE
+                    <input type="checkbox" name="Date" value="3" class="checkbox-inline" checked="checked">
+                    WED
+                    <input type="checkbox" name="Date" value="4" class="checkbox-inline" checked="checked">
+                    THU
+                    <input type="checkbox" name="Date" value="5" class="checkbox-inline" checked="checked">
+                    FRI
+                    <input type="checkbox" name="Date" value="6" class="checkbox-inline" checked="checked">
+                    SAT
+                    <input type="checkbox" name="Date" value="0" class="checkbox-inline" checked="checked">
+                    SUN
+                </div>
+                <div class="col-md-5  margintop10">
+                    <button type="submit" class="btn btn-primary" id="btnSelectPeriod" onclick="ReadyForCalendar();">Select Period</button>
+                </div>
+                <div class="col-md-12 margintop10">
+                    <div id="calendarControl">
+                    </div>
+                    <p><strong>Product Selection:</strong> All selected items will be updated with the value(s) entered below.</p>
+                </div>
+                <!--Rate & Availability overview section End-->
+            </div>
+            <!--Rate Plan Name section End-->
+            <div>
+                <div class="col-md-12 lightgreybg border paddingbottom10">
+                    <div class="col-md-12">
+                        <div class="col-md-3">
+                            <h4>Discount Rate Plan</h4>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="radio" name="DiscType" value="0" class="radio-inline" @(ViewBag.Type == "b" ? Html.Raw("checked") : Html.Raw("unchecked"))>
+                            Both
+                            <input type="radio" name="DiscType" value="1" class="radio-inline" @(ViewBag.Type == "p" ? Html.Raw("checked") : Html.Raw("unchecked"))>
+                            Public
+                            <input type="radio" name="DiscType" value="2" class="radio-inline" @(ViewBag.Type == "c" ? Html.Raw("checked") : Html.Raw("unchecked"))>
+                            Corporate
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="col-md-12  margintop10">
+                        <input type="radio" value="5" name="discount">
+                        <strong> Discount</strong> - Base <a href="#" data-toggle="modal" data-target="#divbasicDiscount">Example</a>
+                    </div>
+                    <div class="col-md-12 margintop10">
+                        <input type="radio" value="2" name="discount">
+                        <strong> Discount</strong> -  Length of stay <a href="#" data-toggle="modal" data-target="#divlengthofstay">Example</a>
+                    </div>
+                    <div class="col-md-12  margintop10">
+                        <input type="radio" value="4" name="discount">
+                        <strong> Discount</strong> -  Multiple rooms <a href="#" data-toggle="modal" data-target="#divmultiplerooms">Example</a>
+                    </div>
+                    <div class="col-md-12 margintop10">
+                        <input type="radio" value="1" name="discount">
+                        <strong> Discount</strong> - Lead time <a href="#" data-toggle="modal" data-target="#divleadtime">Example</a>
+                    </div>
+                    <div class="col-md-12  margintop10">
+                        <input type="radio" value="3" name="discount">
+                        <strong> Discount</strong> - Weekends/Weekdays <a href="#" data-toggle="modal" data-target="#divweekweekend">Example</a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row marginbottom10">
+                <div class="col-md-12">
+                    <h4>Modify Open/ Close Settings</h4>
+                </div>
+                <div class="col-md-12">
+                    <div class="col-xs-1">
+                        Close Out
+                        <select id="CloseOut" class="form-control">
+                            <option value="">&nbsp;</option>
+                            <option value="On">On </option>
+                            <option value="Off">Off </option>
+                        </select>
+                    </div>
+                    <div class="col-xs-1">
+                        CTA
+                        <select id="CTA" class="form-control">
+                            <option value="">&nbsp;</option>
+                            <option value="On">On </option>
+                            <option value="Off">Off </option>
+                        </select>
+                    </div>
+                    <div class="col-xs-1">
+                        CTD
+                        <select id="CTD" class="form-control">
+                            <option value="">&nbsp;</option>
+                            <option value="On">On </option>
+                            <option value="Off">Off </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- discount basic start-->
+            <!-- Lead discount -->
+            <div id="leaddiscount" class="table-responsive lightgreybg margintop20 margin15 HideDiv" style="display:none">
+
+                <table width="100%" class="table table-bordered">
+                    <col width="8%">
+                    <col width="8%">
+                    <col width="10%">
+                    <col width="15%">
+                    <col width="15%">
+                    <col width="15%">
+                    <col width="15%">
+                    <col width="15%">
+                    <tr>
+                        <td>
+                            From
+                            <input type="text" class="form-control decimalType" id="TableFrom">
+                        </td>
+                        <td>
+                            To
+                            <input type="text" class="form-control decimalType" id="TableTo">
+                        </td>
+                        <td>
+                            Discount(%)
+                            <input type="text" step="0.01" class="form-control decimalType" id="TableDisc" placeholder=" %">
+                        </td>
+                        <td>
+                            Rate Inclusion 1
+                            <select class="form-control" id="TableAmen1" name="Amenity"></select>
+                        </td>
+                        <td>
+                            Applicability 1
+                            <select class="form-control" id="TableAppl1" name="Applicability"></select>
+                        </td>
+                        <td>
+                            Rate Inclusion 2
+                            <select class="form-control" id="TableAmen2" name="Amenity"></select>
+                        </td>
+                        <td>
+                            Applicability 2
+                            <select class="form-control" id="TableAppl2" name="Applicability"></select>
+                        </td>
+                        <td>
+                            <br />
+
+                            <input name="" type="button" class="btn btn-primary  marginbottom10" value="Add" id="AddRange">
+                            <input name="" type="button" class="btn btn-warning  marginbottom10 paddingleft10" style="display:none;" value="Cancel" id="Cancel">
+                        </td>
+                    </tr>
+                </table>
+
+                <table class="table table-striped table-bordered table-hover txtcenter" id="RangeTable">
+                    <thead>
+                        <tr>
+                            <th>Range From</th>
+                            <th>Range To </th>
+                            <th>Discount (%)</th>
+                            <th>Rate Inclusion 1</th>
+                            <th>Applicability 1</th>
+                            <th>Rate Inclusion 2</th>
+                            <th>Applicability 2</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <!-- lead discount end -->
+            <!-- Weekend/Weekday discount start -->
+            <div id="Weekend" class="col-md-12 lightgreybg paddingbottom10 HideDiv" style="display:none">
+                <div class="col-md-12">
+                    <strong> Weekend </strong>:
+                    <input type="checkbox" id="Weekend_Monday" name="Weekend" value="Date" class="checkbox-inline">
+                    MON
+                    <input type="checkbox" id="Weekend_Tuesday" name="Weekend" value="Date" class="checkbox-inline">
+                    TUE
+                    <input type="checkbox" id="Weekend_Wednesday" name="Weekend" value="Date" class="checkbox-inline">
+                    WED
+                    <input type="checkbox" id="Weekend_Thursday" name="Weekend" value="Date" class="checkbox-inline">
+                    THU
+                    <input type="checkbox" id="Weekend_Friday" name="Weekend" value="Date" class="checkbox-inline">
+                    FRI
+                    <input type="checkbox" id="Weekend_Saturday" name="Weekend" value="Date" class="checkbox-inline">
+                    SAT
+                    <input type="checkbox" id="Weekend_Sunday" name="Weekend" value="Date" class="checkbox-inline">
+                    SUN
+                </div>
+                <div class="col-md-12">
+                    <div class="col-md-2">
+                        Discount(%)
+                        <input type="text" id="WeekendDisc" step="0.01" class="form-control decimalType" placeholder="%">
+                    </div>
+                    <div class="col-md-3">
+                        Rate Inclusion 1
+                        <select class="form-control" id="WeekendAmenity1" name="Amenity"></select>
+                    </div>
+                    <div class="col-md-2">
+                        Applicability 1
+                        <select class="form-control" id="WeekendAppl1" name="Applicability"></select>
+                    </div>
+                    <div class="col-md-3">
+                        Rate Inclusion 2
+                        <select class="form-control" id="WeekendAmenity2" name="Amenity"></select>
+                    </div>
+                    <div class="col-md-2">
+                        Applicability 2
+                        <select class="form-control" id="WeekendAppl2" name="Applicability"></select>
+                    </div>
+                </div>
+                <div class="col-md-12 margintop20">
+                    <strong> Weekdays </strong>:
+                    <input type="checkbox" id="Weekday_Monday" name="Weekday" value="Date" class="checkbox-inline">
+                    MON
+                    <input type="checkbox" id="Weekday_Tuesday" name="Weekday" value="Date" class="checkbox-inline">
+                    TUE
+                    <input type="checkbox" id="Weekday_Wednesday" name="Weekday" value="Date" class="checkbox-inline">
+                    WED
+                    <input type="checkbox" id="Weekday_Thursday" name="Weekday" value="Date" class="checkbox-inline">
+                    THU
+                    <input type="checkbox" id="Weekday_Friday" name="Weekday" value="Date" class="checkbox-inline">
+                    FRI
+                    <input type="checkbox" id="Weekday_Saturday" name="Weekday" value="Date" class="checkbox-inline">
+                    SAT
+                    <input type="checkbox" id="Weekday_Sunday" name="Weekday" value="Date" class="checkbox-inline">
+                    SUN
+                </div>
+                <div class="col-md-12">
+                    <div class="col-md-2">
+                        Discount (%)
+                        <input type="text" id="WeekdayDisc" step="0.01" class="form-control decimalType" placeholder="%">
+                    </div>
+                    <div class="col-md-3">
+                        Rate Inclusion 1
+                        <select class="form-control" id="WeekdayAmenity1" name="Amenity"></select>
+                    </div>
+                    <div class="col-md-2">
+                        Applicability 1
+                        <select class="form-control" id="WeekdayAppl1" name="Applicability"></select>
+                    </div>
+                    <div class="col-md-3">
+                        Rate Inclusion 2
+                        <select class="form-control" id="WeekdayAmenity2" name="Amenity"></select>
+                    </div>
+                    <div class="col-md-2">
+                        Applicability 2
+                        <select class="form-control" id="WeekdayAppl2" name="Applicability"></select>
+                    </div>
+                </div>
+            </div>
+            <!-- Weekend/Weekday discount end -->
+            <div id="basicdiscount" class="col-md-12 lightgreybg  margintop10 paddingbottom10 HideDiv" style="display:none">
+                <div class="col-md-1" style="width:13%;">Base Discount (%)  </div>
+                <div class="col-md-2 margintop5">
+                    <input id="Disc_basic" type="text" step="0.01" class="form-control decimalType" placeholder="%" style="width:60%;">
+                </div>
+            </div>
+            <!-- discount basic end -->
+
+
+            <div class="row pull-right  margintop10">
+                <div class="col-xs-12">
+                    <input name="" type="button" class="btn btn-primary" value="Save" onclick="save()">
+                    @*<input name="" type="button" class="btn btn-danger" value="CANCEL">*@
+                    <input type="hidden" id="SavedDates">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<form id="frmUsersUpdate">
+    <div id="UpdateUsers" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" style="display:none" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title ShowSuccess">Success</h4>
+                    <h4 class="modal-title ShowAttention">Attention</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row ShowSuccess" style="margin-left:5px;margin-right:5px;">
+                        The data has been saved successfully.
+                    </div>
+                    <div id="DatesHere" class="row ShowAttention" style="margin-left:5px;margin-right:5px;">
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnUpdate" class="btn btn-primary" onclick="RefreshAndStay()">Stay here</button>
+                    <button type="button" id="btnLoadTariff" class="btn btn-primary ShowAttention" onclick="LoadTariff()">Load Tariff</button>
+                    <button type="button" id="btnCancel" class="btn btn-primary" onclick="Simulator()">Check effect of Overview</button>
+                    @*<button type="button" id="btnCancel" class="btn btn-primary" onclick="Overview()">Go to Simulator</button>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<div id="divbasicDiscount" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header ">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <div class="pull-left">
+                    <h4>Base Discount</h4>
+                </div>
+            </div>
+            <div class="blue" style="margin-left: 15px;">This discount is a regular discount, which will be applicable to all the reservations coming through Bidding.</div>
+            <div class="modal-body">
+                <img src="@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()currency/basic.png" />
+
+            </div>
+        </div>
+    </div>
+</div>
+<div id="divlengthofstay" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg" style="width: 83%;">
+        <div class="modal-content">
+            <div class="modal-header ">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <div class="pull-left">
+                    <h4>Length Of Stay Discount</h4>
+                </div>
+            </div>
+            <div class="blue" style="margin-left: 15px;">Length of Stay Discount/ Inclusions will be applicable to the queries, processed for the total number of days of stay.</div>
+            <div class="modal-body">
+                <img src="@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()currency/los.png" />
+            </div>
+        </div>
+    </div>
+</div>
+<div id="divmultiplerooms" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg" style="width: 83%;">
+        <div class="modal-content">
+            <div class="modal-header ">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <div class="pull-left">
+                    <h4>Multiple Rooms Discount</h4>
+                </div>
+            </div>
+            <div class="blue" style="margin-left: 15px;">Multiple Rooms Discount/ Inclusions will be applicable to the queries, processed for the total number of rooms travelling.</div>
+            <div class="modal-body">
+                <img src="@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()currency/mrooms.png" />
+            </div>
+        </div>
+    </div>
+</div>
+<div id="divleadtime" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg" style="width: 83%;">
+        <div class="modal-content">
+            <div class="modal-header ">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <div class="pull-left">
+                    <h4>Lead Time Discount</h4>
+                </div>
+            </div>
+            <div class="blue" style="margin-left: 15px;">Lead Time Discount/ Inclusions will be applicable to the queries, processed from the number of days from the Booking Date  till the Arrival Date. </div>
+            <div class="modal-body">
+                <img src="@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()currency/leadtime.png" />
+            </div>
+        </div>
+    </div>
+</div>
+<div id="divweekweekend" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg" style="width: 86%;">
+        <div class="modal-content">
+            <div class="modal-header ">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <div class="pull-left">
+                    <h4>Weekend/ Weekday Discount</h4>
+                </div>
+            </div>
+            <div class="blue" style="margin-left: 15px;">Weekend/ weekday discount is applicable on the individual day of the stay. You can choose your Weekend and Weekday and give a dsicount day wise.</div>
+            <div class="modal-body">
+                <img src="@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()currency/weekend.png" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(function () {
+
+        $(".decimalType").keydown(function (event) {
+
+            if (event.shiftKey == true) {
+                event.preventDefault();
+            }
+
+            if ((event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 96 && event.keyCode <= 105)
+                || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 37 || event.keyCode == 39
+                || event.keyCode == 46 || event.keyCode == 190 || event.keyCode == 110) {
+
+            } else {
+                event.preventDefault();
+            }
+
+            if (($(this).val().indexOf('.') !== -1 && event.keyCode == 190) || ($(this).val().indexOf('.') !== -1 && event.keyCode == 110)) {
+                event.preventDefault();
+            }
+        });
+    });
+
+</script>

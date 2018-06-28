@@ -1,0 +1,627 @@
+﻿@model OneFineRateBLL.Entities.etblPropertyM
+
+@{
+    ViewBag.Title = "EditMaster";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+
+
+<link href="~/css/jquery-ui-1.8.1.custom.css" rel="stylesheet" />
+
+@*//Scripts for autofill through ajax call*@
+@System.Web.Optimization.Scripts.Render("~/bundles/autofill")
+
+@*//Scripts for validation server side through ajax call*@
+@System.Web.Optimization.Scripts.Render("~/bundles/validation")
+<script>
+    var localityData = [];
+    $(document).ready(function () {
+
+        //Get Localities mapped data with this property and bind table
+        var jsonData = '@Html.Raw(@ViewBag.PropertyLocalityMap)';
+        if (jsonData != "") {
+            localityData = JSON.parse(jsonData);
+            $("#dvLocalityGrid").empty();
+            var localityHtml = BindLocality(localityData);
+            $("#dvLocalityGrid").append(localityHtml);
+            $("#hdnJsonLocalityGrid").val(JSON.stringify(localityData));
+
+            $('#hdnSelectedLocalityID').val('');
+            $('#hdnSelectedLocalityName').val('');
+            $("#txtLocalityArea").val('');
+        }
+        //Add New Locality / Area
+        $("#btnAddLocality").click(function () {
+            if ($("#txtLocalityArea").val() == "") {
+                toastr.info('Please Select Locality/Area.');
+                return false;
+            }
+            var id = $('#hdnSelectedLocalityID').val().split('|');
+            //Check the area has been added earlier or not
+            var added=false;
+            $.map(localityData, function(elementOfArray, indexInArray) {
+                if (elementOfArray.Id == id[0] && elementOfArray.Status == id[1]) {
+                    added = true;
+                }
+            });
+
+            if(added)
+            {
+                toastr.warning('Selected Locality / Area has already been added.');
+                return false;
+            }
+
+            localityData.push({
+                Id: id[0],
+                Name: $('#hdnSelectedLocalityName').val(),
+                Status: id[1],
+                RowId: "deleteRow_" + $('#hdnSelectedLocalityID').val()
+            });
+
+            $("#dvLocalityGrid").empty();
+            var localityHtml = BindLocality(localityData);
+            $("#dvLocalityGrid").append(localityHtml);
+            $("#hdnJsonLocalityGrid").val(JSON.stringify(localityData));
+
+            $('#hdnSelectedLocalityID').val('');
+            $('#hdnSelectedLocalityName').val('');
+            $("#txtLocalityArea").val('');
+
+        });
+
+        //Delete locality / area
+        $("#dvLocalityGrid").delegate("a", "click", function () {
+            var index = 0;
+            var isMatched = false;
+            var removeLocalityID = $(this).attr("id");
+            if (localityData != null) {
+                index = findIndexByKeyValue(localityData, "RowId", removeLocalityID);
+                localityData.splice(index, 1);
+            }
+            $("#dvLocalityGrid").empty();
+            var localityHtml = BindLocality(localityData);
+            $("#dvLocalityGrid").append(localityHtml);
+            $("#hdnJsonLocalityGrid").val(JSON.stringify(localityData));
+        });
+
+        function findIndexByKeyValue(obj, key, value) {
+            for (var i = 0; i < obj.length; i++) {
+                if (obj[i][key] == value) {
+                    return i;
+                }
+            }
+            return null;
+        }
+
+        // bind the selected locality in a table
+        function BindLocality(localityData) {
+            var localityHtml = "<table  width='100%'>";
+            localityHtml += "<colgroup><col width='60%'><col width='*'></colgroup>";
+            $.each(localityData, function (index, locality) {
+                localityHtml += "<tr id='" + locality.RowId + "'><td>" + locality.Name + "</td>"
+                localityHtml += "<td><a class='removeLocality' id='" + locality.RowId + "'>Remove</a></td></tr>";
+            });
+            localityHtml += "</table>";
+
+            return localityHtml;
+        }
+
+        //bind autocomplete event on locality textbox on load
+        $(".autosuggest").autocomplete({
+            source: function (request, response) {
+                response([{ label: "Loading...", loading: true }]);
+                $.ajax({
+                    url: "/Property/GetLocations",
+                    contentType: "application/json; charset=utf-8",
+                    data: { search: request.term },
+                    dataType: "json",
+                    type: "GET",
+                    async: false,
+                    success: function (data) {
+                        $('#hdnSelectedLocalityID').val("");
+                        $('#hdnSelectedLocalityName').val("");
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.Name,
+                                value: item.Id
+                            }
+                        }));
+                    }
+                });
+            },
+            minLength: 2,
+            autoFocus: true,
+            select: function (event, ui) {
+                event.preventDefault();
+                $(".autosuggest").val(ui.item.label);
+                $('#hdnSelectedLocalityID').val(ui.item.value);
+                $('#hdnSelectedLocalityName').val(ui.item.label);
+            }
+        });
+    });
+
+</script>
+<script src="http://maps.googleapis.com/maps/api/js"></script>
+<script type="text/javascript">
+    var map;
+    function initialize() {
+        //var myLatlng = new google.maps.LatLng(28.690587654250713, 77.16796875);
+        var myLatlng = new google.maps.LatLng(@Model.dLatitude, @Model.dLongitude);
+        var myOptions = {
+            zoom: 6,
+            center: myLatlng,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+
+        map = new google.maps.Map(document.getElementById('googleMap'),
+            myOptions);
+
+        // marker STARTS
+        var marker = new google.maps.Marker({
+            position: myLatlng,
+            title: "Click to view info!"
+        });
+        marker.setMap(map);
+
+        // marker ENDS
+
+        google.maps.event.addListener(map, "click", function (e) {
+            marker.setMap(null); //clear old markers
+            //lat and lng is available in e object
+            var latLng = e.latLng;
+            marker = new google.maps.Marker({ position: e.latLng, map: map });
+            $('#dLatitude').val(latLng.lat());  //placing values in controls
+            $('#dLongitude').val(latLng.lng())
+        });
+        // info-window STARTS
+        var infowindow = new google.maps.InfoWindow({ content: "<div class='map_bg_logo'><span style='color:#1270a2;'><b><?=$row->bridge_name?></b> (<?=$row->bridge_no?>)</span><div style='border-top:1px dotted #ccc; height:1px;  margin:5px 0;'></div><span style='color:#555;font-size:11px;'><b>Length: </b><?=$row->bridge_length?> meters</span></div>" });
+        google.maps.event.addListener(marker, 'click', function () {
+            infowindow.open(map, marker);
+        });
+        // info-window ENDS
+    }
+    google.maps.event.addDomListener(window, 'load', initialize);
+
+
+    function GetCoordinates() {
+        var myLatlng = new google.maps.LatLng($('#dLatitude').val(), $('#dLongitude').val());
+        var myOptions = {
+            zoom: 6,
+            center: myLatlng,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+
+        map = new google.maps.Map(document.getElementById('googleMap'),
+            myOptions);
+
+        // marker STARTS
+        var marker = new google.maps.Marker({
+            position: myLatlng,
+            title: "Click to view info!"
+        });
+        marker.setMap(map);
+        google.maps.event.addListener(map, "click", function (e) {
+            marker.setMap(null); //clear old markers.
+            //lat and lng is available in e object
+            var latLng = e.latLng;
+            marker = new google.maps.Marker({ position: e.latLng, map: map });
+            $('#dLatitude').val(latLng.lat());  //placing values in controls
+            $('#dLongitude').val(latLng.lng())
+        });
+    }
+</script>
+<script>
+
+    $(function () {
+
+
+        $('#locationsnew').autocomplete({
+            serviceUrl: '/Property/GetLocations'
+        });
+
+
+        //On Country selection
+        $("#iCountryId").change(function () {
+            var ddlsource = "#iCountryId";
+            var ddltarget = "#iStateId";
+            if ($(ddlsource).val() != '') {
+                var url = '@Url.Content("/")' + "Property/BindStates";
+                $.getJSON(url, { id: $(ddlsource).val() }, function (data) {
+                    cleardropdown($(ddltarget));
+                    $.each(data.suggestions, function (index, optionData) {
+                        $(ddltarget).append("<option value='" + optionData.iStateId + "'>" + optionData.sState + "</option>");
+                    });
+
+                });
+            }
+            else {
+                cleardropdown($(ddltarget));
+            }
+        });
+        //On State selection
+        $("#iStateId").change(function () {
+            var ddlsource = "#iStateId";
+            var ddltarget = "#ddlCity";
+            if ($(ddlsource).val() != '') {
+                var url = '@Url.Content("/")' + "Property/BindCity";
+                $.getJSON(url, { id: $(ddlsource).val() }, function (data) {
+                    cleardropdown($(ddltarget));
+                    $.each(data.suggestions, function (index, optionData) {
+                        $(ddltarget).append("<option value='" + optionData.iCityId + "'>" + optionData.sCity + "</option>");
+                    });
+
+                });
+            }
+            else {
+                cleardropdown($(ddltarget));
+            }
+        });
+
+        //On City selection
+        $("#ddlCity").change(function () {
+            var ddlsource = "#ddlCity";
+            var ddltarget = "#ddlMacroArea";
+            if ($(ddlsource).val() != '') {
+                var url = '@Url.Content("/")' + "Property/BindMacroArea";
+                $.getJSON(url, { id: $(ddlsource).val() }, function (data) {
+                    cleardropdown($(ddltarget));
+                    $.each(data.suggestions, function (index, optionData) {
+                        $(ddltarget).append("<option value='" + optionData.iAreaId + "'>" + optionData.sArea + "</option>");
+                    });
+
+                });
+            }
+            else {
+                cleardropdown($(ddltarget));
+            }
+        });
+
+        //On Macro Area selection
+        $("#ddlMacroArea").change(function () {
+            var ddlsource = "#ddlMacroArea";
+            var ddltarget = "#ddlLocality";
+            if ($(ddlsource).val() != '') {
+                var url = '@Url.Content("/")' + "Property/BindLocality";
+                $.getJSON(url, { id: $(ddlsource).val() }, function (data) {
+                    cleardropdown($(ddltarget));
+                    $.each(data.suggestions, function (index, optionData) {
+                        $(ddltarget).append("<option value='" + optionData.iLocalityId + "'>" + optionData.sLocality + "</option>");
+                    });
+
+                });
+            }
+            else {
+                cleardropdown($(ddltarget));
+            }
+        });
+    });
+
+    function cleardropdown(vardropdown) {
+        $(vardropdown).empty();
+        var option = $("<option />");
+        option.attr("value", "").text("");
+        $(vardropdown).append(option);
+        $(vardropdown).select2("val", "");
+    };
+</script>
+@using (Html.BeginForm("Modify", "Property", FormMethod.Post, new { ReturnUrl = ViewBag.ReturnUrl, id = "myform", role = "form" }))
+{
+
+
+    @Html.HiddenFor(u => u.iPropId);
+    @Html.HiddenFor(u => u.dtActionDate);
+    @Html.HiddenFor(u => u.cStatus);
+    @Html.Hidden("InitialHotelName", Model.sHotelName)
+    @Html.HiddenFor(u => u.sviewType);
+    @Html.HiddenFor(u => u.sAccessbilityIds);
+    @Html.HiddenFor(u => u.sAwardIds);
+    @Html.HiddenFor(u => u.sAffiliationIds);
+    @Html.HiddenFor(u => u.sLanguageIds);
+    @Html.HiddenFor(u => u.cStatus);
+    @Html.HiddenFor(u => u.Mode);
+    <div id="accordion">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                        Basic Property Details
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-xs-6 ">
+                            <div>
+                                Name of Hotel <span class="star">*</span>
+                                @Html.TextBoxFor(m => m.sHotelName, new { type = "text", @class = "form-control", maxlength = "50" })
+                                @Html.ValidationMessageFor(m => m.sHotelName)
+                            </div>
+                        </div>
+
+                        <div class="col-xs-4">
+                            Chain
+                            @Html.DropDownListFor(m => m.iChainId, new SelectList(OneFineRateBLL.Entities.BL_Chains.GetAllChains(), "iChainID", "sChainName"), "", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.iChainId)
+                        </div>
+                        <div class="col-xs-2">
+                            Currency <span class="star">*</span>
+                            @Html.DropDownListFor(m => m.iCurrencyId, new SelectList(OneFineRateBLL.BL_Currency.GetAllRecords(), "iCurrencyId", "sCurrencyCode"), "", new { @class = "form-control", required = "true" })
+                            @Html.ValidationMessageFor(m => m.iCurrencyId)
+                        </div>
+                       
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-2">
+                            Star Category <span class="star">*</span>
+                            @Html.DropDownListFor(m => m.iStarCategoryId, new SelectList(OneFineRateBLL.BL_tblStarCategoryM.GetAllRecords(), "iStarCategoryID", "sStarCategory"), "", new { @class = "form-control", required = "true" })
+                            @Html.ValidationMessageFor(m => m.iStarCategoryId)
+                        </div>
+                       
+                        <div class="col-xs-4">
+                            Type of Accommodation <span class="star">*</span>
+                            @Html.DropDownListFor(m => m.iAccomodationId, new SelectList(OneFineRateBLL.BL_tblAccomodationM.GetAllRecords(), "iAccomodationId", "sAccomodation"), "", new { @class = "form-control", required = "true" })
+                            @Html.ValidationMessageFor(m => m.iAccomodationId)
+                        </div>
+                        
+                        <div class="col-xs-2">
+                            No of Rooms <span class="star">*</span>
+                            @Html.TextBoxFor(m => m.iRooms, new { type = "text", required = true, @class = "form-control ", maxlength = "3" })
+                            @Html.ValidationMessageFor(m => m.iRooms)
+                        </div>
+                        <div class="col-xs-2">
+                            No of Floors
+                            @Html.TextBoxFor(m => m.iFloors, new { type = "text", required = true, @class = "form-control width60", maxlength = "3" })
+                            @Html.ValidationMessageFor(m => m.iFloors)
+                        </div>
+                        <div class="col-xs-2">
+                            No of Tower/ Buildings
+                            @Html.TextBoxFor(m => m.iTower, new { type = "text", required = true, @class = "form-control width60", maxlength = "3" })
+                            @Html.ValidationMessageFor(m => m.iTower)
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-2">
+                            Year of built <span class="star">*</span>
+                            @Html.TextBoxFor(m => m.iYearBuilt, new { type = "text", required = true, maxlength = "4", @class = "form-control width60" })
+                            @Html.ValidationMessageFor(m => m.iYearBuilt)
+                        </div>
+                        <div class="col-xs-2">
+                            Last Renovation
+                            @Html.TextBoxFor(m => m.iLastRenovation, new { type = "text", required = true, maxlength = "4", @class = "form-control width60" })
+                            @Html.ValidationMessageFor(m => m.iLastRenovation)
+                        </div>
+                        
+
+                        <div class="col-xs-6">
+                            <div>
+                                Address <span class="star">*</span>
+                                @Html.TextBoxFor(m => m.sAddress, new { required = true, @class = "form-control", rows = "4", maxlength = "100" })
+                                @Html.ValidationMessageFor(m => m.sAddress)
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-xs-3">
+                            Country <span class="star">*</span>
+                            @Html.DropDownListFor(m => m.iCountryId, new SelectList(OneFineRateBLL.BL_Country.GetAllRecords(), "iCountryId", "sCountry"), "", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.iCountryId)
+                        </div>
+
+                        <div class="col-xs-3">
+                            State <span class="star">*</span>
+                            @Html.DropDownListFor(m => m.iStateId, new SelectList(Model.StateList, "Value", "Text"), new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.iStateId)
+                        </div>
+                        <div class="col-xs-3">
+                            City <span class="star">*</span>
+                            @Html.DropDownListFor(m => m.iCityId, new SelectList(Model.CityList, "Value", "Text"), new { @class = "form-control", id = "ddlCity" })
+                            @Html.ValidationMessageFor(m => m.iCityId)
+                        </div>
+                        <div class="col-xs-2">
+                            Macro Area <span class="star">*</span>
+                            @Html.DropDownListFor(m => m.iAreaId, new SelectList(Model.AreaList, "Value", "Text"), new { @class = "form-control", required = "true", id = "ddlMacroArea" })
+                            @Html.ValidationMessageFor(m => m.iAreaId)
+                        </div>
+                        <div class="col-xs-2">
+                            Locality <span class="star">*</span>
+                            @Html.DropDownListFor(m => m.iLocalityId, new SelectList(Model.LocalityList, "Value", "Text"), new { @class = "form-control", required = "true", id = "ddlLocality" })
+                            @Html.ValidationMessageFor(m => m.iLocalityId)
+                        </div>
+
+                        <div class="col-xs-2">
+                            Pincode <span class="star">*</span>
+                            @Html.TextBoxFor(m => m.iPinCode, new { type = "text", @class = "form-control", maxlength = "12" })
+                            @Html.ValidationMessageFor(m => m.iPinCode)
+                        </div>
+
+                        <div class="col-xs-3">
+                            Longitude <span class="star">*</span>
+                            @Html.TextBoxFor(m => m.dLatitude, new { type = "text", onblur = "GetCoordinates();", @class = "form-control", pattern = @"\((?<lat>[-\d.]+),(?<long>[-\d.]+)\)", required = "true" })
+                            @Html.ValidationMessageFor(m => m.dLatitude)
+                        </div>
+                        <div class="col-xs-3">
+                            Latitude <span class="star">*</span>
+                            @Html.TextBoxFor(m => m.dLongitude, new { type = "text", onblur = "GetCoordinates();", @class = "form-control", pattern = @"\((?<lat>[-\d.]+),(?<long>[-\d.]+)\)", required = "true" })
+                            @Html.ValidationMessageFor(m => m.dLongitude)
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-xs-10">
+                            Website <span class="star">*</span>
+                            @Html.TextBoxFor(m => m.sWebSite, new { type = "text", @class = "form-control", placeholder = "http://www.example.com", required = "true" })
+                            @Html.ValidationMessageFor(m => m.sWebSite)
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-4">
+                            Description <span class="star">*</span>
+                            @Html.TextAreaFor(m => m.sDescription, new { @class = "form-control", rows = "7", maxlength = "200" })
+                            @Html.ValidationMessageFor(m => m.sDescription)
+                        </div>
+
+                        <div class="col-xs-8 margintop10">
+                            <div id="googleMap" style=" width:auto;height:180px;"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-4 margintop10">
+                            <div class="row ">
+                                <div class="col-xs-12">
+                                    Primary Localities/ Area
+                                    <br>
+                                    <input type="hidden" id="hdnSelectedLocalityID" />
+                                    <input type="hidden" id="hdnSelectedLocalityName" />
+                                    <input id="txtLocalityArea" class="autosuggest form-control" />
+
+                                    <a id="btnAddLocality"> <i class="fa  fa-plus-circle"> </i> Add Locality</a>
+
+                                    <div id="dvLocalityGrid"></div>
+                                    @Html.HiddenFor(x => x.SelectPrimaryLocalities, new { id = "hdnJsonLocalityGrid" })
+                                </div>
+                            </div>
+                            @*<div class="row">
+                                    <div class="col-xs-10">
+                                        Locality 1
+                                        <input type="text" name="textfield" class="form-control ">
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <br />
+                                        <a href="javascript:void(0)" class="btn btn-xs btn-danger "><i class="fa fa-times "></i></a>
+                                    </div>
+                                </div>*@
+                        </div>
+                        <div class="col-xs-8 nearbybg ">
+                            <div class="subheadcolor"><h4>Nearby Places</h4></div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    Distance to Airport/ Railway Station <span class="star">*</span>
+                                    @Html.TextAreaFor(m => m.sDistanceFromAirportRailwayStation, new { type = "text", @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.sDistanceFromAirportRailwayStation)
+                                </div>
+                                <div class="col-xs-6">
+                                    Nearest Transport <span class="star">*</span>
+                                    @Html.TextAreaFor(m => m.sNearestTransport, new { type = "text", @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.sNearestTransport)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6"> 
+                                    Area Recommended for <span class="star">*</span>
+                                    @Html.TextAreaFor(m => m.sAreaRecommended, new { type = "text", @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.sAreaRecommended)
+                                </div>
+                                <div class="col-xs-6">
+                                    Top Attractions in the area <span class="star">*</span>
+                                    @Html.TextAreaFor(m => m.sTopAttractions, new { type = "text", @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.sTopAttractions)
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                    <!-- contact detail -->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="subheadcolor"><h4>Contact Details</h4></div>
+                            <hr />
+                        </div>
+                        <div class="col-xs-4">
+                            General Manager Name
+                            @Html.TextBoxFor(m => m.sGeneralManagerName, new { type = "text", @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.sGeneralManagerName)
+                        </div>
+                        <div class="col-xs-4">
+                            Contact Number
+                            @Html.TextBoxFor(m => m.sGeneralManagerContact, new { type = "text", @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.sGeneralManagerContact)
+                        </div>
+                        <div class="col-xs-4">
+                            Email Address
+                            @Html.TextBoxFor(m => m.sGeneralManagerEmail, new { type = "email", @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.sGeneralManagerEmail)
+                        </div>
+                        <div class="col-xs-4">
+                            Revenue Manager Name
+                            @Html.TextBoxFor(m => m.sRevenueManagerName, new { type = "text", @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.sRevenueManagerName)
+                        </div>
+                        <div class="col-xs-4">
+                            Contact Number
+                            @Html.TextBoxFor(m => m.sRevenueManagerContact, new { type = "text", @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.sRevenueManagerContact)
+                        </div>
+                        <div class="col-xs-4">
+                            Email Address
+                            @Html.TextBoxFor(m => m.sRevenueManagerEmail, new { type = "email", @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.sRevenueManagerEmail)
+                        </div>
+
+
+
+                        <div class="col-xs-4">
+                            Finance Contact Person <span class="star">*</span>
+                            @Html.TextBoxFor(m => m.sFinanceContactName, new { type = "text", required = true, @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.sFinanceContactName)
+                        </div>
+                        <div class="col-xs-4">
+                            Finance Contact Number
+                            @Html.TextBoxFor(m => m.sFinanceContactContact, new { type = "text", @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.sFinanceContactContact)
+                        </div>
+                        <div class="col-xs-4">
+                            Finance Email Address
+                            @Html.TextBoxFor(m => m.sFinanceContactEmail, new { type = "email", @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.sFinanceContactEmail)
+                        </div>
+                    </div>
+                    <!-- contact detail end -->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="subheadcolor"><h4>Primary Contact Details</h4></div>
+                            <hr />
+                        </div>
+                        <div class="col-xs-4">
+                            Name <span class="star">*</span>
+                            @Html.TextBoxFor(m => m.sPrimaryContactName, new { type = "text", required = true, @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.sPrimaryContactName)
+                        </div>
+                        <div class="col-xs-4">
+                            Contact Number
+                            @Html.TextBoxFor(m => m.sPrimaryContactContact, new { type = "text", @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.sFinanceContactEmail)
+                        </div>
+                        <div class="col-xs-4">
+                            Email Address
+                            @Html.TextBoxFor(m => m.sPrimaryContactEmail, new { type = "email", @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.sFinanceContactEmail)
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <!-- Panel 1 div END  -->
+        <br />
+        <div class="row pull-right">
+            <div class="col-xs-12 marginbottom10">
+                <input name="" type="submit" class="btn btn-primary" value="SAVE">
+
+                <a href="@Url.Action("List", "Property")" class="btn btn-danger">CANCEL</a>
+            </div>
+
+        </div>
+
+    </div>
+}
+<!-- Panel group div END  -->

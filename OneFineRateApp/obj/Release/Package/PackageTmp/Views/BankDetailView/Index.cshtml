@@ -1,0 +1,276 @@
+﻿@model OneFineRateBLL.Entities.etblBankDetail
+@{
+    ViewBag.Title = "BankDetail";
+    Layout = "~/Views/Shared/_LayoutProperty.cshtml";
+}
+@using (Html.BeginForm("Add", "BankDetail", FormMethod.Post, new { ReturnUrl = ViewBag.ReturnUrl, id = "myform", role = "form", enctype = "multipart/form-data" }))
+{
+    <div class=" margintop20">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Bank Detail
+            </div>
+            <div class="panel-body" >
+                <div class="row">
+                    @Html.HiddenFor(m => m.iPropId)
+                    <div class="col-xs-12">
+                        <div class="row">
+                            <div class="col-xs-4">Bank Account No <span style="color:red">*</span>
+                                @Html.TextBoxFor(m => m.sBankAccountNo, new { @class = "form-control", disabled = "disabled" ,required = true, placeholder = "Bank Account Number" }) 
+                                @Html.ValidationMessageFor(m => m.sBankAccountNo)
+                            </div>
+                            <div class="col-xs-4">Beneficiary's Name <span style="color:red">*</span>
+                                @Html.TextBoxFor(m => m.sBaneficiariesName, new { @class = "form-control", disabled = "disabled", required = true, placeholder = "Baneficiaries Name" }) 
+                                @Html.ValidationMessageFor(m => m.sBaneficiariesName)
+                            </div>
+                            <div class="col-xs-4">Bank Name
+                                @Html.TextBoxFor(m => m.sBankName, new { @class = "form-control", disabled = "disabled", placeholder = "Bank Name" })
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-4">Branch Name
+                                @Html.TextBoxFor(m => m.sBranchName, new { @class = "form-control", disabled = "disabled", placeholder = "Branch Name" })
+                            </div>
+                           
+                            <div class="col-xs-4 ">MICR Code
+                                @Html.TextBoxFor(m => m.sMicrCode, new { @class = "form-control width60", disabled = "disabled", placeholder = "MICR Code" })
+                            </div>
+                            <div class="col-xs-4 ">IFSC Code
+                                @Html.TextBoxFor(m => m.sIfscCode, new { @class = "form-control width60", disabled = "disabled", placeholder = "IFSC Code" })
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                Branch Address
+                                @Html.TextBoxFor(m => m.sBranchAddress, new { @class = "form-control", disabled = "disabled", placeholder = "Branch Address" })
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-3 margintop10">Letterhead/ Bank A/C Detail</div>
+                            <div class="col-xs-3 margintop10">
+                                @if (Model != null && !string.IsNullOrEmpty(Model.sLetterhead_BankAccount))
+                                {
+                                    <img id="sLetterhead_BankAccount_image_upload_preview" onerror="this.src = 'http://placehold.it/50x50'" height="50" width="50" src="@Model.sLetterhead_BankAccount" alt="bank account image" />
+                                }
+                                else
+                                {
+                                    <img id="sLetterhead_BankAccount_image_upload_preview" height="50" width="50" src="http://placehold.it/50x50" alt="bank account image" />
+                                }
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-3 margintop10">Cancelled Cheque</div>
+                            <div class="col-xs-3 margintop10">
+                                @if (Model != null && !string.IsNullOrEmpty(Model.sCancelledCheque))
+                                {
+                                    <img id="CancelledCheque_image_upload_preview" onerror="this.src = 'http://placehold.it/50x50'" height="50" width="50" src="@Model.sCancelledCheque" alt="cancelledCheque image" />
+                                }
+                                else
+                                {
+                                    <input type="file" name="CancelledCheque" id="CancelledCheque" class="form-control">
+                                    <img id="CancelledCheque_image_upload_preview" height="50" width="50" src="http://placehold.it/50x50" alt="cancelledCheque image" />
+                                }
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-3 margintop10">Pan Card Details</div>
+                            <div class="col-xs-3 margintop10">
+                                @if (Model != null && !string.IsNullOrEmpty(Model.sPanCard))
+                                {
+
+                                    <img id="PanCard_image_upload_preview" onerror="this.src = 'http://placehold.it/50x50'" height="50" width="50" src="@Model.sPanCard" alt="panCard image" />
+                                }
+                                else
+                                {
+
+
+                                    <img id="PanCard_image_upload_preview" height="50" width="50" src="http://placehold.it/50x50" alt="panCard image" />
+                                }
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="subheadcolor">
+                                    <h4>Commission Details</h4>
+                                </div>
+                                <hr />
+                            </div>
+                            <div class="col-xs-2">Commission %</div>
+                            <div class="col-xs-3">
+                                @Html.TextBoxFor(m => m.dCommission, new { @class = "form-control", disabled = "disabled", placeholder = "Commission %" })
+                            </div>
+                        </div>
+
+                        <!-- GSTIN Details -->
+
+                        <div class="row">
+                            <br />
+                            <div class="col-xs-12">
+                                <div class="subheadcolor"><h4>GSTIN Details </h4></div>
+                                <hr />
+                            </div>
+                            <div class="">
+
+                                <div class="col-xs-6">
+                                    Legal Name of Entity
+                                    @Html.TextBoxFor(m => m.sRegisteredEntityName, new { @class = "form-control", maxlength = "200", disabled = "disabled", placeholder = "Legal Name of Entity" })
+                                    
+                                </div>
+
+                                <div class="col-xs-6">
+                                    PAN Number
+                                    @Html.TextBoxFor(m => m.sPanNumber, new { @class = "form-control", maxlength = "10", disabled = "disabled", placeholder = "PAN Number" })
+                                   
+                                </div>
+
+                            </div>
+
+                            <div class="">
+
+                                <div class="col-xs-4">
+                                    GSTIN of the Business
+                                    @Html.TextBoxFor(m => m.sGstinNumber, new { @class = "form-control", maxlength = "15", disabled = "disabled", placeholder = "GST Number" })
+                                   
+                                </div>
+
+                                <div class="col-xs-4">
+
+                                    <label>State</label>
+                                    @if (Model.iStateId.HasValue)
+                                    {
+                                        @Html.DropDownListFor(model => model.iStateId, new SelectList(OneFineRateBLL.BL_Country.GetStatesByStateIdForDropdown(Model.iStateId.Value), "iStateId", "sState", Model.iStateId), "Select State", new { disabled = "disabled", @class = "form-control", id = "ddlState" })
+                                    }
+                                    else
+                                    {
+                                        @Html.DropDownListFor(model => model.iStateId, Enumerable.Empty<SelectListItem>(), "Select State", new { disabled = "disabled", @class = "form-control", id = "ddlState"})
+                                    }
+
+                                </div>
+
+                                <div class="col-xs-4">
+
+                                    @Html.LabelFor(model => model.sEntityType)
+
+                                    <input type="text" id="txtGstnEntityType" disabled class="form-control" placeholder="Entity Type" />
+
+                                    @Html.DropDownListFor(model => model.sEntityType, new SelectList(new List<SelectListItem> {
+
+                   new SelectListItem{ Text = "Person/Individual",Value="p" },
+                    new SelectListItem{ Text = "Company",Value="c" },
+                     new SelectListItem{ Text = "HUF",Value="h" },
+                      new SelectListItem{ Text = "Firm",Value="f" },
+                       new SelectListItem{ Text = "Association of Person (AOP)",Value="a" },
+                        new SelectListItem{ Text = "AOP (Trust)",Value="t" },
+                         new SelectListItem{ Text = "Body of Individuals (BOI)",Value="b" },
+                          new SelectListItem{ Text = "Local Authorithy",Value="l" },
+                           new SelectListItem{ Text = "Artifical Juridical Person",Value="j" },
+                            new SelectListItem{ Text = "Government",Value="g" },
+                             //new SelectListItem{ Text = "Krish (Trust Krish)",Value="k" },
+
+                   }, "Value", "Text"), "Select", new { @class = "form-control hide", id = "GstnEntityType" })
+                                    
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- End GSTIN Details-->
+
+                        <!-- Finance Contact div start -->
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="subheadcolor"><h4>Finance Contact Details</h4></div>
+                                <hr />
+                            </div>
+                            <div class="col-xs-6">Name
+                                @Html.TextBoxFor(m => m.sFName, new { @class = "form-control", disabled = "disabled", placeholder = "Name" })
+                            </div>
+                            <div class="col-xs-3">Phone No
+                                @Html.TextBoxFor(m => m.sFPhoneNo, new { @class = "form-control", disabled = "disabled", placeholder = "Phone No" })
+                            </div>
+
+                            <div class="col-xs-3 ">Fax No.
+                                @Html.TextBoxFor(m => m.sFFaxNo, new { @class = "form-control", disabled = "disabled", placeholder = "Fax No" })
+                            </div>
+                            <div class="col-xs-6 margintop10">Email ID
+                                @Html.TextBoxFor(m => m.sFEmailId, new { @class = "form-control", disabled = "disabled", placeholder = "Email ID" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 margintop10 ">
+                        @if (ViewBag.FixedOFRFinanceDetails != null)
+                        {
+                            dynamic fixedOFRFinanceDetails = ViewBag.FixedOFRFinanceDetails;
+                            <div class="row ofrfinance">
+                                <div class="col-xs-12">
+                                    <div class="subheadcolor"><h4>OFR Finance Details</h4></div>
+                                </div>
+                                <div class="col-xs-2" style="width:11%;"><b> Phone No.</b></div>
+                                <div class="col-xs-10">@fixedOFRFinanceDetails.sPhone </div>
+                                <div class="col-xs-2" style="width:11%;"><b> Email</b></div>
+                                <div class="col-xs-10" >@fixedOFRFinanceDetails.sEmail </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="row ofrfinance">
+                                <div class="col-xs-12">
+                                    <div class="subheadcolor"><h4>OFR Finance Details</h4></div>
+                                </div>
+                                <div class="col-xs-6"> Phone No.</div>
+                                <div class="col-xs-6">value </div>
+                                <div class="col-xs-6"> Email</div>
+                                <div class="col-xs-6">value</div>
+                                <!--<div class="col-xs-12 text-center">
+                <input type="submit" name="Submit" value="Send Message" class="btn btn-primary"></div>-->
+                            </div>
+                        }
+
+
+                    </div>
+
+                </div>
+
+
+                <br />
+            </div>
+
+
+        </div>
+
+        <br />
+        <!-- container div END bottom -->
+    </div>
+    <!-- CONTENT-WRAPPER SECTION END-->
+}
+
+<script>
+    $(function () {
+
+        $('#txtGstnEntityType').val($('#GstnEntityType option:selected').text());
+
+        function readURL(input, imagePreviewId) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#' + imagePreviewId).attr('src', e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        $('#Letterhead_BankAccount').change(function () {
+            readURL(this, 'sLetterhead_BankAccount_image_upload_preview');
+        });
+
+        $('#CancelledCheque').change(function () {
+            readURL(this, 'CancelledCheque_image_upload_preview');
+        });
+
+        $('#PanCard').change(function () {
+            readURL(this, 'PanCard_image_upload_preview');
+        });
+
+    })
+</script>

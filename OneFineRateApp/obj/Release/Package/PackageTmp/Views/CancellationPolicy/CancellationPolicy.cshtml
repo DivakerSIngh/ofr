@@ -1,0 +1,195 @@
+﻿@model OneFineRateBLL.Entities.etblPropertyCancellationPolicyMap
+
+@using (Ajax.BeginForm("AddUpdate", "CancellationPolicy", new AjaxOptions() { InsertionMode = InsertionMode.Replace, UpdateTargetId = "targetid", HttpMethod = "POST", OnSuccess = "GetResult" }))
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            @*var d = new Date();
+            $('#txtValidFrom').datepicker({
+                startDate: d,
+                minDate: d,
+                autoclose: true,
+                defaultDate: '@Model.validfrom',
+                dateFormat: 'dd-mm-yy'
+            })
+
+            $('#txtValidTo').datepicker({
+                startDate: d,
+                minDate: d,
+                autoclose: true,
+                defaultDate: '@Model.validTo',
+                dateFormat: 'dd-mm-yy'
+            })*@
+
+            
+            $('input[name=bIsNonRefundable]').click(function () {
+                if ($('input[name=bIsNonRefundable  ]:checked').val() == "False") {
+                    $('#divrefundable').show();
+
+                    $('#dValue').attr('required', 'required');
+                    $('#bIsPercent').attr('required', 'required');
+                    $('#dHrsDays').attr('required', 'required');
+                    $('#cHrsDays').attr('required', 'required');
+                }
+                else {
+                    $('#divrefundable').hide();
+                    $('#dValue').removeAttr('required');
+                    $('#bIsPercent').removeAttr('required');
+                    $('#dHrsDays').removeAttr('required');
+                    $('#cHrsDays').removeAttr('required');
+                }
+            });
+
+
+            if ('@Model.bIsNonRefundable' == 'False') {
+                $('#divrefundable').show();
+                $('#dValue').attr('required', 'required');
+                $('#bIsPercent').attr('required', 'required');
+                $('#dHrsDays').attr('required', 'required');
+                $('#cHrsDays').attr('required', 'required');
+            }
+            else {
+                $('#divrefundable').hide();
+                $('#dValue').removeAttr('required');
+                $('#bIsPercent').removeAttr('required');
+                $('#dHrsDays').removeAttr('required');
+                $('#cHrsDays').removeAttr('required');
+            }
+
+            $('#bIsPercent').change(function () {
+                if (this.value == "true") {
+                    $('#dValue').removeAttr('min');
+                    $('#dValue').removeAttr('min');
+                    $('#dValue').attr('min', '1');
+                    $('#dValue').attr('max', '100');
+                }
+                else {
+                    $('#dValue').removeAttr('min');
+                    $('#dValue').removeAttr('min');
+                    $('#dValue').attr('min', '1');
+                    $('#dValue').attr('max', '999');
+                }
+            });
+
+            $('#cHrsDays').change(function () {
+                if (this.value == "H") {
+                    $('#dHrsDays').removeAttr('min');
+                    $('#dHrsDays').removeAttr('min');
+                    $('#dHrsDays').attr('max', '24');
+                }
+                else {
+                    $('#dHrsDays').removeAttr('min');
+                    $('#dHrsDays').removeAttr('min');
+                    $('#dHrsDays').attr('max', '99');
+                }
+            });
+
+            if ('@Model.bIsPercent' == 'True') {
+                $('#dValue').removeAttr('min');
+                $('#dValue').removeAttr('min');
+                $('#dValue').attr('min', '1');
+                $('#dValue').attr('max', '100');
+            }
+            else if ('@Model.bIsPercent' == 'False') {
+                $('#dValue').removeAttr('min');
+                $('#dValue').removeAttr('min');
+                $('#dValue').attr('min', '1');
+                $('#dValue').attr('max', '999');
+            }
+
+            if ('@Model.cHrsDays' == 'H') {
+                $('#dHrsDays').removeAttr('min');
+                $('#dHrsDays').removeAttr('min');
+                $('#dHrsDays').attr('max', '24');
+            }
+            else if ('@Model.cHrsDays' == 'D') {
+                $('#dHrsDays').removeAttr('min');
+                $('#dHrsDays').removeAttr('min');
+                $('#dHrsDays').attr('max', '99');
+            }
+
+            $('#howMuchCharged').keypress(function (event) {
+                return isNumeric(event, this, 5)
+            });
+        });
+    </script>
+    @Html.HiddenFor(u => u.Mode)
+    @Html.HiddenFor(x => x.iPropId)
+    @Html.HiddenFor(x => x.iCancellationPolicyId)
+    @Html.HiddenFor(x => x.dtActionDate)
+    @Html.HiddenFor(x => x.iActionBy)
+    @Html.HiddenFor(x => x.cStatus)
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">@ViewBag.HeaderText </h4>
+            </div>
+            <div class="modal-body">
+                @*<div class="row">
+                        <div class="col-xs-4">
+                            Validity From
+                            @Html.TextBoxFor(u => u.validfrom, new { @class = "form-control", id = "txtValidFrom", onkeyup = "this.value=''", required = "true" })
+                        </div>
+                        <div class="col-xs-4">
+                            Validity To
+                            @Html.TextBoxFor(u => u.validTo, new { @class = "form-control", id = "txtValidTo", onkeyup = "this.value=''", required = "true" })
+                        </div>
+                    </div>*@
+                <div class="row">
+                    <div class="col-xs-12">
+                        Is it a non-refundable charge.
+                        &nbsp;&nbsp;
+                        @Html.RadioButtonFor(m => m.bIsNonRefundable, true, new { required = "" })
+                        @Html.Label("Yes")
+                        @Html.RadioButtonFor(m => m.bIsNonRefundable, false, new { required = "" })
+                        @Html.Label("No")
+                        <br /><br />
+                    </div>
+                    <hr />
+
+
+
+                </div>
+                <div class="row" id="divrefundable" style="display:none;">
+                    <div class="col-xs-12">
+                        How much to be charged
+                    </div>
+
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(u => u.dValue, new { @class = "form-control", maxlength = "5", id = "howMuchCharged", min = "0" })
+                    </div>
+                    <div class="col-xs-4">
+                        @Html.DropDownListFor(m => m.bIsPercent, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="%",Value="true" },
+                                                                            new SelectListItem {Text="Night",Value="false" }}, "Select",
+                                                                 new { @class = "form-control" })
+                    </div>
+                    <div class="col-xs-12">How long before arrival can the guest cancel free of charge.</div>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(u => u.dHrsDays, new { @class = "form-control", maxlength = "2", pattern = "^([1-9]\\d*)$", type = "text", min = "0" })
+                    </div>
+                    <div class="col-xs-4">
+                        @Html.DropDownListFor(m => m.cHrsDays, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="hrs",Value="Hrs" },
+                                                                            new SelectListItem {Text="day",Value="Days" }}, "Select",
+                                                                 new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                @*<button type="button" class="btn btn-warning" data-dismiss="modal">PUBLISH</button>*@
+            </div>
+
+        </div>
+
+    </div>
+
+    <div id="targetid"></div>
+}

@@ -1,0 +1,92 @@
+/* MENU SECTION */
+.logo {
+    width: 100%;
+    height: 44px;
+    margin-top: -11px;
+}
+
+
+
+
+
+/* MENU SECTION END*/
+
+.login-wrapper {
+    left: 0%;
+    margin-left: 0;
+    margin-top: 0;
+    position: absolute;
+    top: 3%;
+    width: 100%;
+}
+
+/* GENERAL STYLE SECTION */
+.border1 {
+    border: 1px solid #ddd;
+}
+
+.marginbottom10 {
+    margin-bottom: 10px;
+}
+
+.whitebg {
+    background-color: #fff;
+}
+
+.width100 {
+    width: 100px;
+}
+
+.margintop27 {
+    margin-top: 27px;
+}
+
+.margintop7 {
+    margin-top: 7px;
+}
+
+.margintop21 {
+    margin-top: 21px;
+}
+
+.margintop24 {
+    margin-top: 24px;
+}
+
+.lineheight26 {
+    line-height: 26px;
+}
+
+.lightbg {
+    background-color: #f2f1f1;
+    padding: 10px;
+}
+/* GENERAL STYLE SECTION END*/
+
+.blklabel {
+    color: black;
+    font-weight: bold;
+}
+
+.overlay {
+    position: fixed;
+    z-index: 9999 !important;
+    top: 0px;
+    left: 0px;
+    background-color: #FFFFFF;
+    width: 100%;
+    height: 100%;
+    filter: Alpha(Opacity=70);
+    opacity: 0.70;
+    -moz-opacity: 0.70;
+}
+.navbar-inverse{background-color:#fff !important; border:0px !important;}
+.navbar-inverse .navbar-toggle {background-color:#fecb00 !important;}
+.blue {
+    color: #1b669e;
+}
+
+
+.nopadding {
+    padding: 0;
+}

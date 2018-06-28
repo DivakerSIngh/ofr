@@ -1,0 +1,48 @@
+﻿@model OneFineRateWeb.Models.ExternalLoginListViewModel
+@using Microsoft.Owin.Security
+
+@{
+    Layout = null;
+
+    var loginProviders = Context.GetOwinContext().Authentication.GetExternalAuthenticationTypes();
+    if (loginProviders.Count() > 0)
+    {
+        using (Html.BeginForm("ExternalLogin", "Account", new { ReturnUrl = Model.ReturnUrl }, FormMethod.Post, new { Id = "frmExternalLogin" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" name="returnUrl" id="hdnExternalLoginReturnUrl" />
+            <input type="hidden" name="corporateEmail" id="txtExternalCorporateEmail">
+            <div class="row text-center">
+
+                @Html.HiddenFor(m => m.IsCorporateRequested, new { @class = "hdnCorporateRequested" })
+
+                @foreach (AuthenticationDescription p in loginProviders)
+                {
+
+                    if (p.AuthenticationType.Equals("Google", StringComparison.OrdinalIgnoreCase))
+                    {
+                        <div class=" col-md-offset-3 col-xs-offset-3 col-md-2 col-xs-2" style="border:0px solid red;">
+                            <input type="image" src="../images/google-logo.jpg" height="50" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" title="Log in using your @p.Caption account">
+                        </div>
+                    }
+                    else if (p.AuthenticationType.Equals("FaceBook", StringComparison.OrdinalIgnoreCase))
+                    {
+                        <div class="col-md-offset-2 col-xs-offset-2 col-md-2 col-xs-2" style="border:0px solid blue;">
+                            <input type="image" src="../images/facebook-logo.jpg" height="50" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" title="Log in using your @p.Caption account">
+                        </div>
+                    }
+                    else
+                    {
+                        <button type="submit" class="btn btn-default" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" title="Log in using your @p.Caption account">@p.AuthenticationType</button>
+                    }
+
+                }
+            </div>
+        }
+    }
+}
+
+<script>
+    document.getElementById("hdnExternalLoginReturnUrl").value = window.location.href
+</script>

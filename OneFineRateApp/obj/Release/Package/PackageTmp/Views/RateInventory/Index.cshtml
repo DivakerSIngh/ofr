@@ -1,0 +1,473 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+<link href="~/css/TimeSheet.css" rel="stylesheet" />
+<link href="~/css/jquery-ui.css" rel="stylesheet" />
+@System.Web.Optimization.Scripts.Render("~/bundles/ajaxpostform")
+@System.Web.Optimization.Scripts.Render("~/bundles/validation")
+<script src="~/js/TimeSheet.js"></script>
+<script src="~/js/jquery-ui.js"></script>
+@*<script type="text/javascript" src="http://www.jqueryscript.net/demo/Simple-jQuery-Plugin-To-Freeze-Header-Row-In-Table-freezeheader/js/jquery.freezeheader.js"></script>*@
+
+<style>
+    table.scroll tbody {
+        height: 500px;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        display: block;
+    }
+
+    #J_timedSheet tbody {
+        display: block;
+        /*height:50px;
+    overflow:auto;*/
+    }
+
+        #J_timedSheet thead, #J_timedSheet tbody tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed; /* even columns width , fix width of table too*/
+        }
+
+    /*#J_timedSheet th, #J_timedSheet table td {
+        width: 50px;
+    }*/
+
+    #J_timedSheet thead {
+        width: calc( 100% - 1em ); /* scrollbar is average 1em/16px width, remove it from thead width */
+    }
+
+    /*#J_timedSheet tr th:first-child {
+        text-align: left;
+        width: 115px !important;
+    }
+
+    #J_timedSheet td:first-child {
+        text-align: left;
+        width: 115px !important;
+    }*/
+
+    #J_timedSheet tbody tr th:first-child {
+        text-align: left;
+        width: 150px !important;
+    }
+
+    #J_timedSheet tbody td:first-child {
+        text-align: left;
+        /*width: 206px !important;*/
+    }
+
+    .parent {
+        margin-top: 10px;
+    }
+
+    .hideancor {
+        display: none;
+    }
+
+    .container {
+        width: 100% !important;
+    }
+</style>
+<script type="text/javascript">
+    var dayList = '';
+    var hourList = '';
+    var sheetData = '';
+    var dimensions = '';
+    var startdate = '';
+    var NextDueDate = '';
+    var TodayDate = '';
+    var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    //var dimensions = [4, 7];
+
+    //var dayList = [
+    //    { name: "Deluxe Room", type: "1" }, { name: "Standard Rate - 5%(Early Booker)", type: "0" }, { name: "MLOS - 04" }, { name: "Standard Rate -10% (Last Minute)" }
+    //]
+
+    //var hourList = [
+    //    { name: "12 Sun", cdate: "12/04/2016" }, { name: "13 Mon", cdate: "13/04/2016" }, { name: "14 Tue", cdate: "14/04/2016" }, { name: "15 Wed", cdate: "15/04/2016" },
+    //    { name: "16 Th", cdate: "16/04/2016" }, { name: "17 Fri", cdate: "17/04/2016" }, { name: "18 Sat", cdate: "18/04/2016" }
+    //]
+
+    //var sheetData = [
+    //    [{ value: "4", "class": "greenbg", type: "1", roomid: "1" }, { value: "4", "class": "redbg", type: "1", roomid: "1" }, { value: "4", "class": "greenbg", type: "1", roomid: "1" }, { value: "4", id: 4, "class": "redbg", type: "1", roomid: "1" }, { value: "4", "class": "greenbg", type: "1", roomid: "1" }, { value: "4", "class": "greenbg", type: "1", roomid: "1" }, { value: "4", "class": "greenbg", type: "1", roomid: "1" }],
+    //    [{ value: "2000", "class": "greenbg", type: "0", roomid: "1", planid: "1" }, { value: "2000", "class": "redbg", type: "", roomid: "1", planid: "1" }, { value: "2000", "class": "greenbg", type: "", roomid: "1", planid: "1" }, { value: "2000", "class": "redbg", type: "", roomid: "1", planid: "1" }, { value: "2000", "class": "redbg", type: "", roomid: "1", planid: "1" }, { value: "2000", "class": "greenbg", type: "", roomid: "1", planid: "1" }, { value: "2000", "class": "greenbg", type: "", roomid: "1", planid: "1" }],
+    //    [{ value: "2000", "class": "greenbg", type: "0", roomid: "1", planid: "1" }, { value: "2000", "class": "redbg", type: "", roomid: "1", planid: "1" }, { value: "2000", "class": "redbg", type: "", roomid: "1", planid: "1" }, { value: "2000", "class": "redbg", type: "", roomid: "1", planid: "1" }, { value: "2000", "class": "greenbg", type: "", roomid: "1", planid: "1" }, { value: "2000", "class": "redbg", type: "", roomid: "1", planid: "1" }, { value: "2000", "class": "redbg", type: "", roomid: "1", planid: "1" }],
+    //     [{ value: "2000", "class": "redbg", type: "", roomid: "1", planid: "1" }, { value: "2000", "class": "greenbg", type: "", roomid: "1", planid: "1" }, { value: "2000", "class": "greenbg", type: "", roomid: "1", planid: "1" }, { value: "2000", "class": "redbg", type: "", roomid: "1", planid: "1" }, { value: "2000", "class": "greenbg", type: "", roomid: "1", planid: "1" }, { value: "2000", "class": "redbg", type: "", roomid: "1", planid: "1" }, { value: "2000", "class": "greenbg", type: "", roomid: "1", planid: "1" }]
+
+    //]
+
+
+    function getdata(obj) {
+        var type = $(obj).attr('type');
+        var roomid = $(obj).attr('roomid');
+        var cdate = $(obj).attr('cdate');
+        if (type == 1) {
+
+            var url = '@Url.Action("RoomInventory")' + "?roomid=" + roomid + "&date=" + cdate;
+            $("#divroominventory").load(url);
+            $('#divroominventory').modal({
+                show: 'true'
+            });
+        }
+        else {
+            var planid = $(obj).attr('planid');
+            var url = '@Url.Action("RoomInventoryRatePlan")' + "?roomid=" + roomid + "&date=" + cdate + "&planId=" + planid;
+            $("#divinventoryrateplan").load(url);
+            $('#divinventoryrateplan').modal({
+                show: 'true'
+            });
+        }
+    }
+    function Toggletr(obj) {
+        $(".parent").one("click", function (e) {
+            if (e.target != obj)
+                return;
+            if ($(this).hasClass("abc"))
+            {
+                $(this).nextUntil(".parent").fadeIn(200);
+                $(this).removeClass('abc');
+            }
+            else
+            {
+                $(this).nextUntil(".parent").fadeOut(250);
+                $(this).addClass('abc');
+            }
+        });
+        $(this).unbind('click');
+
+
+        var img = $(obj).next(".pull-right").children('img').attr('src');
+
+        if (img == "../images/rightarrow.png"){
+            $(obj).next(".pull-right").children('img').attr('src','../images/downarrow.png');
+        }
+        else{
+            $(obj).next(".pull-right").children('img').attr('src','../images/rightarrow.png');
+        }
+
+
+
+        setTimeout(
+                  function () {
+                      var hght = 0;
+                      $('#J_timedSheet tbody tr').each(function(){
+                          if( $(this).css('display') !== 'none' ){
+                              hght += $(this).innerHeight();
+                          }
+                      })
+
+                      $('.parent').each(function(){
+                          hght += 11;
+
+                      })
+
+                      if(hght < 500){
+                          // $('#J_timedSheet thead').css('width','100%');
+                          $('#J_timedSheet tbody').innerHeight(hght);
+                      }
+                      else{
+                          var wdth = $("#J_timedSheet").width() - 16;
+                          // $('#J_timedSheet thead').css('width',wdth + 'px');
+                          $('#J_timedSheet tbody').innerHeight(500);
+                      }
+                  }, 500);
+    }
+
+
+    function GetResult(data) {
+        if (data.st == '1') {
+            toastr.success(data.msg);
+            $('.close').click();
+            BindGrid(startdate);
+        }
+        else {
+            toastr.error(data.msg);
+        }
+    }
+
+    function BindGrid(startdate) {
+        var values = { cdate: startdate };
+        document.getElementById('Progress').style.display = 'block';
+        setTimeout(function () {
+            var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("BindGrid")", values));
+            if (Data.st == 1) {
+                dayList = JSON.parse(Data.rooms);
+                hourList = JSON.parse(Data.days);
+                sheetData = JSON.parse(Data.values);
+                dimensions = [Data.count, 15];
+                console.log(Data);
+
+                var sheet = $("#J_timedSheet").TimeSheet({
+                    data: {
+                        dimensions: dimensions,
+                        colHead: hourList,
+                        rowHead: dayList,
+                        sheetHead: { name: "Close Out" },
+                        sheetData: sheetData
+                    },
+                    end: function (ev, selectedArea) {
+                        //updateRemark(sheet);
+                    }
+                });
+
+                // $("#J_timedSheet").freezeHeader({ 'height': '500px' });
+            }
+            else {
+                toastr.info(Data.msg);
+            }
+
+
+            var wdth = $('.TimeSheet-head')[1].offsetWidth;
+            $('#J_timedSheet tbody td:first-child').css('width',wdth + 'px');
+
+        },200);
+
+    }
+
+    function GetRowsData(type) {
+        var RowData = [];
+        $("#J_timedSheet tr.TimeSheet-row").each(function () {
+            var otype = $(this).find("input:checkbox.hddesc")[0].checked;
+            if (otype) {
+                var obj = $(this).find("input:checkbox.hddesc")[0].attributes;
+                RowData.push({
+                    Type: obj.ctype.value,
+                    rid: obj.rid.value,
+                    rpid: obj.pid.value
+                });
+            }
+        });
+        if (RowData.length > 0) {
+            bootbox.confirm(type == false?"Are you sure you want to open?": "Are you sure you want to close out?", function (result) {
+                if (result == true) {
+                    var values = { data: JSON.stringify(RowData), startdate: startdate ,type:type};
+                    var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("UpdateCloseOut")", values));
+                    if (Data.st == 1) {
+                        BindGrid(startdate);
+                        toastr.success('Updated successfully');
+                    }
+                    else {
+                        toastr.error('Kindly try after some time.');
+                    }
+                }
+            });
+        }
+        else
+        {
+            toastr.info('No rooms or rate plan selected.');
+        }
+    }
+    $(document).ready(function () {
+
+
+
+        var d = new Date();
+        var curr_date = d.getDate();
+        var curr_month = d.getMonth() + 1;
+        var curr_year = d.getFullYear();
+        if (curr_date < 10) {
+            curr_date = '0' + curr_date
+        }
+        if (curr_month < 10) {
+            curr_month = '0' + curr_month
+        }
+        TodayDate= curr_month + '/' + curr_date + '/' + curr_year;
+        var str = @Html.Raw(Json.Encode(ViewData["StartDate"]));
+        if(str != ""){
+            var a = str.split('/');
+            $('#txtdate').val(a[0] + '/' + a[1] + '/' + a[2]);
+            startdate = a[1] + '/' + a[0] + '/' + a[2];
+        }
+        else{
+            startdate = curr_month + '/' + curr_date + '/' + curr_year;
+            $('#txtdate').val(curr_date + '/' + curr_month + '/' + curr_year)
+        }
+        GetNextDueDate(startdate);
+        BindGrid(startdate);
+
+        var ThreeYearDate = new Date();
+        var a = ThreeYearDate.getFullYear();
+        ThreeYearDate.setFullYear(a+3);
+
+        $('#txtdate').datepicker({
+            startDate: d,
+            minDate: d,
+            maxDate: ThreeYearDate,
+            autoclose: true,
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true
+        });
+
+        document.getElementById('frmDate').onsubmit = function (e) {
+            e.preventDefault();
+            var f = document.getElementById('frmDate');
+            if (f.checkValidity()) {
+                var date = $('#txtdate').val();
+                var d = new Date(date.split("/").reverse().join("-"));
+                var dd = d.getDate();
+                var mm = d.getMonth() + 1;
+                var yy = d.getFullYear();
+                if (dd < 10) {
+                    dd = '0' + dd
+                }
+                if (mm < 10) {
+                    mm = '0' + mm
+                }
+                startdate = mm + "/" + dd + "/" + yy;
+                BindGrid(startdate);
+                GetNextDueDate(startdate);
+                if(new Date(startdate) > new Date())
+                    $('#btnlast15').removeClass('hideancor');
+                else
+                    $('#btnlast15').addClass('hideancor');
+            }
+        }
+
+        //    var $table = $('table.scroll'),
+        //$bodyCells = $table.find('tbody tr:first').children(),
+        //colWidth;
+
+        // Adjust the width of thead cells when window resizes
+        //$(window).resize(function() {
+        //    // Get the tbody columns width array
+        //    colWidth = $bodyCells.map(function() {
+        //        return $(this).width();
+        //    }).get();
+
+        //    // Set the width of thead columns
+        //    $table.find('thead tr').children().each(function(i, v) {
+        //        $(v).width(colWidth[i]);
+        //    });
+        //}).resize(); // Trigger resize handler
+
+       
+
+    });
+
+    function GetNextDueDate(CDate) {
+        startdate = CDate;
+        var date = new Date(CDate);
+        //$('#spdate').html(months[date.getMonth()] + ' ' + date.getFullYear());
+        var newdate = new Date(date);
+        newdate.setDate(newdate.getDate() + 15);
+        var dd = newdate.getDate();
+        var mm = newdate.getMonth() + 1;
+        var y = newdate.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd
+        }
+        if (mm < 10) {
+            mm = '0' + mm
+        }
+        NextDueDate = mm + '/' + dd + '/' + y;
+        //alert('StartDate: '+startdate+' <br/> NextDate : '+NextDueDate+'');
+    }
+    function GetLastDueDate(CDate) {
+        startdate = CDate;
+        var date = new Date(CDate);
+        //$('#spdate').html(months[date.getMonth()] + ' ' + date.getFullYear());
+        var newdate = new Date(date);
+        newdate.setDate(newdate.getDate() - 15);
+        var dd = newdate.getDate();
+        var mm = newdate.getMonth() +1;
+        var y = newdate.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd
+        }
+        if (mm < 10) {
+            mm = '0' + mm
+        }
+
+        NextDueDate = CDate;
+        startdate = mm + '/' + dd + '/' + y;
+    }
+
+    function GetNext15DaysData() {
+
+        BindGrid(NextDueDate);
+        GetNextDueDate(NextDueDate);
+        if(new Date(startdate) >= new Date(TodayDate))
+            $('#btnlast15').removeClass('hideancor');
+
+    }
+    function GetLast15DaysData() {
+        GetLastDueDate(startdate);
+        BindGrid(startdate);
+        console.log(startdate);
+        console.log(TodayDate);
+        if(new Date(startdate) <= new Date(TodayDate)){
+            $('#btnlast15').addClass('hideancor');
+            startdate = TodayDate;
+            GetNextDueDate(startdate);
+        }
+    }
+
+
+</script>
+@Html.Hidden("hdnnext")
+@Html.Hidden("hdnprevious")
+
+<div class="container margintop20">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+           
+                Overview
+            <span style="text-align:right; float:right;">
+                @*<button type="submit" id="btnExcelDownload" class="btn btn-info">Back to bulk update</button>*@
+                
+                <a class="btn btn-info" href="/BulkUpdate">Back to bulk update</a>
+                
+                </span>
+            </div>
+        <div class="margin15t">
+          
+            <div class="row">
+                <div class="col-md-2" style="width:9%;">
+
+                    <label>Start Date</label>
+                </div>
+                <form id="frmDate">
+                    <div class="col-md-2" style="width:11%;">
+                        @Html.TextBox("txtdate", null, new { @class = "form-control ", id = "txtdate", onkeyup = "this.value=''", required = "true" })
+
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" id="btnSubmit" class="btn btn-primary">OK</button>
+                    </div>
+
+                    <div class="col-md-3"></div>
+</form>
+                <div class="col-md-5">
+                    <span class="pull-left padding10 " id="spdate"></span> <span class="pull-right padding10 "><a onclick="GetNext15DaysData();" style="cursor:pointer; color: blue;">Next 15 Days</a></span>
+                    <span class="pull-left padding10 " id="spdate"></span> <span class="pull-right padding10 "><a id="btnlast15" onclick="GetLast15DaysData();" class="hideancor" style="cursor:pointer; color: blue; ">Last 15 Days</a></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 red marginbottom10">
+                    <h4><b>Instructions:</b>  Click on a Cell in the grid below to update your daily rates, availability and restrictions.</h4>
+                </div>
+            </div>
+        </div>
+        @*style="overflow:auto; overflow-x:hidden; height:300px"*@
+
+        <div class="table-responsive  margin15a">
+            <table class="table scroll" id="J_timedSheet"></table>
+
+            <div class="pull-right padding10"><img src="../images/1.jpg" alt=""></div>
+        </div>
+        <!-- End  table -->
+    </div>
+</div>
+<!-- Popup 1-->
+<div id="divroominventory" class="modal fade bs-example-model-sm4" role="dialog">
+
+</div>
+<!-- Popup1-->
+<!-- Popup 3-->
+<div id="divinventoryrateplan" class="modal fade bs-example-model-sm3" role="dialog">
+
+</div>
+<!-- Popup3-->

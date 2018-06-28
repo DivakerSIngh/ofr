@@ -1,0 +1,317 @@
+﻿@model OneFineRateBLL.Entities.eBookingSearch
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+
+@System.Web.Optimization.Scripts.Render("~/bundles/ajaxpostform")
+@System.Web.Optimization.Scripts.Render("~/bundles/validation")
+
+<div class="container margintop20">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            Bookings
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-xs-3">
+                    Date Type
+                    <select name="ddlDateType" id="ddlDateType" class="form-control col-xs-2">
+                        <option value="">Please Select</option>
+                        <option value="B">Booking</option>
+                        <option value="C">Check In</option>
+
+                    </select>
+                </div>
+                <div class="col-xs-2" style="width:12% !important;">
+                    From
+                    @Html.TextBoxFor(m => m.dtFrom, new { Value = Convert.ToString(Model.dtFrom), type = "text", @class = "form-control  ", required = "true", name = "dtFrom", onkeyup = "this.value=''", id = "dtFrom" })
+                </div>
+                <div class="col-xs-2" style="width:12% !important;">
+                    To
+                    @Html.TextBoxFor(m => m.dtTo, new { Value = Convert.ToString(Model.dtTo), type = "text", @class = "form-control  ", required = "true", name = "dtTo", onkeyup = "this.value=''", id = "dtTo" })
+                </div>
+                <div class="col-xs-2">
+                    Type
+                    <select name="ddlType" id="ddlType" class="form-control col-xs-4">
+                        <option value="">Please Select</option>
+                        <option value="R">Buy</option>
+                        <option value="B">Bid</option>
+                        <option value="N">Negotiate</option>
+                    </select>
+                </div>
+                <div class="col-xs-2">
+                    Status
+                    <select name="ddlStatus" id="ddlStatus" class="form-control col-xs-4">
+                        <option value="">Please Select</option>
+                        <option value="C">Booked</option>
+                        <option value="X">Cancelled</option>
+                        <option value="M">Modified</option>
+                    </select>
+                </div>
+                <!--  <div class="col-xs-2">
+                  Reservation ID
+                    <input type="text" name="textfield" class="form-control col-xs-4">
+                  </div>-->
+                <div class="col-xs-2">
+                    Confirmation #
+                    @Html.TextBoxFor(m => m.sConfirmationNo, new { Value = Convert.ToString(Model.sConfirmationNo), type = "text", @class = "form-control", required = "true", name = "sConfirmationNo", id = "sConfirmationNo", @maxlength = 20 })
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3">
+                    First Name
+                    @Html.TextBoxFor(m => m.sFirstName, new { Value = Convert.ToString(Model.sFirstName), type = "text", @class = "form-control", required = "true", name = "sFirstName", id = "sFirstName", @maxlength = 50 })
+                </div>
+
+                <div class="col-xs-3">
+                    Last Name
+                    @Html.TextBoxFor(m => m.sLastName, new { Value = Convert.ToString(Model.sLastName), type = "text", @class = "form-control", required = "true", name = "sLastName", id = "sLastName", @maxlength = 50 })
+                </div>
+                <div class="col-xs-3">
+                    Email
+                    @Html.TextBoxFor(m => m.sEmail, new { Value = Convert.ToString(Model.sEmail), type = "text", @class = "form-control", required = "true", name = "sEmail", id = "sEmail", @maxlength = 200 })
+                </div>
+                <div class="col-md-1">
+                    <label></label>
+                    <input type="submit" name="Search" value="Search" class="btn btn-primary pull-right" onclick="BindGrid()">
+                </div>
+            </div>
+            <div class="row">
+                @*<div class="col-md-12">
+                        <input type="checkbox" name="chkbooked" value="Booked" id="chkbooked">
+                        Booked
+                        <input type="checkbox" name="chkcancelled" value="Cancelled" id="chkcancelled">
+                        Cancelled
+                        <input type="checkbox" name="chkAmended" value="Amended" id="chkAmended">
+                        Amended
+                    </div>*@
+
+            </div>
+
+            <div class=" margintop10" id="divgrid">
+                <div style="width:1107px; overflow:auto; overflow-y:hidden;">
+                    <div class="table-responsive margintop20">
+                        <table class="table table-striped table-bordered table-hover display" id="tblData"></table>
+                    </div>
+                </div>
+            </div>
+            <!-- End  table -->
+        </div>
+    </div>
+    <!-- container div END bottom -->
+</div>
+<!-- CONTENT-WRAPPER SECTION END-->
+
+<div id='invoiceModal' class='modal fade in'>
+    <div class="modal-dialog modal-lg">
+        <div id='invoiceModalContainer' class="modal-content" style="border-radius:0 !important">
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function calendar() {
+        var d = new Date();
+        $('#dtFrom').datepicker({
+            startDate: d,
+            autoclose: true,
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true,
+            onClose: function (selectedDate) {
+                $("#dtTo").datepicker("option", "minDate", selectedDate);
+            }
+        });
+        $('#dtTo').datepicker({
+            startDate: d,
+            autoclose: true,
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true,
+            onClose: function (selectedDate) {
+                $("#dtFrom").datepicker("option", "maxDate", selectedDate);
+            }
+        });
+
+
+        $("#dtFrom").each(function () {
+            var selecteddate = $("#dtFrom").datepicker("getDate");
+            var dateString = $.datepicker.formatDate('dd/mm/yy', selecteddate);
+            if (dateString == "01/01/2001") {
+                $("#dtFrom").datepicker('setDate', new Date('dd/mm/yy'));
+            }
+            $('#dtFrom').attr('disable', true)
+
+        });
+        $("#dtTo").each(function () {
+            var selecteddate = $("#dtTo").datepicker("getDate");
+            var dateString = $.datepicker.formatDate('dd/mm/yy', selecteddate);
+            if (dateString == "01/01/2001") {
+                $("#dtTo").datepicker('setDate', new Date('dd/mm/yy'));
+            }
+
+        });
+        $("#ui-datepicker-div").hide();
+    }
+
+    $(document).ready(function () {
+
+        $("#dtFrom").attr("disabled", "disabled");
+        $("#dtTo").attr("disabled", "disabled");
+        calendar();
+        BindGrid();
+
+        $("#ddlDateType").change(function () {
+
+            if ($('#ddlDateType').val() == '') {
+                $("#dtFrom").attr("disabled", "disabled");
+                $("#dtTo").attr("disabled", "disabled");
+                $("#dtFrom").val("");
+                $("#dtTo").val("");
+            }
+            else {
+                $("#dtFrom").removeAttr("disabled", "disabled");
+                $("#dtTo").removeAttr("disabled", "disabled");
+            }
+        });
+
+        $(document).on('click', '.btnInvoice', function () {
+
+            //debugger;
+
+            var type = $(this).data('type');
+            var id = $(this).data('id');
+
+            var url = '@Url.Action("GetInvoice")?bookingId=' + id + '&type=' + type;
+
+            $.get(url, function (data) {
+
+                $('#invoiceModalContainer').html(data);
+
+                $('#invoiceModal').modal('show');
+
+                $.validator.unobtrusive.parse("#frminvoice");
+
+            });
+        });
+    });
+
+</script>
+
+<script type="text/javascript">
+
+    function BindGrid() {
+        try {
+
+            var datetype = $("#ddlDateType").val();
+            var fromdate = $("#dtFrom").val();
+            var todate = $("#dtTo").val();
+            var type = $("#ddlType").val();
+            var bookid = $("#sConfirmationNo").val();
+            var firstname = $("#sFirstName").val();
+            var lastname = $("#sLastName").val();
+            var email = $("#sEmail").val();
+            var status = $("#ddlStatus").val();
+
+            //if ($("#chkbooked").is(':checked') == true && $("#chkcancelled").is(':checked') == true) {
+            //    status = "";
+            //}
+            //else if ($("#chkbooked").is(':checked')) {
+            //    status = "C";
+            //}
+            //else if ($("#chkcancelled").is(':checked')) {
+            //    status = "X";
+            //}
+
+            var aoColumns =
+                            [
+                                {
+                                    "sTitle": "Confirmation No.", "mData": "ConfirmationNo", "bSortable": true,
+                                    "mRender": function (data, type, full) {
+                                        var html = '<a data-toggle="modal" target="_blank" href="/BookingConfirmation/' + full.sBookingId + '">' + full.ConfirmationNo + '</a>';
+
+                                        return html;
+                                    }
+
+                                },
+                                {
+                                    "sTitle": "Book Date", "mData": "BookingDate", "bSortable": false,
+                                    "mRender": function (data, type, full) {
+                                        return getNorDateWithoutTime(data);
+                                    }
+                                },
+                                {
+                                    "sTitle": "Guest Name(s)", "mData": "GuestName", "bSortable": false
+                                },
+                                {
+                                    "sTitle": "Booker", "mData": "Booker", "bSortable": false
+                                },
+                                //{
+                                //    "sTitle": "EmailId", "mData": "EmailId", "bSortable": false
+                                //},
+                                {
+                                    "sTitle": "Check In", "mData": "CheckIn", "bSortable": false,
+                                    "mRender": function (data, type, full) {
+                                        return getNorDateWithoutTime(data);
+                                    }
+                                },
+                                {
+                                    "sTitle": "Check Out", "mData": "CheckOut", "bSortable": false,
+                                    "mRender": function (data, type, full) {
+                                        return getNorDateWithoutTime(data);
+                                    }
+                                },
+                                {
+                                    "sTitle": "Status", "mData": "Status", "bSortable": false
+                                },
+                                {
+                                    "sTitle": "Total", "mData": "Total", "bSortable": false
+                                },
+                                {
+                                    "sTitle": "Commission", "mData": "Commission", "bSortable": false
+                                },
+                                {
+                                    "sTitle": "Type", "mData": "Type", "bSortable": false
+                                },
+                                    {
+                                        "sTitle": "Action", "bSortable": false, "mData": "ConfirmationNo",
+                                        "mRender": function (data, type, full) {
+                                            var html = '';
+                                            if (full.ShowEdit == 'Yes')
+                                                var html = '<a data-toggle="modal" href="/Bookings/ModifyBooking?Booking=' + full.ConfirmationNo + '">Modify Booking</a>';
+
+                                            return html;
+                                        }
+                                    },
+                                    {
+                                        "sTitle": "Invoice", "mData": "sBookingId", "bSortable": false, "mRender": function (data, type, full) {
+                                            var html;
+
+                                            //if (full.ShowEdit == 'Yes')
+                                                var html = '<button style="margin-bottom: 5px;" data-id="' + data + '" class="btn btn-info btnInvoice" data-type="h">Hotel</button> <button class="btn btn-primary btnInvoice" data-id="' + data + '" data-type="g">Guest</button>';
+
+                                            return html;
+                                        }
+                                    },
+                            ];
+
+            DatatableServerSide("#tblData", aoColumns, "/Services/Service.asmx/GetBookingData" + "?datetype=" + datetype + "&fdate=" + fromdate + "&todate=" + todate + "&type=" + type + "&bookid=" + bookid + "&fname=" + firstname + "&lname=" + lastname + "&email=" + email + "&status=" + status);
+            $('.dataTables_filter input').attr('title', 'Type here to search in the Item Column');
+        }
+        catch (e) {
+
+        }
+
+    }
+</script>
+
+<style>
+    .dataTables_filter {
+        display: none;
+    }
+    /*, .dataTables_info*/
+</style>
+
+

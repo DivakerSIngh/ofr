@@ -1,0 +1,114 @@
+﻿@model OneFineRateBLL.Entities.RoomDetails
+
+
+@if (Model != null)
+{
+
+    <div class="modal-dialog" style="width:60%">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="hoteltitles">@Model.sRoomName</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-md-4">
+
+                        <div class="col-md-12 col-xs-12">
+
+                            @if (Model.Images != null && Model.Images.Count > 0)
+                            {
+                                <img src="@Model.Images.FirstOrDefault().sRoomImage" onerror="this.src='/images/noImage.jpg';" style="height:200px; width:250px;">
+                            }
+                            else
+                            {
+                                <img src="~/images/noImage.jpg" style="height:200px; width:250px;">
+                            }
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(Model.sOutdoorLocation))
+                        {
+                            <div class="col-md-12"><b>View:</b> @Model.sOutdoorLocation</div>
+                        }
+
+                    </div>
+                    <div class="col-md-8">
+                        <div class="col-md-12 col-xs-12">
+
+                            <table class="table-striped table-bordered">
+                                <tr>
+                                    <td class="paddingleft5"><b>Room occupancy policy</b></td>
+                                </tr>
+                                <tr>
+                                    <td class="paddingleft5">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="col-md-4">Max Adult</div>
+                                                <div class="col-md-2">@Model.MaxAdultOccupancy</div>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <div class="col-md-4">Max Child </div>
+                                                <div class="col-md-2">@Model.MaxChildOccupancy</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            </table>
+
+                        </div>
+                        <div style="width:100%" class="col-md-12 col-xs-12 pull-right">
+                            <span class="red">*</span>
+                            <span>
+                                Extra Bed at INR. @Model.ExtrabedCharge
+                            </span>
+                        </div>
+                        <div class="col-md-12 col-xs-12">
+                            @*<ul class="nomargin nopadding">
+                                    <li><b>Room Size:</b> @Model.sSizeSqft Sq/ft - @Model.sSizeMtr Sq/mt </li>
+                                    <li>
+                                        <b>Bed Types:</b>
+                                        @if (Model.sSingleBed != "" && Model.sDoubleBed != "")
+                                        {
+                                            @Html.Raw(Model.sSingleBed + "/" + Model.sDoubleBed)
+                                        }
+                                        else if (Model.sSingleBed == "" && Model.sDoubleBed != "")
+                                        {
+                                            @Html.Raw(Model.sDoubleBed)
+                                        }
+                                        else if (Model.sSingleBed != "" && Model.sDoubleBed == "")
+                                        {
+                                            @Html.Raw(Model.sSingleBed)
+                                        }
+
+                                    </li>
+
+                                </ul>*@
+                        </div>
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 col-sm-12  col-xs-12">
+
+                        <div class="col-md-12 col-sm-12  col-xs-12">
+                            <b>Room Features</b>
+                        </div>
+                        @if (Model.RoomAmenities != null)
+                        {
+                            for (int i = 0; i < Model.RoomAmenities.Count; i++)
+                            {
+                                <div class="col-md-3">
+                                    <ul class="nomargin "><li style="list-style:disc !important; padding:0px;">@Model.RoomAmenities[i].sAmenity</li></ul>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

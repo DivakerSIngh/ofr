@@ -1,0 +1,88 @@
+﻿@media only screen and (max-device-width: 375px) {
+       /*#stickytypeheader{top:248px;}*/
+            /*#stickytypeheader {
+        display: none;
+    }*/
+    
+
+
+/*Search control spacing*/
+/*.mbottom10{margin-bottom:10px;}*/
+}
+
+/*iphone 4, iphone 5, iphone 6 plus start*/
+@media only screen and (max-device-width: 480px) {
+        /*#stickytypeheader {
+        display: none;
+    }
+    #btnplaceholder{display:none;}*/
+
+        .marginleft15{margin-left:0px;}
+        .nopadding{}
+        .width25 {width:96% !important;padding-left:15px !important;}
+        .checkin {width:100% !important; margin-top:5px;}
+        #adltdiv{margin-top:5px;}
+        .width110a{width:100% !important;}
+                #stickytypeheader {
+    position: absolute;
+    top: 200px !important;
+    z-index: 99;
+    width: 100%;
+    background: rgba(0, 0, 0, 0);
+}
+                /*.stickmargin{display:none;}*/
+
+/*Search control spacing*/
+.mbottom10{margin-bottom:10px;}
+
+ /*offer review - hotel room rate*/
+ .ptop10{padding-top:10px;}
+ .mtop4{margin-top:4px;}
+ /*Search Result page btn bg color*/
+ .srchlightcream {min-height:127px;}
+ /**search result page remove pop up width*/
+ .width60 {width:100% !important;}
+ .width277 {width:100% !important;}
+ .bold{padding-top:5px;}
+ /*Bid pages*/
+ .checkbox-grid li{width:45% !important;}
+ .mwidth110{width:110px !important;}
+ .mwidth130 {width:130px !important}
+ .margintop74 {margin-top:0px; padding-top:35px;}
+ .width50 {float:none; margin-bottom:5px;}
+ .width20percent {
+    width: 100% !important;
+}
+   .ui-menu{width: 240px !important;}
+   .nomarginleft {margin-top: 5px;
+    margin-left: 0px;
+}
+ /*my accountpages*/
+
+ .bookingbxbghighlight1{min-height:80px !important;}
+ .width80percent{width:95% !important;}
+ .updateroompaynow {    right: 37%; bottom: -4px;}
+   
+}
+/*iphone 6 plus start ends*/
+
+@media only screen and (max-device-width: 568px) {
+    /*.navbar-toggle{margin-right:-2px;}*/
+     .marginleft15{margin-left:0px;}
+        .nopadding{}
+        /*.btn-lg{    padding: 8px 12px;}*/
+        .btn-lg{    padding: 4px 6px;}
+        .margintop-40{margin-left:-6px;}
+    /*#stickytypeheader {
+        position: absolute;
+        top: 273px;
+        border: 0px solid red;
+        width: 100%;
+    }*/
+    /*.borderleft1{
+         border-left: 0em solid #ddd;}*/
+         /*#stickytypeheader{top:248px;}*/
+           .nomarginleft {
+    margin-left: 0px;margin-top: 5px;
+}
+}

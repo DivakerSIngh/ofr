@@ -1,0 +1,904 @@
+﻿@using MvcCheckBoxList.Model;
+@model OneFineRateBLL.Entities.etblPropertyRatePlanMap
+<script src="~/js/Jquery1.10.3.js"></script>
+
+
+
+<script type="text/javascript">
+    function minmax(value, min, max) {
+        if ($('#iIsPercent option:selected').text() == '%') {
+            if (parseFloat(value) < min || isNaN(value))
+                return 0;
+            else if (parseFloat(value) > max) {
+                $("#txtValue").val(null);
+                return null;
+            }
+            else {
+                $("#txtValue").val(value);
+                return value;
+            }
+        }
+        else {
+            $("#txtValue").val(value);
+            return value;
+        }
+    }
+    function ddListChange() {
+        if ($('#iIsPercent option:selected').text() == '%') {
+            var v = $("#txtValue").val();
+            minmax(v, 0, 100);
+        }
+
+    }
+    function ShowHideDiv() {
+        var chkYes = document.getElementById("chkYes");
+        var dvExistingRP = document.getElementById("divExistingRP");
+        if (chkYes.checked) {
+            //$('#preParentCheckboxDataDiv').html('');
+            dvExistingRP.style.display = "block";
+            SetCheckBox("RPChange")
+        }
+        else {
+            // $('#dynamicParentCheckboxDataDiv').html('');
+            // $('#preParentCheckboxDataDiv').html(preParentCheckboxDataDivHtml);
+            dvExistingRP.style.display = "none";
+            SetCheckBox("ShowBase")
+        }
+
+    }
+    function ShowHideDivLoad() {
+        var chkYes = document.getElementById("chkYes");
+        var dvExistingRP = document.getElementById("divExistingRP");
+        if (chkYes.checked) {
+            dvExistingRP.style.display = "block";
+        }
+        else {
+            dvExistingRP.style.display = "none";
+        }
+
+    }
+</script>
+<script type="text/javascript">
+    var rangejson = [];
+    $('#AddRange').click(function () {
+
+        var c = 0;
+        var CancellationPolicyId = [];
+        var CancellationPolicyName = [];
+        $.each($("input[name='SelectedCancellationPolicy']:checked"), function () {
+            CancellationPolicyId.push($(this).val());
+            CancellationPolicyName.push($(this).next("label").text());
+            c = c + 1;
+        });
+
+        var CancellationValidFrom = $('#CancellationValidFrom').val();
+        var CancellationValidTo = $('#CancellationValidTo').val();
+        var childValidityFrom = $('#ValidDateFrom').val();
+        var childValidityTo = $('#ValidDateTo').val();
+
+
+        if (CancellationValidFrom == "" || CancellationValidTo == "") {
+            alert("Please select cancellation policy validity"); return;
+        }
+        else if (ConvertToDate(CancellationValidFrom) > ConvertToDate(CancellationValidTo)) {
+            alert("Cancellation Validity From should be less than Cancellation Validity To."); return;
+        }
+
+        if ((ConvertToDate(CancellationValidFrom) >= ConvertToDate(childValidityFrom) && ConvertToDate(CancellationValidFrom) <= ConvertToDate(childValidityTo))) {
+        } else { alert("Cancellation Policy validity to should be less than rate plan validity to."); return; }
+
+        if ((ConvertToDate(CancellationValidTo) >= ConvertToDate(childValidityFrom) && ConvertToDate(CancellationValidTo) <= ConvertToDate(childValidityTo))) {
+        } else { alert("Cancellation Policy validity to should be less than rate plan validity to."); return; }
+
+
+
+        if (c == 0) {
+            alert("Please select atleast one cancellation policy"); return;
+        }
+        else {
+            var values = {
+                'CancellationPolicyId': CancellationPolicyId,
+                'CancellationPolicyName': CancellationPolicyName,
+                'CancellationValidFrom': CancellationValidFrom,
+                'CancellationValidTo': CancellationValidTo,
+                'sPolicyId': CancellationPolicyId.toString(),
+                'sPolicyName': CancellationPolicyName.toString()
+            };
+            var val = CheckData(ConvertToDate(CancellationValidFrom), ConvertToDate(CancellationValidTo));
+            if (val == true) {
+                console.log(values)
+                rangejson.push(values);
+                SetTableRows();
+                RefreshControls();
+            }
+            else {
+                alert("Selected validity already exists.");
+            }
+        }
+    });
+    function ConvertToDate(dtval) {
+        if (dtval != null || dtval != "") {
+            var date = dtval.substring(0, 2);
+            var month = dtval.substring(3, 5);
+            var year = dtval.substring(6, 10);
+            var convertedDate = new Date(year, month - 1, date);
+            return convertedDate;
+        }
+    }
+    function CheckData(CancellationValidFrom, CancellationValidTo) {
+        if (rangejson != null) {
+            if (rangejson.length > 0) {
+                var counter = 0;
+                for (var i = 0; i < rangejson.length; i++) {
+                    if ((CancellationValidFrom >= ConvertToDate(rangejson[i].CancellationValidFrom) && CancellationValidFrom <= ConvertToDate(rangejson[i].CancellationValidTo)) || (CancellationValidTo >= ConvertToDate(rangejson[i].CancellationValidFrom) && CancellationValidTo <= ConvertToDate(rangejson[i].CancellationValidTo))) {
+                        counter = counter + 1;
+                    }
+                    if ((ConvertToDate(rangejson[i].CancellationValidFrom) >= CancellationValidFrom && ConvertToDate(rangejson[i].CancellationValidFrom) <= CancellationValidTo) || (ConvertToDate(rangejson[i].CancellationValidTo) >= CancellationValidFrom && ConvertToDate(rangejson[i].CancellationValidTo) <= CancellationValidTo)) {
+                        counter = counter + 1;
+                    }
+                    if ((ConvertToDate(rangejson[i].CancellationValidFrom) >= CancellationValidFrom && ConvertToDate(rangejson[i].CancellationValidFrom) <= CancellationValidTo) || (ConvertToDate(rangejson[i].CancellationValidTo) >= CancellationValidFrom && ConvertToDate(rangejson[i].CancellationValidTo) <= CancellationValidTo)) {
+                        counter = counter + 1;
+                    }
+
+                }
+                if (counter > 0) {
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            }
+            else { return true; }
+        } else { return true; }
+
+    }
+    function SetTableRows() {
+        var rowtext = '';
+        if (rangejson != null) {
+            if (rangejson.length > 0) {
+
+                for (var i = 0; i < rangejson.length; i++) {
+                    rowtext += '<tr>';
+                    rowtext += '<td class="text-center">' + rangejson[i].CancellationPolicyName + '</td>';
+                    rowtext += '<td class="text-center">' + rangejson[i].CancellationValidFrom + '</td>';
+                    rowtext += '<td class="text-center">' + rangejson[i].CancellationValidTo + '</td>';
+                    rowtext += '<td class="text-center"><i onclick="DeleteOrEdit(\'delete\',' + i + ')";  class="fa fa-times-circle red" /></td>';
+                    rowtext += '</tr>';
+                }
+            }
+            $("#RangeTable tbody").html(rowtext);
+            $("#hdnJson").val(JSON.stringify(rangejson));
+
+
+            var d = new Date();
+            var ThreeYearDate = new Date();
+            var a = ThreeYearDate.getFullYear();
+            ThreeYearDate.setFullYear(a + 3);
+
+            $("#CancellationValidFrom").datepicker('setDate', null);
+            $("#CancellationValidFrom").datepicker("option", "maxDate", ThreeYearDate);
+
+            $("#CancellationValidTo").datepicker('setDate', null);
+            $("#CancellationValidTo").datepicker("option", "maxDate", ThreeYearDate);
+        }
+
+
+
+    }
+    function BindCancellationData() {
+        //rangejson = jQuery.parseJSON('[{"CancellationPolicyId":null,"CancellationPolicyName":null,"CancellationValidFrom":"26/08/2016","CancellationValidTo":"28/08/2016","sPolicyId":"8,15","sPolicyName":"D 20-100%,1.00N - 21D"},{"CancellationPolicyId":null,"CancellationPolicyName":null,"CancellationValidFrom":"29/08/2016","CancellationValidTo":"31/08/2016","sPolicyId":"10,16","sPolicyName":"2.00% - 22H,1N - -2H"}]');
+        var JSONval = $('#hdnGetJSON').val();
+        if (JSONval != 'null') {
+            rangejson = jQuery.parseJSON(JSONval);
+            SetTableRows();
+        }
+        else {
+            var rowtext = '';
+            rowtext += '<tr>';
+            rowtext += '<td style="color:red;"> Please add cancellation policy. </td>';
+            rowtext += '</tr>';
+            $("#RangeTable tbody").html(rowtext);
+
+        }
+        @*debugger;
+        var chkcount = '@Model.iCancellationChkBox';
+        if (chkcount == 0) {
+            var rowtext = '';
+            rowtext += '<tr>';
+            rowtext += '<td style="color:red;"> Please create cancellation policy. </td>';
+            rowtext += '</tr>';
+            $("#RangeTable tbody").html(rowtext);
+    }*@
+    }
+    function DeleteOrEdit(act, i) {
+        if (act == "delete") {
+            rangejson.splice(i, 1);
+        }
+        SetTableRows();
+    }
+</script>
+<script type="text/javascript">
+
+    $("#RatePlanName").autocomplete({
+        minLength: 0,
+        source: function (request, response) {
+            var result = new Array();
+            $.ajax({
+                async: false,
+                cache: false,
+                type: "POST",
+                url: "@(Url.Action("Autocomplete", "PropertyRatePlan"))",
+                data: { "term": request.term },
+                success: function (data) {
+                    for (var i = 0; i < data.length ; i++) {
+                        result[i] = { label: data[i].Value, Id: data[i].Key };
+                    }
+                }
+            });
+            response(result);
+        },
+        messages: {
+            noResults: '', results: function () { }
+        },
+        appendTo: "#results"
+    }).focus(function () {
+        $(this).autocomplete("search", "");
+    });
+</script>
+<script type="text/javascript">
+    function CancellationPolicy(cb) {
+        console.log(cb);
+        var valNo = cb.value;
+        var valText = $(cb).next("label").text();
+        if (valText == "Non-Refundable") { // Do your work here
+            $("input[name='SelectedCancellationPolicy']").each(function () {
+                if ($(this).attr("value") != valNo) {
+                    if (cb.checked)
+                        $(this).prop("checked", !cb.checked);
+                    $(this).prop("disabled", cb.checked);
+                }
+            });
+        }
+    }
+
+    function RefreshControls() {
+        $.each($("input[name='SelectedCancellationPolicy']"), function () {
+            $(this).prop("checked", false);
+            $(this).prop("disabled", false);
+        });
+    }
+</script>
+<script type="text/javascript">
+
+    var preParentCheckboxDataDivHtml = $('#preParentCheckboxDataDiv').html();
+
+
+    $(document).ready(function () {
+
+        ShowHideDivLoad();
+        SetCheckBox("First");
+
+        //   SetCancellationPolicyCheckBox();
+
+        $('#frmRatePlan').submit(function (e) {
+
+            e.preventDefault();
+            $.post($(this).attr('action'), $(this).serialize()).done(function (data) {
+                console.log(data)
+
+                if (data.st == 0) {
+                    toastr.info(data.msg)
+                }
+                else if (data.st == -1) {
+                    toastr.error(data.msg)
+                }
+                else if (data.st == 1 && data.msg == true) {
+                    location.reload();
+                }
+            });
+        });
+
+        calendar();
+        BindCancellationData();
+        $("#iLinkRatePlanId").change(function () {
+            SetCheckBox("RPChange");
+        });
+
+
+
+    });
+
+
+    function SetCheckBox(cltype) {
+        //  alert(cltype)
+        
+        var sourceVal = $(ddlsource).val();
+        var ddlsource = "#iLinkRatePlanId";
+        var ddltarget = "#SelectedRoomType";
+        var tableTemplete = "";
+        var tableTempleteValidity = "";
+        if ($(ddlsource).val() != "" && $(ddlsource).val() != null) { sourceVal = parseInt($(ddlsource).val()); } else { sourceVal = 0; }
+        //alert(sourceVal)
+        if (sourceVal != null) {
+            //  alert(1)
+            var urlValidity = '@Url.Action("GetParentRatePlanValidity", "PropertyRatePlan")';
+            $.getJSON(urlValidity, { id: sourceVal, type: cltype }, function (data) {
+                console.log(data);
+                tableTempleteValidity += '<table cellspacing="0" style="width:100%;" class="alinghTable"><tbody>';
+                tableTempleteValidity += '<tr>';
+                tableTempleteValidity += '<td style="font-size:10px;"> Validity : ' + data.suggestions[0] + ' To ' + data.suggestions[1] + '</td>';
+                tableTempleteValidity += '</tr></tbody></table>';
+                $('#dynamicParentRatePlanValidityDiv').html('');
+                $('#dynamicParentRatePlanValidityDiv').html(tableTempleteValidity);
+
+
+
+            });
+
+            var url = '@Url.Action("BindRoomType", "PropertyRatePlan")';
+            $.getJSON(url, { id: sourceVal, type: cltype }, function (data) {
+                tableTemplete += '<table cellspacing="0" style="width:100%;" class="alinghTable"><tbody>';
+                tableTemplete += '<tr>';
+                if (data.suggestions.length > 0) {
+                    var count = 0;
+                    $.each(data.suggestions, function () {
+                        if (count % 3 == 0 && count != 0) {
+                            tableTemplete += '</tr><tr>';
+                        }
+                        tableTemplete += '<td>';
+                        tableTemplete += '<input type="checkbox" value="' + this.Value + '" data-val="true" data-val-required="Please Select Room Type" name="SelectedRoomType" ' + (this.Selected == true ? "checked" : "") + '>';
+                        tableTemplete += '<label for="SelectedRoomType">' + this.Text + '</label>';
+                        tableTemplete += '</td>';
+                        count++;
+                        //tableTemplete.append($("<td>").append(
+                        //    $("<input>").attr('type', 'checkbox').val(this.Value).prop('checked', this.Selected).attr('data-val', true).attr('data-val-required', 'Please Select Room Type').attr('name', 'SelectedRoomType')
+                        //).append($("<label>").attr('for', 'SelectedRoomType').text(this.Text)));
+
+                    });
+                    var remainder = 3 - (data.suggestions.length % 3);
+
+                    for (var i = 0; i < remainder; i++) {
+                        tableTemplete += '<td></td>';
+                    }
+
+
+                }
+                else {
+                    tableTemplete += '<td style="color:red;"><label>Please create Room Type</label></td>';
+                    //tableTemplete.append($('<td style="color:red;">').append($("<label>").text("Please create Room Type")));
+                }
+                tableTemplete += '</tr>';
+                tableTemplete += '</tbody></table>';
+                //tableTemplete.append($('</tr></tbody></table>'));
+
+                $('#preParentCheckboxDataDiv').html('');
+                $('#dynamicParentCheckboxDataDiv').html(tableTemplete);
+
+            });
+        }
+        else {
+            $('#dynamicParentCheckboxDataDiv').html('');
+        }
+    }
+
+    @*function SetCancellationPolicyCheckBox() {
+        var url = '@Url.Action("BindCancellationPolicy", "PropertyRatePlan")';
+        $.getJSON(url, function (data) {
+            var tableTemplete = $('<table cellspacing="0"  style="width:100%;" class="alinghTableCancellation"><tbody><tr>');
+
+            if (data.suggestions.length > 0) {
+                $.each(data.suggestions, function () {
+                    tableTemplete.append($('<td width="25%">').append(
+                        $("<input>").attr('type', 'checkbox').val(this.Value).prop('checked', this.Selected).attr('data-val', true).attr('onchange', 'CancellationPolicy(this);').attr('name', 'SelectedCancellationPolicy')
+                            ).append($("<label>").attr('for', 'SelectedCancellationPolicy').text(this.Text)));
+
+                });
+
+                if (data.suggestions.length < 5) {
+                    var totalcRoom = 5 - data.suggestions.length;
+                    for (var i = 0; i < totalcRoom; i++) {
+                        tableTemplete.append($('<td>'));
+                    }
+                }
+
+            }
+            else { tableTemplete.append($('<td style="color:red;">').append($("<label>"))); }
+
+            tableTemplete.append($('</tr></tbody></table>'));
+            $('#preParentCancellationCheckboxDataDiv').html('');
+            $('#dynamicParentCancellationCheckboxDataDiv').html(tableTemplete);
+        });
+
+    }*@
+
+
+
+
+    function calendar() {
+        var StartDate = $('#ValidDateFrom').val();
+        var d = new Date();
+        var ThreeYearDate = new Date();
+        var a = ThreeYearDate.getFullYear();
+        ThreeYearDate.setFullYear(a + 3);
+
+        if (StartDate != "" && StartDate != null) {
+            d = StartDate;
+            $('#ValidDateFrom').prop("readonly", "readonly");
+        }
+        else {
+            $('#ValidDateFrom').datepicker({
+                startDate: d,
+                minDate: d,
+                maxDate: '+3Y',
+                autoclose: true,
+                dateFormat: 'dd/mm/yy',
+                changeMonth: true,
+                changeYear: true,
+                onClose: function (selectedDate) {
+                    $("#ValidDateTo").datepicker("option", "maxDate", '+3Y');
+                    if (selectedDate != '') {
+
+                        $("#ValidDateTo").datepicker("option", "minDate", selectedDate);
+                    }
+                    else {
+                        $("#ValidDateTo").datepicker("option", "minDate", d);
+                    }
+                }
+            });
+        }
+
+
+        $('#ValidDateTo').datepicker({
+            startDate: d,
+            minDate: d,
+            maxDate: '+3Y',
+            autoclose: true,
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true,
+            onClose: function (selectedDate) {
+                if (selectedDate != '') {
+                    $("#ValidDateFrom").datepicker("option", "maxDate", selectedDate);
+                }
+                else {
+                    $("#ValidDateFrom").datepicker("option", "maxDate", '+3Y');
+                    $("#ValidDateFrom").datepicker("option", "minDate", d);
+                }
+            }
+        });
+
+
+
+        $('#CancellationValidFrom').datepicker({
+            startDate: d,
+            minDate: d,
+            maxDate: '+3Y',
+            autoclose: true,
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true,
+            onClose: function (selectedDate) {
+                $("#CancellationValidTo").datepicker("option", "maxDate", '+3Y');
+                if (selectedDate != '') {
+
+                    $("#CancellationValidTo").datepicker("option", "minDate", selectedDate);
+                }
+                else {
+                    $("#CancellationValidTo").datepicker("option", "minDate", d);
+                }
+            }
+        });
+        $('#CancellationValidTo').datepicker({
+            startDate: d,
+            minDate: d,
+            maxDate: '+3Y',
+            autoclose: true,
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true,
+            onClose: function (selectedDate) {
+                if (selectedDate != '') {
+                    $("#CancellationValidFrom").datepicker("option", "maxDate", selectedDate);
+                }
+                else {
+                    $("#CancellationValidFrom").datepicker("option", "maxDate", '+3Y');
+                    $("#CancellationValidFrom").datepicker("option", "minDate", d);
+                }
+            }
+        });
+
+
+        //$("#ValidDateFrom").each(function () {
+        //    var selecteddate = $("#ValidDateFrom").datepicker("getDate");
+        //    var dateString = $.datepicker.formatDate('mm/dd/yy', selecteddate);
+        //    if (dateString == "01/01/2001") {
+        //        $("#ValidDateFrom").datepicker('setDate', new Date());
+        //    }
+
+
+
+        //});
+        //$("#ValidDateTo").each(function () {
+        //    var selecteddate = $("#ValidDateTo").datepicker("getDate");
+        //    var dateString = $.datepicker.formatDate('mm/dd/yy', selecteddate);
+        //    if (dateString == "01/01/2001") {
+        //        $("#ValidDateTo").datepicker('setDate', new Date());
+        //    }
+        //});
+        //$("#CancellationValidFrom").each(function () {
+        //    var selecteddate = $("#CancellationValidFrom").datepicker("getDate");
+        //    var dateString = $.datepicker.formatDate('mm/dd/yy', selecteddate);
+        //    if (dateString == "01/01/2001") {
+        //        $("#CancellationValidFrom").datepicker('setDate', new Date());
+        //    }
+
+        //});
+        //$("#CancellationValidTo").each(function () {
+        //    var selecteddate = $("#CancellationValidTo").datepicker("getDate");
+        //    var dateString = $.datepicker.formatDate('mm/dd/yy', selecteddate);
+        //    if (dateString == "01/01/2001") {
+        //        $("#CancellationValidTo").datepicker('setDate', new Date());
+        //    }
+
+        //});
+        $("#ui-datepicker-div").hide();
+
+    }
+
+</script>
+<style>
+    .alinghTable td {
+        width: 33.33%;
+    }
+
+    .alinghTableCancellation td {
+        width: 30%;
+    }
+
+    label {
+        padding-left: 5px !important;
+        padding-right: 5px !important;
+    }
+</style>
+
+
+
+
+@using (Html.BeginForm("Save", "PropertyRatePlan", FormMethod.Get, new { ReturnUrl = ViewBag.ReturnUrl, id = "frmRatePlan", role = "form" }))
+{
+    @Html.HiddenFor(m => m.Mode)
+    @Html.HiddenFor(m => m.iUpdateRPId)
+    @Html.HiddenFor(x => x.CancellationPolicyJSonData, new { Id = "hdnJson" })
+
+    <input type="hidden" value="@ViewBag.cancellationJSON" id="hdnGetJSON" />
+
+    <div class="modal-dialog" style="width:800px;">
+        <div class="panel-group">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-8">
+
+                            <h4 class="panel-title">
+                                @Html.DisplayFor(m => m.heading)
+                            </h4>
+                        </div>
+                        <div class="col-xs-3 text-right" style="padding-right:0px;">
+                            @*<input name="" type="submit" class="btn btn-primary pull-right" value="Save">*@
+                            @if (Model.cStatus == "A" || Model.cStatus == null)
+                            {
+                                <input name="" type="submit" class="btn btn-primary" value="Save">
+                                <input name="" type="button" onclick="window.location = '../PropertyRatePlan'" class="btn btn-danger" value="Cancel">
+                            }
+                            else
+                            {
+                                <input name="" type="button" onclick="window.location = '../PropertyRatePlan'" class="btn btn-danger" value="Cancel">
+                            }
+
+
+
+                        </div>
+                        <div class="col-xs-1"><button type="button" class="close" onclick="window.location = '../PropertyRatePlan'">&times;</button></div>
+                    </div>
+                </div>
+                <div style="height:520px; overflow:auto;">
+                    <div class="panel-body">
+
+                        <div class="row">
+                            <div class="col-xs-6 ">
+                                Name
+                                @Html.TextBoxFor(m => m.sRatePlan, new { name = "RatePlanName", maxlength = "50", id = "RatePlanName", type = "text", @class = "form-control", required = "true" })
+                                <div id="results" class="autoCompleteList"></div>
+                            </div>
+                            <div class="col-xs-4">
+                                Rate Plan Type
+                                @Html.DropDownListFor(m => m.cRatePlanType, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="Daily Rate",Value="S" },
+                                                                            new SelectListItem {Text="Package",Value="P" }},
+                                                                                              new { name = "RatePlanType", @class = "form-control" })
+                            </div>
+                        </div>
+
+                        <div class="row margintop10">
+                            <div class="col-xs-2" style="width:15%;">
+                                Validity From
+                            </div>
+                            <div class="col-xs-2">
+                                @Html.TextBoxFor(m => m.dtValidFrom, new { Value = Model.dtValidFrom, type = "text", @class = "form-control ", required = "true", name = "ValidDateFrom", onkeyup = "this.value=''", id = "ValidDateFrom" })
+                            </div>
+                            <div class="col-xs-2 " style="width:2%;">
+                                To
+                            </div>
+                            <div class="col-xs-2">
+                                @Html.TextBoxFor(m => m.dtValidTo, new { Value = Model.dtValidTo, type = "text", @class = "form-control ", required = "true", name = "ValidDateTo", onkeyup = "this.value=''", id = "ValidDateTo" })
+                            </div>
+                        </div>
+
+
+                        <div class="row margintop10">
+                            <div class="col-xs-4" style="width:26%">Link to an existing Rate Plan</div>
+                            <div class="col-xs-8">
+                                @Html.RadioButtonFor(m => m.bLinkToExistingRatePlan, "true", new { name = "IsLinkRatePlan", id = "chkYes", onclick = "ShowHideDiv()" }) <span>Yes</span>&nbsp;
+                                @Html.RadioButtonFor(m => m.bLinkToExistingRatePlan, "false", new { name = "IsLinkRatePlan", id = "chkNo", onclick = "ShowHideDiv()" }) <span>No</span>
+                            </div>
+                        </div>
+
+
+                        <div id="divExistingRP" style="display:none;">
+                            <div class="row">
+                                <div class="col-xs-2" style="width:12%">Rate Plan</div>
+                                <div class="col-xs-5">
+                                    @Html.DropDownListFor(m => m.iLinkRatePlanId, new SelectList(OneFineRateBLL.BL_tblPropertyRatePlanMap.GetRatePlansForDD(Model.Mode == "Copy" ? 0 : Model.iUpdateRPId, Convert.ToInt32(Session["PropId"].ToString())), "Id", "Name"), new { @class = "form-control", name = "ExistingRatePLan" })
+                                </div>
+                                <div class="col-xs-3">
+                                    @Html.DropDownListFor(m => m.iIsPlus, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="Plus (+)",Value="1" },
+                                                                            new SelectListItem {Text="Minus (-)",Value="0" }},
+                                                                                     new { @class = "form-control " })
+                                </div>
+                            </div>
+                            <div class="row" id="dynamicParentRatePlanValidityDiv" style="padding-left:15%"></div>
+                            <div class="row">
+                                <div class="col-xs-2" style="width:12%">&nbsp;</div>
+                                <div class="col-xs-2">
+                                    @Html.DropDownListFor(m => m.iIsPercent, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="%",Value="1" },
+                                                                            new SelectListItem {Text="Value",Value="0" }},
+                                        new { @class = "form-control ", onchange = "ddListChange()" })
+                                </div>
+
+                                <div class="col-xs-3">
+                                    @Html.TextBoxFor(m => m.dValue, new { id = "txtValue", type = "text", @class = "form-control width60 ", min = "0", onkeyup = "this.value = minmax(this.value, 0, 100)" })
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <b> Room Type for the Rate plan</b>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12" id="preParentCheckboxDataDiv">
+                                @{
+    var putCheckBoxesIntoTablenew1 = new HtmlListInfo(HtmlTag.table, 3, new { @class = "alinghTable", style = "width:100%;" });
+                                }
+                                @Html.CheckBoxListFor(m => m.SelectedRoomType, m => m.RoomTypeItems,
+                                                                    group => group.Value,
+                                                                    group => "&nbsp;" + group.Text,
+                                                                    m => m.Selected,
+                                                                    putCheckBoxesIntoTablenew1)
+
+                            </div>
+                            <div class="col-xs-12" id="dynamicParentCheckboxDataDiv">
+
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <b> Meals or Amenities to be added</b>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                @{
+    var putCheckBoxesIntoTablenew =
+    new HtmlListInfo(HtmlTag.table, 3, new { @class = "alinghTable", style = "width:100%;" });
+                                }
+                                @Html.CheckBoxListFor(m => m.SelectedAmenityID, m => m.Amenties,
+                                                                    group => group.Value,
+                                                                    group => "&nbsp;" + group.Text,
+                                                                    m => m.Selected,
+                                                                    putCheckBoxesIntoTablenew)
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-3">All Amenities (1000 char)</div>
+                            <div class="col-xs-6">@Html.TextAreaFor(m => m.sAmenity, new { type = "text", @class = "form-control", maxlength = "1000" })</div>
+
+                        </div>
+                        <br />
+                        <div class="row box2">
+                            <div class="col-xs-12">
+                                <strong>Conditions</strong>
+
+                            </div>
+                            <div class="col-xs-12">
+                                <div class="col-xs-3" style="width:24%;">
+                                    Minimum length of stay
+                                </div>
+                                <div class="col-xs-2">
+                                    @Html.TextBoxFor(m => m.iMinLengthStay, new { type = "number", @class = "form-control width65", maxlength = "2", min = "1" })
+                                </div>
+                                <div class="col-xs-3" style="width:24%;">
+                                    Maximum length of stay
+                                </div>
+                                <div class="col-xs-2">
+                                    @Html.TextBoxFor(m => m.iMaxLengthStay, new { type = "number", @class = "form-control width65", maxlength = "2", min = "0" })
+                                </div>
+                            </div>
+                            <div class="col-xs-12 margintop10">
+                                <div class="col-xs-4" style="width:28%;">
+                                    This deal can only be booked
+                                </div>
+                                <div class="col-md-2" style="width:13%; padding-left:0;">
+                                    @Html.TextBoxFor(m => m.dHrsDays, new { type = "number", @class = "form-control ", maxlength = "2", min = "0" })
+                                </div>
+                                <div class="col-xs-2" style="padding-left: 0; width:13%;">
+                                    @Html.DropDownListFor(m => m.cHrsDays, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="Hrs",Value="H" },
+                                                                            new SelectListItem {Text="Days",Value="D" }},
+                                                                                              new { @class = "form-control" })
+                                </div>
+                                <div class="col-xs-2" style="padding-left: 0; width:15%;">
+                                    @Html.DropDownListFor(m => m.iIsBefore, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="Before",Value="1" },
+                                                                            new SelectListItem {Text="Within",Value="0" }},
+                                                                                              new { @class = "form-control" })
+
+                                </div>
+
+                                <div class="col-xs-2" style="padding-left: 0;">
+                                    Check-in.
+
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12">
+                                <strong>Cancellation Policy</strong>
+
+                            </div>
+
+
+                            <div class="col-xs-12" id="dynamicParentCheckboxDataDiv">
+
+                            </div>
+                            <div class="row mar-padd0">
+
+                                @{
+    int Count = 0;
+    Count = @Model.CancellationPolicy.Count;
+                                }
+
+                                @{
+
+    if (Count == 2)
+    {
+        <div class="col-xs-6">
+            @{
+                    var putCheckBoxesIntoTablenew6 = new HtmlListInfo(HtmlTag.table, 3, new { @class = "alinghTable", style = "width:100%;" });
+                    if (@Model.iCancellationChkBox > 0)
+                    {
+                        @Html.CheckBoxListFor(m => m.SelectedCancellationPolicy, m => m.CancellationPolicy,
+                                                        group => group.Value,
+                                                        group => group.Text,
+                                                        m => m.Selected, putCheckBoxesIntoTablenew6,
+                                                        x => new { onchange = "CancellationPolicy(this);", name = "SelectedCancellationPolicy" })
+                    }
+                    else
+                    {
+                        <div style="color:red;">Please create cancellation policy.</div>
+                    }
+            }
+        </div>
+    }
+    else
+    {
+        <div class="col-xs-12">
+            @{
+                var putCheckBoxesIntoTablenew6 = new HtmlListInfo(HtmlTag.table, 4, new { @class = "", style = "width:100%;" });
+                if (@Model.iCancellationChkBox > 0)
+                {
+                    @Html.CheckBoxListFor(m => m.SelectedCancellationPolicy, m => m.CancellationPolicy,
+                                                    group => group.Value,
+                                                    group => group.Text,
+                                                    m => m.Selected, putCheckBoxesIntoTablenew6,
+                                                    x => new { onchange = "CancellationPolicy(this);", name = "SelectedCancellationPolicy" })
+                }
+                else
+                {
+                    <div style="color:red;">Please create cancellation policy.</div>
+                }
+
+            }
+
+        </div>
+    }
+                                }
+
+                            </div>
+
+                            <div class="col-xs-2 margintop10" style="width:15%;">
+                                Validity From
+                            </div>
+                            <div class="col-xs-2 margintop10">
+                                @Html.TextBoxFor(m => m.dtCancellationValidFrom, new { Value = Model.dtCancellationValidFrom, type = "text", @class = "form-control", name = "CancellationValidFrom", onkeyup = "this.value=''", id = "CancellationValidFrom" })
+                            </div>
+                            <div class="col-xs-2 margintop10" style="width:12%;">
+                                Validity To
+                            </div>
+                            <div class="col-xs-2 margintop10">
+                                @Html.TextBoxFor(m => m.dtCancellationValidTo, new { Value = Model.dtCancellationValidTo, type = "text", @class = "form-control ", name = "CancellationValidTo", onkeyup = "this.value=''", id = "CancellationValidTo" })
+                            </div>
+                            <div class="col-xs-4 margintop10"><input name="" type="button" class="btn btn-primary  marginbottom10" value="Add" id="AddRange">   </div>
+
+                            <div class="col-xs-12 margintop10">
+                                <table class="table table-striped table-bordered table-hover " id="RangeTable">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">Cancellation Policy</th>
+                                            <th class="text-center">Validity From </th>
+                                            <th class="text-center">Validity To</th>
+                                            <th class="text-center">Delete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+
+                            </div>
+
+
+                            <div class="col-xs-3" style="width:19%;">Is it a Secret Deal</div>
+                            <div class="col-xs-9" style="padding-left:0px !important;">
+                                @Html.RadioButtonFor(m => m.bIsSecretDeal, "true") <span>Yes</span>&nbsp;
+                                @Html.RadioButtonFor(m => m.bIsSecretDeal, "false") <span>No</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @*<div class="row pull-right" style="padding-right:10px;">
+                        <div class="col-xs-12">
+                            <input name="" type="submit" class="btn btn-primary" value="Save">
+                            <input name="" type="button" onclick="window.location = '../PropertyRatePlan'" class="btn btn-danger" value="Cancel">
+                        </div>
+                    </div>*@
+                <br />
+                <br />
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+}
+
+
+<style>
+    .autoCompleteList {
+        width: 100%;
+        position: absolute;
+        z-index: 2;
+    }
+</style>
+
+
+

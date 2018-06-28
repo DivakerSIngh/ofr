@@ -1,0 +1,456 @@
+﻿@model OneFineRateBLL.Entities.eWebSiteSearchPage
+
+
+@if (Model != null && Model.TotalPropertySearchedList != null && Model.TotalPropertySearchedList.Count > 0)
+{
+    <script>
+        
+        var hotelListJson = JSON.parse('@Html.Raw(OneFineRateAppUtil.clsUtils.ConvertToJson(Model.TotalPropertySearchedList))');
+     
+    </script>
+    <script src="~/Scripts/divSlider.js"></script>
+
+
+    <div id="hotelMapViewContainer">
+
+        @if (Model != null && Model.TotalPropertySearchedList.Count > 0)
+        {
+            <style>
+                #map_wrapper {
+                    height: 450px;
+                    margin-bottom:15px;
+                }
+
+                #map_canvas {
+                    width: 100%;
+                    height: 100%;
+                }
+
+                .wrap-custom {
+                    position: relative;
+                    margin: 3em 0;
+                }
+
+                .frame-custom {
+                    height: 330px !important;
+                    /*line-height: 250px;*/
+                    overflow: hidden !important;
+                }
+
+                    .frame-custom ul {
+                        list-style: none !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        height: 100% !important;
+                        font-size: 50px !important;
+                    }
+
+                        .frame-custom ul li {
+                            float: left !important;
+                            width: 230px !important;
+                            height: 100% !important;
+                            margin: 0 3px 0 0;
+                            padding: 0 !important;
+                            background: #fff !important;
+                            border: #e7e6e6 1px solid;
+                            /*color: #ddd !important;*/
+                            /*text-align: center;*/
+                            cursor: all-scroll !important;
+                            padding-left: 10px;
+                            color: #000;
+                            position: relative;
+                        }
+
+                            .frame-custom ul li.active {
+                                /*color: #fff !important;*/
+                                /*background: #0f204b !important;*/
+                            }
+
+                .scrollbar {
+                    margin: 0 0 1em 0;
+                    height: 5px;
+                    background: #ccc;
+                    line-height: 0;
+                }
+
+                    .scrollbar .handle {
+                        width: 100px;
+                        height: 100%;
+                        background: #292a33;
+                        cursor: pointer;
+                    }
+
+                        .scrollbar .handle .mousearea {
+                            position: absolute;
+                            top: -9px;
+                            left: 0;
+                            width: 100%;
+                            height: 20px;
+                        }
+
+
+                .controls {
+                    margin: 25px 0;
+                    text-align: center;
+                }
+
+                @@media only screen and (max-width: 400px) {
+                    .srchpricetitles {
+                        margin-right: 25px;
+                    }
+                }
+            </style>
+
+            <div class="body-content" style="width:98.7%;margin-top:10px">
+                <div id="map_wrapper">
+                    <div id="map_canvas" class="mapping"></div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="frame-custom " id="centered" style=" overflow: hidden;">
+                    <ul class="clearfix" style=" transform: translateZ(0px) translateX(-3419px); width:100%">
+
+                        @foreach (var item in Model.TotalPropertySearchedList)
+                        {
+                            <li>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <img src="@item.sImgUrl" height="150" onerror="this.src='/images/noImage.jpg';" style="width:100%" />
+                                    </div>
+                                    <div class="col-md-12" data-propertyid="@item.iPropId" data-vendorid="@item.iVendorId" style="cursor:pointer">
+                                        <h5 class="srchhoteltitles15">
+                                            @item.sHotelName
+                                        </h5>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <img src="../images/inner-star@(item.iStarCategoryId).png" class="srchinner_star">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5 class="srchpricetitles15"> @Model.sCurrencySymbol @OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(item.dPrice)</h5>
+                                    </div>
+                                    <div class="col-md-12 ">
+
+                                        @if (!String.IsNullOrEmpty(item.rating_image_url))
+                                        {
+                                            <img src="@item.rating_image_url" class="srchimgheight19"><br>
+                                            <em class="green pull-left srchfont12">@item.ranking_string</em>
+                                        }
+
+                                    </div>
+                                    <div class="col-md-12 text-center mapbtn">
+                                        @if (!item.bIsTG)
+                                        {
+                                            if (Model.sRequestType == "buy")
+                                            {
+                                                <button class="btn btn-bannerbtn btn-sm  width70 bookNow" data-vendorid="@item.iVendorId" data-propertyid="@OneFineRateAppUtil.clsUtils.Encode(item.iPropId.ToString())">Buy</button>
+                                            }
+                                            else
+                                            {
+                                                <button class=" btn btn-bannerbtn btn-sm width70 negotiate" data-propertyid="@OneFineRateAppUtil.clsUtils.Encode(item.iPropId.ToString())">Negotiate</button>
+                                                @*<button class="btn btn-bannerbtn btn-sm  width70 bookNow" data-vendorid="@item.iVendorId" data-propertyid="@OneFineRateAppUtil.clsUtils.Encode(item.iPropId.ToString())">Buy</button>*@                                                
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-bannerbtn btn-sm width70 tg_bookNow" data-vendorid="@item.iVendorId" data-propertyid="@OneFineRateAppUtil.clsUtils.Encode(item.iPropId.ToString())">Buy</button>
+                                        }
+                                        @*<button class="btn btn-bannerbtn btn-sm width70 bookNow" data-vendorid="@item.iVendorId" data-propertyid="@OneFineRateAppUtil.clsUtils.Encode(item.iPropId.ToString())">Buy</button>*@
+
+                                    </div>
+                                </div>
+                            </li>
+                        }
+
+                    </ul>
+                </div>
+                <div class="scrollbar">
+                    <div class="handle" style="transform: translateZ(0px) translateX(570px); width: 100%">
+                        <div class="mousearea"></div>
+                    </div>
+                </div>
+                <div class="row controls center">
+                    <button class="btn btn-primary prev"><i class="glyphicon glyphicon-chevron-left"></i></button>
+                    <button class="btn btn-primary next"><i class="glyphicon glyphicon-chevron-right"></i></button>
+                </div>
+            </div>
+
+        }
+    </div>
+
+
+    <script>
+
+
+    $(function () {
+
+        //debugger;
+        if(hotelListJson.length>0)
+        {
+            MAX =  Math.round(Math.max.apply(Math,hotelListJson.map(function(o){return o.dPrice;})));
+            MIN =  Math.round(Math.min.apply(Math,hotelListJson.map(function(o){return o.dPrice;})));
+
+            $('#hdnUpperPrice').val(MAX);
+            $('#hdnLowerPrice').val(MIN);
+
+            $("#slider-range").slider("option", "min", MIN);
+            $("#slider-range").slider("option", "max", MAX);
+
+            $("#slider-range").slider('values',0,MIN);
+            $("#slider-range").slider('values',1,MAX);
+
+            $("#amount").val('@Model.sCurrencySymbol'+ $("#slider-range").slider("values", 0) + " - @Model.sCurrencySymbol" + $("#slider-range").slider("values", 1));
+        }
+        else
+        {
+            var MIN=500*@Model.dExchangeRate;
+            var MAX=50000*@Model.dExchangeRate;
+
+            $('#hdnUpperPrice').val(MAX);
+            $('#hdnLowerPrice').val(MIN);
+
+            $("#slider-range").slider("option", "min", MIN);
+            $("#slider-range").slider("option", "max", MAX);
+            $("#slider-range").slider('values',0,MIN);
+            $("#slider-range").slider('values',1,MAX);
+
+            $("#amount").val('@Model.sCurrencySymbol'+ $("#slider-range").slider("values", 0) + " - @Model.sCurrencySymbol" + $("#slider-range").slider("values", 1));
+
+        }
+
+        $(document).on('click', '#mapViewLink', function (e) {
+
+            e.preventDefault();
+
+            $(this).hide();
+            $('#listViewLink').show();
+            $('#hotelListContainer').hide();
+            $('#hotelMapViewContainer').show();
+            initialize();
+            $('#propertySortDiv').hide();
+            $('#propertySortDivEmpty').show();
+
+        });
+
+        $(document).on('click', '#listViewLink', function (e) {
+
+            e.preventDefault();
+            $(this).hide();
+            $('#mapViewLink').show();
+            $('#hotelMapViewContainer').hide();
+            $('#hotelListContainer').show();
+            $('#propertySortDiv').show();
+            $('#propertySortDivEmpty').hide();
+        });
+    });
+
+
+    var markersData = @Html.Raw(Json.Encode(Model.TotalPropertySearchedList));
+
+    function initialize() {
+        var mapOptions = {
+            zoom: 10,
+            scrollwheel: false,
+            clickableIcons: false,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+        };
+
+        var bounds = new google.maps.LatLngBounds();
+
+        map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
+
+        infoWindow = new google.maps.InfoWindow();
+
+        google.maps.event.addListener(map, 'click', function() {
+            infoWindow.close();
+        });
+
+        displayMarkers(bounds);
+
+    }
+
+
+    // This function will iterate over markersData array
+    // creating markers with createMarker function
+    function displayMarkers(bounds){
+
+        // For loop that runs through the info on markersData making it possible to createMarker function to create the markers
+        for (var i = 0; i < markersData.length; i++){
+
+            if(markersData[i].dLatitude != 0  && markersData[i].dLongitude != 0)
+            {
+                var latlng = new google.maps.LatLng(markersData[i].dLatitude, markersData[i].dLongitude);
+                var sImgUrl = markersData[i].sImgUrl;
+                var sHotelName = markersData[i].sHotelName;
+                var dPrice = markersData[i].dPrice;
+                var iStarCategoryId = markersData[i].iStarCategoryId;
+                var rating_image_url = markersData[i].rating_image_url;
+                var ranking_string = markersData[i].ranking_string;
+                var iVendorId = markersData[i].iVendorId;
+                var iPropId = markersData[i].iPropId;
+                var bIsTG = markersData[i].bIsTG;
+
+                createMarker(latlng, sHotelName,sImgUrl,dPrice, iStarCategoryId, rating_image_url,ranking_string,iPropId,iVendorId,bIsTG);
+
+                // Marker’s Lat. and Lng. values are added to bounds variable
+                bounds.extend(latlng);
+            }
+        }
+
+        // Finally the bounds variable is used to set the map bounds
+        // with API’s fitBounds() function
+        map.fitBounds(bounds);
+    }
+
+
+    // This function creates each marker and sets their Info Window content
+    function createMarker(latlng, sHotelName,sImgUrl,dPrice, iStarCategoryId, rating_image_url,ranking_string, iPropId,iVendorId,bIsTG){
+        var marker = new google.maps.Marker({
+            map: map,
+            position: latlng,
+            title: sHotelName,
+            iPropId : iPropId,
+            iVendorId : iVendorId
+        });
+
+        // This event expects a click on a marker
+        // When this event is fired the infowindow content is created
+        // and the infowindow is opened
+        google.maps.event.addListener(marker, 'click', function() {
+
+            // Variable to define the HTML content to be inserted in the infowindow
+            var iwContent = GetInfoWindowHtml(sHotelName,sImgUrl,dPrice, iStarCategoryId, rating_image_url,ranking_string, iPropId,iVendorId,bIsTG);
+
+            // including content to the infowindow
+            infoWindow.setContent('<div class="scrollFix">'+iwContent+'</div>');
+
+            // opening the infowindow in the current map and at the current marker location
+            infoWindow.open(map, marker);
+        });
+
+        google.maps.event.addListener(map, 'click', function(event){
+            this.setOptions({scrollwheel:true});
+        });
+
+        setTimeout(myfunction,0);
+
+        function myfunction() {
+            if(iVendorId != 0 && iVendorId != '0')
+            {
+                $('*[data-vendorid='+iVendorId+']').click(function(){
+                    // Variable to define the HTML content to be inserted in the infowindow
+                    var iwContent = GetInfoWindowHtml(sHotelName,sImgUrl,dPrice, iStarCategoryId, rating_image_url,ranking_string, iPropId,iVendorId,bIsTG);
+
+                    // including content to the infowindow
+                    infoWindow.setContent('<div class="scrollFix">'+iwContent+'</div>');
+
+                    // opening the infowindow in the current map and at the current marker location
+                    infoWindow.open(map, marker);
+                });
+            }
+            else
+            {
+                $('*[data-propertyid='+iPropId+']').click(function(){
+                    // Variable to define the HTML content to be inserted in the infowindow
+                    var iwContent = GetInfoWindowHtml(sHotelName,sImgUrl,dPrice, iStarCategoryId, rating_image_url,ranking_string, iPropId,iVendorId,bIsTG);
+
+                    // including content to the infowindow
+                    infoWindow.setContent('<div class="scrollFix">'+iwContent+'</div>');
+
+                    // opening the infowindow in the current map and at the current marker location
+                    infoWindow.open(map, marker);
+                });
+            }
+        }
+    }
+
+
+    function GetInfoWindowHtml(sHotelName,sImgUrl,dPrice, iStarCategoryId, rating_image_url,ranking_string, iPropId,iVendorId,bIsTG) {
+
+
+        var infoWindowHtml="";
+        infoWindowHtml += "    <div class=\"row\" style='height:auto; width:270px'>";
+        infoWindowHtml += "        <div class=\"col-md-12\">";
+        infoWindowHtml += "          <img src="+sImgUrl+" height=\"130\" onerror=\"this.src='/images/noImage.jpg';\" style=\"width:100%\">";
+        infoWindowHtml += "        <\/div>";
+        infoWindowHtml += "        <div class=\"col-md-12\">";
+        infoWindowHtml += "            <h5 class=\"srchhoteltitles15\">"+sHotelName+"<\/h5>";
+        infoWindowHtml += "        <\/div>";
+        infoWindowHtml += "        <div class=\"col-md-6\">";
+        infoWindowHtml += "            <img src=\"..\/images\/inner-star"+iStarCategoryId+".png\" class=\"srchinner_star\">";
+        infoWindowHtml += "        <\/div>";
+        infoWindowHtml += "        <div class=\"col-md-6\">";
+        infoWindowHtml += "            <h5 class=\"srchpricetitles\">@Model.sCurrencySymbol "+dPrice+"<\/h5>";
+        infoWindowHtml += "        <\/div>";
+        infoWindowHtml += "        <div class=\"col-md-12 \">";
+        if(rating_image_url!='')
+        {
+            infoWindowHtml += "            <img src="+rating_image_url+" class=\"srchimgheight19\"><br>";
+            infoWindowHtml += "            <em class=\"green pull-left srchfont12\">"+ranking_string+"<\/em>";
+        }
+        infoWindowHtml += "        <\/div>";
+        infoWindowHtml += "        <div class=\"col-md-12 text-center\">";
+        if (!bIsTG)
+        {
+            if ("@Model.sRequestType" == "buy")
+            {
+                infoWindowHtml += "     <button class=\"btn btn-bannerbtn margintop10 btn-sm width80 bookNow\" data-propertyname="+sHotelName+" data-vendorid="+iVendorId+" data-propertyid="+ btoa(iPropId)+">Buy<\/button>";
+            }
+            else
+            {
+                infoWindowHtml += "     <button class=\" btn btn-bannerbtn margintop10 btn-sm negotiate\" data-propertyname="+sHotelName+" data-propertyid="+ btoa(iPropId)+">Negotiate<\/button>";
+
+                //infoWindowHtml += "     <button class=\"btn btn-bannerbtn margintop10 btn-sm width80 bookNow\" data-propertyname="+sHotelName+" data-vendorid="+iVendorId+" data-propertyid="+ btoa(iPropId)+">Buy<\/button>";
+            }
+        }
+        else
+        {
+            infoWindowHtml += "<button class=\"btn btn-bannerbtn btn-sm tg_bookNow\" data-propertyname="+sHotelName+" data-vendorid="+iVendorId+" data-propertyid="+ btoa(iPropId)+">Buy<\/button>";
+        }
+
+        infoWindowHtml += "        <\/div>";
+        infoWindowHtml += "    <\/div>";
+
+        return infoWindowHtml;
+    }
+
+
+    (function () {
+
+        var $frame = $('#centered');
+        var $wrap  = $frame.parent();
+
+        $frame.sly({
+            horizontal: 1,
+            itemNav: 'centered',
+            smart: 1,
+            // activateOn: 'click',
+            mouseDragging: 1,
+            touchDragging: 1,
+            releaseSwing: 1,
+            startAt: 4,
+            scrollBar: $wrap.find('.scrollbar'),
+            scrollBy: 0,
+            speed: 300,
+            elasticBounds: 1,
+            easing: 'easeOutExpo',
+            dragHandle: 1,
+            dynamicHandle: 1,
+            clickBar: 1,
+            //prev: $wrap.find('.prev'),
+            //next: $wrap.find('.next'),
+            prevPage: $wrap.find('.prev'),
+            nextPage: $wrap.find('.next')
+        });
+    }());
+     
+    </script>
+}
+
+@if (Model != null && Model.TGPropertySearchedList != null && Model.TGPropertySearchedList.Count == 0 && Model.PropertySearchedList != null && Model.PropertySearchedList.Count == 0)
+{
+    <div class="col-md-12 lazy  marginbottom20">
+        <div class="row  margintop10 margin0 text-center">
+            <h2>We could not found any Hotels matching your Request, Please modify your search and try again.</h2>
+        </div>
+    </div>
+}
+

@@ -1,0 +1,44 @@
+﻿.ofrday {
+    /*background-color: lightgray;*/
+    opacity: 0.4;
+}
+
+.selected {
+    background-color: lightgreen;
+}
+
+.month {
+    /*background-color: aliceblue;*/
+    width: 175px;
+    text-align: center;
+    margin-top: 15px;
+}
+
+    .month tr {
+        border-color: black;
+    }
+
+.weeks {
+}
+
+.days {
+    background-color: dimgrey;
+    color: #fff;
+    text-align: center;
+}
+
+.day {
+    cursor: pointer;
+}
+
+.monthClick {
+    cursor: pointer;
+}
+
+.less-than-five {
+    background-color: yellow;
+}
+
+.zero {
+    background-color: #f4f4f4/*grey*/;
+}

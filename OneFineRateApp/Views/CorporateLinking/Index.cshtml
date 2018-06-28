@@ -1,0 +1,584 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+<script src="~/js/Jquery1.10.3.js"></script>
+<script src="~/js/jquery.validate.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script src="~/js/jquery-ui.js"></script>
+
+<script type="text/javaScript">
+
+    $(document).ready(function () {
+
+        var date = new Date();
+        var firstDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        var lastDay = "";
+        var Y = date.getFullYear();
+        var M = date.getMonth();
+        if (6 + M > 11) {
+            lastDay = new Date(Y + 2, M + 6 - 12, 0);
+        }
+        else {
+            lastDay = new Date(Y + 1, M + 6, 0);
+        }
+
+        // Set last date for calendars
+
+        var d = new Date();
+        $('#FromDate').datepicker({
+            startDate: d,
+            minDate: d,
+            autoclose: true,
+            maxDate: lastDay,
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true,
+            onClose: function (selectedDate) {
+                $("#ToDate").datepicker("option", "minDate", selectedDate);
+            }
+        });
+
+        $('#ToDate').datepicker({
+            startDate: d,
+            minDate: d,
+            autoclose: true,
+            maxDate: lastDay,
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true,
+            onClose: function (selectedDate) {
+                //$("#FromDate").datepicker("option", "maxDate", selectedDate);
+            }
+        });
+
+        var Data1 = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("GetAmenitiesList", "BulkBid")"));
+        var Data2 = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("GetApplicabilitiesList", "BulkBid")"));
+
+        var Amenityoutput = [], Applicabilityoutput = [];
+        Amenityoutput.push('<option value="0" Selected>--Select--</option>');
+        Applicabilityoutput.push('<option value="0" Selected>--Select--</option>');
+
+        $.each($.parseJSON(Data1.msg), function () {
+            Amenityoutput.push('<option value="' + this.iAmenityId + '">' + this.sAmenityName + '</option>');
+        });
+        $("select[name='Amenity']").html(Amenityoutput.join(''));
+
+        $.each($.parseJSON(Data2.msg), function () {
+            Applicabilityoutput.push('<option value="' + this.iApplicabilityId + '">' + this.sApplicability + '</option>');
+        });
+        $("select[name='Applicability']").html(Applicabilityoutput.join(''));
+
+
+        $("#ui-datepicker-div").hide();
+
+    });
+
+    function save() {
+        // Date Validation
+        if ($('#FromDate').val() == "") {
+            toastr.error('Please select a From date.');
+            return;
+        }
+        else if ($('#ToDate').val() == "") {
+            toastr.error('Please select a To date.');
+            return;
+        }
+            // Basic Validation
+        else if (parseFloat($('#Disc_basic').val()) < 0) {
+            toastr.error('Additional basic discount cannot be less than 0.');
+            return;
+        }
+        else if (parseFloat($('#Disc_basic').val()) > 100) {
+            toastr.error('Additional basic discount should be less than 100.');
+            return;
+        }
+            // LOS Validation
+        else if (parseFloat($('#LengthDisc').val()) < 0) {
+            toastr.error('Additional Length of Stay discount cannot be less than 0.');
+            return;
+        }
+        else if (parseFloat($('#LengthDisc').val()) > 100) {
+            toastr.error('Additional Length of Stay discount should be less than 100.');
+            return;
+        }
+        else if ((parseInt($('#LengthAmenity1').val()) == 0 && parseInt($('#LengthAppl1').val()) != 0) || (parseInt($('#LengthAmenity1').val()) != 0 && parseInt($('#LengthAppl1').val()) == 0)) {
+            toastr.error('Length of Stay discount: Both rate inclusion and applicability should be provided for a pair.');
+            return;
+        }
+        else if ((parseInt($('#LengthAmenity2').val()) == 0 && parseInt($('#LengthAppl2').val()) != 0) || (parseInt($('#LengthAmenity2').val()) != 0 && parseInt($('#LengthAppl2').val()) == 0)) {
+            toastr.error('Length of Stay discount: Both rate inclusion and applicability should be provided for a pair.');
+            return;
+        }
+        else if (($('#LengthDisc').val() == "") && (parseInt($('#LengthAmenity1').val()) != 0 || parseInt($('#LengthAmenity2').val()) != 0)) {
+            toastr.error('Length of Stay discount: Rate inclusions cannot be provided without providing discount.');
+            return;
+        }
+        else if (parseInt($('#LengthAmenity1').val()) != 0 && (parseInt($('#LengthAmenity1').val()) == parseInt($('#LengthAmenity2').val()))) {
+            toastr.error('Length of Stay discount: Both rate inclusions cannot be same.');
+            return;
+        }
+            // Multiple Rooms Validation
+        else if (parseFloat($('#MultipleDisc').val()) < 0) {
+            toastr.error('Additional Multiple Rooms discount cannot be less than 0.');
+            return;
+        }
+        else if (parseFloat($('#MultipleDisc').val()) > 100) {
+            toastr.error('Additional Multiple Rooms discount should be less than 100.');
+            return;
+        }
+        else if ((parseInt($('#MultipleAmenity1').val()) == 0 && parseInt($('#MultipleAppl1').val()) != 0) || (parseInt($('#MultipleAmenity1').val()) != 0 && parseInt($('#MultipleAppl1').val()) == 0)) {
+            toastr.error('Multiple Rooms discount: Both rate inclusion and applicability should be provided for a pair.');
+            return;
+        }
+        else if ((parseInt($('#MultipleAmenity2').val()) == 0 && parseInt($('#MultipleAppl2').val()) != 0) || (parseInt($('#MultipleAmenity2').val()) != 0 && parseInt($('#MultipleAppl2').val()) == 0)) {
+            toastr.error('Multiple Rooms discount: Both rate inclusion and applicability should be provided for a pair.');
+            return;
+        }
+        else if (($('#MultipleDisc').val() == "") && (parseInt($('#MultipleAmenity1').val()) != 0 || parseInt($('#MultipleAmenity2').val()) != 0)) {
+            toastr.error('Multiple Rooms discount: Rate inclusions cannot be provided without providing discount.');
+            return;
+        }
+        else if (parseInt($('#MultipleAmenity1').val()) != 0 && (parseInt($('#MultipleAmenity1').val()) == parseInt($('#MultipleAmenity2').val()))) {
+            toastr.error('Multiple Rooms discount: Both rate inclusions cannot be same.');
+            return;
+        }
+            // Lead Time Validation
+        else if (parseFloat($('#LeadDisc').val()) < 0) {
+            toastr.error('Additional Lead Time discount cannot be less than 0.');
+            return;
+        }
+        else if (parseFloat($('#LeadDisc').val()) > 100) {
+            toastr.error('Additional Lead Time discount should be less than 100.');
+            return;
+        }
+        else if ((parseInt($('#LeadAmenity1').val()) == 0 && parseInt($('#LeadAppl1').val()) != 0) || (parseInt($('#LeadAmenity1').val()) != 0 && parseInt($('#LeadAppl1').val()) == 0)) {
+            toastr.error('Lead Time discount: Both rate inclusion and applicability should be provided for a pair.');
+            return;
+        }
+        else if ((parseInt($('#LeadAmenity2').val()) == 0 && parseInt($('#LeadAppl2').val()) != 0) || (parseInt($('#LeadAmenity2').val()) != 0 && parseInt($('#LeadAppl2').val()) == 0)) {
+            toastr.error('Lead Time discount: Both rate inclusion and applicability should be provided for a pair.');
+            return;
+        }
+        else if (($('#LeadDisc').val() == "") && (parseInt($('#LeadAmenity1').val()) != 0 || parseInt($('#LeadAmenity2').val()) != 0)) {
+            toastr.error('Lead Time discount: Rate inclusions cannot be provided without providing discount.');
+            return;
+        }
+        else if (parseInt($('#LeadAmenity1').val()) != 0 && (parseInt($('#LeadAmenity1').val()) == parseInt($('#LeadAmenity2').val()))) {
+            toastr.error('Lead Time discount: Both rate inclusions cannot be same.');
+            return;
+        }
+            // Weekend/Weekday Validation
+        else if (parseFloat($('#WeekendDisc').val()) < 0) {
+            toastr.error('Additional Weekend/Weekday discount cannot be less than 0.');
+            return;
+        }
+        else if (parseFloat($('#WeekendDisc').val()) > 100) {
+            toastr.error('Additional Weekend/Weekday discount should be less than 100.');
+            return;
+        }
+        else if ((parseInt($('#WeekendAmenity1').val()) == 0 && parseInt($('#WeekendAppl1').val()) != 0) || (parseInt($('#WeekendAmenity1').val()) != 0 && parseInt($('#WeekendAppl1').val()) == 0)) {
+            toastr.error('Weekend/Weekday discount: Both rate inclusion and applicability should be provided for a pair.');
+            return;
+        }
+        else if ((parseInt($('#WeekendAmenity2').val()) == 0 && parseInt($('#WeekendAppl2').val()) != 0) || (parseInt($('#WeekendAmenity2').val()) != 0 && parseInt($('#WeekendAppl2').val()) == 0)) {
+            toastr.error('Weekend/Weekday discount: Both rate inclusion and applicability should be provided for a pair.');
+            return;
+        }
+        else if (($('#WeekendDisc').val() == "") && (parseInt($('#WeekendAmenity1').val()) != 0 || parseInt($('#WeekendAmenity2').val()) != 0)) {
+            toastr.error('Weekend/Weekday discount: Rate inclusions cannot be provided without providing discount.');
+            return;
+        }
+        else if (parseInt($('#WeekendAmenity1').val()) != 0 && (parseInt($('#WeekendAmenity1').val()) == parseInt($('#WeekendAmenity2').val()))) {
+            toastr.error('Weekend/Weekday discount: Both rate inclusions cannot be same.');
+            return;
+        }
+            // Some discount should be provided
+        else if ($('#Disc_basic').val() == "" && $('#LengthDisc').val() == "" && $('#MultipleDisc').val() == "" && $('#LeadDisc').val() == "" && $('#WeekendDisc').val() == "") {
+            toastr.error('Please providing a discount.');
+            return;
+        }
+        else {
+
+            var Fromdate = $('#FromDate').val();
+            var Fd = new Date(Fromdate.split("/").reverse().join("-"));
+            var Fdd = Fd.getDate();
+            var Fmm = Fd.getMonth() + 1;
+            var Fyy = Fd.getFullYear();
+
+            if (Fdd < 10) {
+                Fdd = '0' + Fdd
+            }
+            if (Fmm < 10) {
+                Fmm = '0' + Fmm
+            }
+            Fromdate = Fmm + "/" + Fdd + "/" + Fyy;
+
+            var Todate = $('#ToDate').val();
+            var Td = new Date(Todate.split("/").reverse().join("-"));
+            var Tdd = Td.getDate();
+            var Tmm = Td.getMonth() + 1;
+            var Tyy = Td.getFullYear();
+
+            if (Tdd < 10) {
+                Tdd = '0' + Tdd
+            }
+            if (Tmm < 10) {
+                Tmm = '0' + Tmm
+            }
+            Todate = Tmm + "/" + Tdd + "/" + Tyy;
+
+            var values = {
+                Todate: Todate,
+                Fromdate: Fromdate,
+                basicDisc: $('#Disc_basic').val(),
+                LengthDisc: $('#LengthDisc').val(),
+                LengthAmenity1: $('#LengthAmenity1').val(),
+                LengthAppl1: $('#LengthAppl1').val(),
+                LengthAmenity2: $('#LengthAmenity2').val(),
+                LengthAppl2: $('#LengthAppl2').val(),
+                MultipleDisc: $('#MultipleDisc').val(),
+                MultipleAmenity1: $('#MultipleAmenity1').val(),
+                MultipleAppl1: $('#MultipleAppl1').val(),
+                MultipleAmenity2: $('#MultipleAmenity2').val(),
+                MultipleAppl2: $('#MultipleAppl2').val(),
+                LeadDisc: $('#LeadDisc').val(),
+                LeadAmenity1: $('#LeadAmenity1').val(),
+                LeadAppl1: $('#LeadAppl1').val(),
+                LeadAmenity2: $('#LeadAmenity2').val(),
+                LeadAppl2: $('#LeadAppl2').val(),
+                WeekendDisc: $('#WeekendDisc').val(),
+                WeekendAmenity1: $('#WeekendAmenity1').val(),
+                WeekendAppl1: $('#WeekendAppl1').val(),
+                WeekendAmenity2: $('#WeekendAmenity2').val(),
+                WeekendAppl2: $('#WeekendAppl2').val(),
+            }
+
+            document.getElementById('Progress').style.display = 'block';
+            setTimeout(function () {
+                var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("Save")", values));
+                if (Data != null) {
+                    if (Data.st == '1' && Data.msg == 'a') {
+
+                        $('.ShowSuccess').show();
+                        $('.ShowAttention').hide();
+
+                        $('#UpdateUsers').modal({
+                            show: 'true'
+                        });
+                        return false;
+                    }
+                    else if (Data.st == '1') {
+                        var InvDates = $.parseJSON(Data.msg);
+                        var html = "";
+                        $('#DatesHere').html(html);
+
+                        html += "You have provided corporate linking of discounts for some dates (shown below) that do not have public discounts yet. We have saved these discounts for you. Please provide public discounts for these dates.";
+                        html += "<div class=\"table-responsive\" id=\"tables\">";
+                        html += "<table id=\"table\" class=\" table table-striped table-bordered table-hover\" style=\"font-size: 13px;\">";
+                        var NoOfCols = 6;
+                        if (NoOfCols > InvDates.length)
+                            NoOfCols = InvDates.length;
+                        var ExtraCols = InvDates.length % NoOfCols;
+                        var Rows = (ExtraCols) == 0 ? (InvDates.length / NoOfCols) : ((InvDates.length - ExtraCols) / NoOfCols) + 1;
+                        var Index = 0;
+                        for (var i = 0; i < Rows; i++) {
+                            html += "<tr>";
+
+                            for (var j = 0; j < NoOfCols; j++, Index++) {
+                                if (Index >= InvDates.length) {
+                                    html += "<td></td>";
+                                }
+                                else {
+                                    html += "<td style=\"text-align: center;\">";
+                                    html += InvDates[Index].dtDate + " (" + InvDates[Index].sType + ")";
+                                    html += "</td>";
+                                }
+                            }
+                            html += "</tr>";
+                        }
+                        html += "</table>";
+                        html += "</div>";
+
+
+                        $('.ShowSuccess').hide();
+                        $('.ShowAttention').show();
+
+                        $('#DatesHere').html(html);
+                        $('#UpdateUsers').modal({
+                            show: 'true'
+                        });
+                        return false;
+                    }
+                    else if (Data.st == '0') {
+                        toastr.error(Data.msg);
+                        return false;
+                    }
+                }
+            });
+        }
+    }
+
+
+
+    function Overview() {
+        var StartDate = $('#FromDate').val();
+        window.location.href = '/BulkBid/GoToOverview?StartDate=' + StartDate;
+    }
+
+    function LoadTariff() {
+        window.location.href = "/BulkBid";
+    }
+
+    function RefreshAndStay() {
+
+        $('input[type="number"]').each(function () {
+            $(this).val("");
+        });
+
+        $('select').each(function () {
+            $('#' + $(this).attr("id") + ' option[value="0"]').prop("selected", true);
+        });
+
+
+        $('span.select2-chosen').each(function () {
+            $(this).text("");
+        });
+
+        $('.close').click();
+    }
+
+</script>
+
+<div class="container margintop20">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4>
+                Additional Corporate Discount
+            </h4>
+
+            <a href="@Url.Action("Discount","CorporateLinking")" id="lnkViewCorporateDiscount" class="btn btn-default" style="float:right;margin-top: -35px;">View Additional Corporate Discount</a>
+
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-12 lightblue">
+                    Note: Link further discounts to Corporates on your bidding discounts.
+                </div>
+
+                <div class="col-md-12">
+                    <div class="col-xs-2">
+                        Start Date
+                        <input type="text" id="FromDate" onkeyup="this.value=''" name="textfield" class="form-control width65">
+                    </div>
+                    <div class="col-xs-2">
+                        End Date
+                        <input type="text" id="ToDate" name="textfield" onkeyup="this.value=''" class="form-control width65">
+                    </div>
+                </div>
+            </div>
+            <div class="margintop20">
+                <div class="col-md-12  border paddingbottom10">
+                    <!-- Basic Discount Begin -->
+                    <div class="col-md-12">
+                        <h4>Basic Discount</h4>
+                        <hr>
+                    </div>
+                    <div class="col-md-12 margintop5">
+                        <div class="col-md-2">
+                            Discount(%)
+                            <input id="Disc_basic" type="number" step="0.01" class="form-control" placeholder="%">
+                        </div>
+
+                    </div>
+                    <!-- Basic Discount End -->
+                    <!-- LOS Discount Begin -->
+                    <div class="col-md-12">
+                        <h4>Length of Stay</h4>
+                        <hr>
+                    </div>
+                    <div class="col-md-12 margintop5">
+                        <div class="col-md-2">
+                            Discount(%)
+                            <input type="number" id="LengthDisc" step="0.01" class="form-control" placeholder="%">
+                        </div>
+                        <div class="col-md-3">
+                            Rate Inclusion 1
+                            <select class="form-control" id="LengthAmenity1" name="Amenity"></select>
+                        </div>
+                        <div class="col-md-2">
+                            Applicability 1
+                            <select class="form-control" id="LengthAppl1" name="Applicability"></select>
+                        </div>
+                        <div class="col-md-3">
+                            Rate Inclusion 2
+                            <select class="form-control" id="LengthAmenity2" name="Amenity"></select>
+                        </div>
+                        <div class="col-md-2">
+                            Applicability 2
+                            <select class="form-control" id="LengthAppl2" name="Applicability"></select>
+                        </div>
+                    </div>
+                    <!-- LOS Discount End -->
+                    <!-- Multiple Rooms Discount Begin -->
+                    <div class="col-md-12">
+                        <h4>Multiple Rooms</h4>
+                        <hr>
+                    </div>
+                    <div class="col-md-12 margintop5">
+                        <div class="col-md-2">
+                            Discount(%)
+                            <input type="number" id="MultipleDisc" step="0.01" class="form-control" placeholder="%">
+                        </div>
+                        <div class="col-md-3">
+                            Rate Inclusion 1
+                            <select class="form-control" id="MultipleAmenity1" name="Amenity"></select>
+                        </div>
+                        <div class="col-md-2">
+                            Applicability 1
+                            <select class="form-control" id="MultipleAppl1" name="Applicability"></select>
+                        </div>
+                        <div class="col-md-3">
+                            Rate Inclusion 2
+                            <select class="form-control" id="MultipleAmenity2" name="Amenity"></select>
+                        </div>
+                        <div class="col-md-2">
+                            Applicability 2
+                            <select class="form-control" id="MultipleAppl2" name="Applicability"></select>
+                        </div>
+                    </div>
+                    <!-- Multiple Rooms Discount End -->
+                    <!-- Lead Time Discount Begin -->
+                    <div class="col-md-12">
+                        <h4>Lead Time</h4>
+                        <hr>
+                    </div>
+                    <div class="col-md-12 margintop5">
+                        <div class="col-md-2">
+                            Discount(%)
+                            <input type="number" id="LeadDisc" step="0.01" class="form-control" placeholder="%">
+                        </div>
+                        <div class="col-md-3">
+                            Rate Inclusion 1
+                            <select class="form-control" id="LeadAmenity1" name="Amenity"></select>
+                        </div>
+                        <div class="col-md-2">
+                            Applicability 1
+                            <select class="form-control" id="LeadAppl1" name="Applicability"></select>
+                        </div>
+                        <div class="col-md-3">
+                            Rate Inclusion 2
+                            <select class="form-control" id="LeadAmenity2" name="Amenity"></select>
+                        </div>
+                        <div class="col-md-2">
+                            Applicability 2
+                            <select class="form-control" id="LeadAppl2" name="Applicability"></select>
+                        </div>
+                    </div>
+                    <!-- Lead Time Discount End -->
+                    <!-- Weekend/Weekday Discount Begin -->
+                    <div class="col-md-12">
+                        <h4>Weekend/Weekday</h4>
+                        <hr>
+                    </div>
+                    <div class="col-md-12 margintop5">
+                        <div class="col-md-2">
+                            Discount(%)
+                            <input type="number" id="WeekendDisc" step="0.01" class="form-control" placeholder="%">
+                        </div>
+                        <div class="col-md-3">
+                            Rate Inclusion 1
+                            <select class="form-control" id="WeekendAmenity1" name="Amenity"></select>
+                        </div>
+                        <div class="col-md-2">
+                            Applicability 1
+                            <select class="form-control" id="WeekendAppl1" name="Applicability"></select>
+                        </div>
+                        <div class="col-md-3">
+                            Rate Inclusion 2
+                            <select class="form-control" id="WeekendAmenity2" name="Amenity"></select>
+                        </div>
+                        <div class="col-md-2">
+                            Applicability 2
+                            <select class="form-control" id="WeekendAppl2" name="Applicability"></select>
+                        </div>
+                    </div>
+                    <!-- Weekend/Weekday Discount End -->
+                </div>
+            </div>
+
+            <div class="row pull-right  margintop10">
+                <div class="col-xs-12">
+                    <input name="" type="button" class="btn btn-primary" value="Save" onclick="save()">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form id="frmUsersUpdate">
+    <div id="UpdateUsers" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" style="display:none" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title ShowSuccess">Success</h4>
+                    <h4 class="modal-title ShowAttention">Attention</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row ShowSuccess" style="margin-left:5px;margin-right:5px;">
+                        The data has been saved successfully.
+                    </div>
+                    <div id="DatesHere" class="row ShowAttention" style="margin-left:5px;margin-right:5px;">
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnUpdate" class="btn btn-primary" onclick="RefreshAndStay()">Stay here</button>
+                    <button type="button" id="btnLoadTariff" class="btn btn-primary ShowAttention" onclick="LoadTariff()">Provide Public Discounts</button>
+                    <button type="button" id="btnCancel" class="btn btn-primary" onclick="Overview()">Go to Express View</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<div id="modalCoprporateDiscount" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="float:left">Additional Corporate Discount</h3>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="bodyCoprporateDiscount">
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-primary">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    $(function () {
+
+        $('#lnkViewCorporateDiscount').click(function (e) {
+
+            e.preventDefault();
+
+            var href = $(this).attr('href');
+
+            $('#bodyCoprporateDiscount').load(href, function () {
+
+                $('#modalCoprporateDiscount').modal('show');
+            });
+
+        });
+    })
+</script>

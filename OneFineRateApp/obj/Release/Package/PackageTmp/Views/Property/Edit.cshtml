@@ -1,0 +1,988 @@
+﻿@using MvcCheckBoxList.Model
+@model OneFineRateBLL.Entities.etblPropertyM_User
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_LayoutProperty.cshtml";
+}
+
+
+<link href="~/css/jquery-ui-1.8.1.custom.css" rel="stylesheet" />
+<style>
+    label {
+        padding: 5px !important;
+    }
+
+    .ui-helper-hidden-accessible {
+        display: none;
+    }
+</style>
+
+@*//Scripts for autofill through ajax call*@
+@System.Web.Optimization.Scripts.Render("~/bundles/autofill")
+
+@*//Scripts for validation server side through ajax call*@
+@System.Web.Optimization.Scripts.Render("~/bundles/validation")
+
+<script>
+    var localityData = [];
+    $(document).ready(function () {
+
+        //Get Localities mapped data with this property and bind table
+        var jsonData = '@Html.Raw(@ViewBag.PropertyLocalityMap)';
+        if (jsonData != "") {
+            localityData = JSON.parse(jsonData);
+            $("#dvLocalityGrid").empty();
+            var localityHtml = BindLocality(localityData);
+            $("#dvLocalityGrid").append(localityHtml);
+            $("#hdnJsonLocalityGrid").val(JSON.stringify(localityData));
+
+            $('#hdnSelectedLocalityID').val('');
+            $('#hdnSelectedLocalityName').val('');
+            $("#txtLocalityArea").val('');
+        }
+        //Add New Locality / Area
+        $("#btnAddLocality").click(function () {
+            if ($("#txtLocalityArea").val() == "" ) {
+                toastr.info('Please Select Locality/Area.');
+                return false;
+            }
+            if ($('#hdnSelectedLocalityID').val() == "") {
+                toastr.info('Please Select Locality/Area.');
+                return false;
+            }
+            var id = $('#hdnSelectedLocalityID').val().split('|');
+            //Check the area has been added earlier or not
+            var added=false;
+            $.map(localityData, function(elementOfArray, indexInArray) {
+                if (elementOfArray.Id == id[0] && elementOfArray.Status == id[1]) {
+                    added = true;
+                }
+            });
+
+            if(added)
+            {
+                toastr.warning('Selected Locality / Area has already been added.');
+                return false;
+            }
+
+            localityData.push({
+                Id: id[0],
+                Name: $('#hdnSelectedLocalityName').val(),
+                Status: id[1],
+                RowId: "deleteRow_" + $('#hdnSelectedLocalityID').val()
+            });
+
+            $("#dvLocalityGrid").empty();
+            var localityHtml = BindLocality(localityData);
+            $("#dvLocalityGrid").append(localityHtml);
+            $("#hdnJsonLocalityGrid").val(JSON.stringify(localityData));
+
+            $('#hdnSelectedLocalityID').val('');
+            $('#hdnSelectedLocalityName').val('');
+            $("#txtLocalityArea").val('');
+
+        });
+
+        //Delete locality / area
+        $("#dvLocalityGrid").delegate("a", "click", function () {
+            var index = 0;
+            var isMatched = false;
+            var removeLocalityID = $(this).attr("id");
+            if (localityData != null) {
+                index = findIndexByKeyValue(localityData, "RowId", removeLocalityID);
+                localityData.splice(index, 1);
+            }
+            $("#dvLocalityGrid").empty();
+            var localityHtml = BindLocality(localityData);
+            $("#dvLocalityGrid").append(localityHtml);
+            $("#hdnJsonLocalityGrid").val(JSON.stringify(localityData));
+        });
+
+        function findIndexByKeyValue(obj, key, value) {
+            for (var i = 0; i < obj.length; i++) {
+                if (obj[i][key] == value) {
+                    return i;
+                }
+            }
+            return null;
+        }
+
+        // bind the selected locality in a table
+        function BindLocality(localityData) {
+            var localityHtml = "<table  width='100%'>";
+            localityHtml += "<colgroup><col width='60%'><col width='*'></colgroup>";
+            $.each(localityData, function (index, locality) {
+                localityHtml += "<tr id='" + locality.RowId + "'><td>" + locality.Name + "</td>"
+                localityHtml += "<td><a style=' cursor:pointer;' class='removeLocality' id='" + locality.RowId + "'>Remove</a></td></tr>";
+            });
+            localityHtml += "</table>";
+
+            return localityHtml;
+        }
+
+
+        //bind autocomplete event on locality textbox on load
+        $(".autosuggest").autocomplete({
+            source: function (request, response) {
+                response([{ label: "", loading: true }]);
+                $.ajax({
+                    url: "/Property/GetLocations",
+                    contentType: "application/json; charset=utf-8",
+                    data: {txt: request.term, cityId: $('#iCityId').val() },
+                    //data: { txt: request.term },
+                    dataType: "json",
+                    type: "GET",
+                    async: false,
+                    success: function (data) {
+                        $('#hdnSelectedLocalityID').val("");
+                        $('#hdnSelectedLocalityName').val("");
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.Name,
+                                value: item.Id
+                            }
+                        }));
+                    }
+                });
+            },
+            minLength: 1,
+            //autoFocus: true,
+            select: function (event, ui) {
+                //Set autocomplete element to display the label
+                $(".autosuggest").val(ui.item.label);
+                $('#hdnSelectedLocalityID').val(ui.item.value);
+                $('#hdnSelectedLocalityName').val(ui.item.label);
+                event.preventDefault();
+            },
+            focus: function(event, ui){
+                event.preventDefault();
+                $(".autosuggest").val(ui.item.label);
+                $(".ui-helper-hidden-accessible").hide();
+                return false;
+            }
+        });
+
+
+
+
+        function isInteger(evt, element, l) {
+
+            var charCode = (evt.which) ? evt.which : event.keyCode
+            if (charCode == 8)
+            {
+                return true;
+            }
+            else if (
+                (charCode != 45) &&      // “-” CHECK MINUS, AND ONLY ONE.
+                (charCode < 48 || charCode > 57))
+            { return false; } else {
+                if ($(element).val().length >= l) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        $('.dNumberLength20').keyup(function(){
+            var val = $(this).val();
+            if(isNaN(val)){
+                val = val.replace(/[^0-9\.]/g,'');
+                if(val.split('.').length>2)
+                    val =val.replace(/\.+$/,"");
+            }
+            $(this).val(val);
+        });
+
+        $('.iNumberLength3').keypress(function (event) {
+            return isInteger(event, this, 3)
+        });
+
+        $('.iNumberLength4').keypress(function (event) {
+            return isInteger(event, this, 4)
+        });
+
+        $('.iNumberLength12').keypress(function (event) {
+            return isInteger(event, this, 12)
+        });
+
+        $('.iNumberLength15').keypress(function (event) {
+            return isInteger(event, this, 15)
+        });
+
+    });
+
+</script>
+<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBA8k8_YKEbkfECgXpF6FKdMkMA1jS1qAQ"></script>
+
+
+<script type="text/javascript">
+
+    var zoomLebel= 16;
+
+
+    function initialize() {
+        //var myLatlng = new google.maps.LatLng(28.690587654250713, 77.zoomLebel796875);
+        var myLatlng = new google.maps.LatLng(@Model.dLatitude, @Model.dLongitude);
+
+        var bounds = new google.maps.LatLngBounds();
+
+        var myOptions = {
+            zoom:zoomLebel,
+            center: myLatlng,
+            zoomControl:true,
+            mapTypeControl:true,
+            scaleControl:true,
+            streetViewControl:true,
+            overviewMapControl:true,
+            rotateControl:true,
+
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+
+        var map = new google.maps.Map(document.getElementById('googleMap'),
+             myOptions);
+
+        //bounds.extend(myLatlng);
+
+        // map.fitBounds(bounds);
+        //map.panToBounds(bounds);
+        // marker STARTS
+        var marker = new google.maps.Marker({
+            position: myLatlng,
+            title: "Click to view info!",
+        });
+
+        marker.setMap(map);
+
+        // marker ENDS
+
+        disablePOIInfoWindow(map);
+
+        google.maps.event.addListener(map, "click", function (e) {
+            marker.setMap(null); //clear old markers
+            //lat and lng is available in e object
+            var latLng = e.latLng;
+            marker = new google.maps.Marker({ position: e.latLng, map: map });
+            $('#dLatitude').val(latLng.lat().toFixed(8));  //placing values in controls
+            $('#dLongitude').val(latLng.lng().toFixed(8));
+        });
+
+        google.maps.event.addListener(map, 'zoom_changed', function() {
+            zoomLebel = map.getZoom();
+        });
+        // info-window STARTS
+        //var infowindow = new google.maps.InfoWindow({ content: "<div class='map_bg_logo'><span style='color:#1270a2;'><b><?=$row->bridge_name?></b> (<?=$row->bridge_no?>)</span><div style='border-top:1px dotted #ccc; height:1px;  margin:5px 0;'></div><span style='color:#555;font-size:11px;'><b>Length: </b><?=$row->bridge_length?> meters</span></div>" });
+        //google.maps.event.addListener(marker, 'click', function () {
+        //    infowindow.open(map, marker);
+        //});
+        // info-window ENDS
+    }
+    google.maps.event.addDomListener(window, 'load', initialize);
+
+    function disablePOIInfoWindow(map) {
+
+        var set = google.maps.InfoWindow.prototype.set;
+
+        google.maps.InfoWindow.prototype.set = function (key, val) {
+
+            if (key === 'map') {
+                google.maps.event.trigger(map, 'click', {latLng: this.getPosition()});
+                return;
+            }
+            set.apply(this, arguments);
+        }
+    }
+
+    function IsNumeric(input)
+    {
+        return (input - 0) == input && (''+input).trim().length > 0;
+    }
+
+
+    function GetCoordinates() {
+
+        var myLatlng;
+
+        if($.isNumeric($('#dLatitude').val()) && $.isNumeric($('#dLongitude').val())){
+            myLatlng = new google.maps.LatLng($('#dLatitude').val(), $('#dLongitude').val());
+        }
+        else
+        {
+            myLatlng = new google.maps.LatLng(@Model.dLatitude, @Model.dLongitude);
+        }
+        var myOptions = {
+            center: myLatlng,
+            zoomControl:true,
+            mapTypeControl:true,
+            scaleControl:true,
+            streetViewControl:true,
+            overviewMapControl:true,
+            zoom: zoomLebel,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+
+        var  map = new google.maps.Map(document.getElementById('googleMap'), myOptions);
+
+        var marker = new google.maps.Marker({
+            position: myLatlng,
+            title:"Click to view info!"
+        });
+
+        disablePOIInfoWindow(map);
+
+        marker.setMap(map);
+
+
+        google.maps.event.addListener(map, "click", function (e) {
+            marker.setMap(null);
+            var latLng = e.latLng;
+            marker = new google.maps.Marker({ position: e.latLng, map: map });
+            $('#dLatitude').val(latLng.lat().toFixed(10));
+            $('#dLongitude').val(latLng.lng().toFixed(10))
+        });
+
+        google.maps.event.addListener(map, 'zoom_changed', function() {
+            zoomLebel = map.getZoom();
+        });
+    }
+</script>
+<script>
+
+    $(function () {
+
+        $('.field-validation-valid').parent('div').removeClass('has-error')
+        $('.field-validation-error').parent('div').addClass('has-error')
+
+
+        $('#locationsnew').autocomplete({
+            serviceUrl: '/Property/GetLocations'
+        });
+
+
+        //On Country selection
+        $("#iCountryId").change(function () {
+            var ddlsource = "#iCountryId";
+            var ddltarget = "#iStateId";
+            if ($(ddlsource).val() != '') {
+                var url = '@Url.Content("/")' + "Property/BindStates";
+                $.getJSON(url, { id: $(ddlsource).val() }, function (data) {
+                    $(ddltarget).empty();
+                    $.each(data.suggestions, function (index, optionData) {
+                        $(ddltarget).append("<option value='" + optionData.iStateId + "'>" + optionData.sState + "</option>");
+                    });
+
+                });
+            }
+            else {
+                $(ddltarget).empty();
+            }
+        });
+        //On State selection
+        $("#iStateId").change(function () {
+            var ddlsource = "#iStateId";
+            var ddltarget = "#iCityId";
+            if ($(ddlsource).val() != '') {
+                var url = '@Url.Content("/")' + "Property/BindCity";
+                $.getJSON(url, { id: $(ddlsource).val() }, function (data) {
+                    $(ddltarget).empty();
+                    $.each(data.suggestions, function (index, optionData) {
+                        $(ddltarget).append("<option value='" + optionData.iCityId + "'>" + optionData.sCity + "</option>");
+                    });
+
+                });
+            }
+            else {
+                $(ddltarget).empty();
+            }
+        });
+
+        $('#myform').submit(function(e){
+
+            if(!$(this).valid())
+            {
+                $('.overlay').hide();
+                return false;
+            }
+
+        });
+    });
+</script>
+
+
+
+@using (Html.BeginForm("Modify", "Property", FormMethod.Post, new { ReturnUrl = ViewBag.ReturnUrl, id = "myform", role = "form" }))
+{
+
+
+    @Html.HiddenFor(u => u.iPropId);
+    @Html.HiddenFor(u => u.dtActionDate);
+    @Html.HiddenFor(u => u.cStatus);
+    @Html.Hidden("InitialHotelName", Model.sHotelName)
+    @Html.HiddenFor(u => u.sHotelName)
+    @Html.HiddenFor(u => u.iChainId)
+    @Html.HiddenFor(u => u.iCountryId)
+    @Html.HiddenFor(u => u.iStateId)
+    @Html.HiddenFor(u => u.iCityId)
+    @Html.HiddenFor(u => u.iAreaId)
+    @Html.HiddenFor(u => u.iLocalityId)
+    @Html.HiddenFor(u => u.sviewType);
+
+    @Html.HiddenFor(u => u.dMinIncome)
+    @Html.HiddenFor(u => u.dtMinIncomeActionDate)
+    @Html.HiddenFor(u => u.iMinIncomeActionBy);
+    
+    <div id="accordion">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                        Basic Property Details
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-xs-6 ">
+                            <div>
+                                Name of Hotel <span class="star">*</span>
+                                @Html.TextBoxFor(m => m.sHotelNameO, new { type = "text", @class = "form-control", maxlength = "50", disabled = "disabled" })
+                            </div>
+                        </div>
+
+                        <div class="col-xs-4">
+                            Chain
+                            @Html.DropDownListFor(m => m.iChainIdO, new SelectList(OneFineRateBLL.Entities.BL_Chains.GetAllChains(), "iChainID", "sChainName"), "", new { @class = "form-control", disabled = "disabled" })
+                        </div>
+                        <div class="col-xs-2">
+                            Currency
+                            @Html.DropDownListFor(m => m.iCurrencyId, new SelectList(OneFineRateBLL.BL_Currency.GetAllRecords(), "iCurrencyId", "sCurrencyCode"), "", new { @class = "form-control", required = "true" })
+
+
+                        </div>
+                        <div class="col-md-12"><span class="pull-right red"> @Html.ValidationMessageFor(m => m.iCurrencyId)</span></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-2">
+                            Star Category <span class="star">*</span>
+                            @Html.DropDownListFor(m => m.iStarCategoryId, new SelectList(OneFineRateBLL.BL_tblStarCategoryM.GetAllRecords(), "iStarCategoryID", "sStarCategory"), "", new { @class = "form-control", required = "true" })
+
+                        </div>
+
+                        <div class="col-xs-3">
+                            Type of Accommodation <span class="star">*</span>
+                            @Html.DropDownListFor(m => m.iAccomodationId, new SelectList(OneFineRateBLL.BL_tblAccomodationM.GetAllRecords(), "iAccomodationId", "sAccomodation"), "", new { @class = "form-control", required = "true" })
+
+                        </div>
+                        <div class="col-xs-2">
+                            No. of Rooms <span class="star">*</span>
+                            @Html.TextBoxFor(m => m.iRooms, new { type = "text", required = true, @class = "form-control iNumberLength3", maxlength = "3" })
+
+                        </div>
+
+                        <div class="col-xs-2">
+                            No. of Floors
+                            @Html.TextBoxFor(m => m.iFloors, new { type = "text", @class = "form-control iNumberLength3", maxlength = "3" })
+
+                        </div>
+                        <div class="col-xs-3">
+                            No. of Tower/ Buildings
+                            @Html.TextBoxFor(m => m.iTower, new { type = "text", @class = "form-control width60 iNumberLength3", maxlength = "3" })
+
+                        </div>
+                        <div class="col-md-12 red">
+                            @Html.ValidationMessageFor(m => m.iStarCategoryId)
+                            @Html.ValidationMessageFor(m => m.iAccomodationId)
+                            @Html.ValidationMessageFor(m => m.iRooms)
+                            @Html.ValidationMessageFor(m => m.iFloors)
+                            @Html.ValidationMessageFor(m => m.iTower)
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-2">
+                            Year of built <span class="star">*</span>
+                            @Html.TextBoxFor(m => m.iYearBuilt, new { type = "text", required = true, @class = "form-control iNumberLength4", maxlength = "4" })
+
+                        </div>
+                        <div class="col-xs-2">
+                            Last Renovation
+                            @Html.TextBoxFor(m => m.iLastRenovation, new { type = "text", @class = "form-control iNumberLength4", maxlength = "4" })
+
+                        </div>
+                        <div class="col-xs-8">
+                            <div>
+                                Street Address <span class="star">*</span>
+                                @Html.TextBoxFor(m => m.sAddress, new { required = true, @class = "form-control ", rows = "4", maxlength = "100" })
+                                @Html.ValidationMessageFor(m => m.sAddress, "", new { @class = "red" })
+                            </div>
+                        </div>
+                        <div class="col-md-12 red">
+                            @Html.ValidationMessageFor(m => m.iYearBuilt) &nbsp; &nbsp;
+                            @Html.ValidationMessageFor(m => m.iLastRenovation)
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3">
+                            Country
+                            @Html.DropDownListFor(m => m.iCountryIdO, new SelectList(OneFineRateBLL.BL_Country.GetAllRecords(), "iCountryId", "sCountry"), "", new { @class = "form-control", disabled = "disabled" })
+                        </div>
+
+                        <div class="col-xs-3">
+                            State
+                            @Html.DropDownListFor(m => m.iStateIdO, new SelectList(Model.StateList, "Value", "Text"), new { @class = "form-control", disabled = "disabled" })
+                        </div>
+                        <div class="col-xs-3">
+                            City
+                            @Html.DropDownListFor(m => m.iCityIdO, new SelectList(Model.CityList, "Value", "Text"), new { @class = "form-control", disabled = "disabled" })
+                        </div>
+                        <div class="col-xs-3">
+                            Area
+                            @Html.DropDownListFor(m => m.iAreaIdO, new SelectList(Model.AreaList, "Value", "Text"), new { @class = "form-control", disabled = "disabled", id = "ddlAreaId" })
+                        </div>
+                        <div class="col-xs-3">
+                            Primary Locality
+                            @Html.DropDownListFor(m => m.iLocalityIdO, new SelectList(Model.LocalityList, "Value", "Text"), new { @class = "form-control", disabled = "disabled" })
+                        </div>
+
+                        <div class="col-xs-2">
+                            Pincode
+                            @Html.TextBoxFor(m => m.iPinCode, new { type = "text", @class = "form-control iNumberLength10", maxlength = "10" })
+                            @Html.ValidationMessageFor(m => m.iPinCode, "", new { @class = "red" })
+                        </div>
+
+                        <div class="col-xs-3 col-md-offset-1">
+                            Longitude <span class="star">*</span>
+                            @Html.TextBoxFor(m => m.dLatitude, new { type = "text", onblur = "GetCoordinates();", @class = "form-control dNumberLength20", pattern = @"\((?<lat>[-\d.]+),(?<long>[-\d.]+)\)", maxlength = "20", required = "true" })
+                            @Html.ValidationMessageFor(m => m.dLatitude, "", new { @class = "red" })
+                        </div>
+                        <div class="col-xs-3">
+                            Latitude <span class="star">*</span>
+                            @Html.TextBoxFor(m => m.dLongitude, new { type = "text", onblur = "GetCoordinates();", @class = "form-control dNumberLength20", pattern = @"\((?<lat>[-\d.]+),(?<long>[-\d.]+)\)", maxlength = "20", required = "true" })
+                            @Html.ValidationMessageFor(m => m.dLongitude, "", new { @class = "red" })
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            Website <span class="star">*</span>
+                            @Html.TextBoxFor(m => m.sWebSite, new { type = "text", @class = "form-control", maxlength = "200", placeholder = "http://www.example.com", required = "true" })
+                            <b>Example:</b>  http://onefinerate.com  |  https://onefinerate.com <br/>
+                            
+                            @Html.ValidationMessageFor(m => m.sWebSite, "", new { @class = "red" })
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-xs-12 margintop10">
+                            <div id="googleMap" style=" width:auto;height:180px;"></div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            Description <span class="star">*</span>
+                            @Html.TextAreaFor(m => m.sDescription, new { @class = "form-control", rows = "7", maxlength = "5000" })
+                            @Html.ValidationMessageFor(m => m.sDescription, "", new { @class = "red" })
+                            <span class="alerttext">(Max Characters 5000)</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 margintop10">
+                            <div class="row ">
+                                <div class="col-xs-12">
+                                    <b>Secondary Localities/ Areas</b>
+                                    <br>
+                                    <input type="hidden" id="hdnSelectedLocalityID" />
+                                    <input type="hidden" id="hdnSelectedLocalityName" />
+                                    <div class="row">
+                                        <div class="col-xs-4">
+                                            <input id="txtLocalityArea" class="autosuggest form-control" maxlength="40" />
+                                        </div>
+                                        <div class="col-xs-4">
+                                            <a class="btn btn-info" id="btnAddLocality"> <i class="fa  fa-plus-circle"> </i> Add/Save Locality</a>
+                                        </div>
+                                        <div class="col-xs-4"></div>
+                                    </div>
+
+
+                                    <div id="dvLocalityGrid"></div>
+                                    @Html.HiddenFor(x => x.SelectPrimaryLocalities, new { id = "hdnJsonLocalityGrid" })
+                                </div>
+                            </div>
+                            @*<div class="row">
+                                    <div class="col-xs-10">
+                                        Locality 1
+                                        <input type="text" name="textfield" class="form-control ">
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <br />
+                                        <a href="javascript:void(0)" class="btn btn-xs btn-danger "><i class="fa fa-times "></i></a>
+                                    </div>
+                                </div>*@
+                        </div>
+                        <div class="col-xs-12 nearbybg  margintop10">
+                            <div class="subheadcolor"><h4>Nearby Places</h4></div>
+                            <hr />
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-xs-8"><b> Distance to Airport/ Railway Station </b> </div><div class="col-xs-4"><b> Distance in km </b></div>
+                                    <div class="col-xs-8 marginbottom10">
+                                        @Html.TextBoxFor(m => m.sDistanceToAirportRailway1, new { @class = "form-control", maxlength = "40", placeholder = "Distance To Airport/ Railway" })
+                                        @Html.ValidationMessageFor(m => m.sDistanceToAirportRailway1, "", new { @class = "redabsolute" })
+                                        @Html.ValidationMessageFor(m => m.dDistanceToAirportRailway1, "", new { @class = "redabsolute" })
+                                    </div>
+                                    <div class="col-xs-4  marginbottom10">
+                                        @Html.TextBoxFor(m => m.dDistanceToAirportRailway1, new Dictionary<string, object> { { "data-val", false }, { "class", "form-control txtOnlyDecimalAllowed" } })
+                                        @Html.ValidationMessageFor(m => m.sDistanceToAirportRailway1, "", new { @class = "redabsolute" })
+                                        @Html.ValidationMessageFor(m => m.dDistanceToAirportRailway1, "", new { @class = "redabsolute" })
+                                    </div>
+                                    <div class="col-xs-8  marginbottom10">
+                                        @Html.TextBoxFor(m => m.sDistanceToAirportRailway2, new { @class = "form-control", maxlength = "40", placeholder = "Distance To AirportRailway" })
+                                        @Html.ValidationMessageFor(m => m.sDistanceToAirportRailway2, "", new { @class = "redabsolute" })
+                                        @Html.ValidationMessageFor(m => m.dDistanceToAirportRailway2, "", new { @class = "redabsolute" })
+                                    </div>
+                                    <div class="col-xs-4  marginbottom10">
+                                        @Html.TextBoxFor(m => m.dDistanceToAirportRailway2, new Dictionary<string, object> { { "data-val", false }, { "class", "form-control txtOnlyDecimalAllowed" } })
+                                        @Html.ValidationMessageFor(m => m.sDistanceToAirportRailway2, "", new { @class = "redabsolute" })
+                                        @Html.ValidationMessageFor(m => m.dDistanceToAirportRailway2, "", new { @class = "redabsolute" })
+                                    </div>
+                                    <div class="col-xs-8  marginbottom10">
+                                        @Html.TextBoxFor(m => m.sDistanceToAirportRailway3, new { @class = "form-control", maxlength = "40", placeholder = "Distance To AirportRailway" })
+                                        @Html.ValidationMessageFor(m => m.sDistanceToAirportRailway3, "", new { @class = "redabsolute" })
+                                        @Html.ValidationMessageFor(m => m.dDistanceToAirportRailway3, "", new { @class = "redabsolute" })
+                                    </div>
+                                    <div class="col-xs-4  marginbottom10">
+                                        @Html.TextBoxFor(m => m.dDistanceToAirportRailway3, new Dictionary<string, object> { { "data-val", false }, { "class", "form-control txtOnlyDecimalAllowed" } })
+                                        @Html.ValidationMessageFor(m => m.sDistanceToAirportRailway3, "", new { @class = "redabsolute" })
+                                        @Html.ValidationMessageFor(m => m.dDistanceToAirportRailway3, "", new { @class = "redabsolute" })
+                                    </div>
+                                    @*<div class="col-xs-8  marginbottom10">
+                        @Html.TextBoxFor(m => m.sDistanceToAirportRailway4, new { @class = "form-control", maxlength = "40", placeholder = "DistanceToAirportRailway4" })
+                    </div>
+                    <div class="col-xs-4  marginbottom10">
+                        @Html.TextBoxFor(m => m.dDistanceToAirportRailway4, new { @class = "form-control txtOnlyDecimalAllowed" })
+                    </div>
+                    <div class="col-xs-8  marginbottom10">
+                        @Html.TextBoxFor(m => m.sDistanceToAirportRailway5, new { @class = "form-control", maxlength = "40", placeholder = "DistanceToAirportRailway5" })
+                    </div>
+                    <div class="col-xs-4  marginbottom10">
+                        @Html.TextBoxFor(m => m.dDistanceToAirportRailway5, new { @class = "form-control txtOnlyDecimalAllowed" })
+                    </div>
+                    <div class="col-xs-8  marginbottom10">
+                        @Html.TextBoxFor(m => m.sDistanceToAirportRailway6, new { @class = "form-control", maxlength = "40", placeholder = "DistanceToAirportRailway6" })
+                    </div>
+                    <div class="col-xs-4  marginbottom10">
+                        @Html.TextBoxFor(m => m.dDistanceToAirportRailway6, new { @class = "form-control txtOnlyDecimalAllowed" })
+                    </div>
+                    <div class="col-xs-8  marginbottom10">
+                        @Html.TextBoxFor(m => m.sDistanceToAirportRailway7, new { @class = "form-control", maxlength = "40", placeholder = "DistanceToAirportRailway7" })
+                    </div>
+                    <div class="col-xs-4  marginbottom10">
+                        @Html.TextBoxFor(m => m.dDistanceToAirportRailway7, new { @class = "form-control txtOnlyDecimalAllowed" })
+                    </div>
+                    <div class="col-xs-8  marginbottom10">
+                        @Html.TextBoxFor(m => m.sDistanceToAirportRailway8, new { @class = "form-control", maxlength = "40", placeholder = "DistanceToAirportRailway8" })
+                    </div>
+                    <div class="col-xs-4  marginbottom10">
+                        @Html.TextBoxFor(m => m.dDistanceToAirportRailway8, new { @class = "form-control txtOnlyDecimalAllowed" })
+                    </div>*@
+                                </div>
+                            </div>
+                            <div class="col-md-6" style=" border-left: 1px dashed #333; ">
+
+                                <div class="row">
+                                    <div class="col-xs-8"><b> Nearest Transport </b> </div><div class="col-xs-4"> <b>Distance in km </b></div>
+                                    <div class="col-xs-8 marginbottom10">
+                                        @Html.TextBoxFor(m => m.sNearestTransport1, new { @class = "form-control", maxlength = "40", placeholder = "Nearest Transport" })
+                                        @Html.ValidationMessageFor(m => m.sNearestTransport1, "", new { @class = "redabsolute" })
+                                        @Html.ValidationMessageFor(m => m.dNearestTransport1, "", new { @class = "redabsolute" })
+                                    </div>
+                                    <div class="col-xs-4  marginbottom10">
+                                        @Html.TextBoxFor(m => m.dNearestTransport1, new Dictionary<string, object> { { "data-val", false }, { "class", "form-control txtOnlyDecimalAllowed" } })
+                                        @Html.ValidationMessageFor(m => m.sNearestTransport1, "", new { @class = "redabsolute" })
+                                        @Html.ValidationMessageFor(m => m.dNearestTransport1, "", new { @class = "redabsolute" })
+                                    </div>
+                                    <div class="col-xs-8  marginbottom10">
+                                        @Html.TextBoxFor(m => m.sNearestTransport2, new { @class = "form-control", maxlength = "40", placeholder = "Nearest Transport" })
+                                        @Html.ValidationMessageFor(m => m.sNearestTransport2, "", new { @class = "redabsolute" })
+                                        @Html.ValidationMessageFor(m => m.dNearestTransport2, "", new { @class = "redabsolute" })
+                                    </div>
+                                    <div class="col-xs-4  marginbottom10">
+                                        @Html.TextBoxFor(m => m.dNearestTransport2, new Dictionary<string, object> { { "data-val", false }, { "class", "form-control txtOnlyDecimalAllowed" } })
+                                        @Html.ValidationMessageFor(m => m.sNearestTransport2, "", new { @class = "redabsolute" })
+                                        @Html.ValidationMessageFor(m => m.dNearestTransport2, "", new { @class = "redabsolute" })
+                                    </div>
+                                    <div class="col-xs-8  marginbottom10">
+                                        @Html.TextBoxFor(m => m.sNearestTransport3, new { @class = "form-control", maxlength = "40", placeholder = "Nearest Transport" })
+                                        @Html.ValidationMessageFor(m => m.sNearestTransport3, "", new { @class = "redabsolute" })
+                                        @Html.ValidationMessageFor(m => m.dNearestTransport3, "", new { @class = "redabsolute" })
+                                    </div>
+                                    <div class="col-xs-4  marginbottom10">
+                                        @Html.TextBoxFor(m => m.dNearestTransport3, new Dictionary<string, object> { { "data-val", false }, { "class", "form-control txtOnlyDecimalAllowed" } })
+                                        @Html.ValidationMessageFor(m => m.sNearestTransport3, "", new { @class = "redabsolute" })
+                                        @Html.ValidationMessageFor(m => m.dNearestTransport3, "", new { @class = "redabsolute" })
+                                    </div>
+                                    @*<div class="col-xs-8  marginbottom10">
+                        @Html.TextBoxFor(m => m.sNearestTransport4, new { @class = "form-control", maxlength = "40", placeholder = "NearestTransport4" })
+                    </div>
+                    <div class="col-xs-4  marginbottom10">
+                        @Html.TextBoxFor(m => m.dNearestTransport4, new { @class = "form-control txtOnlyDecimalAllowed" })
+                    </div>*@
+                                </div>
+
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-xs-12"> <b>Top Attractions in the area </b> </div>
+                                    <div class="col-xs-12 marginbottom10">
+                                        @Html.TextBoxFor(m => m.sTopAttraction1, new { @class = "form-control", maxlength = "40", placeholder = "Top Attraction" })
+                                    </div>
+
+                                    <div class="col-xs-12  marginbottom10">
+                                        @Html.TextBoxFor(m => m.sTopAttraction2, new { @class = "form-control", maxlength = "40", placeholder = "Top Attraction" })
+                                    </div>
+
+                                    <div class="col-xs-12  marginbottom10">
+                                        @Html.TextBoxFor(m => m.sTopAttraction3, new { @class = "form-control", maxlength = "40", placeholder = "Top Attraction" })
+                                    </div>
+                                    @*<div class="col-xs-12  marginbottom10">
+                        @Html.TextBoxFor(m => m.sTopAttraction4, new { @class = "form-control", maxlength = "40", placeholder = "TopAttraction4" })
+                    </div>*@
+                                </div>
+                            </div>
+                            <div class="col-md-6" style=" border-left: 1px dashed #333; ">
+                                <div class="row">
+                                    <div class="col-xs-12"><b> Area Recommended for </b></div>
+
+                                    <div class="col-xs-12 marginbottom10">
+                                        @Html.TextBoxFor(m => m.sAreaRecommended1, new { @class = "form-control", maxlength = "100", placeholder = "Area Recommended" })
+                                    </div>
+                                    <div class=" col-xs-12 marginbottom10">
+                                        @Html.TextBoxFor(m => m.sAreaRecommended2, new { @class = "form-control", maxlength = "100", placeholder = "Area Recommended" })
+                                    </div>
+                                    <div class="col-xs-12 marginbottom10">
+                                        @Html.TextBoxFor(m => m.sAreaRecommended3, new { @class = "form-control", maxlength = "100", placeholder = "Area Recommended" })
+                                    </div>
+                                    @*<div class="col-xs-12 marginbottom10">
+                        @Html.TextBoxFor(m => m.sAreaRecommended4, new { @class = "form-control", placeholder = "AreaRecommended4" })
+                    </div>*@
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- contact detail -->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="subheadcolor"><h4>Contact Details</h4></div>
+                            <hr />
+                        </div>
+                        <div class="col-xs-4">
+                            General Manager Name
+                            @Html.TextBoxFor(m => m.sGeneralManagerName, new { type = "text", maxlength = "50", @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.sGeneralManagerName, "", new { @class = "red" })
+                        </div>
+                        <div class="col-xs-3">
+                            Contact Number
+                            @Html.TextBoxFor(m => m.sGeneralManagerContact, new { type = "text", maxlength = "15", @class = "form-control iNumberLength15" })
+                            @Html.ValidationMessageFor(m => m.sGeneralManagerContact, "", new { @class = "red" })
+                        </div>
+                        <div class="col-xs-5">
+                            Email Address
+                            @Html.TextBoxFor(m => m.sGeneralManagerEmail, new { type = "email", maxlength = "250", @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.sGeneralManagerEmail, "", new { @class = "red" })
+                        </div>
+                        <div class="col-xs-4">
+                            Revenue Manager Name
+                            @Html.TextBoxFor(m => m.sRevenueManagerName, new { type = "text", maxlength = "50", @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.sRevenueManagerName, "", new { @class = "red" })
+                        </div>
+                        <div class="col-xs-3">
+                            Contact Number
+                            @Html.TextBoxFor(m => m.sRevenueManagerContact, new { type = "text", maxlength = "15", @class = "form-control iNumberLength15" })
+                            @Html.ValidationMessageFor(m => m.sRevenueManagerContact, "", new { @class = "red" })
+                        </div>
+                        <div class="col-xs-5">
+                            Email Address
+                            @Html.TextBoxFor(m => m.sRevenueManagerEmail, new { type = "email", maxlength = "250", @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.sRevenueManagerEmail, "", new { @class = "red" })
+                        </div>
+
+
+
+                        <div class="col-xs-4">
+                            Finance Contact Person <span class="star">*</span>
+                            @Html.TextBoxFor(m => m.sFinanceContactName, new { type = "text", maxlength = "50", required = true, @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.sFinanceContactName, "", new { @class = "red" })
+                        </div>
+                        <div class="col-xs-3">
+                            Finance Contact Number <span class="star">*</span>
+                            @Html.TextBoxFor(m => m.sFinanceContactContact, new { type = "text", maxlength = "15", required = true, @class = "form-control iNumberLength15" })
+                            @Html.ValidationMessageFor(m => m.sFinanceContactContact, "", new { @class = "red" })
+                        </div>
+                        <div class="col-xs-5">
+                            Finance Email Address <span class="star">*</span>
+                            @Html.TextBoxFor(m => m.sFinanceContactEmail, new { type = "email", maxlength = "250", required = true, @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.sFinanceContactEmail, "", new { @class = "red" })
+                        </div>
+                    </div>
+                    <!-- contact detail end -->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="subheadcolor"><h4>Primary Contact Details</h4></div>
+                            <hr />
+                        </div>
+                        <div class="col-xs-4">
+                            Name <span class="star">*</span>
+                            @Html.TextBoxFor(m => m.sPrimaryContactName, new { type = "text", maxlength = "50", required = true, @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.sPrimaryContactName, "", new { @class = "red" })
+                        </div>
+                        <div class="col-xs-3">
+                            Contact Number <span class="star">*</span>
+                            @Html.TextBoxFor(m => m.sPrimaryContactContact, new { type = "text", maxlength = "15", required = true, @class = "form-control iNumberLength15" })
+                            @Html.ValidationMessageFor(m => m.sPrimaryContactContact, "", new { @class = "red" })
+                        </div>
+                        <div class="col-xs-5">
+                            Email Address <span class="star">*</span>
+                            @Html.TextBoxFor(m => m.sPrimaryContactEmail, new { type = "email", maxlength = "250", required = true, @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.sPrimaryContactEmail, "", new { @class = "red" })
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="subheadcolor"><h4>Confirmation/amendment/cancellation to be sent</h4></div>
+                            <hr />
+                        </div>
+                        <div class="col-xs-4">
+                            Name <span class="star">*</span>
+                            @Html.TextBoxFor(m => m.sConfirmationContactName, new { type = "text", maxlength = "50", required = true, @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.sConfirmationContactName, "", new { @class = "red" })
+                        </div>
+                        <div class="col-xs-3">
+                            Contact Number <span class="star">*</span>
+                            @Html.TextBoxFor(m => m.sConfirmationContactContact, new { type = "text", maxlength = "15", required = true, @class = "form-control iNumberLength15" })
+                            @Html.ValidationMessageFor(m => m.sConfirmationContactContact, "", new { @class = "red" })
+                        </div>
+                        <div class="col-xs-5">
+                            Email Address <span class="star">*</span>
+                            @Html.TextBoxFor(m => m.sConfirmationContactEmail, new { type = "email", maxlength = "250", required = true, @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.sConfirmationContactEmail, "", new { @class = "red" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- Panel 1 div END  -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                        Accessibility
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseTwo" class="panel-collapse collapse">
+                <div class="panel-body">
+                    @{ var putCheckBoxesIntoTable = new HtmlListInfo(HtmlTag.table, 3, new { style = "width:100%;" }, TextLayout.Default, TemplateIsUsed.No); }
+                    @Html.CheckBoxListFor(m => m.SelectedAccessbility, m => m.AccessbilityItems,
+                    group => group.Value,
+                    group => group.Text,
+                    m => m.Selected,
+                    putCheckBoxesIntoTable)
+                </div>
+            </div>
+
+        </div>
+        <!-- Panel 2 div END  -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                        Awards and Certifications
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseThree" class="panel-collapse collapse">
+                <div class="panel-body">
+                    @Html.CheckBoxListFor(m => m.SelectedAwards, m => m.AwardsItems,
+                    group => group.Value,
+                    group => group.Text,
+                    m => m.Selected,
+                    putCheckBoxesIntoTable)
+                </div>
+            </div>
+
+        </div>
+        <!-- Panel 3 div END  -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
+                        Affiliations
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseFour" class="panel-collapse collapse">
+                <div class="panel-body">
+                    @Html.CheckBoxListFor(m => m.SelectedAffilations, m => m.AffilationItems,
+                    group => group.Value,
+                    group => group.Text,
+                    m => m.Selected,
+                      putCheckBoxesIntoTable)
+                </div>
+            </div>
+
+        </div>
+        <!-- Panel 4 div END  -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseFive">
+                        Languages Spoken
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseFive" class="panel-collapse collapse">
+                <div class="panel-body">
+                    @{ var putCheckBoxesIntoTable1 = new HtmlListInfo(HtmlTag.table, 3, new { style = "width:60%;" }, TextLayout.Default, TemplateIsUsed.No); }
+                    @Html.CheckBoxListFor(m => m.SelectedLanguages, m => m.LanguagesItems,
+                    group => group.Value,
+                    group => group.Text,
+                    m => m.Selected,
+                    putCheckBoxesIntoTable1)
+                </div>
+            </div>
+
+        </div>
+        <!-- Panel 4 div END  -->
+        <br />
+        <div class="row pull-right">
+            <div class="col-xs-12 marginbottom10">
+                <input name="" type="submit" class="btn btn-primary" value="Save">
+            </div>
+
+        </div>
+
+    </div>
+}
+<!-- Panel group div END  -->
+
+<script>
+    var txtOnlyDecimalAllowed = document.getElementsByClassName('txtOnlyDecimalAllowed');
+
+    for (var i = 0; i < txtOnlyDecimalAllowed.length; i++) {
+
+        txtOnlyDecimalAllowed[i].addEventListener('input', function (prev) {
+            return function (evt) {
+                if (!/^\d{0,3}(?:\.\d{0,3})?$/.test(this.value)) {
+                    this.value = prev;
+                }
+                else {
+                    prev = this.value;
+                }
+            };
+        }(txtOnlyDecimalAllowed[i].value), false);
+
+    }
+</script>

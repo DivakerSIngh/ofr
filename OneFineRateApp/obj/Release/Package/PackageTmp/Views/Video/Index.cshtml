@@ -1,0 +1,185 @@
+﻿@model OneFineRateBLL.Entities.eVideo
+@{
+    ViewBag.Title = "Video";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        try
+        {
+            var v = @Html.Raw(Json.Encode(TempData["Error"]));
+            if(v != null){
+                toastr.error(v);
+            }
+
+
+            //Inserting data through Ajax
+            $('#frmVideo').submit(function (e) {
+                e.preventDefault();
+                var f = document.getElementById('frmVideo');
+                if (f.checkValidity()) {
+                    if ($("#sVideoUrl").val() == "") {
+                        toastr.info("Please enter Video Url.");
+                        return false;
+                    }
+
+                    var $file = document.getElementById('file'),
+                    $formData = new FormData();
+
+                    if ($file.files.length > 0) {
+                        for (var i = 0; i < $file.files.length; i++) {
+                            $formData.append('file-' + i, $file.files[i]);
+                            
+                        }
+                    }
+
+                    // check hght and wdth of image
+
+                    var values = {
+                        sVideoUrl: $("#sVideoUrl").val(),
+                        Id: $("#Id").val()
+                    };
+                    var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("UpdateVideo")", values));
+                    if (Data != null) {
+                        if (Data.st == '1') {
+                            if ($file.files.length > 0) {
+                                document.getElementById('Progress').style.display = 'block';
+                                $.ajax({
+                                    url: "@Url.Action("UpdateFile")",
+                                    type: 'POST',
+                                    data: $formData,
+                                    dataType: 'json',
+                                    contentType: false,
+                                    processData: false,
+                                    success: function (data) {
+                                        toastr.success(Data.msg);
+                                        setTimeout(function () {
+                                            window.location.href="/Video";
+                                        },1000);
+                                    },
+                                    error: function (x, e) {
+                                        toastr.success(Data.msg);
+                                        setTimeout(function () {
+                                            window.location.href="/Video";
+                                        },1000);
+                                    }
+                                });
+                            }
+                            else{
+                                toastr.success(Data.msg);
+                            }
+                        }
+                        else if (Data.st == '0') {
+                            toastr.error(Data.msg);
+                            return false;
+                        }
+                    }
+                }
+            });
+
+            GetImageURL();
+
+        }
+        catch(e){};
+    });
+
+    function GetImageURL(){
+        var values = {};
+        var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("GetVideoURL")", values));
+        if (Data != null) {
+            if (Data.st == '1') {
+                $('#Videoimg').prop("src",Data.msg);
+            }
+        }
+    }
+
+    function readURL(input) {
+
+        var prevImageUrl = $('#Videoimg').attr('src');
+
+        if (IsValidImage(input)) {
+
+            var _URL = window.URL || window.webkitURL;
+            if (input.files && input.files[0]) {
+                var file, img;
+                if ((file = input.files[0])) {
+                    img = new Image();
+                    img.onload = function () {
+                        if (this.height != 360) { //|| this.width < 165
+                            $(input).val(null);
+                            //$('#Videoimg').attr('src', 'http://placehold.it/290');
+                            //toastr.error('The height of file is less than 290px')
+                            toastr.error('The height of file is ' + this.height + 'px. It should be 360px');
+                            
+                            setTimeout(function(){
+                    
+                                $('#Videoimg').attr('src', prevImageUrl);
+
+                            },1000)
+                        }
+                    };
+                    var src = _URL.createObjectURL(file);
+                    img.src = src
+                    $('#Videoimg').attr('src', src);
+                }
+            }
+        }
+        else {
+            $(input).val(null);
+        }
+    }
+
+    function IsValidImage(fileUploadId) {
+        var ext = $(fileUploadId).val().split('.').pop().toLowerCase(); 
+        if(ext==''){
+            return false;
+        }
+        if ($.inArray(ext, ['gif', 'png', 'jpg', 'jpeg']) == -1) {
+            toastr.error('Only jpg , jpeg , gif , png images are allowed !')
+            return false;
+        }
+        return true;
+    }
+</script>
+<form id="frmVideo">
+    <div class="container margintop20">
+        <div class="row panel panel-default">
+            <div class="container panel-heading">
+                <div class="col-md-6">
+                    <h4 class="panel-title">
+                        Video Management
+                    </h4>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label>      Video URL   </label>
+                @Html.TextBoxFor(m => m.sVideoUrl, new { @class = "form-control", placeholder = "Video URL", oninvalid = "setCustomValidity('Please enter video URL')", onchange = "try{setCustomValidity('')}catch(e){}", pattern = @"^http(s?)\:\/\/[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([=a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%\$#_]*)?$", maxlength = "200", required = true })
+                @Html.HiddenFor(m => m.Id)
+              
+                   
+                </div>
+
+            <div class="col-md-6">
+                <label>      Image   </label><br />
+                <div class="col-md-12">
+                    <img id="Videoimg" src="" height="200" width="250" alt="Image For Video" />
+                </div>
+                <div class="col-md-12">
+                    <input type="file" id="file" name="pic" accept="image/*" onchange="readURL(this)">
+                </div>
+                <ul >
+                    <li class="red" style="line-height:14px; font-size:11px;">
+                        *Valid height : 360px<br>
+                        *Supported file formats: jpg, jpeg, gif and png <br>
+                    </li>
+                </ul>
+            </div>
+                <!-- container div END bottom -->
+           
+            </div>
+    </div>
+    <div class="col-md-12">
+        <button type="submit" id="btnSubmit" class="btn btn-primary pull-right">SAVE</button>
+    </div>
+</form>

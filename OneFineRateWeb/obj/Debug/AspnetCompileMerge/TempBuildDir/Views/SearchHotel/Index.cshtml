@@ -1,0 +1,238 @@
+﻿@model OneFineRateWeb.ViewModels.PropDetailsForBooking
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    
+}
+
+
+<link rel="stylesheet" id="themeCSS" href="../css/classic.css">
+<link rel="stylesheet" href="../css/styleSlider.css">
+
+<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
+
+@System.Web.Optimization.Scripts.Render("~/bundles/Slider")
+
+
+<link href="../css/jquery-ui.css" rel="stylesheet" />
+
+
+<style>
+    .autoCompleteList {
+        width: 100%;
+        position: absolute;
+        z-index: 2;
+    }
+</style>
+
+<!--top header-->
+@using (Html.BeginForm("Modify", "SearchHotel", FormMethod.Get, new { id = "frmRatePlan", role = "form" }))
+{
+    @Html.Hidden("iLocalityId")
+    <div class="container-wrapper">
+        <!--next section-starts here-->
+        <div class="light_header_bar">
+            <div class="container">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.TextBoxFor(m => m.sLocality, new { name = "Locality", id = "Locality", type = "text", @class = "form-control" })
+                        <input type="hidden" id="iLocalityId" name="iLocalityId" value="" />
+                        <div id="results" class="autoCompleteList"></div>
+                    </div>
+                </div>
+                <div class="col-md-3  col-sm-6 col-xs-6">
+                    <div class="form-group">
+                        @*@Html.TextBoxFor(m => m.PropDetailsList[0].dtCheckIn, new { Value = Model.PropDetailsList[0].dtCheckIn, type = "date", @class = "form-control" })*@
+                    </div>
+                </div>
+                <div class="col-md-3  col-sm-6 col-xs-6">
+                    <div class="form-group">
+                        @*@Html.TextBoxFor(m => m.PropDetailsList[0].dtCheckOut, new { Value = Model.PropDetailsList[0].dtCheckOut, type = "date", @class = "form-control" })*@
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group"><button type="submit" class="btn btn-info">Modify Search</button></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="blue_header_bar">
+            <div class="container">
+                <div>
+                    <div class="col-md-12">
+                        <h4 class="whitetextcolor">Filter By</h4><hr>
+                    </div>
+
+                    <div class="darkbluebg">
+                        <div class="container row">
+                            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                    <label>Price per night</label>
+                                    <div id="sliderPrice" text="Price" style="padding-top:5px;"></div>
+                                    <script>
+                                        $("#sliderPrice").rangeSlider({
+                                            bounds: { min: 500, max: 50000 },
+                                            defaultValues: { min: 500, max: 50000 },
+                                            step: 1,
+                                            scales: 1,
+                                            container: 'sliderPrice'
+                                        });
+                                    </script>
+
+
+
+                                    <div id="slider-range"></div>
+
+                                    <label class="form-inline">
+                                        <input type="checkbox" value="Special Deal" class="checkbox"> Special Deal
+                                    </label>
+
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <label>Star Choice</label>
+                                <div class="row">
+                                    <div id="sliderStar" text="Star" style="padding-top:5px;width:190px;"></div>
+                                    <script>
+                                        $("#sliderStar").rangeSlider({
+                                            bounds: { min: 1, max: 5 },
+                                            defaultValues: { min: 1, max: 5 },
+                                            step: 1,
+                                            scales: 1,
+                                            container: 'sliderStar'
+                                        });
+                                    </script>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-12 col-sm-12  col-xs-12 margintop30">
+                                <div cla="row">
+                                    <div>
+                                        <div class="form-inline">
+                                            <label>Search by Hotels: </label>
+                                            <input type="text" class="form-control marginleft8 marginbottom10" placeholder="Search by Hotels">
+                                            <select class="form-control  marginbottom10">
+                                                <option selected="">Select</option>
+                                                <option>Hotel facility</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div cla="row">
+                                    <div>
+                                        <div class="form-inline">
+                                            <label>Search by Locality: </label>
+                                            <input type="text" class="form-control  marginbottom10" placeholder="Search by Locality">
+                                            <select class="form-control  marginbottom10">
+                                                <option selected="">Select</option>
+                                                <option>Room facility</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="col-lg-1 col-md-12 col-sm-12 margintop50">
+                                <button type="submit" class="btn btn-info marginbottom10   pull-right">Apply Filter</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!--next section-end here-->
+
+        </div>
+        <div class="container">
+            <div class="col-md-12 loyality_infobg margintop-bottom15">
+                <h3 class="text-center"> Loyality Program Information </h3>
+            </div>
+        </div>
+        <div class="container">
+            <div class="margintop5">
+                <div class="col-md-10 col-sm-9 col-xs-12  pull-left loyality_infobg">
+                    <div class="sortlist">
+                        <ul>
+                            <li class="noborder">
+                                <strong>Sort By:</strong>
+                            </li>
+                            <li><a href="#">Price</a></li>
+                            <li class="noborder"><a href="#">Trip Advisor Rating</a>	</li>
+                        </ul>
+
+
+                    </div>
+                </div>
+                <div class="col-md-1 col-sm-2 col-xs-12   pull-right loyality_infobg">
+                    <div class="text-center">Map View</div>
+                </div>
+
+            </div>
+        </div>
+        <div class="container">
+            <div class="col-md-12">
+                <strong class="fontsmall">210 Boutique Hotels near Carol Bagh, New Delhi, India 142 available</strong>
+            </div>
+        </div>
+        @if (Model.PropDetailsList.Count > 0)
+        {
+            if (Model.PropDetailsList.Count > 1)
+            { @Html.Partial("pvHotelDetails");
+            }
+            else
+            {
+                if (Model.PropDetailsList[0].localityName != null && Model.PropDetailsList[0].propName != null)
+                { @Html.Partial("pvHotelDetails");
+                }
+            }
+        }
+    </div>
+}
+
+
+<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
+
+
+<script type="text/javascript">
+    $("#Locality").autocomplete({
+        minLength: 1,
+        source: function (request, response) {
+
+            var result = new Array();
+            $.ajax({
+                async: false,
+                cache: false,
+                type: "POST",
+                url: "@(Url.Action("Autocomplete", "SearchHotel"))",
+                data: { "term": request.term },
+                success: function (data) {
+                    $('#iLocalityId').val("");
+                    for (var i = 0; i < data.length ; i++) {
+                        result[i] = { label: data[i].Value, Id: data[i].Key };
+                    }
+                }
+            });
+            response(result);
+        },
+        select: function (event, ui) {
+            $("#Locality").val(ui.item.label);
+            $("#iLocalityId").val(ui.item.Id);
+            return false;
+        },
+        messages: {
+            noResults: '', results: function () { }
+        },
+        appendTo: "#results"
+    }).focus(function () {
+        $(this).autocomplete("search", "");
+    });
+
+
+
+</script>
+

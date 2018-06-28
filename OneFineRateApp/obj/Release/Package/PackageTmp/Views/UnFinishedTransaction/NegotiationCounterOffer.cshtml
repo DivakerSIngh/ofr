@@ -1,0 +1,620 @@
+﻿@model   OneFineRateBLL.Entities.BalancePaymentModel
+@using OneFineRateAppUtil
+@{
+    ViewBag.Title = "Negotiation Status";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+    var negotiationStatus = ViewBag.StatusType;
+    string statusMessage = ViewBag.Message;
+}
+
+@if (statusMessage == "PC")
+{
+    <div class="alert alert-warning fade in">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+        <strong>Warning!</strong> @statusMessage
+    </div>
+}
+<style>
+    .row-centered {
+        text-align: center;
+    }
+
+    .col-centered {
+        display: inline-table;
+        float: none;
+        /* reset the text-align */
+        text-align: left;
+        /* inline-block space fix */
+        margin-right: -4px;
+    }
+
+    .col-min {
+        /* custom min width */
+        min-width: 320px;
+    }
+</style>
+<link href="~/Content/horizontalSlider.css" rel="stylesheet" />
+
+<script src="~/Scripts/horizontalSlider.js"></script>
+
+<div class="container-wrapper divActions">
+    <!--main-wrapper-->
+
+    <div class="thirdsection">
+        <div class="container margintop10">
+            <div class="row">
+                <div class="col-md-8 paddingtop-bottom15">
+                    <div class="row">
+                        <div class="col-md-4 col-xs-12">
+
+                            <img class="imgheight114" src='@Model.sImgUrl' id="imagePreview">
+
+                        </div>
+                        <div class="col-md-8 col-xs-12">
+                            <h3 class="mar-padd0"><strong>@Model.sHotelName</strong></h3>
+                            <div class="margintop-5"> <img src="~/images/inner-star@(Model.iStarCategoryId).png"></div>
+                            <address>
+                                @Model.sPropertyAddress
+                            </address>
+                            <div class="row">
+                                @*<div class="col-lg-3 col-md-3 col-sm-3  col-xs-3">Facilities:</div>*@
+                                <div class="col-md-12 col-xs-12 facilityicon">
+                                    <ul>
+                                        @for (int i = 0; i < Model.objresultHotelFacilities.Count; i++)
+                                        {
+                                            <li><img src='@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()@Model.objresultHotelFacilities[i].sImgUrl' title="@Model.objresultHotelFacilities[i].sHotelFacilites" id="iconPreview" style="height: 20px; width: 20px"></li>
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!--next section-->
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="table-responsive margintop20">
+                <div class="col-md-12 margintop30">
+                    <div class="tablebluebg">Stay Summary of @Model.Nights Night(s) from @Html.Raw(Model.sCheckIn_Display) to @Html.Raw(Model.sCheckOut_Display) </div>
+                    <div class="table-responsive">
+                        <table class="table lightgrybg table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    @*<th>ROOM</th>*@
+                                    <th>ROOM TYPE</th>
+                                    <th>ADULTS</th>
+                                    <th>CHILDREN</th>
+                                    <th>RATE/ NIGHT</th>
+                                    <th>EXTRA</th>
+                                    <th class="width100">NIGHT(S)</th>
+                                    <th>TOTAL PRICE</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int CountIndex = 0;
+                                    decimal totalPrice = 0;
+                                    var tax = Model.dTaxesOriginal;
+                                    List<string> lst = new List<string>();
+                                }
+
+                                @foreach (var item in Model.BookingDetailList)
+                                {
+                                    CountIndex++;
+
+                                    totalPrice += ((item.dExtraBedRate.Value) + (item.dRoomRate.Value * item.iRooms.Value)) * Model.Nights;
+
+                                    <tr>
+                                        <td><a href="javascript:void(0);" onclick="OpenPopUp('@Model.iPropId','@item.iRoomId')">@item.sRoomName</a></td>
+                                        <td>@item.iAdults </td>
+                                        <td>@item.iChildren</td>
+                                        <td>
+                                            @{
+                                                string ShowPrice = clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(item.dRoomRate));
+                                            }
+                                            @Model.Symbol @ShowPrice
+                                            &nbsp;
+                                        </td>
+                                        <td>
+
+                                            @{
+                                                string EXPrice = clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(item.dExtraBedRate));
+                                            }
+                                            @Model.Symbol @EXPrice
+                                        </td>
+                                        <td>@Model.Nights</td>
+                                        <td>
+                                            @Model.Symbol
+
+                                            @{
+                                                string TPrice = clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(((item.dExtraBedRate) + (item.dRoomRate * item.iRooms)) * Model.Nights));
+                                                var pol = Model.BookingPoliciesList.Where(u => u.iBookingDetailsID == item.iBookingDetailsID).FirstOrDefault();
+                                            }
+
+                                            @TPrice
+                                        </td>
+                                    </tr>
+                                    <tr class="noborder">
+                                        <td>
+                                            <span class="pull-left">I am Important-Read Me :</span>
+                                        </td>
+                                        <td colspan="6">
+                                            <a href="javascript:void(0);" title="Policies" data-id="divPolicy@(CountIndex)" rel="popover">
+                                                <img src="@Url.Content("~/images/info.png")">
+                                            </a>
+
+                                        </td>
+
+                                        @{
+                                            var id = string.Format(@"{0}{1}", "divPolicy", CountIndex);
+                                        }
+
+                                        <!-- Rate Inclusions pop up -->
+                                        <div style="display:none" id="@String.Concat("divPolicy", @CountIndex)">
+
+                                            <h4 class="modal-title">Rate Inclusions</h4>
+
+                                            <p>@Html.Raw(pol.sAmenityRatePlan.Replace("|", "</br>"))</p>
+
+                                            <h4 class="modal-title">Cancellation:</h4>
+
+                                            <p>
+
+                                                @if (pol.sPolicyName == "Non Refundable")
+                                                {
+                                                    <span style="color:red;">@Html.Raw(pol.sPolicyName)</span>
+                                                }
+                                                else
+                                                {
+                                                    @Html.Raw(pol.sPolicyName)
+                                                }
+                                            </p>
+                                            <h4 class="modal-title">Rate Information</h4>
+                                            <p>
+                                                <div>
+                                                    <div style="float:left;width:300px">
+                                                        <div style="float:left;width:150px">
+                                                            Stay Date
+                                                        </div>
+                                                        <div style="float:left;width:150px">
+                                                            Price
+                                                        </div>
+                                                    </div>
+                                                    @for (int l1 = 0; l1 < Model.lstTaxesDateWise_OfferReview.Count; l1++)
+                                                    {
+                                                        /**/
+                                                        if (Convert.ToInt32(item.iRoomId) == Model.lstTaxesDateWise_OfferReview[l1].RoomID
+                                                        && item.iOccupancy == Model.lstTaxesDateWise_OfferReview[l1].iOccupancy)
+                                                        {
+
+                                                            <div style="float:left; width:300px">
+                                                                <div style="float:left;width:150px">
+                                                                    @Model.lstTaxesDateWise_OfferReview[l1].dtDate.ToString("dd MMM,yyyy")
+                                                                </div>
+                                                                <div style="float:left;width:150px">
+                                                                    @Model.Symbol  @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.lstTaxesDateWise_OfferReview[l1].dBasePrice))
+                                                                </div>
+                                                            </div>
+                                                        }
+
+                                                    }
+                                                </div>
+
+                                            </p>
+
+                                        </div>
+                                    </tr>
+                                            }
+                                <tr class="noborder">
+                                    <td colspan="6"><span class="pull-right">Total : </span></td>
+                                    <td> @Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(totalPrice))</td>
+
+                                </tr>
+                                <tr class="noborder">
+                                    <td colspan="6">
+                                        <span class="pull-right">
+                                            <a title="Taxes and Service Fees" href="javascript:void(0);" data-id="divTaxes" data-placement="left" rel="popover">
+                                                Taxes and  service Fees:
+                                            </a>
+
+                                        </span>
+                                    </td>
+                                    <td> @Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(tax))</td>
+                                </tr>
+                                <tr>
+                                    <td class="noborder" colspan="6"><strong class="pull-right">Grand Total: </strong></td>
+                                    <td class="noborder"><strong class="pull-left">@Model.Symbol @(clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(tax + totalPrice)))</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div id="RoomDetails" class="modal fade" role="dialog">
+
+</div>
+
+<script>
+    var popover = $("[rel='popover']").popover({
+        trigger: 'hover',
+
+        html: 'true'
+    }).on('show.bs.popover', function () {
+        popover.attr('data-content', $('#' + $(this).data('id')).html());
+    }).on('click', function () {
+        return false;
+    });
+
+    function OpenPopUp(propid, roomid) {
+
+        var url = '@clsUtils.OfrWebsiteBaseUrl()@Url.Action("RoomInfo", "OfferReview")?propid=' + propid + '&roomid=' + roomid;
+
+        $("#RoomDetails").html('');
+
+        $("#RoomDetails").load(url, function () {
+
+        });
+        $('#RoomDetails').modal({
+            show: 'true'
+        });
+    }
+</script>
+
+@if (!string.IsNullOrEmpty(negotiationStatus))
+{
+    if (negotiationStatus == "HR" && Model.ccType == null)
+    {
+
+        <div class="row margintop20 marginbottom20 text-center divActions">
+            @*<input type="button" class="btn btn-primary" onclick="BookOriginal()" value="Book the Original Rate" />*@
+            @*<input type="button" id="btnRefund btn" class="btn btn-danger" value="Refund my Money" />*@
+        </div>
+        <div class="container">
+            <div id="divCompHotels">
+
+            </div>
+            <div class="col-md-12 center margintop10 marginbottom20 divActions">
+                @*<button type="submit" style="width:20%" class="btn btn-warning  btn-lg" onclick="RejectBook('@Model.iBookingId')">Show Other Options</button>*@
+            </div>
+        </div>
+    }
+    else if (negotiationStatus == "CO" || negotiationStatus == "HR" || negotiationStatus == "FO" || negotiationStatus == "CA")
+    {
+        <div class="container divActions">
+            <div class="row marginbottom20">
+                <h4 class="text-center">Revised offer: The hotel has made a counter offer to your rate. Do accept it, this continues to be a saving on the hotel's Best Available Rate!</h4>
+                <div class="col-md-2 margintop30">
+
+                </div>
+                <div class="col-md-8 margintop30">
+                    <div class="tablebluebg">Negotiation Summary</div>
+                    <div class="table-responsive">
+
+                        <table class="table lightgrybg table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>SUMMARY</th>
+                                    <th>PRICE</th>
+
+                                    @if (@Model.ccType == "CR" || @Model.ccType == "RR" || @Model.ccType == "FO")
+                                    {
+                                        <th>OFR DISCOUNT</th>
+                                    }
+
+                                    <th>Hotel Taxes</th>
+
+                                    @if (Model.dOfrServiceCharge != null && Convert.ToDecimal(Model.dOfrServiceCharge) > 0)
+                                    {
+                                        <th>OFR Service Charge</th>
+                                        <th>GST On OFR Service Charge</th>
+                                    }
+
+                                    <th>TOTAL</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Your Offer</td>
+                                    <td>@Model.Symbol  @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dTotalNegotiateAmount))</td>
+
+                                    @if (@Model.ccType == "CR" || @Model.ccType == "RR" || @Model.ccType == "FO")
+                                    {
+                                        <td>-</td>
+                                    }
+
+                                    <td> @Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.sExtra2))</td>
+
+                                    @if (Model.dOfrServiceCharge != null && Convert.ToDecimal(Model.dOfrServiceCharge) > 0)
+                                    {
+                                        <td> @Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dOfrServiceCharge))</td>
+                                        <td> @Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dGSTOnServiceCharge))</td>
+                                    }
+
+                                    <td>@Model.Symbol @(clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dTotalNegotiateAmount + Model.sExtra2 + Model.dOfrServiceCharge + Model.dGSTOnServiceCharge)))</td>
+                                </tr>
+
+                                <tr>
+
+                                    @if (@Model.ccType == "RR" || @Model.ccType == "FO" || @Model.ccType == "HR")
+                                    {
+                                        <td>Hotel Offer</td>
+                                    }
+                                    else
+                                    {
+                                        <td>Counter Offer</td>
+                                    }
+
+
+                                    @if (@Model.ccType == "RR")
+                                    {
+                                        <td>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dTotalAmount) + Convert.ToDecimal(Model.dTotalExtraBedAmount))</td>
+                                    }
+                                    else if (@Model.ccType == "FO")
+                                    {
+                                        <td>@Model.Symbol  @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dccPrice) + Convert.ToDecimal(Model.dccDiscount))</td>
+                                    }
+                                    else
+                                    {
+                                        <td>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dCounterOffer))</td>
+                                    }
+
+
+                                    @if (@Model.ccType == "RR")
+                                    {
+                                        <td><span>@Model.Symbol</span> @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dccDiscount)) (@Math.Round((Convert.ToDecimal(Model.dccDiscount) * 100 / (Convert.ToDecimal(Model.dTotalAmount) + Convert.ToDecimal(Model.dTotalExtraBedAmount))), 2) %)</td>
+                                    }
+                                    else if (@Model.ccType == "FO")
+                                    {
+                                        <td><span>@Model.Symbol</span> @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dccDiscount)) (@Math.Round((Convert.ToDecimal(Model.dccDiscount) * 100 / (Convert.ToDecimal(Model.dccPrice) + Convert.ToDecimal(Model.dccDiscount))), 2) %)</td>
+                                    }
+                                    else if (@Model.ccType == "CR")
+                                    {
+                                        <td><span>@Model.Symbol</span> @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dccDiscount)) (@Math.Round((Convert.ToDecimal(Model.dccDiscount) * 100 / (Convert.ToDecimal(Model.dCounterOffer))), 2) %)</td>
+                                    }
+
+                                    <td>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.TaxHotel))</td>
+
+                                    @if (Model.dOfrServiceCharge != null && Convert.ToDecimal(Model.dOfrServiceCharge) > 0)
+                                    {
+                                        <td> @Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dOfrServiceCharge))</td>
+                                        <td> @Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dGSTOnServiceCharge))</td>
+                                    }
+
+
+                                    @if (@Model.ccType == "RR" || @Model.ccType == "CR" || @Model.ccType == "FO")
+                                    {
+                                        <td>@Model.Symbol @(clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dccPrice + Model.TaxHotel + Model.dGSTOnServiceCharge)))</td>
+                                    }
+                                    else
+                                    {
+                                        <td>@Model.Symbol @(clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dCounterOffer + Model.TaxHotel + Model.dOfrServiceCharge + Model.dGSTOnServiceCharge)))</td>
+                                    }
+
+                                </tr>
+
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                </div>
+                <div class="col-md-3 margintop30">
+
+                </div>
+            </div>
+            <div class="row" style="text-align:center;color:red">* The rate is non-cancellable, non-refundable, non-transferrable and non-amendable.</div>
+            <div class="row margintop20 marginbottom20 text-center">
+                <input type="button" class="btn btn-success" onclick="Book()" style="width:100px" value="Accept" />
+                <input type="button" id="btnRefund" class="btn btn-danger" onclick="RefundMoney()" value="Refund my Money" />
+
+            </div>
+        </div>
+        <div class="container">
+            <div id="divCompHotels">
+
+            </div>
+            <div class="col-md-12 center margintop10 marginbottom20 divActions">
+                @*<button type="submit" style="width:20%" class="btn btn-warning  btn-lg" onclick="RejectBook('@Model.iBookingId')">Show Other Options</button>*@
+            </div>
+        </div>
+    }
+    <div class="container margintop20 marginbottom10">
+        <div class="row">
+
+            @if (negotiationStatus != "RM")
+            {
+                <div class="col-md-2">
+                    <input type="button" name="Send Reminder Email" text="Send Reminder Email" value="Send Reminder Email" onclick="SendCustCounterReminderEmail(@Model.iBookingId)" class="btn btn-primary">
+                </div>
+            }
+
+            <div class="col-md-2">
+                <input type="button" name="Provide final offer" text="Provide final offer" value="Provide final offer" onclick="FinalOffer(@Model.iBookingId)" class="btn btn-primary">
+            </div>
+            <div class="col-md-2">
+                <input class="form-control" id="iFinalOffer" min="0" type="number" value="">
+            </div>
+            <div class="col-md-2">
+                <span class="red"> (Excluding Taxes)</span>
+            </div>
+        </div>
+    </div>
+    <script>
+
+        function SendCustCounterReminderEmail(BookingId) {
+            var values = {
+                bookingId: BookingId
+            };
+            var url = $.parseJSON(AjaxCallWithDataMVCPOST("@Url.Action("SendCustAcceptReminderEmail")", values));
+
+            if (url == 0)
+                toastr.error('Mail sending failed. Please try again.');
+            else
+                toastr.success('Mail sent Successfully.');
+        }
+
+        function FinalOffer(BookingId) {
+            var FO = $('#iFinalOffer').val();
+            if (parseInt(FO) <= 0 || FO == '') {
+                toastr.error('Please provide final offer.');
+                $('#iFinalOffer').val('');
+                return
+            }
+            else {
+                var values = {
+                    bookingId: BookingId,
+                    FinalOffer: FO,
+                    Convert: 1
+                };
+                var url = $.parseJSON(AjaxCallWithDataMVCPOST("@Url.Action("ProvideFinalOffer")", values));
+
+                if (url.st == 1)
+                    toastr.success(url.Status);
+                else
+                    toastr.error(url.Status);
+                $('#iFinalOffer').val('');
+            }
+        }
+
+        function Book() {
+            window.location.href = "@Url.Action("BalancePayment", "Negotiation", new { bookingId = OneFineRateAppUtil.clsUtils.Encode(Model.iBookingId.ToString()) })?C=C"
+
+        }
+        function BookOriginal() {
+            window.location.href = "@Url.Action("BalancePayment", "Negotiation", new { bookingId = OneFineRateAppUtil.clsUtils.Encode(Model.iBookingId.ToString()) })?C=R"
+
+        }
+        function RejectBook(propid) {
+            $('.divActions').hide();
+            var url = '@Url.Action("GetCompetitorHotels")?bookingId=' + propid;
+            $("#divCompHotels").load(url, function () {
+
+            });
+        }
+
+    </script>
+}
+
+
+
+<!--hotel option panel-start here-->
+@*<div class="container">
+        <div id="divCompHotels">
+
+        </div>
+        <div class="col-md-12 center margintop10 marginbottom20">
+            <button type="submit" id="btnRefund" class="btn btn-danger  btn-lg">Refund my Money</button>
+        </div>
+    </div>*@
+
+<div id="divTaxes" style="display:none">
+    <p>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td>Hotel Taxes</td>
+                    <td>:</td>
+                    <td style="min-width:70px">@Model.Symbol @(clsUtils.ConvertNumberToCommaSeprated(Math.Round(Convert.ToDecimal(tax - Model.dOfrServiceCharge - Model.dGSTOnServiceCharge))))</td>
+                </tr>
+
+                @if (Convert.ToDecimal(Model.dOfrServiceCharge) > 0)
+                {
+                    <tr>
+                        <td>OFR Service charge</td>
+                        <td>:</td>
+                        <td>@Model.Symbol @(clsUtils.ConvertNumberToCommaSeprated(Math.Round(Convert.ToDecimal(Model.dOfrServiceCharge))))</td>
+                    </tr>
+
+                    if (Model.dGSTServiceType.ToLower() == "p")
+                    {
+                        <tr>
+                            <td>GST on OFR Service charge (@Model.dGSTValue%)</td>
+                            <td>:</td>
+                            <td>@Model.Symbol @(clsUtils.ConvertNumberToCommaSeprated(Math.Round(Convert.ToDecimal(Model.dGSTOnServiceCharge))))</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td> GST on OFR Service charge</td>
+
+
+                            <td>:</td>
+
+
+                            <td> @Model.Symbol @(clsUtils.ConvertNumberToCommaSeprated(Math.Round(Convert.ToDecimal(Model.dGSTOnServiceCharge)))) </td>
+
+
+                        </tr>
+                    }
+                }
+            </tbody>
+
+        </table>
+    </p>
+
+</div>
+
+<script type="text/javascript">
+
+    $('#btnRefund').click(function (e) {
+        e.preventDefault();
+        var param = {
+            BookingId: '@Model.iBookingId'
+        }
+        var data = AjaxCallWithDataMVC('../Negotiation/RefundMoney', param);
+        if (data != null) {
+            if (data.st == 1) {
+                toastr.success(data.msg);
+                setTimeout(function () {
+                    window.location.href = "/";
+                }, 300)
+            }
+            else {
+                toastr.error(data.msg)
+            }
+        }
+    });
+
+    function SelectProperty(id) {
+        $('#hdnSelected').val(id);
+    }
+
+    function OpenRF(Id) {
+        $('#divRoomFacilities' + Id + '').modal({
+            show: 'true'
+        });
+    }
+
+    function OpenRI(Id) {
+
+        $('#divRateInclusion' + Id + '').modal({
+            show: 'true'
+        });
+    }
+
+    function OpenRView(Id) {
+
+        $('#divView' + Id + '').modal({
+            show: 'true'
+        });
+    }
+
+    function OpenTaxes() {
+        $('#divTaxes').modal({
+            show: 'true'
+        });
+    }
+</script>
+

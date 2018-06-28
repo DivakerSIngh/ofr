@@ -1,0 +1,228 @@
+﻿@model OneFineRateBLL.Entities.eBlackListedDomainM
+@{
+    ViewBag.Title = "Black List Domains";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+
+
+<div class="container margintop20">
+    <div class="row panel panel-default">
+        <div class="container panel-heading">
+            <div class="col-md-6">
+                <h4 class="panel-title">
+                    Black List Management
+                </h4>
+            </div>
+            <div class="col-md-6">
+                <button type="button" class="pull-right btn btn-warning" id="btnAddBlacklistDomain"><i class="fa fa-plus"></i> Add New Domain </button>
+            </div>
+        </div>
+        <div class="panel-body">
+
+            <div class="table-responsive margintop20">
+                <table class="table table-striped table-bordered table-hover display" id="tblBlacklistDomains"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id='addBlacklistDomainModal' class='modal fade in' data-url='@Url.Action("AddBlacklistDomain")'>
+    <div class="modal-dialog">
+        <div id='add_Blacklist_Domain_Form_Container' class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+@System.Web.Optimization.Scripts.Render("~/bundles/validation")
+
+
+@section scripts{
+
+    <script type="text/javascript">
+
+
+        $(function () {
+
+            BindBlackListDomainsGrid();
+
+            $("#frmAddUpdateBlacklistDomain").on("hidden.bs.modal", function () {
+                $("label.error").hide();
+                $(".error").removeClass("error");
+                $('input.input-validation-error').css('border', '1px solid #cccccc');
+                $('form').each(function (index, element) {
+                    clearValidation(element);
+                    $(element)[0].reset();
+                });
+            });
+
+            $('#btnAddBlacklistDomain').click(function () {
+
+                //debugger;
+
+                var url = $('#addBlacklistDomainModal').data('url');
+
+                $.get(url, function (data) {
+
+                    $('#add_Blacklist_Domain_Form_Container').html(data);
+
+                    $('#btnSubmit').text("Save");
+
+                    $('#addBlacklistDomainModal').modal('show');
+
+                    $.validator.unobtrusive.parse("#frmAddUpdateBlacklistDomain");
+
+                });
+            });
+
+
+            $(document).on('click', '.btnDeleteBlacklistDomain', function (e) {
+
+                var id = $(this).data('id');
+
+                toastr.clear($('.toast'));
+
+                bootbox.confirm("Do you want to delete this Comapany?", function (result) {
+
+                    if (result == true) {
+
+                        //debugger;
+
+                        $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("Delete")",
+                            data: { domain: id },
+                            datatype: "json",
+                            success: function (data) {
+
+                                if (data.status == 1) {
+
+                                    BindBlackListDomainsGrid();
+
+                                    toastr.success('Record deleted successfully!');
+                                }
+                                else if (data.status == -1) {
+
+                                    toastr.error('Can not delete the record.');
+                                }
+                                else {
+                                    toastr.error('An unknow error has occured! Kindly try after some time.');
+                                }
+                            },
+                            error: function (er) {
+                                toastr.error("An error occured!");
+                            }
+                        });
+                    }
+                });
+            });
+
+
+
+            $(document).on('click', '.btnToggleStatus', function (e) {
+
+                var domain = $(this).data('domain');
+                var type = $(this).data('type');
+
+                toastr.clear($('.toast'));
+
+                bootbox.confirm("Do you want to " + type + " this Domain?", function (result) {
+
+                    if (result == true) {
+
+                        //debugger;
+
+                        $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("ToggleStatus")",
+                            data: { sDomainName: domain, status: type == 'disable' ? false : true },
+                            datatype: "json",
+                            success: function (data) {
+                                
+                                BindBlackListDomainsGrid();
+
+                                if (data.status == 1) {
+
+                                    toastr.success(data.Msg);
+                                }
+                                else if (data.status == -1) {
+
+                                    toastr.error(data.Msg);
+                                }
+                                else {
+                                    toastr.error('An unknow error has occured! Kindly try after some time.');
+                                }
+                            },
+                            error: function (er) {
+                                toastr.error("An error occured!");
+                            }
+                        });
+                    }
+                });
+            });
+
+
+
+        });
+
+
+        function BindBlackListDomainsGrid() {
+
+            try {
+                var aoColumns =
+                    [
+
+                     { "sTitle": "Domain Name", "mData": "sDomainName" },
+
+                     { "sTitle": "Action By", "mData": "sActionBy" },
+
+                     {
+                         "sTitle": "Status", "mData": "cStatus", 
+                         "mRender": function (data, type, full) {
+                             return data == 'I' ? 'Disabled ' : 'Live';
+                         }
+                     },
+
+                     {
+                         "sTitle": "Action On", "mData": "dtActionDate","bSortable": false,
+                         "mRender": function (data, type, full) {
+                             return getNorDateTime(data);
+                         }
+                     },
+
+                     {
+                         "sTitle": "Action", "mData": "sDomainName", "bSortable": false,
+                         "mRender": function (data, type, full) {
+                             console.log(full)
+                             var html = full.cStatus == 'A' ? '<button class="btn btn-warning btnToggleStatus" data-domain="' + data + '" data-type="disable">Disable</button> '
+                                 : '<button class="btn btn-success btnToggleStatus" data-domain="' + data + '" data-type="enable">Enable</button>&nbsp';
+                             html += '<button type="button" data-id=' + data + ' class="btn btn-danger btnDeleteBlacklistDomain">Delete</button>';
+                             return html;
+                         }
+                     }
+                    ];
+
+                DatatableServerSide("#tblBlacklistDomains", aoColumns, "/Services/Service.asmx/GetBlackListDomains");
+            }
+            catch (e) {
+
+            }
+        }
+
+
+
+        function clearValidation(formElement) {
+            //Internal $.validator is exposed through $(form).validate()
+            var validator = $(formElement).validate();
+            //Iterate through named elements inside of the form, and mark them as error free
+            $('[name]', formElement).each(function () {
+                validator.successList.push(this);//mark as error free
+                validator.showErrors();//remove error messages if present
+            });
+            validator.resetForm();//remove error class on name elements and clear history
+            validator.reset();//remove all error and success data
+        }
+
+    </script>
+}
+

@@ -1,0 +1,704 @@
+﻿@model OneFineRateBLL.Entities.eBiddingSearch
+
+@{
+    ViewBag.Title = "BiddingPreview";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@System.Web.Optimization.Scripts.Render("~/bundles/autofill")
+
+<!--next section-starts here-->
+@Html.Partial("~/Views/Home/pSearchBar_Bid.cshtml")
+
+<style>
+    .checkbox-grid li {
+        display: block;
+        float: left;
+        width: 33%;
+    }
+
+    #divwhole {
+        width: 290px !important;
+        display: none;
+        border: 1px solid #d1d1d1;
+        background-color: #fff;
+        position: absolute;
+        top: 70px;
+        right: 15%;
+        height: 280px;
+        overflow: auto;
+        z-index: 9999;
+    }
+
+    .star-choice li {
+        cursor: pointer;
+    }
+
+    .selectimg {
+        background: url(http://notrealdomain2.com/newbanner.png);
+    }
+</style>
+
+.<!-- Taxes pop up -->
+<div id="divTaxes" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Congratulations!</h4>
+                <div>We have found hotels matching your bid</div>
+            </div>
+            <div class="modal-body">
+                <ul>
+                    @{
+                        if (Model.lstHotelData != null)
+                        {
+                            for (int i = 0; i < Model.lstHotelData.Count; i++)
+                            {
+                                <li>@Model.lstHotelData[i].Name</li>
+                            }
+                        }
+                    }
+                </ul>
+
+                @Model.Message<br />
+                <button type="button" id="btnModify" name="buttonType" class="btn btn-success  btn-lg">Pay Now</button>
+                <button type="button" id="btnClose" name="buttonType" class="btn btn-warning btn-lg">Not Now</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+@if (Model.iBiddingCount > 1)
+{
+    <div class="alert alert-warning fade in" id="divWarning">
+        <a class="btn btn-success">Negotiate</a> <br />
+        <strong style="color:red;">@Model.Message</strong>
+    </div>
+}
+@if (Model.iBiddingCount == 1)
+{
+    <div class="alert alert-warning fade in" id="divWarning" >
+        <strong style="color:red;">@Model.Message</strong>
+    </div>
+}
+@{
+    if (Model.iBiddingCount < 3)
+    {
+        using (Html.BeginForm("OpenPreviewPage", "Bidding"))
+        {
+            @Html.HiddenFor(m => m.Amount)
+            @Html.HiddenFor(m => m.iBiddingCount)
+            @Html.HiddenFor(m => m.sSearchType)
+            @Html.HiddenFor(m => m.sCheckIn)
+            @Html.HiddenFor(m => m.sCheckInDay)
+            @Html.HiddenFor(m => m.sCheckInYear)
+            @Html.HiddenFor(m => m.sCheckOut)
+            @Html.HiddenFor(m => m.sCheckOutDay)
+            @Html.HiddenFor(m => m.sCheckOutYear)
+            @Html.HiddenFor(m => m.sJsonLocality, new { })
+            @Html.HiddenFor(m => m.sJsonRoomData, new { Id = "hdnJsonNew" })
+            @Html.HiddenFor(m => m.sLocalityData, new { id = "hdnLocalities" })
+            @Html.HiddenFor(m => m.sLocalityType, new { id = "hdntype" })
+            @Html.HiddenFor(m => m.sSearchId)
+            @Html.HiddenFor(m => m.sSelectedAreaId, new { id = "hdnSelectedAreaId" })
+            @Html.HiddenFor(m => m.sStarRating, new { id = "hdnStarRating" })
+            @Html.HiddenFor(m => m.sUserEmail)
+            @Html.HiddenFor(m => m.sUserFirstName)
+            @Html.HiddenFor(m => m.sUserLastName)
+            @Html.HiddenFor(m => m.sUserMobileNo)
+            @Html.HiddenFor(m => m.sUserTitle)
+            @Html.HiddenFor(m => m.dMaxRange, new { id = "hdnUpperPrice" })
+            @Html.HiddenFor(m => m.dMinRange, new { id = "hdnLowerPrice" })
+            @Html.HiddenFor(m => m.dTaxes, new { id = "hdntaxes" })
+            @Html.HiddenFor(m => m.Symbol, new { id = "hdnSymbol" })
+
+            <div class="container ">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-6  margintop20 ">
+                            <div class="panel panel-default">
+                                <div class="panel-heading panelbg"><strong>Preference of Locality</strong></div>
+                                <div class="panel-body row ">
+                                    <div class="col-md-12">
+                                        <input type="checkbox" class="checkbox" id="chkSelectAll"> Select All
+                                        <ul class="checkbox-grid" id="divSearchPref"></ul>
+                                    </div>
+
+                                    <div class="col-md-12" style="display:none;" id="divshowLocality">
+                                        <a style="cursor:pointer" id="anclocality">Select only one locality to view sub locality</a>
+                                    </div>
+                                    <div class="col-md-12" style="display:none;" id="divBack">
+                                        <a style="cursor:pointer" id="ancBack">Back</a>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-6 margintop20"><iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d14008.162300800794!2d77.26891426977542!3d28.628546000000004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sin!4v1468783196877" width="100%" height="288	" frameborder="0" style="border:0" allowfullscreen></iframe></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-6">
+                            <div class="panel panel-default ">
+                                <div class="panel-heading panelbg">
+                                    <div class="row">
+                                        <div class="col-md-6 "><strong>Choice of Star Category</strong></div>
+                                        <div class="col-md-6 "><strong>No. of Rooms</strong></div>
+                                    </div>
+                                </div>
+                                <div class="panel-body paddingbottom22">
+
+                                    <div class="col-md-6 row ">
+                                        <div class="star-range margintop5">
+                                            <div id="star-range"></div>
+                                            <div class="width117">
+
+                                                <label>Star Choice</label>
+                                                <ul class="star-choice" id="divStars">
+                                                    <li><img class="starChoice" data-id="1" data-startype="n" src="@Url.Content("~/images/1Star-n.png")" /></li>
+                                                    <li><img class="starChoice" data-id="2" data-startype="n" src="@Url.Content("~/images/2Star-n.png")" /></li>
+                                                    <li><img class="starChoice" data-id="3" data-startype="n" src="@Url.Content("~/images/3Star-n.png")" /></li>
+                                                    <li><img class="starChoice" data-id="4" data-startype="n" src="@Url.Content("~/images/4Star-n.png")" /></li>
+                                                    <li><img class="starChoice" data-id="5" data-startype="n" src="@Url.Content("~/images/5Star-n.png")" /></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 ">
+                                        <div class="form-group margintop5">
+                                            <div id="txttotalcount" class="form-control ">1 Person in 1 Room</div>
+                                            <div id="divwhole" class="addheight">
+                                                <i class="sprite-booking-engine ico-be-sub-arrow"></i>
+                                                <div id="roomContainerDiv">
+                                                    <div class="rooms">
+                                                        <div class='col-md-12 col-xs-12  pull-left'>
+                                                            <h5><strong>Room1:</strong></h5>
+                                                        </div>
+                                                        <div class='col-md-6 col-xs-6'>
+                                                            <h5><strong>Adult</strong></h5>
+                                                            <h6>Above 12 years</h6>
+
+                                                            <div class='input-group width110'>
+                                                                <input id="adult1" class="form-control adult1" itype="adult1" type="number" roomno="1" readonly="readonly" value="1" min="1" max="6" />
+                                                            </div>
+                                                        </div>
+                                                        <div class='col-md-6 col-xs-6'>
+                                                            <h5><strong>Children</strong></h5>
+                                                            <h6>Below 12 years</h6>
+                                                            <div class='input-group width110'>
+                                                                <input id="children1" class="form-control children1" readonly="readonly" roomno="1" itype="children1" type="number" value="0" min="0" max="6" />
+
+                                                            </div>
+                                                        </div>
+                                                        <div class='col-md-12 col-xs-12' id="divChildAge1" style="display:none;">
+
+                                                            <h5><strong>Age of Childen</strong></h5>
+                                                            <ul style="list-style:none; padding:0; margin:0; " id="ulchilds1"></ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class='col-md-12 margintop5'>
+                                                    <a id="btnaddroom" href='javascript:void(0);' onclick="AddRooms();">Add a room</a>
+                                                    <span id="sppipe" style="display:none;">|</span>
+                                                    <a id="btnremoveroom" href='javascript:void(0);' style="display:none;" onclick="RemoveRoom();">Remove this room</a>
+                                                    <hr>
+                                                    <div onclick="FetchRoomDetails();" class='btn btn-modify margintop5 marginbottom10 col-md-12'>Done</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel panel-default ">
+                                <div class="panel-heading panelbg">
+                                    <strong>Bid Range</strong>
+                                </div>
+                                <div class="panel-body marginbottom28">
+                                    <div class="col-md-6  row lineheight18">Range of Retail price for a <span class="red">@Model.sStarRating Star</span> hotel in the areas selected is between</div>
+                                    <div class="col-md-6">
+                                        <div id="divminrange">@Model.Symbol @Model.dMinRange</div> To
+                                        <div id="divuprange">@Model.Symbol @Model.dMaxRange</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <form id="frmBidAmt">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-3 ">&nbsp;</div>
+                            <div class="col-md-6 ">
+                                <div class="panel panel-default ">
+                                    <div class="panel-heading panelbg">
+                                        <strong>Bid of Your Choice</strong>
+                                    </div>
+
+                                    <div class="panel-body ">
+                                        <div class="row">
+                                            <div class="col-md-12 form-inline">
+                                                Enter your Bidding Price
+                                                @Html.TextBoxFor(m => m.dBidPrice, new { id = "txtBiddingPrice", type = "text", placeholder = "Bidding Price", @class = "form-control width168", maxlength = "10", required = "true" })
+                                                Per Room, Per Night (@Model.Symbol).
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div class="col-md-3">&nbsp;</div>
+                        </div>
+                    </div>
+                </form>
+
+
+
+
+                <div class="row" id="divUserTypeLogin">
+                    <div class="text-center ">
+                        <button type="submit" id="btnPreview" onclick="return GetAllData();" class="btn btn-warning btn-lg marginbottom20">Preview</button>
+                    </div>
+                </div>
+
+            </div>
+        }
+        @Html.Hidden("hdnVC", null, new { name = "hdnVC" })
+        <script src="~/js/bootstrap-number-input.js"></script>
+
+        <script type="text/javascript">
+            var Status = '@Model.Status';
+
+            if (Status == 1) {
+                $('#divTaxes').modal({
+                    show: 'true'
+                });
+            }
+
+            var roomdata = JSON.parse('@Html.Raw(Model.sJsonRoomData)');
+            if (roomdata != '') {
+                BindRoomData(roomdata);
+            }
+
+            ChangeStarType('@Model.sStarRating');
+
+            function BindLocality(Id) {
+                $('#hdnSelectedAreaId').val(Id);
+                var Type = '';
+                if ('@Model.sSearchType' == 'C')
+                    Type = 'A';
+                else
+                    Type = '@Model.sSearchType';
+
+                var param = {
+                    Type: Type,
+                    Id: Id
+                }
+
+                var data = AjaxCallWithDataMVC('/Bidding/GetLocalities', param);
+                if (data.list.length > 0) {
+                    var myval = '';
+                    $(data.list).each(function (i, j) {
+                        myval += '<li><input type="checkbox"   ctype="L" class="ChPref checkbox" onclick="GetLocalitiesValues();" name="text1" value="' + j.Id + '" />  ' + j.Name + ' </li>';
+                    });
+                    $('#divSearchPref').html(myval);
+                    $('#divshowLocality').hide();
+                    $('#divBack').show();
+                }
+            }
+            function BindLocalityOnLoad(lids, ctype, AreaId) {
+                var ids = [];
+                ids = lids.split(',');
+                var defaultSType = '@Model.sSearchType';
+                if (ctype == 'A') {
+                    var count = 0;
+                    $('.ChPref').each(function (i, j) {
+
+                        var id = $(this).find("input:checkbox.ChPref").context.value;
+                        if ($.inArray(id, ids) != -1) {
+                            count++;
+                            $(this).find("input:checkbox.ChPref").context.checked = true;
+                        }
+                    });
+                    if (count == 1)
+                        $('#divshowLocality').show();
+                }
+                else if (ctype == 'L' && defaultSType != 'L') {
+                    var data = AjaxCallWithDataMVC('/Bidding/GetLocalities', { Type: 'A', Id: AreaId });
+                    if (data.list.length > 0) {
+                        var myval = '';
+                        $(data.list).each(function (i, j) {
+                            if ($.inArray(j.Id.toString(), ids) != -1) {
+                                myval += '<li><input type="checkbox" checked  ctype="L" class="ChPref checkbox" onclick="GetLocalitiesValues();" name="text1" value="' + j.Id + '" />  ' + j.Name + ' </li>';
+                            }
+                            else {
+                                myval += '<li><input type="checkbox" ctype="L" class="ChPref checkbox" onclick="GetLocalitiesValues();" name="text1" value="' + j.Id + '" />  ' + j.Name + ' </li>';
+                            }
+
+                        });
+                        $('#divSearchPref').html(myval);
+                        $('#divshowLocality').hide();
+                        $('#divBack').show();
+                    }
+                }
+                else if (ctype == 'L' && defaultSType == 'L') {
+                    $('.ChPref').each(function (i, j) {
+
+                        var id = $(this).find("input:checkbox.ChPref").context.value;
+                        if ($.inArray(id, ids) != -1) {
+                            $(this).find("input:checkbox.ChPref").context.checked = true;
+                        }
+
+
+                    });
+                }
+
+            }
+
+            function GetBidRange(localities, ratingid) {
+
+                FetchRoomDetails();
+
+                var param = {
+                    Localities: localities,
+                    RatingId: ratingid,
+                    Type: $('#hdntype').val(),
+                    RoomData: $('#hdnJsonNew').val()
+                }
+               // startSpinning();
+                setTimeout(function () {
+                    var data = AjaxCallWithDataMVC('@Url.Action("GetBidRange")', param);
+                    if (data.list != null) {
+                        //stopSpinning();
+                        if (data.list.Msg == "1") {
+
+                            $('#btnPreview').removeAttr('disabled');
+                            $('#divuprange').html(data.list.sSymbol + ' ' + data.list.MaxRange);
+                            $('#divminrange').html(data.list.sSymbol + ' ' + data.list.MinRange);
+                            $('#hdnUpperPrice').val(data.list.MinRange);
+                            $('#hdnLowerPrice').val(data.list.MaxRange);
+                            $('#hdntaxes').val(data.list.MaxTax);
+                            $('#hdnSymbol').val(data.list.sSymbol);
+                        }
+                        else {
+                            toastr.error(data.list.Msg);
+                            $('#divuprange').html('0');
+                            $('#divminrange').html('0');
+                            $('#btnPreview').attr('disabled', 'disabled');
+                            $('#hdnUpperPrice').val('');
+                            $('#hdnLowerPrice').val('');
+                            $('#hdntaxes').val('');
+                            $('#hdnSymbol').val('');
+                        }
+                    }
+                }, 100);
+            }
+            function Validate() {
+                if ($(hdnStarRating).val() == '' || $(hdnStarRating).val() == '0' || $(hdnStarRating).val() == undefined) {
+                    return false;
+                }
+                if ($(hdnLocalities).val() == '' || $(hdnLocalities).val() == '0' || $(hdnLocalities).val() == undefined) {
+                    return false;
+                }
+                FetchRoomDetails();
+                GetBidRange($(hdnLocalities).val(), $(hdnStarRating).val())
+            }
+
+            function GetLocalitiesValues() {
+                var checkedvalues = '';
+                $('.ChPref').each(function (i, j) {
+
+                    if ($(this).find("input:checkbox.ChPref").context.checked) {
+                        checkedvalues += $(this).find("input:checkbox.ChPref").context.value;
+                        checkedvalues += ',';
+                        $('#hdntype').val($(this)[0].attributes[1].value);
+                    }
+
+                });
+                $('#hdnLocalities').val(checkedvalues);
+                Validate();
+            }
+
+            function ShowDiv() {
+                var Count = 0;
+                GetLocalitiesValues();
+                $('.ChPref').each(function (i, j) {
+                    if ($(this).find("input:checkbox.ChPref").context.checked)
+                        Count++;
+                });
+
+                if ('@Model.sSearchType' == 'C') {
+                    if (Count == 1)
+                        $('#divshowLocality').show();
+                    else
+                        $('#divshowLocality').hide();
+                }
+            }
+
+            function ChangeStarType(starNumber) {
+                debugger
+                try {
+                    $('.starChoice').each(function (i, j) {
+                        i++;
+                        if (i == starNumber) {
+                            $(this)[0].src = '../images/' + starNumber + 'Star-h.png';
+                            $('#hdnStarRating').val(starNumber);
+                            Validate();
+                        }
+                        else {
+                            var d = $(this)[0].attributes[1].value;
+                            if (starNumber != d) {
+                                $(this)[0].src = '../images/' + d + 'Star-n.png';
+                            }
+                        }
+
+                    });
+
+                } catch (e) {
+
+                }
+            }
+
+
+
+
+            $(document).ready(function () {
+
+                $.removeCookie('scrhBidDetails'); //for removing cookie
+                var values = '';
+                var proBid = [];
+                // $.cookie.json = true;
+                proBid.push(JSON.stringify(values));
+                $.cookie("scrhBidDetails", proBid, { expires: 2, path: '/' });
+
+                toastr.options = {    //Intialize toastr plugin
+                    "closeButton": true,
+                    "debug": false,
+                    "positionClass": "toast-top-right",
+                    "onclick": null,
+                    "showDuration": "3000",
+                    "hideDuration": "1000",
+                    "timeOut": "5000",
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut",
+                    "preventDuplicates": true
+
+                }
+
+                $('#ancBack').click(function () {
+                    var obj = $(this).attr('disabled');
+                    if (obj == 'disabled') {
+                        return false;
+                    }
+                    var Type = '';
+                    if ('@Model.sSearchType' == 'C')
+                        Type = 'A';
+                    else
+                        Type = '@Model.sSearchType';
+
+                    var param = {
+                        Type: '@Model.sSearchType',
+                        Id: '@Model.sSearchId'
+                    }
+
+                    var data = AjaxCallWithDataMVC('/Bidding/GetLocalities', param);
+                    if (data.list.length > 0) {
+                        var myval = '';
+
+                        $(data.list).each(function (i, j) {
+                            if ('@Model.sSearchType' == 'L') {
+                                if ('@Model.sSearchId' == j.Id) {
+                                    myval += '<li><input type="checkbox" ctype="' + Type + '" onclick="ShowDiv(' + j.Id + ');" class="ChPref checkbox" checked name="text1" value="' + j.Id + '" />  ' + j.Name + ' </li>';
+                                }
+                                else {
+                                    myval += '<li><input type="checkbox" ctype="' + Type + '" onclick="ShowDiv(' + j.Id + ');"  class="ChPref checkbox" name="text1" value="' + j.Id + '" />  ' + j.Name + ' </li>';
+                                }
+                            }
+                            else {
+                                myval += '<li><input type="checkbox" ctype="' + Type + '" class="ChPref checkbox" onclick="ShowDiv(' + j.Id + ');" name="text1" value="' + j.Id + '" />  ' + j.Name + ' </li>';
+                            }
+                        });
+                        $('#divSearchPref').html(myval);
+                        $('#divBack').hide();
+
+                        if ('@Model.sSearchType' == 'L') {
+                            $('#divshowLocality').show();
+                        }
+                    }
+                });
+                $('#anclocality').click(function (e) {
+                    var obj = $(this).attr('disabled');
+                    if (obj == 'disabled') {
+                        return false;
+                    }
+                    var Id = '';
+                    $('.ChPref').each(function (i, j) {
+                        if ($(this).find("input:checkbox.ChPref").context.checked)
+                            Id = $(this).find("input:checkbox.ChPref").context.value;
+                    });
+                    if (parseInt(Id) > 0)
+                        BindLocality(Id);
+
+                });
+
+
+
+
+
+
+
+                var ids = [];
+                var count = 0;
+                var idsstring = '@Model.sLocalityData';
+                ids = idsstring.split(',');
+
+
+                var myval = '';
+                if ('@Model.sLocalityType' == 'L') {
+                    var data = AjaxCallWithDataMVC('/Bidding/GetLocalities', { Type: 'A', Id: parseInt('@Model.sSelectedAreaId') });
+                    if (data.list.length > 0) {
+                        $(data.list).each(function (i, j) {
+                            if ($.inArray(j.Id.toString(), ids) != -1) {
+
+                                myval += '<li><input type="checkbox" checked  ctype="L" class="ChPref checkbox" onclick="GetLocalitiesValues();" name="text1" value="' + j.Id + '" />  ' + j.Name + ' </li>';
+                            }
+                            else {
+                                myval += '<li><input type="checkbox" ctype="L" class="ChPref checkbox" onclick="GetLocalitiesValues();" name="text1" value="' + j.Id + '" />  ' + j.Name + ' </li>';
+                            }
+
+                        });
+                    }
+                }
+                else {
+                    var data = JSON.parse('@Html.Raw(Model.sJsonLocality)');
+                    if (data != null) {
+                        $(data).each(function (i, j) {
+                            if ($.inArray(j.Id.toString(), ids) != -1) {
+                                myval += '<li><input type="checkbox" ctype="A" class="ChPref checkbox" onclick="ShowDiv(' + j.Id + ');" checked name="text1" value="' + j.Id + '" />  ' + j.Name + ' </li>';
+                                count++;
+                            }
+                            else {
+                                myval += '<li><input type="checkbox" ctype="A" class="ChPref checkbox" onclick="ShowDiv(' + j.Id + ');" name="text1" value="' + j.Id + '" />  ' + j.Name + ' </li>';
+                            }
+                        });
+                    }
+                }
+
+                if (count == 1)
+                    $('#divshowLocality').show();
+
+                if ('@Model.sLocalityType' == 'L')
+                    $('#divBack').show();
+
+                $('#divSearchPref').html(myval);
+
+
+                $('.starChoice').click(function () {
+                    var $this = $(this);
+                    var id = $this.attr('data-id');
+                    var starType = $this.attr('data-startype');
+                    ChangeStarType(id);
+                });
+            });
+
+
+            $('#chkSelectAll').click(function () {
+                if ($(this).prop("checked")) {
+                    $(".ChPref").prop("checked", true);
+                    GetLocalitiesValues();
+                } else {
+                    $(".ChPref").prop("checked", false);
+                }
+            });
+        </script>
+        <script type="text/javascript">
+            $(document).ready(function () {
+
+
+
+                function validateBidPrice() {
+                    FetchDataForCookie();
+                    var result = false;
+                    result = !isNaN(parseFloat($('#txtBiddingPrice').val())) && isFinite($('#txtBiddingPrice').val());
+                    if (!result) {
+                        toastr.error('Please enter valid bidding price.')
+                    }
+                    if (parseFloat($('#txtBiddingPrice').val()) == 0) {
+                        toastr.error('Please enter valid bidding price.')
+                        result = false;
+                    }
+                    return result;
+                }
+
+            });
+            function GetAllData() {
+                
+                    FetchRoomDetailsForBid();
+
+
+                    var checkedvalues = '';
+                    $('.ChPref').each(function (i, j) {
+
+                        if ($(this).find("input:checkbox.ChPref").context.checked) {
+                            checkedvalues += $(this).find("input:checkbox.ChPref").context.value;
+                            checkedvalues += ',';
+                            $('#hdntype').val($(this)[0].attributes[1].value);
+                        }
+
+                    });
+                    $('#hdnLocalities').val(checkedvalues);
+                    if ($(hdnStarRating).val() == '' || $(hdnStarRating).val() == '0' || $(hdnStarRating).val() == undefined) {
+                        return false;
+                    }
+                    if ($(hdnLocalities).val() == '' || $(hdnLocalities).val() == '0' || $(hdnLocalities).val() == undefined) {
+                        return false;
+                    }
+                   
+              
+            }
+            //get room data for search
+            function FetchRoomDetailsForBid() {
+                var Data = [];
+                var acount = 0;
+                var ccount = 0;
+                var childage = '';
+                var i = 1;
+                $("#roomContainerDiv div.rooms").each(function () {
+
+                    acount = parseInt($(this).find("input:text.adult1").val());
+                    ccount = parseInt($(this).find("input:text.children1").val());
+
+                    var AgeArray = [];
+                    $("#ulchilds" + i + " li.childli").each(function () {
+                        childage = $(this).find("input:text.child").val();
+                        var parserChildage = parseInt(childage) || 0;
+                        AgeArray.push({ Age: parserChildage.toString() });
+                    });
+
+                    i++;
+                    Data.push({
+                        room: i - 1,
+                        adult: acount,
+                        child: ccount,
+                        ChildAge: AgeArray
+                    });
+                });
+                //debugger;
+                $("#hdnJsonNew").val(JSON.stringify(Data));
+                //jQuery('#divwhole').toggle('hide');
+                $pop.stop().fadeOut();
+
+            }
+        </script>
+    }
+}

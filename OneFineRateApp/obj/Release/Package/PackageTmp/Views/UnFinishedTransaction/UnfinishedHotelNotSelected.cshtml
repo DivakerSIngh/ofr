@@ -1,0 +1,969 @@
+﻿@model OneFineRateBLL.Entities.eBidding
+@using OneFineRateAppUtil
+@{
+    ViewBag.Title = "GetBidSearchedHotels";
+    int counter = 0;
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+<script src="~/Scripts/common.js"></script>
+<script src="~/Scripts/waitingSpinner.js"></script>
+<style>
+    /*.star-choice li {
+        cursor: pointer;
+    }*/
+
+
+    .hotelfacilitydiv table tr td label {
+        margin-left: 5px;
+        margin-top: 0px !important;
+    }
+
+    .roomfacilitydiv table tr td label {
+        margin-left: 5px;
+        margin-top: 0px !important;
+    }
+
+    #ui-datepicker-div {
+        z-index: 999 !important;
+    }
+
+    .scrollFix {
+        line-height: 1.35;
+        overflow: hidden;
+        white-space: nowrap;
+        height: 100%;
+    }
+</style>
+
+
+<div class="container">
+
+    @if (Model != null && Model.lstBidRoomsData != null && Model.lstBidRoomsData.Count > 0)
+    {
+        <div id="hotelFilterHeaderDiv">
+            <div class="col-md-10 col-sm-9 col-xs-12  pull-left loyality_infobg">
+                <div class="col-md-7">
+                    <div class="sortlist" id="propertySortDivEmpty" style="display:none;">
+                        <ul>
+                            <li style="height:25px"><a href="javascript:void(0)" class="sorting"></a></li>
+                        </ul>
+                    </div>
+                    <div class="sortlist" id="propertySortDiv">
+                        <ul>
+                            <li class="noborder marginleft-20">SORT BY :</li>
+                            @*<li><a href="javascript:void(0)" id="sortByPrice" class="active sorting">PRICE</a></li>*@
+                            <li><a href="javascript:void(0)" id="sortByTripAdvisorRating" class="sorting">TRIP ADVISOR RATING</a>	</li>
+                            <li class="noborder"><a href="javascript:void(0)" id="sortByStarCategory" class="active sorting">STAR CATEGORY</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <h4> Total no. of Hotels Meeting Your Bid is @Model.lstBidRoomsData.Count </h4>
+                </div>
+            </div>
+            <div class="col-md-2 col-sm-3 col-xs-12">
+                <button id="mapViewLink" style="height:36px;width:100%; margin-top:15px" class="btn btn-map"> <i class="fa fa-map-o"  aria-hidden="true"></i> Map View</button>
+                <button id="listViewLink" style="height:36px;width:100%;margin-top:15px; display:none" class="btn btn-map"><i class="fa fa-list"  aria-hidden="true"></i> List View</button>
+            </div>
+        </div>
+
+        <div class="clear"></div>
+
+        <div class="row" id="hotelListContainer">
+
+            @using (Html.BeginForm("UpdateBooking", "UnFinishedTransaction", FormMethod.Post, new { id = "myform", role = "form" }))
+            {
+
+                @Html.HiddenFor(u => u.SelectedPropId, new { id = "hdnselectedPropId" })
+                @Html.HiddenFor(u => u.SelectedRPId, new { id = "hdnselectedRPId" })
+                @Html.HiddenFor(u => u.iBookingId)
+
+                if (Model.lstBidRoomsData != null)
+                {
+
+
+                    for (int i = 0; i < Model.lstBidRoomsData.Count; i++)
+                    {
+                        @Html.HiddenFor(u => u.lstBidRoomsData[i].sHotelName)
+                        @Html.HiddenFor(u => u.lstBidRoomsData[i].iPropId)
+                        @Html.HiddenFor(u => u.lstBidRoomsData[i].dPrice)
+                        @Html.HiddenFor(u => u.lstBidRoomsData[i].dDiscPrice)
+                        @Html.HiddenFor(u => u.lstBidRoomsData[i].iRoomId)
+                        @Html.HiddenFor(u => u.lstBidRoomsData[i].iRPId)
+                        @Html.HiddenFor(u => u.lstBidRoomsData[i].Discount)
+                        @Html.HiddenFor(u => u.lstBidRoomsData[i].sCurrencySymbol)
+
+
+                        <div class="col-md-12 lazy  marginbottom20" data-price="@Model.lstBidRoomsData[i].dDiscPrice" data-star="@Model.lstBidRoomsData[i].iStarCategoryId" data-tripadvisor="@Model.lstBidRoomsData[i].rating" style="display:@(counter++>4 ? "none":"block")">
+                            <div class="row border1 margintop10 boxshadow margin0">
+                                <div class="col-md-3">
+                                    <div class="row">
+                                        <img src="@Model.lstBidRoomsData[i].sImgUrl" class="item lazy srchimgheight">
+
+
+                                    </div>
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <div class="row">
+                                                <div class="col-xs-9">
+
+                                                    <div style="cursor:pointer" class="bookNow" data-srequesttype="bid" data-roomid="@OneFineRateAppUtil.clsUtils.Encode(Model.lstBidRoomsData[i].iRoomId.ToString())" data-propertyid="@OneFineRateAppUtil.clsUtils.Encode(Model.lstBidRoomsData[i].iPropId.ToString())">
+                                                        <h3 class="mar-padd0">
+
+                                                            @*@if (Model.lstBidRoomsData[i].sHotelName.Length > 24)
+                                                                {
+                                                                    <text> @Model.lstBidRoomsData[i].sHotelName.Substring(0, 25)...</text>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <text> @Model.lstBidRoomsData[i].sHotelName </text>
+                                                                }*@
+                                                            @Model.lstBidRoomsData[i].sHotelName
+                                                            <span><img src="../images/inner-star@(Model.lstBidRoomsData[i].iStarCategoryId).png" class="inner_star"></span>
+                                                            @*@if (item.bIsNew && item.bIsPopularHotel)
+                                                                {
+                                                                    <span class="label label-new padding5">New to OFR / OFR Popular </span>
+                                                                }
+                                                                else if (item.bIsNew)
+                                                                {
+                                                                    <span class="label label-new padding5">New to OFR</span>
+                                                                }
+                                                                else if (item.bIsPopularHotel)
+                                                                {
+                                                                    <span class="label label-new padding5">OFR Popular </span>
+                                                                }*@
+
+                                                        </h3>
+                                                    </div>
+
+                                                    <h5>@Model.lstBidRoomsData[i].sLocality</h5>
+
+                                                </div>
+
+                                                <div class="col-xs-3">
+                                                    @*<div class="update-nag">
+                                                            @if (Model.lstBidRoomsData[i].bUpgrade == true)
+                                                            {
+                                                                <br />
+                                                                <span class="spUpgrade label label-warning padding5 upgrade-label whitetext" ng-propid="@Model.lstBidRoomsData[i].iPropId" ng-bookingid="@Model.iBookingId" style="cursor:pointer;">Upgrade on discount rate</span>
+                                                            }
+                                                        </div>*@
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <ul class="srchofr">
+                                                <li class="">
+
+                                                    @if (Model.lstBidRoomsData[i].LastBook != "-1")
+                                                    {
+                                                        if (Model.lstBidRoomsData[i].LastBook != null)
+                                                        {
+                                                            <span class="red">Last Bid @Model.lstBidRoomsData[i].LastBook ago !</span>
+                                                        }
+                                                        if (Model.lstBidRoomsData[i].LastBook != null && Model.lstBidRoomsData[i].Looking != null && Model.lstBidRoomsData[i].Looking != 0)
+                                                        {
+                                                            <span>|</span>
+                                                        }
+                                                        if (Model.lstBidRoomsData[i].Looking != null && Model.lstBidRoomsData[i].Looking != 0)
+                                                        {
+                                                            <span class="blacktext">@Model.lstBidRoomsData[i].Looking People are viewing</span>
+                                                        }
+                                                    }
+
+                                                </li>
+                                                @if (Model.lstBidRoomsData[i].bIsHighDemand == true)
+                                                {
+                                                    <li class="red pull-right"><strong>In High Demand</strong></li>
+                                                }
+                                            </ul>
+                                        </div>
+                                        <div class="col-xs-12" style="position:relative; bottom:-15px;  ">
+                                            @{
+                        if (!String.IsNullOrEmpty(@Model.lstBidRoomsData[i].rating_image_url))
+                        {
+                            <img src="@Model.lstBidRoomsData[i].rating_image_url" class="imgheight19"><br>
+                                                <em class="green pull-left">@Model.lstBidRoomsData[i].ranking_string</em>
+                        }
+                                            }
+
+                                            <div class="facilityicon pull-right">
+                                                <ul>
+                                                    @foreach (var amenityUrl in Model.lstBidRoomsData[i].GetFirstFourAmenityUrl())
+                                                    {
+                                                        var urlArr = amenityUrl.Split(',');
+                                                        <li><img src="@urlArr[1]" height="20" title="@urlArr[0]" width="20" /></li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12 pull-right margintop10">
+                                            <div class="update-nag">
+                                                @if (Model.lstBidRoomsData[i].bUpgrade == true)
+                                                {
+                                                    <br />
+                                                    <span class="spUpgrade label label-warning padding5 upgrade-label whitetext" ng-propid="@Model.lstBidRoomsData[i].iPropId" ng-bookingid="@Model.iBookingId" style="cursor:pointer;">Upgrade options available</span>
+                                                }
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 srchlightcream">
+                                    <div class=" margintop74 text-center">
+
+                                        <button type="button" data-propid='@Model.lstBidRoomsData[i].iPropId' data-rpid='@Model.lstBidRoomsData[i].iRPId' class="btn btn-bannerbtn marginbottom10 marginleft5 onlybuy  width100 btnSubmit">Select</button>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 lightgry">
+
+                                    @{
+
+                                                var bDiscount = false;
+
+                                                if (@Model.lstBidRoomsData[i].Discount > 0)
+                                                {
+                                                    bDiscount = true;
+                                                    @Html.Raw("You are saving")
+                                                    <strong class="srchblueboldtext1 ">@Model.lstBidRoomsData[i].Discount %</strong>
+                                                }
+                                    }
+
+
+
+                                    @{
+                                                System.Text.StringBuilder str = new System.Text.StringBuilder();
+                                                if (@Model.lstBidRoomsData[i].lstBidAmenAppl.Count > 0)
+                                                {
+
+                                                    foreach (var item in @Model.lstBidRoomsData[i].lstBidAmenAppl)
+                                                    {
+                                                        str.Append(",");
+                                                        str.Append(" " + item.Amen + " (" + item.Appl + ")");
+
+                                                    }
+                                                    if (bDiscount == true)
+                                                    {
+                                                        @Html.Raw("and getting")
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.Raw("You are getting")
+                                                    }
+
+
+                                                    <strong class="srchblueboldtext1 ">
+                                                        @Html.Raw(str.ToString().TrimStart(','))
+                                                    </strong>
+
+                                                }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+
+
+            }
+
+
+        </div>
+
+        <script src="~/Scripts/divSlider.js"></script>
+
+        <script src="//maps.googleapis.com/maps/api/js?key=AIzaSyBA8k8_YKEbkfECgXpF6FKdMkMA1jS1qAQ"></script>
+
+        <div id="hotelMapViewContainer">
+
+            @if (Model != null && Model.lstBidRoomsData.Count > 0)
+            {
+                <style>
+                    #map_wrapper {
+                        height: 450px;
+                    }
+
+                    #map_canvas {
+                        width: 100%;
+                        height: 100%;
+                    }
+
+                    .wrap-custom {
+                        position: relative;
+                        margin: 3em 0;
+                    }
+
+                    .frame-custom {
+                        height: 330px !important;
+                        /*line-height: 250px;*/
+                        overflow: hidden !important;
+                    }
+
+                        .frame-custom ul {
+                            list-style: none !important;
+                            margin: 0 !important;
+                            padding: 0 !important;
+                            height: 100% !important;
+                            font-size: 50px !important;
+                        }
+
+                            .frame-custom ul li {
+                                float: left !important;
+                                width: 227px !important;
+                                height: 100% !important;
+                                margin: 0 2px 0 0;
+                                padding: 0 !important;
+                                background: #fff !important;
+                                border: #e7e6e6 1px solid;
+                                /*color: #ddd !important;*/
+                                /*text-align: center;*/
+                                cursor: all-scroll !important;
+                                padding-left: 10px;
+                                color: #000;
+                                position: relative;
+                            }
+
+                                .frame-custom ul li.active {
+                                    /*color: #fff !important;*/
+                                    /*background: #0f204b !important;*/
+                                }
+
+                    .scrollbar {
+                        margin: 0 0 1em 0;
+                        height: 5px;
+                        background: #ccc;
+                        line-height: 0;
+                    }
+
+                        .scrollbar .handle {
+                            width: 100px;
+                            height: 100%;
+                            background: #292a33;
+                            cursor: pointer;
+                        }
+
+                            .scrollbar .handle .mousearea {
+                                position: absolute;
+                                top: -9px;
+                                left: 0;
+                                width: 100%;
+                                height: 20px;
+                            }
+
+
+                    .controls {
+                        margin: 25px 0;
+                        text-align: center;
+                    }
+                </style>
+
+                <div class="body-content" style="width:98.7%;margin-top:10px">
+                    <div id="map_wrapper">
+                        <div id="map_canvas" class="mapping"></div>
+                    </div>
+                    <div class="clearfix"></div>
+                    @using (Html.BeginForm("UpdateBooking", "UnFinishedTransaction", FormMethod.Post, new { id = "myform", role = "form" }))
+                    {
+                        <div class="frame-custom " id="centered" style=" overflow: hidden;">
+
+                            <ul class="clearfix" style=" transform: translateZ(0px) translateX(-3419px); width:100%">
+
+
+                                @Html.HiddenFor(u => u.SelectedPropId, new { id = "hdnselectedPropId_List" })
+                                @Html.HiddenFor(u => u.SelectedRPId, new { id = "hdnselectedRPId_List" })
+                                @Html.HiddenFor(u => u.iBookingId)
+                                @if (Model.lstBidRoomsData != null)
+                                {
+
+
+                                    for (int j = 0; j < Model.lstBidRoomsData.Count; j++)
+                                    {
+
+                                        @Html.HiddenFor(u => u.lstBidRoomsData[j].sHotelName)
+                                        @Html.HiddenFor(u => u.lstBidRoomsData[j].iPropId)
+                                        @Html.HiddenFor(u => u.lstBidRoomsData[j].dPrice)
+                                        @Html.HiddenFor(u => u.lstBidRoomsData[j].dDiscPrice)
+                                        @Html.HiddenFor(u => u.lstBidRoomsData[j].iRoomId)
+                                        @Html.HiddenFor(u => u.lstBidRoomsData[j].iRPId)
+                                        @Html.HiddenFor(u => u.lstBidRoomsData[j].Discount)
+                                        @Html.HiddenFor(u => u.lstBidRoomsData[j].sCurrencySymbol)
+                                        <li>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <img src="@Model.lstBidRoomsData[j].sImgUrl" height="150" style="width:100%" />
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <h5 class="srchhoteltitles15">
+                                                        @if (Model.lstBidRoomsData[j].sHotelName.Length > 24)
+                                                        {
+                                                            <text> @Model.lstBidRoomsData[j].sHotelName.Substring(0, 25)...</text>
+                                                        }
+                                                        else
+                                                        {
+                                                            <text> @Model.lstBidRoomsData[j].sHotelName </text>
+                                                        }
+
+                                                    </h5>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <img src="../images/inner-star@(Model.lstBidRoomsData[j].iStarCategoryId).png" class="srchinner_star">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    @*<h5 class="srchpricetitles15"> @Model.lstBidRoomsData[0].sCurrencySymbol @Convert.ToDecimal(Model.lstBidRoomsData[j].dPrice).ToString("#.##")</h5>*@
+                                                </div>
+                                                <div class="col-md-12 ">
+                                                    @{
+                                        if (!String.IsNullOrEmpty(@Model.lstBidRoomsData[j].rating_image_url))
+                                        {
+                                            <img src="@Model.lstBidRoomsData[j].rating_image_url" class="srchimgheight19"><br>
+                                                        <em class="green pull-left srchfont12">@Model.lstBidRoomsData[j].ranking_string</em>
+                                        }
+                                                    }
+                                                </div>
+                                                <div class="col-md-12 text-center mapbtn">
+                                                    <button type="button" data-propid='@Model.lstBidRoomsData[j].iPropId' data-rpid='@Model.lstBidRoomsData[j].iRPId' class="btn btn-bannerbtn btn-sm width70 btnSubmit">Select</button>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    }
+                                }
+
+                            </ul>
+
+                        </div>
+                    }
+                    <div class="scrollbar">
+                        <div class="handle" style="transform: translateZ(0px) translateX(570px); width: 100%">
+                            <div class="mousearea"></div>
+                        </div>
+                    </div>
+                    <div class="row controls center">
+                        <button class="btn btn-primary prev"><i class="glyphicon glyphicon-chevron-left"></i></button>
+                        <button class="btn btn-primary next"><i class="glyphicon glyphicon-chevron-right"></i></button>
+                    </div>
+                </div>
+
+                <script>
+
+
+                    var markersData = @Html.Raw(Json.Encode(Model.lstBidRoomsData));
+                    var BookingId= '@Model.iBookingId';
+                    function initialize() {
+                        var mapOptions = {
+                            zoom: 10,
+                            clickableIcons: false,
+                            mapTypeId: google.maps.MapTypeId.ROADMAP,
+                        };
+
+                        var bounds = new google.maps.LatLngBounds();
+
+                        map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
+
+                        infoWindow = new google.maps.InfoWindow();
+
+                        google.maps.event.addListener(map, 'click', function() {
+                            infoWindow.close();
+                        });
+
+                        displayMarkers(bounds);
+
+                    }
+
+
+                    // This function will iterate over markersData array
+                    // creating markers with createMarker function
+                    function displayMarkers(bounds){
+
+                        // For loop that runs through the info on markersData making it possible to createMarker function to create the markers
+                        for (var i = 0; i < markersData.length; i++){
+
+                            if(markersData[i].dLatitude != 0  && markersData[i].dLongitude != 0)
+                            {
+                                var latlng = new google.maps.LatLng(markersData[i].dLatitude, markersData[i].dLongitude);
+                                var sImgUrl = markersData[i].sImgUrl;
+                                var sHotelName = markersData[i].sHotelName;
+                                var dPrice = markersData[i].dPrice;
+                                var iStarCategoryId = markersData[i].iStarCategoryId;
+                                var rating_image_url = markersData[i].rating_image_url;
+                                var ranking_string = markersData[i].ranking_string;
+                                var iVendorId = markersData[i].iVendorId;
+                                var iPropId = markersData[i].iPropId;
+                                var bIsTG = markersData[i].bIsTG;
+
+                                createMarker(latlng, sHotelName,sImgUrl,dPrice, iStarCategoryId, rating_image_url,ranking_string,iPropId,iVendorId,bIsTG);
+
+                                // Marker’s Lat. and Lng. values are added to bounds variable
+                                bounds.extend(latlng);
+                            }
+                        }
+
+                        // Finally the bounds variable is used to set the map bounds
+                        // with API’s fitBounds() function
+                        map.fitBounds(bounds);
+                    }
+
+
+                    // This function creates each marker and sets their Info Window content
+                    function createMarker(latlng, sHotelName,sImgUrl,dPrice, iStarCategoryId, rating_image_url,ranking_string, iPropId,iVendorId,bIsTG){
+                        var marker = new google.maps.Marker({
+                            map: map,
+                            position: latlng,
+                            title: sHotelName
+                        });
+
+                        // This event expects a click on a marker
+                        // When this event is fired the infowindow content is created
+                        // and the infowindow is opened
+                        google.maps.event.addListener(marker, 'click', function() {
+
+                            // Variable to define the HTML content to be inserted in the infowindow
+                            var iwContent = GetInfoWindowHtml(sHotelName,sImgUrl,dPrice, iStarCategoryId, rating_image_url,ranking_string, iPropId,iVendorId,bIsTG);
+
+                            // including content to the infowindow
+                            infoWindow.setContent('<form action="/UnFinishedTransaction/UpdateBooking"  method="post"><div class="scrollFix">'+iwContent+'</div></form>');
+
+                            // opening the infowindow in the current map and at the current marker location
+                            infoWindow.open(map, marker);
+                        });
+                    }
+
+
+                    function GetInfoWindowHtml(sHotelName,sImgUrl,dPrice, iStarCategoryId, rating_image_url,ranking_string, iPropId,iVendorId,bIsTG,bookingid) {
+
+                        var infoWindowHtml="";
+                        infoWindowHtml += " <input type=\"hidden\" value="+iPropId+" name=\"SelectedPropId\" /><input type=\"hidden\" value="+BookingId+" name=\"iBookingId\" />";
+                        infoWindowHtml += "    <div class=\"row\" style='height:auto; width:270px'>";
+                        infoWindowHtml += "        <div class=\"col-md-12\">";
+                        infoWindowHtml += "          <img src="+sImgUrl+" height=\"130\" style=\"width:100%\">";
+                        infoWindowHtml += "        <\/div>";
+                        infoWindowHtml += "        <div class=\"col-md-12\">";
+                        infoWindowHtml += "            <h5 class=\"srchhoteltitles15\">"+sHotelName+"<\/h5>";
+                        infoWindowHtml += "        <\/div>";
+                        infoWindowHtml += "        <div class=\"col-md-6\">";
+                        infoWindowHtml += "            <img src=\"..\/images\/inner-star"+iStarCategoryId+".png\" class=\"srchinner_star\">";
+                        infoWindowHtml += "        <\/div>";
+                        infoWindowHtml += "        <div class=\"col-md-6\">";
+                        //infoWindowHtml += "            <h5 class=\"srchpricetitles\">@Model.lstBidRoomsData[0].sCurrencySymbol "+dPrice+"<\/h5>";
+                        infoWindowHtml += "        <\/div>";
+                        infoWindowHtml += "        <div class=\"col-md-12 \">";
+                        infoWindowHtml += "            <img src="+rating_image_url+" class=\"srchimgheight19\"><br>";
+                        infoWindowHtml += "            <em class=\"green pull-left srchfont12\">"+ranking_string+"<\/em>";
+                        infoWindowHtml += "        <\/div>";
+                        infoWindowHtml += "        <div class=\"col-md-12 text-center\">";
+
+                        infoWindowHtml += "     <button  type='submit' class=\"btn btn-bannerbtn margintop10 btn-sm width80\">Buy<\/button>";
+
+                        infoWindowHtml += "        <\/div>";
+                        infoWindowHtml += "    <\/div>";
+
+                        return infoWindowHtml;
+                    }
+
+                    (function () {
+
+                        var $frame = $('#centered');
+                        var $wrap  = $frame.parent();
+
+                        $frame.sly({
+                            horizontal: 1,
+                            itemNav: 'centered',
+                            smart: 1,
+                            // activateOn: 'click',
+                            mouseDragging: 1,
+                            touchDragging: 1,
+                            releaseSwing: 1,
+                            startAt: 4,
+                            scrollBar: $wrap.find('.scrollbar'),
+                            scrollBy: 1,
+                            speed: 300,
+                            elasticBounds: 1,
+                            easing: 'easeOutExpo',
+                            dragHandle: 1,
+                            dynamicHandle: 1,
+                            clickBar: 1,
+                            prev: $wrap.find('.prev'),
+                            next: $wrap.find('.next')
+                        });
+                    }());
+
+                </script>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="col-md-12 lazy  marginbottom20">
+            <div class="row  margintop10 margin0 text-center">
+                <h2>We couldn't find any Hotels matching your Request, Please try again.</h2>
+            </div>
+        </div>
+    }
+</div>
+<!-- Room Details -->
+<div id="RoomDetails" class="modal fade" role="dialog">
+
+</div>
+<div id="HotelDetails" class="modal fade" role="dialog">
+
+</div>
+<script src="~/js/jquery.shortenNew.js"></script>
+<script>
+    if (!document.referrer) {
+        if (typeof history.pushState === 'function') {
+            history.pushState('b', null, null);
+            window.onpopstate = function () {
+                history.pushState('b', null, null);
+                return false;
+            }
+        }
+    }
+    else {
+        if (typeof history.pushState === 'function') {
+            history.pushState('b', null, null);
+            var previousUrl = document.referrer.toString().toLowerCase();
+            window.onpopstate = function () {
+                history.pushState('b', null, null);
+                return false;
+            }
+        }
+        else {
+            var ignoreHashChange = true;
+            window.onhashchange = function () {
+                if (!ignoreHashChange) {
+                    ignoreHashChange = true;
+                    window.location.hash = Math.random();
+                    return false;
+                }
+                else {
+                    ignoreHashChange = false;
+                    return false;
+                }
+            };
+        }
+    }
+
+</script>
+<script type="text/javascript">
+
+    function SelectProperty(id,rpid) {
+        $('#hdnselectedPropId').val(id);
+        $('#hdnselectedRPId').val(rpid);
+        $('#hdnselectedPropId_List').val(id);
+        $('#hdnselectedRPId_List').val(rpid);        
+    }
+
+    $('.btnSubmit').click(function(e){
+
+        e.preventDefault();
+
+        var $this = $(this);
+
+        bootbox.confirm("Are you sure you want to select this room?", function(result){
+
+            if(result==true)
+            {
+                $('#hdnselectedPropId').val( $this.data('propid'));
+                $('#hdnselectedRPId').val($this.data('rpid'));
+                $('#hdnselectedPropId_List').val($this.data('propid'));
+                $('#hdnselectedRPId_List').val($this.data('rpid'));               
+                $('#myform').submit();
+            }
+
+        });
+    });
+
+    $(function(){
+
+
+        $('.spUpgrade').click(function(){
+            var bookingid= $(this).attr('ng-bookingid');
+            var propid= $(this).attr('ng-propid');
+
+            var url = '@Url.Action("GetUpgradeHotelDetails")?bookingid=' + bookingid + '&propid=' + propid + '';
+           
+            $("#RoomDetails").load(url, function () {
+               
+                $('#RoomDetails').modal({
+                    show: 'true'
+                });
+            });
+
+        });
+
+        $('#hotelMapViewContainer').hide();
+
+        $('#mapViewLink').click(function(){
+
+            $(this).hide();
+            $('#listViewLink').show();
+            $('#hotelListContainer').hide();
+            $('#hotelMapViewContainer').show();
+            initialize();
+            $('#propertySortDiv').hide();
+            $('#propertySortDivEmpty').show();
+
+        });
+
+        $('#listViewLink').click(function(){
+            $(this).hide();
+            $('#mapViewLink').show();
+            $('#hotelMapViewContainer').hide();
+            $('#hotelListContainer').show();
+            $('#propertySortDiv').show();
+            $('#propertySortDivEmpty').hide();
+        });
+    });
+
+    $.fn.isOnScreen = function () {
+        var viewport = {};
+        viewport.top = $(window).scrollTop();
+        viewport.bottom = viewport.top + $(window).height();
+        var bounds = {};
+        bounds.top = this.offset().top;
+        bounds.bottom = bounds.top + this.outerHeight();
+        return ((bounds.top <= viewport.bottom) && (bounds.bottom >= viewport.top));
+    };
+
+
+    $(function () {
+
+        var $doc = $(document);
+        var $win = $(window);
+
+
+        $(window).scroll(function () {
+
+            if ($doc.height() - $win.height() - $(this).scrollTop() <= 500) {
+
+                $('div.lazy:hidden:lt(5)').fadeIn();
+            }
+        });
+
+
+        var isPriceAccending = true;
+        var isStarCategoryAccending = true;
+        var isTripAdvisorRatingAccending = true;
+
+
+        $('#sortByPrice').click(function () {
+
+            $('.sorting').removeClass('active');
+            $(this).addClass('active');
+
+            try {
+
+                if (isPriceAccending === true) {
+
+                    tinysort('div.lazy',{attr:'data-price',order:'desc'});
+
+                    $('div.lazy:lt(4)').show();
+                    $('div.lazy:gt(4)').hide();
+
+                    isPriceAccending = false;
+                }
+                else {
+
+                    tinysort('div.lazy',{attr:'data-price',order:'asc'});
+
+                    $('div.lazy:lt(4)').show();
+                    $('div.lazy:gt(4)').hide();
+
+                    isPriceAccending = true;
+                }
+
+            }
+            catch (e) {
+                alert('An error occured!');
+            }
+
+        });
+
+        $('#sortByStarCategory').click(function () {
+
+            $('.sorting').removeClass('active');
+            $(this).addClass('active');
+
+            if (isStarCategoryAccending === true) {
+
+                tinysort('div.lazy',{attr:'data-star',order:'desc'});
+
+                $('div.lazy:lt(4)').show();
+                $('div.lazy:gt(4)').hide();
+
+                isStarCategoryAccending = false;
+            }
+            else {
+
+                tinysort('div.lazy',{attr:'data-star',order:'asc'});
+
+                $('div.lazy:lt(4)').show();
+                $('div.lazy:gt(4)').hide();
+
+                isStarCategoryAccending = true;
+            }
+
+        });
+
+        $('#sortByTripAdvisorRating').click(function () {
+
+            $('.sorting').removeClass('active');
+            $(this).addClass('active');
+
+            if (isTripAdvisorRatingAccending === true) {
+
+                tinysort('div.lazy',{attr:'data-tripadvisor',order:'desc'});
+
+                $('div.lazy:lt(4)').show();
+                $('div.lazy:gt(4)').hide();
+
+                isTripAdvisorRatingAccending = false;
+            }
+            else {
+
+                tinysort('div.lazy',{attr:'data-tripadvisor',order:'asc'});
+
+                $('div.lazy:lt(4)').show();
+                $('div.lazy:gt(4)').hide();
+
+                isTripAdvisorRatingAccending = true;
+            }
+
+        });
+
+        $(document).on('click', '.tg_bookNow', function (e) {
+
+            e.preventDefault();
+
+            var values = {
+
+                Id: $(this).data('propertyid'),
+                Slocation: $('#txtlocname').val(),
+                CIn: $('#txtstayfrom').val(),
+                COut: $('#txtstayto').val(),
+                sRoomData: $("#hdnJson").val(),
+                venderId: $(this).data('vendorid'),
+                sRequestType: $(this).data('srequesttype')
+            };
+
+
+            window.location.href = "/OfferReviewTG?Id=" + values.venderId + "&Slocation=" + values.Slocation + "&CIn=" + values.CIn + "&COut=" + values.COut + "&sRoomData=" + values.sRoomData + "&iVendorId=" + values.venderId + "&sRequestType=" + values.sRequestType;
+
+        });
+
+        $(document).on('click', '.bookNow', function (e) {
+
+            //e.preventDefault();
+            //var button = $(this);
+
+            //var values = {
+
+            //    Id: button.data('propertyid'),
+            //    Slocation: $('#txtlocname').val(),
+            //    CIn: $('#txtstayfrom').val(),
+            //    COut: $('#txtstayto').val(),
+            //    sRoomData: $("#hdnJson").val(),
+            //    sRequestType: $(this).data('srequesttype')
+            //};
+
+            //window.location.href = "/OfferReview?Id=" + values.Id + "&Slocation=" + values.Slocation + "&CIn=" + values.CIn + "&COut=" + values.COut + "&sRoomData=" + values.sRoomData + "&sRequestType=" + values.sRequestType;
+
+            //startSpinning();
+            e.preventDefault();
+
+            var url = "/BidHotelDetails/" + $(this).data('propertyid')+"/"+ $(this).data('roomid');
+            window.open(url,"_blank");
+        });
+
+        $(document).on('click', '.negotiate', function (e) {
+
+            e.preventDefault();
+            var button = $(this);
+
+            var values = {
+
+                Id: button.data('propertyid'),
+                Slocation: $('#txtlocname').val(),
+                CIn: $('#txtstayfrom').val(),
+                COut: $('#txtstayto').val(),
+                sRoomData: $("#hdnJson").val()
+            };
+
+            window.location.href = "/OfferReview?Id=" + values.Id + "&Slocation=" + values.Slocation + "&CIn=" + values.CIn + "&COut=" + values.COut + "&sRoomData=" + values.sRoomData
+            
+        });
+
+        $(document).on('click', '.iconFavourite', function (e) {
+
+            e.preventDefault();
+            var $this = $(this);
+            var iconType = $this.data('icontype');
+
+            switch(iconType)
+            {
+
+                case 'ficon_red': {
+
+                    var iPropId = $this.data('propertyid');
+
+                    $this.css('color','black');
+                    $this.data('icontype','ficon_black');
+                    toastr.info('Removed from wishlist !')
+                    ToggleFavorite(iPropId,function(data){
+
+                        if(data===false)
+                        {
+                            $this.css('color','red');
+                            $this.data('icontype','ficon_red');
+                            toastr.error('An error occured!');
+                        }
+
+                    });
+                    break;
+                };
+                case 'ficon_black': {
+
+                    var iPropId = $this.data('propertyid');
+                    $this.css('color','red');
+                    $this.data('icontype','ficon_red');
+                    toastr.info('Added to wishlist !')
+                    ToggleFavorite(iPropId,function(data){
+                        if(data===false)
+                        {
+                            $this.css('color','black');
+                            $this.data('icontype','ficon_black');
+                            toastr.error('An error occured!');
+                        }
+                    });
+                    break;
+                };
+            }
+
+        });
+    });
+
+    function ToggleFavorite(iPropId,callback)
+    {
+        $.ajax({
+            url: '@Url.Action("ToggleFavorite","Search")',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({ iPropId: iPropId }),
+            dataType: "json",
+            type: "POST",
+            success: function (data) {
+                callback(data);
+            },
+            error:function(){
+                callback(false)
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        var success = @((TempData["Result"] != null).ToString().ToLower());
+        if (success == "hotel selected successfully!")
+            toastr.success('@TempData["Result"]');
+    });
+
+</script>

@@ -1,0 +1,60 @@
+﻿<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Trip Advisor</title>
+    <style type="text/css">
+        .hotelImage{
+            border-width: 2px !important;border-color:#0f204b !important;border-style:solid !important;
+        }
+    </style>
+</head>
+
+<body style="font-family:arial, helvetica, sans-serif;">
+    <!--<div style="border:10px solid #DBDADA; padding:10px;">-->
+        <table style="width:900px; border:4px solid #0f204b;padding: 10px;" border="0" cellspacing="0" cellpadding="0">
+            <tbody>
+
+                <tr>
+                    <td><img src="{{OneFineRateLogoImage}}"></td>
+                    <td><img src="https://static.tacdn.com/img2/branding/rebrand/TA_logo_primary.png" width="231"></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><hr /></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <b>Dear {{Name}}</b> <br />
+                        <br />
+                    </td>
+                </tr>
+                <tr>
+                    <td style="vertical-align:top">
+                        Thanks you for choosing {{Hotel}} for your recent stay in {{CITY}} through OneFineRate. <br /><br />
+
+                        At your convenience, would you please take a moment to share your experience online with your friends and others on TripAdvisor, who is our Review Partner, using the following link :
+                        <br />
+                        <b>How did it rate ?</b>
+                        <br />
+                        <br /> <a href="{{FeedbackLink}}"><img src="{{ClickReviewImage}}" /></a>
+                    </td>
+                    <td style="vertical-align:top">
+                        <img src="{{HotelImage}}" class="hotelImage" align="right" width="300">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="2">
+                        It is very important for us that our guests' experiences are shared. <br /><br />
+                        It was a plesure to have you as our guest. We would like to take this opportunity to thank you for your collaboration and thank you for booking through OneFineRate.
+
+                        <br />
+                        <br />
+                        OneFineRate Team
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    <!--</div>-->
+</body>
+</html>

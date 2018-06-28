@@ -1,0 +1,143 @@
+﻿@model OneFineRateBLL.Entities.etblAdditionalCommission
+@{
+    ViewBag.Title = "AdditionalCommision";
+    Layout = "~/Views/Shared/_LayoutProperty.cshtml";
+}
+
+@System.Web.Optimization.Scripts.Render("~/bundles/validation")
+
+<script src="~/js/jquery-ui.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        bindgrid();
+    });
+
+    function OpenPopUp() {
+
+        $('#dvAddCommission').html('');
+        var url = '@Url.Action("AddEditCommission")';
+        $("#dvAddCommission").load(url);
+        $('#dvAddCommission').modal({
+            show: 'true',
+            backdrop: 'static',
+            keyboard: false
+        });
+    }
+    function EditData(Id) {
+        var url = '@Url.Action("AddEditCommission")' + "?commissionId=" + Id;
+        $("#dvAddCommission").load(url);
+        $('#dvAddCommission').modal({
+            show: 'true'
+        });
+    }
+    function UpdateAction(Id, Mode) {
+
+        var message = '';
+        if (Mode) {
+            message = "Are you sure you want to enable this commission ?";
+        }
+        else {
+            message = "Are you sure you want to disable this commission ?";
+        }
+
+        bootbox.confirm(message, function (result) {
+            if (result == true) {
+
+                $.get('@Url.Action("UpdateCommissionStatus")', { commissionId: Id, status: Mode }).done(function (data) {
+                    console.log(data)
+
+                    if (data.status == 1) {
+                        toastr.success(data.msg);
+                        bindgrid();
+                    }
+                    else {
+                        toastr.error(data.msg);
+                    }
+                });
+            }
+        });
+    }
+    function GetResult(data) {
+        if (data.st == '1') {
+            toastr.success(data.msg);
+            bindgrid();
+            $('.close').click();
+        }
+        else {
+            toastr.error(data.msg);
+        }
+    }
+    // bind list
+    function bindgrid() {
+
+        try {
+            var aoColumns =
+                [
+                 //{ "sTitle": "Commision Name", "mData": "sAdditionalCommisionName" },
+                 // { "sTitle": "Start Date", "mData": "dtCommisionStartDate", "mRender": function (data, type, full) { return new Date(parseInt(full.dtCommisionEndDate.substr(6))).toISOString().slice(0, 10); } },
+                 //{ "sTitle": "End Date", "mData": "dtCommisionEndDate", "mRender": function (data, type, full) { return new Date(parseInt(full.dtCommisionEndDate.substr(6))).toISOString().slice(0, 10); } },
+
+                 { "sTitle": "ID", "mData": "iAdditionalCommisionId" },
+                 { "sTitle": "Start Date", "mData": "dtCommisionStartDate" },
+                 { "sTitle": "End Date", "mData": "dtCommisionEndDate" },
+                 { "sTitle": "Commission", "mData": "dCommission" },
+                 {
+                     "sTitle": "Status", "mData": "bActive",
+                     "mRender": function (data, type, full) {
+                         if (full.bActive == true)
+                             return 'Live'
+                         else
+                             return 'Disable'
+                     }
+                 },
+                 {
+                     "sTitle": "Action Date", "mData": "dtActionDate", "mRender": function (data, type, full) {
+                         return getNorDateTime(data);
+                     }
+                 },
+                 { "sTitle": "Action By", "mData": "iActionByName", "bSortable": false, },
+
+                  {
+                      "sTitle": "Action", "mData": "iPropId", "bSortable": false,
+                      "mRender": function (data, type, full) {
+                          var html = ''
+                          var html = "<a onclick=\"EditData('" + full.iAdditionalCommisionId + "');\" class=\"btn btn-warning btn-xs  \"> Edit </a>&nbsp";
+                          if (full.bActive === true) {
+                              html += "<a onclick=\"UpdateAction('" + full.iAdditionalCommisionId + "',false);\" class=\"btn btn-danger btn-xs  \"> Disable </a>";
+                          }
+                          else {
+                              html += "<a onclick=\"UpdateAction('" + full.iAdditionalCommisionId + "',true);\" class=\"btn btn-success btn-xs \"> Enable </a>";
+                          }
+                          return html;
+                      }
+                  }
+                ];
+            DatatableServerSide("#tblData", aoColumns, "/Services/Service.asmx/GetAllPropertyCommission?Id=@Convert.ToInt32(Session["PropId"])");
+            $('.dataTables_filter input').attr('title', 'Type here to search in the Room Name & Room Type Column');
+        }
+        catch (e) {
+
+        }
+
+    }
+</script>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        Commission Summary <span style="text-align:right; float:right;">
+            <button type="button" class="btn btn-warning" onclick="OpenPopUp();"><i class="fa fa-plus"></i> Add Commission</button>
+        </span>
+    </div>
+    <div class="panel-body">
+
+        <div class="table-responsive">
+            <table class="display table-bordered" id="tblData"></table>
+        </div>
+        <!-- End  table -->
+    </div>
+</div>
+<!-- Add Room -->
+<div id="dvAddCommission" class="modal fade" role="dialog">
+
+</div>
+

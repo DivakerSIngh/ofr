@@ -1,0 +1,205 @@
+﻿@model OneFineRateBLL.Entities.ePromoCode
+
+
+@using (Ajax.BeginForm("AddPromoCode", "PromoCode", new AjaxOptions() { InsertionMode = InsertionMode.Replace, UpdateTargetId = "AddPromoCode", HttpMethod = "POST", OnSuccess = "GetResult" }))
+{
+    @*//Scripts for validation server side through ajax call*@
+    @System.Web.Optimization.Scripts.Render("~/bundles/validation")
+    <script type="text/javascript">
+        function GetResult(data, status, xhr) {
+            if ('@Model.st' == '1') {
+                toastr.success('@Model.msg');
+                bindgrid();
+                $('.close').click();
+
+            }
+            else if ('@Model.st' == '0') {
+                toastr.error('@Model.msg');
+            }
+        }
+
+        $(document).ready(function () {
+            var d = new Date();
+            $('#dtBookingFrom').datepicker({
+                startDate: d,
+                minDate: d,
+                autoclose: true,
+                defaultDate: '@Model.BookingFrom',
+                dateFormat: 'dd/mm/yy'
+            })
+
+            $('#dtBookingTo').datepicker({
+                startDate: d,
+                minDate: d,
+                autoclose: true,
+                defaultDate: '@Model.BookingTo',
+                dateFormat: 'dd/mm/yy'
+            })
+            $('#dtStayFrom').datepicker({
+                startDate: d,
+                minDate: d,
+                autoclose: true,
+                defaultDate: '@Model.StayFrom',
+                dateFormat: 'dd/mm/yy'
+            })
+            $('#dtStayTo').datepicker({
+                startDate: d,
+                minDate: d,
+                autoclose: true,
+                defaultDate: '@Model.StayTo',
+                dateFormat: 'dd/mm/yy'
+            })
+        });
+
+    </script>
+
+    @Html.HiddenFor(m => m.heading)
+    @Html.Hidden("InitialPromoCode", Model.sPromoCode)
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"> @Model.heading</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    @Html.HiddenFor(m => m.iPromoCodeId)
+
+                    <div class="col-md-3">Title <span class="red">*</span></div>
+                    <div class="col-md-4"> @Html.TextBoxFor(m => m.sPromoTitle, new { type = "text", pattern = "^[a-zA-Z]+[a-zA-Z0-9 ]*$", maxlength = "100", @class = "form-control", required = "true" })</div>
+                    <div class="col-md-5">@Html.ValidationMessageFor(m => m.sPromoTitle, "", new { @class = "red" })</div>
+
+                </div>
+                <div class="row margintop10">
+                    <div class="col-md-3">Description <span class="red">*</span></div>
+                    <div class="col-md-4"> @Html.TextBoxFor(m => m.sPromoDescription, new { type = "text", pattern = "^[a-zA-Z]+[a-zA-Z0-9 ]*$", maxlength = "100", @class = "form-control", required = "true" })</div>
+                    <div class="col-md-5">@Html.ValidationMessageFor(m => m.sPromoDescription, "", new { @class = "red" })</div>
+                </div>
+
+                <div class="row margintop10">
+                    <div class="col-xs-3">
+                        Promo Code <span class="red">*</span>
+                    </div>
+                    <div class="col-xs-3">
+                        @Html.TextBoxFor(m => m.sPromoCode, new { type = "text", pattern = "^[a-zA-Z]+[a-zA-Z0-9 ]*$", maxlength = "50", @class = "form-control", required = "true" })
+
+                    </div>
+                    <div class="col-xs-6">
+                        @Html.ValidationMessageFor(m => m.sPromoCode, "", new { @class = "red" })
+                    </div>
+                </div>
+                <div class="row margintop10">
+                    <div class="col-xs-3">
+                        Discount
+                    </div>
+                    <div class="col-xs-3">
+
+                        @Html.TextBoxFor(m => m.dValue, new { type = "text", @class = "form-control width60", onkeyup = "this.value = minmax(this.value, 0, 100)" })
+
+                    </div>
+                    <div class="col-xs-3" style="width:19%;">
+                        @Html.DropDownListFor(m => m.cPercentageValue, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="%",Value="1" },
+                                                                            new SelectListItem {Text="Value",Value="0" }},
+                                                              new { @class = "form-control", required = "true", onchange = "ddListChange()" })
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-3"></div>
+                    <div class="col-xs-3 txtcenter">OR</div>
+                    <div class="col-xs-2"></div>
+
+                </div>
+
+                <div class="row ">
+                    <div class="col-md-3">
+                        Amenity
+                    </div>
+                    <div class="col-md-8">
+                        @Html.DropDownListFor(m => m.iAmenityId, new SelectList(OneFineRateBLL.BL_Amenity.GetAllAmenities(), "iAmenityId", "sAmenityName"), "", new { @class = "form-control" })
+
+                    </div>
+                    <div class="col-md-4"></div>
+                        <div class="col-md-12">
+                            @Html.ValidationMessageFor(m => m.dValue, "", new { @class = "red" })
+                            @Html.ValidationMessageFor(m => m.iAmenityId)
+                        </div>
+                    </div>
+                <div class="row margintop10">
+                    <div class="col-xs-3">
+                        Booking From <span class="red">*</span>
+                    </div>
+                    <div class="col-xs-3">
+                        @Html.TextBoxFor(m => m.BookingFrom, new { type = "text", @class = "form-control", required = "true", onkeyup = "this.value=''", id = "dtBookingFrom" })
+                    </div>
+
+                    <div class="col-xs-3" style="width:110px;">
+                        Booking To <span class="red">*</span>
+                    </div>
+                    <div class="col-xs-3">
+                        @Html.TextBoxFor(m => m.BookingTo, new { type = "text", @class = "form-control", required = "true", onkeyup = "this.value=''", id = "dtBookingTo" })
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-3"></div>
+                    <div class="col-xs-3">
+                        @Html.ValidationMessageFor(m => m.BookingFrom, "", new { @class = "red" })
+                    </div>
+                    <div class="col-xs-3"></div>
+                    <div class="col-xs-3">
+                        @Html.ValidationMessageFor(m => m.BookingTo, "", new { @class = "red" })
+                    </div>
+                </div>
+
+                <div class="row margintop10">
+
+                    <div class="col-xs-3">
+                        Stay From <span class="red">*</span>
+                    </div>
+                    <div class="col-xs-3">
+                        @Html.TextBoxFor(m => m.StayFrom, new { type = "text", @class = "form-control", required = "true", onkeyup = "this.value=''", id = "dtStayFrom" })
+                    </div>
+                    <div class="col-xs-2" style="width:110px;">
+                        Stay To <span class="red">*</span>
+                    </div>
+                    <div class="col-xs-3">
+                        @Html.TextBoxFor(m => m.StayTo, new { type = "text", @class = "form-control", required = "true",  onkeyup = "this.value=''", id = "dtStayTo" })
+
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-xs-3"></div>
+                    <div class="col-xs-3">
+                        @Html.ValidationMessageFor(m => m.StayFrom, "", new { @class = "red" })
+                    </div>
+                    <div class="col-xs-3"></div>
+                    <div class="col-xs-3">
+                        @Html.ValidationMessageFor(m => m.StayTo, "", new { @class = "red" })
+                    </div>
+                </div>
+
+                <div class="row margintop10">
+                    <div class="col-md-2" style="width:152px;">Terms & Conditions </div>
+                    <div class="col-md-8"> @Html.TextAreaFor(m => m.sTermCondition, new { type = "text", maxlength = "5000", @class = "form-control" }) <span class="alerttext">(Max Characters 5000)</span></div>
+
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="submit" id="btnSubmit" class="btn btn-primary">Save</button>
+                <button type="button" id="btnCancel" onclick=" $('.close').click();" class="btn btn-danger">Cancel</button>
+            </div>
+        </div>
+
+    </div>
+    <div id="ipview">
+
+    </div>
+
+}

@@ -1,0 +1,73 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Map</title>
+    <script src="https://maps.google.com/maps/api/js?sensor=false&libraries=geometry&v=3.22&key=AIzaSyBA8k8_YKEbkfECgXpF6FKdMkMA1jS1qAQ">
+    </script>
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="~/js/maplace.js"></script>
+</head>
+<body>
+    <div id="gmap" style="width:800px;height:550px;"></div>
+    <div id="controlsdiv"></div>
+
+
+    <script type="text/javascript">
+
+        var LocsA = [
+    {
+        lat: 32.197000000,
+        lon: 76.357580000,
+        title: 'Title A1',
+        html: '&lt;h3&gt;Content A1&lt;/h3&gt;',
+        icon: 'http://maps.google.com/mapfiles/markerA.png',
+        animation: google.maps.Animation.DROP
+    },
+    {
+        lat: 26.919928000,
+        lon: 75.739490000,
+        title: 'Title B1',
+        html: '&lt;h3&gt;Content B1&lt;/h3&gt;',
+        icon: 'http://maps.google.com/mapfiles/markerB.png',
+        show_infowindow: false,
+        animation: google.maps.Animation.DROP
+    },
+    {
+        lat: 28.493265000,
+        lon: 77.107254000,
+        title: 'Title C1',
+        html: [
+            '&lt;h3&gt;Content C1&lt;/h3&gt;',
+            '&lt;p&gt;Lorem Ipsum..&lt;/p&gt;'
+        ].join(''),
+        zoom: 8,
+        icon: 'http://maps.google.com/mapfiles/markerC.png',
+        animation: google.maps.Animation.DROP
+    },
+
+   
+   
+        ];
+    $(function() {
+        new Maplace({
+            locations: LocsA,
+            map_div: '#gmap',
+            controls_div: '#controlsdiv',
+            controls_type: 'dropdown',
+            show_markers: true,
+            type: 'polygon',
+            draggable: false,
+            controls_on_map: false,
+
+        }).Load();
+    });
+    </script>
+</body>
+</html>

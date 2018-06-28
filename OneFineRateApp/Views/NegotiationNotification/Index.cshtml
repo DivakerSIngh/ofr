@@ -1,0 +1,176 @@
+﻿@model OneFineRateBLL.Entities.etblPropertyRatePlanMap
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        bindgrid();
+        if ('@TempData["msg"]' != '') {
+            if ('@TempData["Mode"]' == 'Add') {
+                OpenPopUp();
+            }
+            if ('@TempData["Mode"]' == 'Copy') {
+                CopyData('@TempData["id"]');
+            }
+            if ('@TempData["Mode"]' == 'Modify') {
+                EditData('@TempData["id"]');
+            }
+        }
+    });
+
+
+    function checkValue(Negval, txtId) {
+        if (Negval >= 5 && Negval < 100) {
+            $('#' + txtId).val(Negval);
+        }
+        else { $('#' + txtId).val(''); alert("Please enter value between 5 to 99") }
+    }
+
+    function CopyAll(Id, rectype) {
+        var NegotiationVal = $('#txtNegotiate-' + Id + '-' + rectype).val();
+        if ($.trim(NegotiationVal) != 0 && $.trim(NegotiationVal) != null && $.trim(NegotiationVal) != '') {
+            bootbox.confirm("Are you sure you want to apply this Maximum Discount Alert on all the live rate plans and promotions ?", function (result) {
+                if (result == true) {
+                    $('.overlay').show();
+                    setTimeout(function () {
+                        var data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("CopyAll")", { Id: Id, rectype: rectype, NegotiationVal: NegotiationVal }))
+                        if (data != null) {
+                            if (data.st == 1) {
+                                toastr.success(data.msg);
+                                bindgrid();
+                            }
+                            else {
+                                toastr.error(data.msg);
+                            }
+                        }
+                    }, 1000);
+                }
+            });
+        }
+        else { alert("Please enter value between 5 to 99"); }
+    }
+
+
+
+    function Save(Id, rectype) {
+        $('.overlay').show();
+        setTimeout(function () {
+            var NegotiationVal = $('#txtNegotiate-' + Id + '-' + rectype).val();
+            if ($.trim(NegotiationVal) != 0 && $.trim(NegotiationVal) != null) {
+                var data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("Save")", { Id: Id, rectype: rectype, NegotiationVal: NegotiationVal }))
+                if (data != null) {
+                    if (data.st == 1) {
+                        toastr.success(data.msg);
+                        bindgrid();
+                    }
+                    else {
+                        toastr.error(data.msg);
+                    }
+                }
+            }
+            else {
+                alert("Please enter value between 5 to 99");
+                $('.overlay').hide();
+            }
+        }, 1000);
+    }
+
+
+    // bind list
+    function bindgrid() {
+
+        try {
+            var aoColumns =
+                [{ "sTitle": "ID", "mData": "RecId" },
+                 { "sTitle": "Name", "mData": "sRatePlan" },
+                 { "sTitle": "Validity", "mData": "sValidity", "bSortable": false },
+                 { "sTitle": "Type", "mData": "sType", "bSortable": false },
+                 { "sTitle": "Linkage", "mData": "sLinkage", "bSortable": false },
+                 { "sTitle": "Rooms", "mData": "sRooms", "bSortable": false },
+
+                 { "sTitle": "Amenities & Meals", "mData": "sAmenitiesMeals", "bSortable": false },
+
+                 { "sTitle": "Status", "mData": "cStatus", "bSortable": false },
+                 {
+                     "sTitle": "Maximum Discount Alert (%)", "bSortable": false, "mData": "iRPId",
+                     "mRender": function (data, type, full) {
+                         var html = '<input type="number" Id="txtNegotiate-' + full.RecId + '-' + full.sType + '" value="' + full.dNegotiationPer + '" class="form-control" maxlength = "2" min = "5" max = "100"  onblur="checkValue(this.value,this.id);" />';
+                         return html;
+                     }
+                 },
+
+               {
+                   "sTitle": "Edit", "bSortable": false, "mData": "iRPId",
+                   "mRender": function (data, type, full) {
+
+                       var quote_str = '\'' + full.sType + '\'';
+                       var html = '<button type="button"   onclick="Save(' + full.RecId + ',' + quote_str + ')"  class="btn btn-primary btn-xs margintop10 width90">Save</button>&nbsp';
+                       html += '<button type="button"  onclick="CopyAll(' + full.RecId + ',' + quote_str + ')"  class="btn btn-warning btn-xs margintop10 width90">Copy All</button>&nbsp';
+                       return html;
+
+                   }
+               }
+                ];
+            DatatableServerSide("#tblData", aoColumns, "/Services/Service.asmx/GetAllRecForNegotiation?PropId=" + '@TempData["PropID"]');
+            $('.dataTables_filter input').attr('title', 'Name');
+        }
+        catch (e) {
+
+        }
+
+    }
+
+
+</script>
+
+
+<div class="container margintop20">
+    <div class="row">
+
+        <div class="col-xs-12">
+
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-10">
+                                <h4 class="panel-title">
+                                    Maximum Discount Alert
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-12 red marginbottom10">
+                                    <h4><b>Instructions:</b>  Setup a discount percentage(%) for various rate plan for which you would like us to send you an alert for Bargain.</h4>
+                                </div>
+                            </div>
+
+                            <div style="width:1107px; overflow:auto; overflow-y:hidden;">
+                                <div class="table-responsive margintop20">
+                                    <table class="table table-striped table-bordered table-hover" id="tblData"></table>
+                                </div>
+                            </div>
+                            <!-- End  table -->
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+            <!-- Panel 1 div END  -->
+
+        </div>
+        <!-- Panel group div END  -->
+
+
+    </div>
+</div>
+

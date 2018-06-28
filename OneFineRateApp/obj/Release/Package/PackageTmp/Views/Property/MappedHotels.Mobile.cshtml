@@ -1,0 +1,64 @@
+﻿@{
+    ViewBag.Title = "MappedHotels";
+    Layout = "~/Views/Shared/_LayoutMobile.cshtml";
+}
+
+<script type="text/javascript">
+    function ShowDashBoard(Id,Name)
+    {
+        window.location.href = '/Property/ViewDashboard_Mobile?PropId=' + Id ;
+    }
+    $(document).ready(function () {
+
+        $('#btnSubmit').click(function () {
+
+
+            if ($('#ddlhotel').val() != '')
+            {
+                ShowDashBoard($('#ddlhotel').val());
+            }
+        });
+    });
+</script>
+
+<div class="container whitebg border1">
+    <h4>Hotel</h4>
+    <hr>
+    <div class="row ">
+        <div class="col-md-8  marginbottom10">
+            <div class="form-inline">
+                <label>Select Hotel:</label>
+                @Html.DropDownList("ddlhotel", new SelectList(OneFineRateBLL.BL_tblPropertyM.GetAllPropertyNameByUserId(((OneFineRateBLL.BL_Login.UserDetails)Session["UserDetails"]).iUserId), "Id", "Name"), "Select Hotel", new { @class = "form-control", required = "true", id = "ddlhotel" })
+            </div>
+        </div>
+        <div class="col-md-10 "><button type="submit" id="btnSubmit" class="btn btn-success marginbottom10 width100">Ok</button></div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="table-responsive">
+                <table class="table table-bordered  table-hover">
+                    <thead>
+                        <tr>
+                            <th>
+                                Hotel Name (Pending Negotiation)
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            foreach (var item in OneFineRateBLL.BL_tblPropertyM.GetAllPropertyNameByUserId(((OneFineRateBLL.BL_Login.UserDetails)Session["UserDetails"]).iUserId))
+                            {
+                                <tr>
+                                    <td><a onclick="ShowDashBoard(@item.Id);"> @item.Name  (@item.iCityId)</a></td>
+
+                                </tr>
+                            }
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>

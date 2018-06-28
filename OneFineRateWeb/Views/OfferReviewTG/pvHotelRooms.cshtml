@@ -1,0 +1,676 @@
+﻿@model OneFineRateBLL.Entities.PropDetailsM
+@{ var roomList = Model.TG_Hotel.RoomDetails;}
+
+<style>
+    .mobileRoomRow {
+        padding: 2px;
+        border: 1px solid black !important;
+        margin-bottom: 6px
+    }
+
+    @@media only screen and (max-device-width: 568px) {
+        .top10 {
+            top: 85%;
+        }
+
+       
+    }
+
+    @@media all and (max-width: 800px) {
+        .hotelsectionbg {
+            border: 1px solid black;
+        }
+    }
+</style>
+
+@if (Model != null && roomList != null && roomList.Count > 0)
+{
+    int cCountIndex = 0;
+    int rCountIndex = 0;
+
+    <div class="row"><div class="col-md-12">&nbsp;</div></div>
+    <div class="row" style="position: relative;">
+        <div class="col-lg-9 col-md-9" id="rooms">
+
+            @foreach (var roomDetail in roomList)
+            {
+                <div class="borderleftright hotelsectionbg bordertop margintop10">
+
+                    <div class="col-md-4">
+                        <img src="@roomDetail.RoomImages[1]" alt="Room Image" onerror="this.src='/images/noImage.jpg';" class="imgheight132 roomImages">
+                    </div>
+                    <div class="col-md-5 ">
+                        <a href="javascript:void(0);" class="greytext"></a>
+                        <h4>
+                            <a href="javascript:void(0);" data-roomid="@roomDetail.RoomId" class="hoteltitles roomPopupLink">@roomDetail.RoomName</a>
+                        </h4>
+                        <div class=" facilityicon margintop-10">
+                            <ul>
+                                @foreach (var roomAmenity in roomDetail.RoomAmenities.Take(4))
+                                {
+                                    <li><img src='@roomAmenity.sImgUrl' title="@roomAmenity.sRoomFacilites" style="height: 20px; width: 20px"></li>
+                                }
+                            </ul>
+                        </div>
+                        <p>
+                            Rates given below are per room per night<br>
+
+                            Taxes and charges are not included.
+                        </p>
+
+                        <div id="RoomDetails@(roomDetail.RoomId)" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 class="hoteltitles">@roomDetail.RoomName</h4>
+                                    </div>
+                                    <div class="modal-body">
+
+                                        <div class="row">
+                                            <div class="col-md-5">
+
+                                                <div class="col-md-12 col-xs-12">
+                                                    <img src="@roomDetail.RoomImages[1]" onerror="this.src='/images/noImage.jpg';" style="height:200px; width:250px;">
+                                                </div>
+
+                                                @if (!string.IsNullOrEmpty(roomDetail.sOutdoorLocation))
+                                                {
+                                                    <div class="col-md-12"><b>View:</b> @roomDetail.sOutdoorLocation</div>
+                                                }
+
+                                            </div>
+                                            <div class="col-md-1"></div>
+                                            <div class="col-md-6">
+                                                <div class="col-md-12 col-xs-12">
+
+                                                    <table class="table-striped table-bordered">
+                                                        <tr>
+                                                            <td class="paddingleft5"><b>Room occupancy policy</b></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="paddingleft5">
+                                                                <div class="col-md-12 col-xs-12">
+                                                                    <div class="col-md-8 col-xs-8">Max Adult</div>
+                                                                    <div class="col-md-1 col-xs-1">:</div>
+                                                                    <div class="col-md-2 col-xs-2">@roomDetail.MaxAdult</div>
+                                                                </div>
+
+                                                                <div class="col-md-12 col-xs-12">
+                                                                    <div class="col-md-8 col-xs-8">Max Child </div>
+                                                                    <div class="col-md-1 col-xs-1">:</div>
+                                                                    <div class="col-md-2 col-xs-2">@roomDetail.MaxChild</div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+
+                                                    </table>
+
+                                                </div>
+                                                <div style="width:100%" class="col-md-12 col-xs-12 pull-right">
+                                                    <span class="red">*</span>
+                                                    @if (roomDetail.HavingExtraBed)
+                                                    {
+                                                        <span>
+                                                            Extra Bed Charge: <strong>@Model.Symbol @OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(roomDetail.ExtraBedCharge * ViewBag.dExchangeRate)</strong>
+                                                        </span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>
+                                                            No Extra bed.
+                                                        </span>
+                                                    }
+                                                </div>
+                                                <div class="col-md-12 col-xs-12">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12 col-sm-12  col-xs-12">
+
+                                                <div class="col-md-12 col-sm-12  col-xs-12">
+                                                    <b>Room Features</b>
+                                                </div>
+                                                <div class="clearfix"></div>
+                                                @if (roomDetail.RoomAmenities != null)
+                                                {
+                                                    foreach (var roomAmenity in roomDetail.RoomAmenities)
+                                                    {
+                                                        <div class="col-md-4">
+                                                            <ul class="nomargin ">
+                                                                <li style="list-style:disc !important; padding:0px;">@roomAmenity.sRoomFacilites</li>
+                                                            </ul>
+                                                        </div>
+                                                    }
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-3">
+                        <div class="font13 margin-9 margintop10   offerimg">
+                            <ul class="lineheight13 pull-right">
+                                @*
+                                    <li>Maximum Occupancy : <strong>@roomDetail.MaxOccupancy</strong></li>
+                                    <li>Max Adult : <strong>@roomDetail.MaxAdult</strong></li>
+                                    <li>Max Child : <strong>@roomDetail.MaxChild</strong></li>*@
+                                @if (roomDetail.HavingExtraBed)
+                                {
+                                    <li>Extra Bed Charge: <strong> @Model.Symbol @OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(roomDetail.ExtraBedCharge * ViewBag.dExchangeRate)</strong></li>
+                                }
+
+                            </ul>
+                        </div>
+                    </div>
+
+                    @if (Request.Browser.IsMobileDevice)
+                    {
+                        foreach (var ratePlan in roomDetail.RatePlans)
+                        {
+                            <div id="trContent@(cCountIndex + 1)" class="mobileRoomRow col-xs-12">
+
+                                @{ var lastRate = ratePlan.RoomRates.Last(); }
+
+                                @foreach (var rate in ratePlan.RoomRates)
+                                {
+                                        <div class="col-xs-4 tableheadingbg">Occupancy</div>
+                                        <div class="col-xs-8 offerTblvalucolum">
+                                            @for (int i = 0; i < rate.RoomOccupancyAdults; i++)
+                                            {
+                                                <i class="fa fa-user" aria-hidden="true"></i>
+                                            }
+                                            @for (int i = 0; i < rate.RoomOccupancyChild; i++)
+                                            {
+                                                <i class="fa fa-child" aria-hidden="true"></i>
+                                            }
+                                        </div>
+
+                                        <div class="col-xs-4 tableheadingbg">Rate</div>
+                                        <div class="bluetext font17 col-xs-8 offerTblvalucolum">
+                                            <strong>
+                                                @Model.Symbol
+                                                @OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(rate.RatePerRoomPerDay * ViewBag.dExchangeRate)
+                                            </strong>
+
+                                            @if (rate.HasDiscount)
+                                            {
+                                                <strong class="srchbluestrickedtext paddingleft5">
+                                                    @Model.Symbol
+                                                    @OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(rate.RatePerRoomPerDayWithoutDiscount * ViewBag.dExchangeRate)
+                                                </strong>
+                                                <span style="color:red" class="paddingleft5">
+                                                    <img src="~/images/sale.png" />
+                                                </span>
+                                            }
+                                        </div>
+
+                                        <div class="col-xs-4 tableheadingbg height34">Room</div>
+                                        <div class="col-xs-8 offerTblvalucolum">
+                                            @if (rate.RoomCount > 1)
+                                            {
+                                                <text>@rate.RoomCount Rooms</text>
+                                            }
+                                            else
+                                            {
+                                                <text>@rate.RoomCount Room</text>
+                                            }
+
+                                        </div>
+
+                                        <div class="col-xs-12 tableheadingbg">Adult/Children Per Room</div>
+                                        <div class="col-xs-12 offerTblvalucolum">
+                                            @(rate.TotalAdults / rate.RoomCount) Adults, @(rate.TotalChild / rate.RoomCount) Child
+                                        </div>                                   
+                                }
+
+                                    <div class="col-xs-12">
+
+                                        <strong>Rate Inclusions :</strong>
+
+                                        @if (ratePlan.RateInclusions.Length > 100)
+                                        {
+                                        @Html.Raw(ratePlan.RateInclusions.Substring(0, 100) + "...")
+                                            rCountIndex++;
+
+                                        <div class="paddingright10"><a href="javascript:void(0);" onclick="OpenRI('@rCountIndex');">More</a></div>
+
+                                            var id = string.Format(@"{0}{1}", "divRateInclusion", rCountIndex);
+
+                                        <div id="@id" class="modal fade" role="dialog">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                        <h4 class="modal-title">Rate Inclusions :</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        @Html.Raw(ratePlan.RateInclusions.TrimEnd('\r', '\n').Replace(Environment.NewLine, "<br />").Replace("\"", "\'").Replace("|", "</br>"))
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        }
+                                        else
+                                        {
+                                        @Html.Raw(ratePlan.RateInclusions)
+                                        }
+
+                                    </div>
+
+                                    <div class="col-xs-12">
+
+                                        <strong>Cancellation :</strong>
+
+                                        @if (ratePlan.IsNonRefundable)
+                                        {
+                                        <span style="color:red">Non Refundable, </span>
+                                        }
+
+                                        @if (ratePlan.CancellationPolicyDescription != null && ratePlan.CancellationPolicyDescription.Length > 100)
+                                        {
+                                        @Html.Raw(ratePlan.CancellationPolicyDescription.Substring(0, 100).Replace(",", ".").Replace("|", ".") + "...")
+                                            cCountIndex++;
+
+                                        <div class="paddingright10"><a href="javascript:void(0);" onclick="OpenCP('@cCountIndex');">More</a></div>
+
+                                            var id = string.Format(@"{0}{1}", "divCancelationPolicy", cCountIndex);
+                                        <div id="@id" class="modal fade" role="dialog">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                        <h4 class="modal-title">Cancellation Policy</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div id="modalBodyContent@(cCountIndex)">
+
+                                                        </div>
+                                                        @Html.Raw(ratePlan.CancellationPolicyDescription.Replace(".", ".<br/>"))
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        }
+                                        else
+                                        {
+                                        @Html.Raw(ratePlan.CancellationPolicyDescription)
+                                        }
+                                    </div>
+
+                              
+                                <div class="col-xs-12 tableheadingbg text-center">
+                                    <a style="width:100%" href="javascript:void(0)"
+                                       data-rateplancode="@ratePlan.RatePlanCode"
+                                       data-vendorid="@Model.iVendorId"
+                                       data-roomid="@roomDetail.RoomId"
+                                       data-rate="@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(ratePlan.TotalRoomRate * ViewBag.dExchangeRate)"
+                                       data-ofrcharge="@Model.ServiceChargeTG.TotalServiceChargeTG"
+                                       data-tax="@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated((ratePlan.TotalTax + Model.ServiceChargeTG.TotalServiceChargeTG) * ViewBag.dExchangeRate)"
+                                       data-extrabedcharge="@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(ratePlan.TotalExtraBedCharge * ViewBag.dExchangeRate)"
+                                       data-total="@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated((ratePlan.TotalRoomRate + ratePlan.TotalTax + ratePlan.TotalExtraBedCharge + Model.ServiceChargeTG.TotalServiceChargeTG) * ViewBag.dExchangeRate)"
+                                       class="select">
+                                        <div class="btn btn-primary"> Select </div>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="clearfix"></div>
+
+                                        }
+                                    }
+                                    else
+                                    {
+                                        foreach (var ratePlan in roomDetail.RatePlans)
+                                        {
+
+                                            <div class="table table-responsive marginbottom-20" id="trContent@(cCountIndex+1)">
+                                                <table class="table table-bordered trclick lightbg">
+                                                    <thead class="tableheadingbg">
+                                                        <tr>
+                                                            <td>Occupancy</td>
+                                                            <td>Rate</td>
+                                                            <td>Rooms</td>
+                                                            <td>Adults / Children per Room</td>
+                                                            <td></td>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                        @foreach (var rate in ratePlan.RoomRates)
+                                                        {
+                                                            <tr>
+                                                                <td>
+                                                                    @for (int i = 0; i < rate.RoomOccupancyAdults; i++)
+                                                                    {
+                                                                        <i class="fa fa-user" aria-hidden="true"></i>
+                                                                    }
+                                                                    @for (int i = 0; i < rate.RoomOccupancyChild; i++)
+                                                                    {
+                                                                        <i class="fa fa-child" aria-hidden="true"></i>
+                                                                    }
+                                                                </td>
+
+                                                                @if (ratePlan.RoomRates.IndexOf(rate) == 0)
+                                                                {
+                                                                }
+
+                                                                <td class="bluetext font17" style="width:30%;">
+
+                                                                    <strong>
+                                                                        @Model.Symbol
+                                                                        @OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(rate.RatePerRoomPerDay * ViewBag.dExchangeRate)
+                                                                    </strong>
+
+                                                                    @if (rate.HasDiscount)
+                                                                    {
+                                                                        <strong class="srchbluestrickedtext paddingleft5">
+                                                                            @Model.Symbol
+                                                                            @OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(rate.RatePerRoomPerDayWithoutDiscount * ViewBag.dExchangeRate)
+                                                                        </strong>
+                                                                        <span style="color:red" class="paddingleft5">
+                                                                            <img src="~/images/sale.png" />
+                                                                        </span>
+                                                                    }
+
+                                                                </td>
+
+                                                                <td>
+                                                                    @if (rate.RoomCount > 1)
+                                                                    {
+                                                                        <text>@rate.RoomCount Rooms</text>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <text>@rate.RoomCount Room</text>
+                                                                    }
+                                                                </td>
+                                                                <td>
+                                                                    @(rate.TotalAdults / rate.RoomCount) Adults, @(rate.TotalChild / rate.RoomCount) Child
+                                                                </td>
+
+
+                                                                @if (ratePlan.RoomRates.IndexOf(rate) == 0)
+                                                                {
+                                                                    <td rowspan="@ratePlan.RoomRates.Count" style="text-align:center;vertical-align: middle">
+                                                                        <a href="javascript:void(0)"
+                                                                           data-rateplancode="@ratePlan.RatePlanCode"
+                                                                           data-vendorid="@Model.iVendorId"
+                                                                           data-roomid="@roomDetail.RoomId"
+                                                                           data-rate="@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(ratePlan.TotalRoomRate * ViewBag.dExchangeRate)"
+                                                                           data-ofrcharge="@Model.ServiceChargeTG.TotalServiceChargeTG"
+                                                                           data-tax="@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated((ratePlan.TotalTax + Model.ServiceChargeTG.TotalServiceChargeTG) * ViewBag.dExchangeRate)"
+                                                                           data-extrabedcharge="@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(ratePlan.TotalExtraBedCharge * ViewBag.dExchangeRate)"
+                                                                           data-total="@OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated((ratePlan.TotalRoomRate + ratePlan.TotalTax + ratePlan.TotalExtraBedCharge + Model.ServiceChargeTG.TotalServiceChargeTG) * ViewBag.dExchangeRate)"
+                                                                           class="select">
+                                                                            <div class="btn btn-filter"> Select </div>
+                                                                        </a>
+                                                                    </td>
+                                                                }
+
+                                                            </tr>
+                                                        }
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            <div class="padding5 margintop10 ptop10">
+
+                                                <span class="pull-left">
+                                                    <strong>Rate Inclusions : &nbsp;</strong>
+                                                </span>
+                                                <div class="divRateInclusions">
+                                                    @if (ratePlan.RateInclusions.Length > 100)
+                                                    {
+                                                        @Html.Raw(ratePlan.RateInclusions.Substring(0, 100) + "...")
+                                                        rCountIndex++;
+
+                                                        <div class="pull-right paddingright10"><a href="javascript:void(0);" onclick="OpenRI('@rCountIndex');">More</a></div>
+
+                                                        var id = string.Format(@"{0}{1}", "divRateInclusion", rCountIndex);
+                                                        <div id="@id" class="modal fade" role="dialog">
+                                                            <div class="modal-dialog">
+
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                        <h4 class="modal-title">Rate Inclusions :</h4>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        @Html.Raw(ratePlan.RateInclusions.TrimEnd('\r', '\n').Replace(Environment.NewLine, "<br />").Replace("\"", "\'").Replace("|", "</br>"))
+                                                                    </div>
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.Raw(ratePlan.RateInclusions)
+                                                    }
+                                                </div>
+                                                <span class="pull-left">
+                                                    <strong>Cancellation : &nbsp;</strong>
+                                                </span>
+                                                <div class="divCancellation">
+
+                                                    @if (ratePlan.IsNonRefundable)
+                                                    {
+                                                        <span style="color:red">Non Refundable, </span>
+                                                    }
+
+                                                    @if (ratePlan.CancellationPolicyDescription != null && ratePlan.CancellationPolicyDescription.Length > 100)
+                                                    {
+                                                        @Html.Raw(ratePlan.CancellationPolicyDescription.Substring(0, 100).Replace(",", ".").Replace("|", ".") + "...")
+                                                        cCountIndex++;
+
+                                                        <div class="pull-right paddingright10"><a href="javascript:void(0);" onclick="OpenCP('@cCountIndex');">More</a></div>
+
+                                                        var id = string.Format(@"{0}{1}", "divCancelationPolicy", cCountIndex);
+                                                        <div id="@id" class="modal fade" role="dialog">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                        <h4 class="modal-title">Cancellation Policy</h4>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <div id="modalBodyContent@(cCountIndex)">
+
+                                                                        </div>
+                                                                        @Html.Raw(ratePlan.CancellationPolicyDescription.Replace(".", ".<br/>"))
+                                                                    </div>
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.Raw(ratePlan.CancellationPolicyDescription)
+                                                    }
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+
+                </div>
+
+                                    }
+        </div>
+
+        <div class="col-md-3 col-xs-12 whitebg border1 text-center @(Request.Browser.IsMobileDevice?"":"sticky") mtop5 bookbtn @(Request.Browser.IsMobileDevice?"":"top10")" id="changeTopPositionWhenMobile" data-status="1" data-spy="affix" >           
+                <div class="row">
+
+                    <form action="@Url.Action("Review", "Bookingtg")" method="get" id="frmBookingTG">
+
+                        <div class=" ratesummarybg padding10">
+                            <button type="submit" class="btn btn-bannerbtn width138" id="butBuyThis" value="Buy"> Book </button>
+                        </div>
+                        @Html.HiddenFor(m => m.iVendorId, new { id = "txtVendorId" })
+                        @Html.HiddenFor(m => m.sRoomId, new { id = "txtRoomId" })
+                        @Html.HiddenFor(m => m.sRatePlanCode, new { id = "txtRatePlanCode" })
+                        @Html.HiddenFor(m => m.scheckIn, new { id = "txtCheckIn" })
+                        @Html.HiddenFor(m => m.scheckOut, new { id = "txtCheckOut" })
+                        @Html.HiddenFor(m => m.sRoomData, new { id = "txtRoomData" })
+
+                        @if (Request.Browser.IsMobileDevice)
+                        {
+                            <h4 class="font16"><a id="btnRateSummary" href="javascript:void(0)"><strong>RATE SUMMARY</strong></a> </h4>
+                        }
+                        else
+                        {
+                            <h4 class="font16"><strong>RATE SUMMARY</strong></h4>
+                        }
+                        <hr>
+
+                        <div class="table-responsive bookbtn" id="rate-summary-div">
+                            <table class="table table-responsive font16">
+                                <tbody align="left">
+                                    <tr>
+                                        <td class="grytext" width="60%">Room Rate</td>
+                                        <td width="1%">:</td>
+                                        <td class="bluetextonly"><strong id="roomRate"></strong> </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="grytext">Extra Bed Charges</td>
+                                        <td>:</td>
+                                        <td class="bluetextonly"> <strong id="extraBedCharge"></strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="grytext">Taxes & Services</td>
+                                        <td>:</td>
+                                        <td class="bluetextonly"><strong id="roomTax"></strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Grand Total</strong></td>
+                                        <td>:</td>
+                                        <td class="bluetextonly"><strong id="grandTotalRoomRate"></strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="col-md-12 bluetextsmall"><h4>No Rooms Available.</h4></div>
+                                    }
+
+<script>
+
+    $(function () {
+
+        $('.roomImages').each(function (element, index) {
+
+            if ($(this).attr('src') == '' || $(this).attr('src') == undefined) { $(this).attr('src', '/images/noImage.jpg'); }
+
+        })
+
+        $('.sticky').Stickyfill();
+
+        $('#divroomdata').delegate('.select', 'click', function () {
+
+            $('#rooms table tbody').css('background-color', '#fff');
+
+            $(this).closest('tbody').css("background-color", "rgba(10, 6, 6, 0.27)");
+
+            var $this = $(this);
+            var roomId = $this.data('roomid');
+            var vendorId = $this.data('vendorid');
+            var ratePlanCode = $this.data('rateplancode');
+            var roomRate = $this.data('rate');
+            var tax = $this.data('tax');
+            var extraBedCharge = $this.data('extrabedcharge');
+            var grandTotal = $this.data('total');
+
+
+            $('#roomRate').text('@Model.Symbol ' + roomRate);
+            $('#extraBedCharge').text('@Model.Symbol ' + extraBedCharge);
+            $('#roomTax').text('@Model.Symbol ' + tax);
+            $('#grandTotalRoomRate').text('@Model.Symbol ' + grandTotal);
+            $('#txtVendorId').val(vendorId);
+            $('#txtRoomId').val(roomId);
+            $('#txtRatePlanCode').val(ratePlanCode);
+
+            isRoomSelected = true;
+        });
+
+        $('#divroomdata').delegate('#frmBookingTG', 'submit', function (e) {
+
+            if (!isRoomSelected || !$('#roomRate').text()) {
+                e.preventDefault();
+                toastr.warning('Please select the Room.')
+                return false;
+            }
+        });
+
+
+        $('#divroomdata').delegate('.roomPopupLink', 'click', function (e) {
+
+            var roomId = $(this).data('roomid');
+
+            $('#RoomDetails' + roomId).modal({
+                show: 'true'
+            });
+        });
+    });
+
+    function OpenCP(Id) {
+
+        $('#divCancelationPolicy' + Id).modal({
+            show: 'true'
+        });
+    }
+
+    function OpenRI(Id) {
+
+        $('#divRateInclusion' + Id).modal({
+            show: 'true'
+        });
+    }
+
+</script>
+
+@if (Request.Browser.IsMobileDevice)
+{
+    <script>
+
+        var offset = $("#rooms").offset().top;
+        if ($(window).scrollTop() >= offset) {
+            $('#rate-summary-div').fadeIn();
+        }
+        $(window).scroll(function () {
+            if ($(this).scrollTop() >= offset) {
+                $('#changeTopPositionWhenMobile').fadeIn();
+            }
+            else {
+                $('#changeTopPositionWhenMobile').fadeOut();
+            }
+            $('#rate-summary-div').hide();
+        });
+        $('#btnRateSummary').click(function () {
+            var currentStatus = $('#changeTopPositionWhenMobile').data('status');
+            $('#rate-summary-div').toggle();
+
+        });
+
+
+
+    </script>
+}
+
+

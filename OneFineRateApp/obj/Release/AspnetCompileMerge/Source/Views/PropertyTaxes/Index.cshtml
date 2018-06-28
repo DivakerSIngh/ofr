@@ -1,0 +1,125 @@
+﻿@model OneFineRateBLL.Entities.etblPropertyTaxMap
+
+@{
+    ViewBag.Title = "List";
+    Layout = "~/Views/Shared/_LayoutProperty.cshtml";
+}
+@*<link href="~/css/jquery-ui.css" rel="stylesheet" />*@
+<script src="~/js/Jquery1.10.3.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script src="~/js/jquery-ui.js"></script>
+@*//Scripts for validation server side through ajax call*@
+@System.Web.Optimization.Scripts.Render("~/bundles/validation")
+<script type="text/javascript">
+    $(document).ready(function () {
+        bindgrid();
+    });
+    function OpenPopUp() {
+        var url = '@Url.Action("Add")';
+        $("#AddTaxes").load(url);
+        $('#AddTaxes').modal({
+            show: 'true'
+        });
+    }
+    function EditData(Id) {
+        var url = '@Url.Action("Edit")' + "/" + Id;
+        $("#AddTaxes").load(url);
+        $('#AddTaxes').modal({
+            show: 'true'
+        });
+    }
+
+    function FetchData() {
+        var Data = [];
+        $("#divtaxes div.taxes").each(function () {
+            var TaxId = $(this).find("input:hidden.hdnTaxId").val();
+            var value = $(this).find("input:text.value").val();
+            var type = $(this).find('select.ddltype option:selected').val();
+            if (value != '') {
+                Data.push({
+                    value: value,
+                    Type: type,
+                    TaxId: TaxId
+                });
+            }
+        });
+        $("#hdnJson").val(JSON.stringify(Data));
+        return true;
+    }
+    function UpdateAction(Id,Mode) {
+        bootbox.confirm("Are you sure?", function (result) {
+            if (result == true) {
+                var data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("UpdateStatus")", { Id: Id, Mode: Mode }))
+                if (data != null) {
+                    if (data.st == 1) {
+                        toastr.success(data.msg);
+                        bindgrid();
+                    }
+                    else {
+                        toastr.error(data.msg);
+                    }
+                }
+            }
+        });
+    }
+    // bind list
+    function bindgrid() {
+
+        try {
+            var aoColumns =
+                [
+                   {
+                       "sTitle": "Stay From", "mData": "dtStayFrom", "bSortable": false
+                   },
+                 {
+                     "sTitle": "Stay To", "mData": "dtStayTo", "bSortable": false
+                  },
+                 { "sTitle": "Rate Plan", "mData": "RatePlan", "bSortable": false, },
+                   { "sTitle": "Taxes", "mData": "Tax", "bSortable": false, },
+                 { "sTitle": "Status", "mData": "cStatus", "bSortable": false, },
+                  {
+                      "sTitle": "Action", "mData": "iPropTaxId", "bSortable": false,
+                      "mRender": function (data, type, full) {
+                          var html = ''
+                          var html = "<a onclick=\"EditData('" + full.iPropTaxId + "');\" class=\"btn btn-success btn-xs   \"> Edit Taxes </a>&nbsp";
+                          
+                          if (full.cStatus == 'Disable')
+                              html += "<a onclick=\"UpdateAction('" + full.iPropTaxId + "',true);\" class=\"btn btn-danger btn-xs margintop10   \"> Enable </a>";
+                          else
+                              html += "<a onclick=\"UpdateAction('" + full.iPropTaxId + "',false);\" class=\"btn btn-primary btn-xs margintop10 \"> Disable </a>";
+                          return html;
+                      }
+                  }
+                ];
+            DatatableServerSide("#tblData", aoColumns, "/Services/Service.asmx/GetPropertyTaxes");
+        }
+        catch (e) {
+
+        }
+
+    }
+</script>
+<div class="panel panel-default">
+    <div class="container panel-heading">
+        <div class="col-md-6">
+            <h4 class="panel-title">
+                <strong> Taxes and Feeds</strong>
+            </h4>
+        </div>
+        <div class="col-md-6 ">
+            <button type="button" class="pull-right btn btn-primary" onclick="OpenPopUp();"><i class="fa fa-plus"></i> Add Tax</button>
+        </div>
+        </div>
+        <div class="panel-body">
+           
+            <div class="table-responsive margintop20">
+                <table class="table table-striped table-bordered table-hover display" id="tblData"></table>
+            </div>
+            <!-- End  table -->
+        </div>
+    </div>
+    <!-- container div END bottom -->
+    <!-- Add Taxes -->
+    <div id="AddTaxes" class="modal fade" role="dialog">
+
+    </div>

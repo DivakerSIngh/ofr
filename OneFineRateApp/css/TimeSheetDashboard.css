@@ -1,0 +1,78 @@
+tbody.TimeSheetDashboard {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    border: #cccccc 1px solid;
+    color: #757a7d;
+    font-size: 12px;
+    cursor: default;
+    border-collapse: collapse;
+}
+
+.TimeSheetDashboard td {
+    border: #e3e3e3 1px solid;
+    text-align: center;
+}
+
+.TimeSheetDashboard-cell-selected {
+    background-color: #b4def9;
+}
+
+.TimeSheetDashboard-cell-selecting {
+    background-color: #dae0ef !important;
+}
+
+.TimeSheetDashboard-rowHead, .TimeSheetDashboard-colHead {
+    background-color: #f5f5f5;
+}
+
+.TimeSheetDashboard-rowHead {
+    padding: 3px 10px;
+    border-left: none !important;
+}
+
+.TimeSheetDashboard-colHead {
+    padding: 6px 3px 6px 3px;
+    border-top: none !important;
+    border: #e3e3e3 1px solid;
+}
+
+.TimeSheetDashboard-head {
+    text-align: center;
+    border-top: none !important;
+    border-left: none !important;
+    width: 150px;
+    
+}
+
+.TimeSheetDashboard .rightMost {
+    border-right: none !important;
+}
+
+.TimeSheetDashboard .bottomMost {
+    border-bottom: none !important;
+}
+
+.TimeSheetDashboard-remarkHead {
+    text-align: center;
+    border-top: none !important;
+    border-right: none !important;
+}
+
+.TimeSheetDashboard-remark {
+    padding: 0 5px;
+    border-right: none !important;
+}
+
+.TimeSheetDashboard-remarkHead, .TimeSheetDashboard-remark {
+    max-width: 120px;
+    background-color: #fbf0ed;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-left-color: #cccccc !important;
+}
+
+.tdroom {
+    background-color: cyan;
+}

@@ -1,0 +1,846 @@
+﻿@model OneFineRateWeb.Models.VerifyCorporateEmailViewModel
+
+<style>
+    select.error, textarea.error, input.error, label.error {
+        color: #FF0000 !important;
+    }
+
+    .popover {
+        min-width: 280px !important;
+        z-index: 999999999 !important;
+    }
+
+
+    .roompicker::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        border-radius: 5px;
+        background-color: #F5F5F5;
+    }
+
+    .roompicker::-webkit-scrollbar {
+        width: 5px;
+        background-color: #F5F5F5;
+    }
+
+    .roompicker::-webkit-scrollbar-thumb {
+        border-radius: 5px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+        background-color: #000000;
+    }
+</style>
+
+@using (Html.BeginForm("CheckIfCorporateUser", "Account", FormMethod.Post, new { id = "frmCorporateSearch", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="modal fade" id="corporateModel" role="dialog">
+        <div class="modal-dialog modal-md" id="corporateModelWidth">
+            <div class="modal-content row" id="spinnerContainer">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                </div>
+                <div class="modal-body" id="corporatePopupContainer">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="msgcontainer" id="dynamicclass">
+                                <h4 style="text-align:center;" id="lblMessage"></h4>
+                                <h4 style="text-align:center;" id="lblSuccessMessage"></h4>
+                            </div>                                                   
+                        </div>
+                    </div>
+                    <div class="row">
+
+                    </div>
+                    <div class="row" id="divCorporateVerification">
+                        <div class="col-md-8">
+                            <label>Corporate Email Address</label>
+
+                            @if (Request.IsAuthenticated)
+                            {
+                                <div class="input-group" id="errorShouldAfterThis">
+                                    <input type="text" class="form-control" id="txtCorporateEmailPopup" placeholder="Corporate email address" name="CorporateEmail" />
+                                    <span class="input-group-btn" id="spnEditEmailGroup">
+                                        <button style="border-top-left-radius:inherit !important; border-bottom-left-radius:inherit !important"
+                                                class="btn btn-default" title="Editing email need to verify again." id="btnEditCorporateEmail" type="button">
+                                            Edit
+                                        </button>
+                                    </span>
+                                    <span class="input-group-btn" style="display:none" id="spnSendOTPGroup">
+                                        <button class="btn btn-primary" title="Editing email need to verify again." id="btnSendOTP" type="button">Send OTP</button>
+                                    </span>
+                                </div>
+                            }
+                            else
+                            {
+                                <input type="text" class="form-control" id="txtCorporateEmailPopup" placeholder="Corporate email address" name="CorporateEmail" />
+                            }
+
+                            <span class="red" id="emailAlreadyExistsMessage"></span>
+                        </div>
+
+                        <div>
+                            <div id="divCorporateEmailOTPPopup" style="display:none">
+                                <div class="col-md-6">
+                                    <label>Verification Code</label>
+                                    <input type="text" class="form-control" id="txtCorporateEmailOTPPopup" placeholder="OTP code" name="EmailVerificationCode" />
+                                    <span class="red" id="otpErrorMessage"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label>&nbsp;</label><br />
+                                    <a href="javascript:void(0)" id="resendOtp">Resend OTP</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <input type="hidden" id="hdnCorporateEmailOTP" name="VerificationEncoded" />
+                        <input type="hidden" id="hdnCorporateEmailForVerificationIfChange" name="HiddenCorporateEmail" />
+
+                    </div>
+                    <div class="row margintop20" id="divSearchCorporate" style="display:none">
+
+                        <input type="hidden" id="hdnJsonCorporate" />
+                        <div class="col-md-12">
+                            <label> Search for Special Deals</label>
+                        </div>
+                        <div class="clearfix"></div>
+
+                        <div class="col-md-4 col-xs-12">
+                            <input id="txtCorporateLocationName" type="text" placeholder="Where are you going?" class="form-control">
+                            <input type="hidden" id="hdnCorporateSelectedLocalityID" />
+                            <input type="hidden" id="hdnCorporateSelectedType">
+                        </div>
+                        <div class="col-md-2 col-xs-12 nomarginleft width20percent">
+                            <input type="text" id="txtCorporateStayFrom" placeholder="Check In" data-language='en' class="form-control corporate-datepicker">
+                        </div>
+                        <div class="col-md-2 col-xs-12 nomarginleft width20percent">
+                            <input type="text" id="txtCorporateStayTo" placeholder="Check Out" data-language='en' class="form-control corporate-datepicker">
+                        </div>
+
+                        <div class="col-md-4 col-xs-12 nomarginleft" id="guestDetailPopoverContainer">
+                            <div type="text" data-container="#corporateModel" data-toggle="popover" data-placement="bottom" class="form-control" id="divPopoverGuestDetails">
+
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="col-md-12 margintop20 text-center">
+                            <div class="row margintop20">
+                                <button type="button" data-button_name="bid" rel="popover" class="btn btn-bannerbtn marginleft15 btnbuy_corporate">BID</button>
+                                <span class="margintop-40">
+                                    <a href="javascript:void(0);" class="card-btn" data-toggle="popover" data-placement="top" title="" data-trigger="hover" data-content="Get a steal of a deal at OneFineRate, when you place a blind bid for your choice of star hotel category and location.">
+                                        <img src="@Url.Content("~/images/info.png") ">
+                                    </a>
+                                </span>
+                                <button type="button" data-button_name="negotiate" rel="popover" class="btn btn-bannerbtn marginleft15 btnbuy_corporate">NEGOTIATE</button>
+                                <span class="margintop-40">
+                                    <a href="javascript:void(0);" class="card-btn" data-toggle="popover" data-placement="top" title="" data-trigger="hover" data-content="Let us know the price you wish to pay for your preferred room at your choice of hotel. Let OneFineRate negotiate for you!">
+                                        <img src="@Url.Content("~/images/info.png")">
+                                    </a>
+                                </span>
+                                <button data-button_name="buy" rel="popover" type="button" class="btn btn-bannerbtn marginleft15 btnbuy_corporate">BUY</button>
+                                <span class="margintop-40">
+                                    <a href="javascript:void(0);" class="card-btn" data-toggle="popover" data-placement="top" title="" data-trigger="hover" data-content="Book any room at OneFineRate offered by the hotel.">
+                                        <img src="@Url.Content("~/images/info.png")">
+                                    </a>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="clearfix"></div>
+                        <br />
+                        <div class="col-md-12" style="text-align:center">
+                            <a target="_blank" href="@Url.Action("BecomeCorporate", "HotelPartner")">Register your company on OFR</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" id="btnCorporateSendOtp">Send OTP</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+
+<script>
+
+    $(function () {
+
+        $('#frmCorporateSearch').validate({
+
+            errorPlacement: function (error, element) {
+
+                if (element.attr("name") == "CorporateEmail") {
+                    error.insertAfter('#errorShouldAfterThis');
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+        });
+
+        $("#txtCorporateEmailPopup").rules("add", {
+            required: true,
+            email: true,
+            messages: {
+                required: jQuery.validator.format("Please enter corporate email address."),
+                email: jQuery.validator.format("Please enter a valid email address."),
+            },
+
+        });
+
+        $('#resendOtp,#btnSendOTP').click(function (e) {
+
+            e.preventDefault();
+
+            var corporateEmail = $("#txtCorporateEmailPopup").val();
+
+            if (!isValidEmailAddress(corporateEmail)) {
+                toastr.error('Please enter a valid email address.');
+                return false;
+            }
+
+            $('#otpErrorMessage').text('').hide();
+
+            $.post('@Url.Action("ResendCorporateOTP", "Account")', { corporateEmail: corporateEmail }).done(function (data) {
+
+                var toastrOption_prev = toastr.options;
+
+                toastr.options = {
+                    "positionClass": "toast-top-right",
+                    "closeButton": true
+                }
+
+                if (data.status == true) {
+
+                    if (data.codeEncoded) {
+                        $('#hdnCorporateEmailOTP').val(data.codeEncoded);
+                    }
+                    toastr.success(data.message);
+
+                    $('#corporateModalContainer #txtCorporateEmailPopup').prop('readonly', true);
+
+                    $('#spnEditEmailGroup').show();
+                    $('#spnSendOTPGroup').hide();
+                    $('#divCorporateEmailOTPPopup').show();
+                    $('#btnCorporateSendOtp').show();
+                }
+                else {
+                    toastr.error(data.message);
+                }
+
+                toastr.options = toastrOption_prev;
+
+            });
+        });
+
+        $('#btnEditCorporateEmail').click(function () {
+
+            $('#corporateModalContainer #txtCorporateEmailPopup').prop('readonly', false);
+
+            $('#spnEditEmailGroup').hide();
+            $('#spnSendOTPGroup').show();
+            $('#divCorporateEmailOTPPopup').hide();
+            $('#btnCorporateSendOtp').hide();
+            $('#txtCorporateEmailOTPPopup').val('');
+            $('label.error').hide();
+
+        });
+
+        $('#frmCorporateSearch').submit(function (e) {
+
+            e.preventDefault();
+
+            if ($(this).valid()) {
+
+                var frmData = $(this).serializeArray();
+
+                var formAction = $(this).attr('action');
+
+                $.post('@Url.Action("VerifyCorporateEmail","Account")', frmData).done(function (data) {
+
+                    debugger;
+
+                    if (data.status == false && data.emailAlreadyAssociated && data.emailAlreadyAssociated == true) {
+
+                        //toastr.options = {
+                        //    "closeButton": true,
+                        //    "debug": false,
+                        //    "positionClass": "toast-top-right",
+                        //    "onclick": null,
+                        //    "showDuration": "3000",
+                        //    "hideDuration": "1000",
+                        //    "timeOut": "5000",
+                        //    "extendedTimeOut": "1000",
+                        //    "showEasing": "swing",
+                        //    "hideEasing": "linear",
+                        //    "showMethod": "fadeIn",
+                        //    "hideMethod": "fadeOut",
+                        //    "preventDuplicates": true
+                        //}
+
+                        //toastr.error(data.message);
+                        $('#emailAlreadyExistsMessage').html(data.message);
+
+                        setTimeout(function () { $('#emailAlreadyExistsMessage').html(''); }, 5000);
+
+                        $('#txtCorporateEmailOTPPopup').val('');
+
+                        return false;
+                    }
+
+                    if (data.status == false && data.loginRequired) {
+
+                        $('#congratulationMessage').html(data.message);
+                        $('#corporateModel').modal('hide');
+                        $('#corporateLoginRegisterModel').modal('show');
+
+                        $('#corporateLoginRegisterModel').on('shown.bs.modal', function () {
+
+                            $('body').addClass('modal-open');
+                        });
+
+                        var settngs = $.data($('#registerForm')[0], 'validator').settings;
+                        settngs.ignore = ".ignoreWhenCorporate";
+                        $('#registerForm #Email').rules('remove', 'required');
+                        $.validator.unobtrusive.parse($('#registerForm'));
+
+                        $('#corporateAccountPopupContainer #Email').val('').prop('placeholder', 'Email(optional)');
+
+                        $('#corporateAccountPopupContainer #txtCorporateEmail').val(data.corporateEmail).prop('readonly', true);
+                        $('#corporateAccountPopupContainer #txtExternalCorporateEmail').val(data.corporateEmail).prop('readonly', true);
+                        $('#corporateAccountPopupContainer #CompanyName').val(data.companyName).prop('readonly', true);
+
+                        //Set corporate email on login page to link in background.
+                        $('#txtCorporateEmailLoginPage').val(data.corporateEmail);
+
+                        return false;
+                    }
+
+                    if (data.status == false && data.emailOfDomainNotFound == true) {
+
+                        $('#divCorporateVerification').hide();
+                        $('#divSearchCorporate').show();
+                        $('#btnCorporateSendOtp').hide();
+
+                        var prevValues = {
+                            cid: $('#hdnSelectedLocalityID').val(),
+                            ctype: $('#hdnSelectedType').val(),
+                            cname: $('#txtlocname').val(),
+                            sCheckIn: $('#txtstayfrom').val(),
+                            sCheckOut: $('#txtstayto').val(),
+                            sRoomData: $("#hdnJson").val()
+                        };
+
+                        $('#hdnCorporateSelectedLocalityID').val(prevValues.cid);
+                        $('#hdnCorporateSelectedType').val(prevValues.ctype);
+                        $('#txtCorporateLocationName').val(prevValues.cname);
+                        $('#txtCorporateStayFrom').val(prevValues.sCheckIn);
+                        $('#txtCorporateStayTo').val(prevValues.sCheckOut);
+                        $("#hdnJsonCorporate").val(prevValues.sRoomData);
+
+                    }
+
+                    if (data.status == true) {
+
+                        $('#lblSuccessMessage').html('Your email has been verified ! We are searching for special corporate rates for you. Please wait...');
+                        $('#btnCorporateSendOtp').prop('disabled', true);
+                        $('#txtCorporateEmailOTPPopup').prop('disabled', true);
+                        $('#resendOtp').hide();
+
+                        var searchDetails = JSON.parse($.cookie('ofr.corporate.searchdata'));
+                        window.location.href = '/Corporate/Search?cid=' + searchDetails.cid + '&ctype=' + searchDetails.ctype + '&cname=' + searchDetails.cname + '&sCheckIn=' + searchDetails.sCheckIn + '&sCheckOut=' + searchDetails.sCheckOut + '&sRoomData=' + searchDetails.sRoomData;
+
+                    }
+
+                    else {
+
+                        $('#txtCorporateEmailOTPPopup').rules('remove');
+
+                        $("#txtCorporateEmailOTPPopup").rules("add", {
+                            required: true,
+                            messages: {
+                                required: jQuery.validator.format("Please enter OTP that you recieved on email.")
+                            }
+                        });
+
+                        //$('#txtCorporateEmailPopup').prop('readonly', true);
+
+                        $('#hdnCorporateEmailForVerificationIfChange').val(data.corporateEmail);
+                        $('#txtCorporateEmailOTPPopup').val('').focus();
+
+                        $('#txtCorporateEmailOTPPopup').show();
+                        $("#divCorporateEmailOTPPopup").show();
+                        //$('#corporateModalContainer #btnCorporateSendOtp').text('Verify Email');
+
+                        if ($('#btnCorporateSendOtp').text() != 'Verify Email') {
+                            $('#btnCorporateSendOtp').text('Submit');
+                        }
+                        $('#hdnCorporateEmailOTP').val(data.codeEncoded);
+                    }
+
+                    if (data.showOTPMessage == true) {                       
+                        $('#otpErrorMessage').text(data.message).show();
+                    }
+                    else {
+                        $('#otpErrorMessage').text('').hide();
+                        $('#lblMessage').html(data.message);
+
+                        if (data.code && data.code != '')
+                        {
+                            $('#dynamicclass').addClass('msgcontainer').removeClass('srymsgcontainer');
+                            $('#txtCorporateEmailPopup').prop('readonly', true);
+                        }
+                        else
+                        {
+                            $('#dynamicclass').addClass('srymsgcontainer').removeClass('msgcontainer');                           
+                        }
+                    }
+
+                });
+            }
+        });
+
+        $('#txtCorporateEmailOTPPopup').focus(function () {
+            $('#otpErrorMessage').text('').hide();
+        });
+
+
+        var searchCookieDetails = JSON.parse($.cookie('ofr.corporate.searchdata'));
+        var roomData = JSON.parse(searchCookieDetails.sRoomData);
+
+        var seedData = [];
+
+        for (var i = 0; i < roomData.length; i++) {
+
+            var roomId = roomData[i].room;
+
+            var adultArr = [];
+            var childArr = [];
+
+            for (var j = 0; j < roomData[i].adult; j++) {
+
+                adultArr.push({ AdultId: j + 1, RoomId: roomId })
+            }
+
+            for (var k = 0; k < roomData[i].ChildAge.length; k++) {
+
+                childArr.push({ ChildId: k + 1, Age: roomData[i].ChildAge[k].Age, RoomId: roomId })
+            }
+
+            seedData.push({ RoomId: roomId, Adults: adultArr, Children: childArr });
+        }
+
+
+        $('#divPopoverGuestDetails').roomPicker({
+
+            seedData: seedData,
+
+            onDataUpdate: function (data) {
+
+                var room_data_structure_using_by_project = [];
+
+                for (var i = 0; i < data.length; i++) {
+
+                    var childAgeArr = [];
+
+                    for (var j = 0; j < data[i].Children.length; j++) {
+
+                        var childStruc = {
+                            Age: data[i].Children[j].Age
+                        }
+
+                        childAgeArr.push(childStruc);
+                    }
+
+                    var structure = {
+                        room: data[i].RoomId,
+                        adult: data[i].Adults.length,
+                        child: data[i].Children.length,
+                        ChildAge: childAgeArr
+                    }
+
+                    room_data_structure_using_by_project.push(structure);
+                }
+
+                var stringiFiedJson = JSON.stringify(room_data_structure_using_by_project);
+
+                $('#hdnJsonCorporate').val(stringiFiedJson);
+            }
+        });
+
+        $("#corporateModel").on("hidden.bs.modal", function () {
+
+            $("label.error").hide();
+
+            $('form').each(function (index, element) {
+                clearValidation(element);
+            });
+        });
+    });
+
+
+    $(function () {
+
+        var tomorrow = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
+
+        var today = new Date();
+
+        var from = $("#txtCorporateStayFrom").datepicker({
+
+            changeMonth: false,
+            numberOfMonths: numberOfMonth,
+            minDate: today,
+            dateFormat: 'dd/mm/yy',
+            onSelect: function (selected, event) {
+
+                var selectedDate = new Date(event.selectedMonth + 1 + '/' + event.selectedDay + '/' + event.selectedYear);
+                var oneDayAfter = selectedDate;
+                oneDayAfter.setDate(oneDayAfter.getDate() + 1);
+
+                to.datepicker("option", "minDate", oneDayAfter);
+
+                var afterHalfMonth = new Date(selectedDate);
+                afterHalfMonth.setDate(afterHalfMonth.getDate() + 45);
+                to.datepicker("option", "maxDate", afterHalfMonth);
+
+                var txtToSelectedVal = $('#txtCorporateStayTo').val();
+
+                if (txtToSelectedVal) {
+
+                    var toVal_ddmmyy = txtToSelectedVal.split('/');
+
+                    if (toVal_ddmmyy) {
+
+                        var txtToSelectedDate = new Date(toVal_ddmmyy[1] + '/' + toVal_ddmmyy[0] + '/' + toVal_ddmmyy[2])
+
+                        if (selectedDate > txtToSelectedDate) {
+
+                            var dd = txtToSelectedDate.getDate();
+                            var mm = txtToSelectedDate.getMonth() + 1;
+                            var yy = txtToSelectedDate.getFullYear();
+
+                            dd < 10 ? dd = '0' + dd : dd = dd;
+                            mm < 10 ? mm = '0' + mm : mm = mm;
+
+                            var nextDayMMDDYYFormat_txtTo = dd + '/' + mm + '/' + yy;
+                            $('#txtCorporateStayTo').val(nextDayMMDDYYFormat_txtTo);
+                        }
+                    }
+                }
+                else {
+                    var dd = oneDayAfter.getDate();
+                    var mm = oneDayAfter.getMonth() + 1;
+                    var yy = oneDayAfter.getFullYear();
+
+                    dd < 10 ? dd = '0' + dd : dd = dd;
+                    mm < 10 ? mm = '0' + mm : mm = mm;
+
+                    var nextDayMMDDYYFormat = dd + '/' + mm + '/' + yy;
+                    $('#txtCorporateStayTo').val(nextDayMMDDYYFormat);
+                }
+
+                setTimeout(function () {
+                    $("#txtCorporateStayTo").datepicker('show');
+                }, 16);
+            },
+            onClose: function (dateText, inst) {
+                $(this).attr("disabled", false);
+            },
+            beforeShow: function (input, inst) {
+                $(this).attr("disabled", true);
+            }
+        });
+
+        var to = $("#txtCorporateStayTo").datepicker({
+
+            changeMonth: false,
+            minDate: tomorrow,
+            numberOfMonths: numberOfMonth,
+            dateFormat: 'dd/mm/yy',
+            onSelect: function (selected, event) {
+
+                var selectedDate = new Date(event.selectedMonth + 1 + '/' + event.selectedDay + '/' + event.selectedYear);
+
+                var txtFromSelectedVal = $('#txtCorporateStayFrom').val();
+
+                if (txtFromSelectedVal) {
+
+                    var fromVal_ddmmyy = txtFromSelectedVal.split('/');
+
+                    if (fromVal_ddmmyy) {
+
+                        var txtFromSelectedDate = new Date(fromVal_ddmmyy[1] + '/' + fromVal_ddmmyy[0] + '/' + fromVal_ddmmyy[2])
+
+                        var oneDayBefore = selectedDate;
+                        oneDayBefore.setDate(oneDayBefore.getDate() - 1);
+
+                        if (oneDayBefore >= new Date()) {
+                            if (selectedDate < txtFromSelectedDate) {
+
+                                var dd = oneDayBefore.getDate();
+                                var mm = oneDayBefore.getMonth() + 1;
+                                var yy = oneDayBefore.getFullYear();
+
+                                dd < 10 ? dd = '0' + dd : dd = dd;
+                                mm < 10 ? mm = '0' + mm : mm = mm;
+
+                                var nextDayMMDDYYFormat_txtFrom = dd + '/' + mm + '/' + yy;
+                                $('#txtCorporateStayFrom').val(nextDayMMDDYYFormat_txtFrom);
+                            }
+                        }
+                    }
+                }
+            },
+            onClose: function (dateText, inst) {
+                $(this).attr("disabled", false);
+            },
+            beforeShow: function (input, inst) {
+                $(this).attr("disabled", true);
+            }
+        });
+
+        var txtFromSelectedVal = $('#txtCorporateStayFrom').val();
+
+        if (txtFromSelectedVal) {
+
+            var fromVal_ddmmyy = txtFromSelectedVal.split('/');
+
+            if (fromVal_ddmmyy) {
+
+                var txtFromSelectedDate = new Date(fromVal_ddmmyy[1] + '/' + fromVal_ddmmyy[0] + '/' + fromVal_ddmmyy[2])
+
+                if (txtFromSelectedDate < today) {
+
+                    var ddToday = today.getDate();
+                    var mmToday = today.getMonth() + 1;
+                    var yyToday = today.getFullYear();
+
+                    ddToday < 10 ? ddToday = '0' + ddToday : ddToday = ddToday;
+                    mmToday < 10 ? mmToday = '0' + mmToday : mmToday = mmToday;
+
+                    var TodayMMDDYYFormat_txtTo = ddToday + '/' + mmToday + '/' + yyToday;
+                    $('#txtCorporateStayFrom').val(TodayMMDDYYFormat_txtTo);
+
+
+                    var afterHalfMonth = new Date(today);
+                    afterHalfMonth.setDate(afterHalfMonth.getDate() + 45);
+                    to.datepicker("option", "maxDate", afterHalfMonth);
+
+                    var dd = tomorrow.getDate();
+                    var mm = tomorrow.getMonth() + 1;
+                    var yy = tomorrow.getFullYear();
+
+                    dd < 10 ? dd = '0' + dd : dd = dd;
+                    mm < 10 ? mm = '0' + mm : mm = mm;
+
+                    var nextDayMMDDYYFormat_txtTo = dd + '/' + mm + '/' + yy;
+                    $('#txtCorporateStayTo').val(nextDayMMDDYYFormat_txtTo);
+                }
+
+                else {
+                    var txtToSelectedVal = $('#txtCorporateStayFrom').val();
+
+                    if (txtToSelectedVal) {
+
+                        var toVal_ddmmyy = txtToSelectedVal.split('/');
+
+                        if (toVal_ddmmyy) {
+
+                            var txtToSelectedDate = new Date(toVal_ddmmyy[1] + '/' + toVal_ddmmyy[0] + '/' + toVal_ddmmyy[2])
+
+                            to.datepicker("option", "minDate", txtToSelectedDate);
+
+                            var afterHalfMonth = new Date(txtToSelectedDate);
+                            afterHalfMonth.setDate(afterHalfMonth.getDate() + 45);
+                            to.datepicker("option", "maxDate", afterHalfMonth);
+
+                            var dd = txtToSelectedDate.getDate();
+                            var mm = txtToSelectedDate.getMonth() + 1;
+                            var yy = txtToSelectedDate.getFullYear();
+
+                            dd < 10 ? dd = '0' + dd : dd = dd;
+                            mm < 10 ? mm = '0' + mm : mm = mm;
+
+                            var nextDayMMDDYYFormat_txtTo = dd + '/' + mm + '/' + yy;
+                            $('#txtCorporateStayTo').val(nextDayMMDDYYFormat_txtTo);
+                        }
+                    }
+                }
+            }
+        }
+
+        $("#txtCorporateLocationName").catcomplete({
+            delay: 1,
+            appendTo: "#corporatePopupContainer",
+            source: function (request, response) {
+                response([{ label: "", loading: true }]);
+                $.ajax({
+                    url: "/Home/GetSearchData",
+                    contentType: "application/json; charset=utf-8",
+                    data: { txt: request.term },
+                    dataType: "json",
+                    type: "GET",
+                    async: false,
+                    success: function (data) {
+
+                        $('#hdnSelectedLocalityID').val('');
+                        $('#hdnSelectedType').val('');
+
+                        if (!data.length) {
+
+                            var result = [
+                             {
+                                 value: response.term,
+                                 category: "No Matches Found"
+                             }
+                            ];
+                            response(result);
+                        }
+                        else {
+                            response($.map(data, function (item) {
+                                return {
+                                    label: item.label,
+                                    category: item.category,
+                                    value: item.Id
+                                }
+                            }));
+                        }
+                    }
+                });
+            },
+            minLength: 2,
+
+            select: function (event, ui) {
+
+                $("#txtCorporateLocationName").val(ui.item.label);
+                $('#hdnCorporateSelectedLocalityID').val(ui.item.value);
+                $('#hdnCorporateSelectedType').val(ui.item.category);
+                event.preventDefault();
+                if ($('#txtCorporateStayFrom').val() == undefined || $('#txtCorporateStayFrom').val() == "") {
+                    $('#txtCorporateStayFrom').focus();
+                }
+            },
+            focus: function (event, ui) {
+                event.preventDefault();
+                return false;
+            }
+        });
+
+    });
+
+
+
+    $(function () {
+
+        $('.btnbuy_corporate').click(function (e) {
+
+            e.preventDefault();
+
+            var searchCookieDetails = JSON.parse($.cookie('ofr.corporate.searchdata'));
+
+            searchCookieDetails.sRoomData = $("#hdnJsonCorporate").val();
+
+            var buttonName = $(this).data('button_name');
+
+            if ($('#hdnCorporateSelectedLocalityID').val() == "" || $('#txtCorporateLocationName').val().trim() == "") {
+                toastr.warning('Please select the Destination City.');
+                return false;
+            }
+            if ($('#txtCorporateStayFrom').val() == "") {
+                toastr.warning('Please select your Check In date.');
+                return false;
+            }
+            if ($('#txtCorporateStayTo').val() == "") {
+                toastr.warning('Please select your Check Out date.');
+                return false;
+            }
+
+            if (buttonName == "negotiate") {
+
+                var roomCount = JSON.parse(searchCookieDetails.sRoomData).length;
+
+                //Check for more than 3 room for a valid negotiation
+                if (roomCount > 3) {
+                    toastr.warning('Negotiation not allowed on more than 3 rooms.');
+                    return false;
+                }
+            }
+            if ($("#hdnJsonCorporate").val() == undefined || $("#hdnJsonCorporate").val() == '') {
+                toastr.warning('Please select rooms.');
+                return false;
+            }
+
+            var values = {
+                cid: $('#hdnCorporateSelectedLocalityID').val(),
+                ctype: $('#hdnCorporateSelectedType').val(),
+                cname: $('#txtCorporateLocationName').val(),
+                sCheckIn: $('#txtCorporateStayFrom').val(),
+                sCheckOut: $('#txtCorporateStayTo').val(),
+                sRoomData: $("#hdnJsonCorporate").val(),
+                sRequestType: buttonName
+            };
+
+            $.removeCookie('ofr.corporate.searchdata');
+            var searchData = JSON.stringify(values);
+            $.cookie("ofr.corporate.searchdata", searchData, { expires: 2, path: '/' });
+
+            $.removeCookie('srchdetails');
+            $.cookie("srchdetails", searchData, { expires: 2, path: '/' });
+
+            if (EnsureCheckInCheckOut()) {
+
+                if (buttonName == 'bid') {
+
+                    var biddingInformationForGA = 'Place : ' + values.cname + ', Checkin : ' + values.sCheckIn + ', Checkout : ' + values.sCheckOut;
+
+                    var completeInfo = 'IP Address :' + ipAddress + ', Place Details : ' + placeDetail + ', Url : ' + window.location.href + 'User Bid for :' + biddingInformationForGA;
+
+                    ga('send', {
+                        hitType: 'event',
+                        eventCategory: 'Bid Search',
+                        eventAction: completeInfo,
+                        eventLabel: 'Page View'
+                    });
+
+                    $('.overlay').show();
+
+                    window.location.href = '@Url.Action("Index", "Bidding")?cid=' + values.cid + '&ctype=' + values.ctype + '&cname=' + values.cname + '&sCheckIn=' + values.sCheckIn + '&sCheckOut=' + values.sCheckOut + '&sRoomData=' + values.sRoomData + '&sRequestType=' + values.sRequestType;
+
+                }
+                else {
+
+                    var searchInformationForGA = 'Place : ' + values.cname + ', Checkin : ' + values.sCheckIn + ', Checkout : ' + values.sCheckOut;
+
+                    var completeInfo = 'IP Address :' + ipAddress + ', Place Details : ' + placeDetail + ', Url : ' + window.location.href + 'User Search Hotel :' + searchInformationForGA;
+
+                    if (values.sRequestType == 'negotiate') {
+                        ga('send', {
+                            hitType: 'event',
+                            eventCategory: 'Negotiation Search',
+                            eventAction: completeInfo,
+                            eventLabel: 'Page View'
+                        });
+                    }
+                    else {
+                        ga('send', {
+                            hitType: 'event',
+                            eventCategory: 'Regular Search',
+                            eventAction: completeInfo,
+                            eventLabel: 'Page View'
+                        });
+                    }
+
+                    $('.overlay').show();
+
+                    window.location.href = '@Url.Action("Index", "Search")?cid=' + values.cid + '&ctype=' + values.ctype + '&cname=' + values.cname + '&sCheckIn=' + values.sCheckIn + '&sCheckOut=' + values.sCheckOut + '&sRoomData=' + values.sRoomData + '&sRequestType=' + values.sRequestType
+                }
+            }
+        });
+    });
+
+    function isValidEmailAddress(emailAddress) {
+        var pattern = /^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
+        return pattern.test(emailAddress);
+    };
+
+</script>

@@ -1,0 +1,354 @@
+﻿@model OneFineRateBLL.Entities.etblChangeHistory
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+<script src="~/js/Jquery1.10.3.js"></script>
+<link href="~/css/jquery-ui.css" rel="stylesheet" />
+
+@using (Html.BeginForm("Search", "PropertyChangeHistory", FormMethod.Get, new { id = "frmChangeHistory", role = "form" }))
+{
+    <div class="row">
+        <div class="col-xs-12">
+
+            <div class="panel-group">
+                <div class="panel panel-default margintop10">
+                    <div class="panel-group ">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-xs-10">
+                                        <h4 class="panel-title">
+                                            <strong>Change History</strong>
+                                        </h4>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-xs-1 ">From</div>
+                                <div class="col-xs-2">
+                                    @Html.TextBoxFor(m => m.dtActionDateFrom, new { Value = Model.dtActionDateFrom.ToString("MM/dd/yyyy"), type = "text", @class = "form-control", required = "true", name = "ActionDateFrom", onkeyup = "this.value=''", id = "ActionDateFrom" })
+                                </div>
+                                <div class="col-xs-1">To </div>
+                                <div class="col-xs-2">
+                                    @Html.TextBoxFor(m => m.dtActionDateTo, new { Value = Model.dtActionDateTo.ToString("MM/dd/yyyy"), type = "text", @class = "form-control", required = "true", name = "ActionDateTo", onkeyup = "this.value=''", id = "ActionDateTo" })
+                                </div>
+                                <div class="col-xs-6">&nbsp; </div>
+                            </div>
+                            <div class="row margintop20">
+                                <div class="col-xs-1">&nbsp;</div>
+                                <div class="col-xs-2">
+                                    @Html.RadioButton("SearchOn", "R", new { onclick = "ShowHideDiv()", required = "true" }) <span>Room and Rate</span>
+                                </div>
+                                <div class="col-xs-2">
+                                    @Html.RadioButton("SearchOn", "I", new { onclick = "ShowHideDiv()", required = "true" })<span>Property Information</span>
+                                </div>
+                                <div class="col-xs-2">
+                                    @Html.RadioButton("SearchOn", "B", new { onclick = "ShowHideDiv()", required = "true" })<span>Bookings</span>
+                                </div>
+                                <div class="col-xs-4">&nbsp;</div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="panel-group">
+
+                                        <div id="divRoomRate" style="display:none;">
+                                            <div class="panel panel-default margintop10">
+                                                <div class="panel-body">
+                                                    <div class="row">
+                                                        <div class="col-xs-2 ">Room Type</div>
+                                                        <div class="col-xs-4">
+                                                            @Html.DropDownListFor(m => m.iRoomTypeId, new SelectList(OneFineRateBLL.BL_tblChangeHistory.GetRoomTypeForDD(), "Id", "Name"), new { @class = "form-control", required = "true", id = "RoomType", name = "RoomType", onchange = "FillRatePlan()" })
+
+                                                        </div>
+                                                        <div class="col-xs-2">Rate Plan/ Promotion</div>
+                                                        <div class="col-xs-4">
+                                                            @Html.DropDownListFor(m => m.iRPId, new SelectList(Enumerable.Empty<SelectListItem>(), "Id", "Name"), new { @class = "form-control", required = "true", id = "RatePlan", name = "RatePlan" })
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="row margintop10">
+                                                        <div class="col-xs-2 ">Effective From</div>
+                                                        <div class="col-xs-4">
+                                                            @Html.TextBoxFor(m => m.dtEffectiveDateFrom, new { Value = Model.dtEffectiveDateFrom.ToString("MM/dd/yyyy"), type = "text", @class = "form-control", required = "true", name = "EffectiveDateFrom", onkeyup = "this.value=''", id = "EffectiveDateFrom" })
+                                                        </div>
+                                                        <div class="col-xs-2">Effective To</div>
+                                                        <div class="col-xs-4">
+                                                            @Html.TextBoxFor(m => m.dtEffectiveDateTo, new { Value = Model.dtEffectiveDateTo.ToString("MM/dd/yyyy"), type = "text", @class = "form-control", required = "true", name = "EffectiveDateTo", onkeyup = "this.value=''", id = "EffectiveDateTo" })
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="divPropertyInformation" style="display:none;">
+                                            <div class="panel panel-default margintop10">
+                                                <div class="panel-body">
+                                                    <div class="row">
+                                                        <div class="col-xs-2 ">Page Name</div>
+                                                        <div class="col-xs-3">
+                                                            @Html.DropDownListFor(m => m.iPageId, new SelectList(OneFineRateBLL.BL_tblChangeHistory.GetPageNameForDD(), "Id", "Name"), "", new { @class = "form-control", required = "true", id = "PageName", name = "PageName" })
+                                                        </div>
+                                                        <div class="col-xs-1">&nbsp;</div>
+                                                        <div class="col-xs-2">
+                                                            &nbsp;
+                                                        </div>
+                                                        <div class="col-xs-4">&nbsp; </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="divBookings" style="display:none;">
+                                            <div class="panel panel-default margintop10">
+                                                <div class="panel-body">
+                                                    <div class="row">
+                                                        <div class="col-xs-2 ">Booking Id</div>
+                                                        <div class="col-xs-2">
+                                                            @Html.TextBoxFor(m => m.iBookingId, new { type = "number", @class = "form-control", required = "true", name = "BookingId", id = "BookingId", maxlength = "2" })
+                                                        </div>
+                                                        <div class="col-xs-2">&nbsp;</div>
+                                                        <div class="col-xs-2">
+                                                            &nbsp;
+                                                        </div>
+                                                        <div class="col-xs-4">&nbsp; </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+                            <div class="row pull-right" id="divAction" style="display:none">
+                                <div class="col-xs-12">
+                                    <input name="" id="btnSubmit" type="button" onclick="Fillgrid()" class="btn btn-primary" value="Search">
+                                    <input name="" type="button" class="btn btn-danger" onclick="window.location = '../PropertyChangeHistory';" value="Cancel">
+                                </div>
+                            </div>
+                            <div class="col-xs-12 margintop10" id="divgrid">
+                                <div class="table-responsive margintop20">
+                                    <table class="table table-striped table-bordered table-hover display" id="tblData"></table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+
+    function Fillgrid() {
+
+        var chkradio = $("input[name=SearchOn]:checked").val()
+        var dtFrom = $.datepicker.formatDate('mm/dd/yy', $("#ActionDateFrom").datepicker("getDate"));
+        var dtTo = $.datepicker.formatDate('mm/dd/yy', $("#ActionDateTo").datepicker("getDate"));
+
+        if (chkradio == 'R') {
+            var roomType = $("#RoomType").val();
+            var ratePlan = $("#RatePlan").val();
+            var dtEffectiveFrom = $.datepicker.formatDate('mm/dd/yy', $("#EffectiveDateFrom").datepicker("getDate"));
+            var dtEffectiveTo = $.datepicker.formatDate('mm/dd/yy', $("#EffectiveDateTo").datepicker("getDate"));
+            BindGridRoomRates(chkradio, dtFrom, dtTo, roomType, ratePlan, dtEffectiveFrom, dtEffectiveTo);
+        }
+
+        if (chkradio == 'I') {
+            var Id = $("#PageName").val();
+            BindGrid(chkradio, dtFrom, dtTo, Id);
+        }
+
+        if (chkradio == 'B') {
+            var Id = $("#BookingId").val();
+            BindGrid(chkradio, dtFrom, dtTo, Id);
+        }
+    }
+
+    function BindGridRoomRates(chkradio, dtFrom, dtTo, roomType, ratePlan, dtEffectiveFrom, dtEffectiveTo) {
+        try {
+            var aoColumns =
+               [
+                {
+                    "sTitle": "Date & time Of Change", "mData": "dtActionDate", "bSortable": false,
+                    "mRender": function (data, type, full) {
+                        return getNorDateTime(data);
+                    }
+                },
+                   {
+                       "sTitle": "Effective Date", "mData": "dtEffectiveDate", "bSortable": false,
+                       "mRender": function (data, type, full) {
+                           return getNorDateTime(data);
+                       }
+                   },
+                    {
+                        "sTitle": "Item", "mData": "sItem", "bSortable": false
+                    },
+                 {
+                     "sTitle": "Old", "mData": "sOld", "bSortable": false
+                 },
+                 {
+                     "sTitle": "New", "mData": "sNew", "bSortable": false
+                 },
+                 {
+                     "sTitle": "By", "mData": "ActionBy", "bSortable": false
+                 }
+               ];
+            DatatableServerSide("#tblData", aoColumns, "/Services/Service.asmx/GetChangeHistoryData" + "?chkradio=" + chkradio + "&dtFrom=" + dtFrom + "&dtTo=" + dtTo + "&roomType=" + roomType + "&ratePlan=" + ratePlan + "&dtEffectiveFrom=" + dtEffectiveFrom + "&dtEffectiveTo=" + dtEffectiveTo);
+            DatatableServerSide("#tblData", aoColumns, "/Services/Service.asmx/GetChangeHistoryData" + "?chkradio=" + chkradio + "&dtFrom=" + dtFrom + "&dtTo=" + dtTo + "&Id=" + Id);
+        }
+        catch (e) {
+
+        }
+
+
+    }
+    function BindGrid(chkradio, dtFrom, dtTo, Id) {
+        try {
+            var aoColumns =
+               [
+                {
+                    "sTitle": "Date & time Of Change", "mData": "dtActionDate", "bSortable": false,
+                    "mRender": function (data, type, full) {
+                        return getNorDateTime(data);
+                    }
+                },
+                                      {
+                                          "sTitle": "Item", "mData": "sItem", "bSortable": false
+                                      },
+                 {
+                     "sTitle": "Old", "mData": "sOld", "bSortable": false
+                 },
+                 {
+                     "sTitle": "New", "mData": "sNew", "bSortable": false
+                 },
+                 {
+                     "sTitle": "By", "mData": "ActionBy", "bSortable": false
+                 }
+               ];
+            DatatableServerSide("#tblData", aoColumns, "/Services/Service.asmx/GetChangeHistoryData" + "?chkradio=" + chkradio + "&dtFrom=" + dtFrom + "&dtTo=" + dtTo + "&Id=" + Id);
+        }
+        catch (e) {
+
+        }
+
+
+    }
+
+</script>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        calendar();
+        ShowHideDiv();
+    })
+    function calendar() {
+        $('#ActionDateFrom').datepicker({
+        });
+        $('#ActionDateTo').datepicker({
+        });
+
+        $('#EffectiveDateFrom').datepicker({
+        });
+        $('#EffectiveDateTo').datepicker({
+        });
+
+
+        $("#ActionDateFrom").each(function () {
+            var selecteddate = $("#ActionDateFrom").datepicker("getDate");
+            var dateString = $.datepicker.formatDate('mm/dd/yy', selecteddate);
+            if (dateString == "01/01/2001") {
+                $("#ActionDateFrom").datepicker('setDate', new Date());
+            }
+
+        });
+        $("#ActionDateTo").each(function () {
+            var selecteddate = $("#ActionDateTo").datepicker("getDate");
+            var dateString = $.datepicker.formatDate('mm/dd/yy', selecteddate);
+            if (dateString == "01/01/2001") {
+                $("#ActionDateTo").datepicker('setDate', new Date());
+            }
+
+        });
+
+        $("#EffectiveDateFrom").each(function () {
+            var selecteddate = $("#EffectiveDateFrom").datepicker("getDate");
+            var dateString = $.datepicker.formatDate('mm/dd/yy', selecteddate);
+            if (dateString == "01/01/2001") {
+                $("#EffectiveDateFrom").datepicker('setDate', new Date());
+            }
+
+        });
+        $("#EffectiveDateTo").each(function () {
+            var selecteddate = $("#EffectiveDateTo").datepicker("getDate");
+            var dateString = $.datepicker.formatDate('mm/dd/yy', selecteddate);
+            if (dateString == "01/01/2001") {
+                $("#EffectiveDateTo").datepicker('setDate', new Date());
+            }
+
+        });
+        $("#ui-datepicker-div").hide();
+    }
+
+    function ShowHideDiv() {
+
+        $(":radio").click(function () {
+            var Selectedvalue = $(this).val();
+
+            if (Selectedvalue == 'R') {
+                $("#divRoomRate").show();
+                $("#divPropertyInformation").hide();
+                $("#divBookings").hide();
+            }
+
+            if (Selectedvalue == 'I') {
+                $("#divRoomRate").hide();
+                $("#divPropertyInformation").show();
+                $("#divBookings").hide();
+            }
+
+            if (Selectedvalue == 'B') {
+                $("#divRoomRate").hide();
+                $("#divPropertyInformation").hide();
+                $("#divBookings").show();
+            }
+            $("#divAction").show();
+        });
+    }
+
+</script>
+
+<script>
+    function FillRatePlan() {
+        var iRoomTypeId = $("#RoomType").val();
+        $.ajax({
+            url: "@(Url.Action("FillRatePlan", "PropertyChangeHistory"))",
+            type: "GET",
+            dataType: "JSON",
+            data: { "RoomType": iRoomTypeId },
+            success: function (rateplan) {
+                $("#RatePlan").html(""); // clear before appending new list
+                $.each(rateplan, function (i, rp) {
+                    if (i == 0) {
+                        $("#RatePlan").append(
+                            $('<option></option>').val(0).html('Select'));
+                    }
+                    else {
+                        $("#RatePlan").append(
+                            $('<option></option>').val(rp.Id).html(rp.Name));
+                    }
+                });
+            }
+        });
+    }
+</script>
+

@@ -1,0 +1,210 @@
+﻿@model OneFineRateBLL.Entities.eMacroAreaM
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script src="~/js/Jquery1.10.3.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.9.0/jquery.validate.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<link href="~/css/timepicki.min.css" rel="stylesheet" />
+<script src="~/js/timepicki.min.js"></script>
+<script>
+    $(function () {
+
+        bindgrid(); //binding datatable
+
+        if ('@TempData["result"]' != '') {
+            toastr.success('@TempData["result"]');
+
+        }
+        var openEditModel = '@ViewBag.OpenEditModel';
+        if (openEditModel == "Y") {
+            $('#AddMacroArea').modal({
+                show: 'true'
+            });
+        }
+
+        $('.btnCancel').click(function () {
+            resetform('frmMacroArea');
+            $('.close').click();
+        });
+
+        //On Country selection
+        $("#ddlCountry").change(function () {
+            var ddlsource = "#ddlCountry";
+            var ddltarget = "#ddlState";
+            if ($(ddlsource).val() != '') {
+                var url = '@Url.Content("/")' + "MacroArea/BindStates";
+                $.getJSON(url, { id: $(ddlsource).val() }, function (data) {
+                    $(ddltarget).empty();
+                    $("#ddlCity").empty();
+                    $.each(data.suggestions, function (index, optionData) {
+                        $(ddltarget).append("<option value='" + optionData.iStateId + "'>" + optionData.sState + "</option>");
+                    });
+
+                });
+            }
+            else {
+                $(ddltarget).empty();
+                $("#ddlCity").empty();
+            }
+        });
+        //On State selection
+        $("#ddlState").change(function () {
+            var ddlsource = "#ddlState";
+            var ddltarget = "#ddlCity";
+            if ($(ddlsource).val() != '') {
+                var url = '@Url.Content("/")' + "MacroArea/BindCity";
+                $.getJSON(url, { id: $(ddlsource).val() }, function (data) {
+                    $(ddltarget).empty();
+                    $.each(data.suggestions, function (index, optionData) {
+                        $(ddltarget).append("<option value='" + optionData.iCityId + "'>" + optionData.sCity + "</option>");
+                    });
+
+                });
+            }
+            else {
+                $(ddltarget).empty();
+            }
+        });
+    });
+
+    // bind list
+    function bindgrid() {
+
+        try {
+            var aoColumns =
+                [
+                 { "sTitle": "Country", "mData": "sCountry" },
+                 { "sTitle": "State", "mData": "sState" },
+                 { "sTitle": "City", "mData": "sCity" },
+                 { "sTitle": "Area", "mData": "sArea" },
+                 { "sTitle": "Status", "mData": "cStatus", "bSortable": false },
+                  {
+                      "sTitle": "Created On", "bSortable": false, "mData": "dtActionDate",
+                      "mRender": function (data, type, full) {
+                          return getNorDateTime(data);
+                      }
+                  },
+                  {
+                      "sTitle": "Edit", "bSortable": false, "mData": "iCountryId",
+                      "mRender": function (data, type, full) {
+                          var editurl = '';
+                          editurl = '@Url.Action("Edit", "MacroAreaAjax")' + "/" + full.iAreaId;
+                          var html = '<a  href="' + editurl + '";>Edit</a>&nbsp';
+                          html += '<button type="button" onclick="DeleteData(' + full.iAreaId + ')";  class="btn btn-danger">Delete</button>';
+                          return html;
+                      }
+                  }
+
+
+                ];
+            DatatableServerSide("#tblData", aoColumns, "/Services/Service.asmx/GetAllMacroAreaRecords?id=1");
+        }
+        catch (e) {
+
+        }
+
+    }
+
+    function DeleteData(id) {
+        bootbox.confirm("Are you sure?", function (result) {
+            console.log(result);
+            if (result == true) {
+                var values = { id: id };
+                var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("DeleteState")", values));
+                if (Data != null) {
+                    if (Data.st == '1') {
+                        bindgrid();
+                        $('.close').click();
+                        toastr.success(Data.msg);
+                        return true;
+                    }
+                    else if (Data.st == '0') {
+                        toastr.error(Data.msg);
+                        return false;
+                    }
+
+                }
+            }
+        });
+    }
+</script>
+<div class="container margintop20">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <strong>Macro Area</strong>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#AddMacroArea"><i class="fa fa-plus"></i> Add Macro Area </button>
+            </h4>
+
+        </div>
+        <div class="panel-body">
+
+            <div class="table-responsive margintop20">
+                <table class="display" id="tblData"></table>
+            </div>
+            <!-- End  table -->
+        </div>
+    </div>
+    <!-- container div END bottom -->
+</div>
+<!-- Add/Update Macro Area -->
+@using (Ajax.BeginForm("AddMacroArea", "MacroAreaAjax", new AjaxOptions() { InsertionMode = InsertionMode.Replace, UpdateTargetId = "AddMacroArea", HttpMethod = "POST" }, new { id = "frmMacroArea" }))
+{
+
+
+    <div id="AddMacroArea" class="modal fade" role="dialog">
+        @Html.HiddenFor(u => u.iAreaId, new { value = "0" });
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Macro Area</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="col-xs-4">
+                            Country
+                            @Html.DropDownListFor(model => model.iCountryId, new SelectList(OneFineRateBLL.BL_Country.GetAllRecords(), "iCountryId", "sCountry"), "", new { @class = "form-control", id = "ddlCountry", oninvalid = "setCustomValidity('Please select country')", onchange = "try{setCustomValidity('')}catch(e){}", required = true })
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-4">
+                            State
+                            @Html.DropDownListFor(model => model.iStateId, new SelectList(Model.StateList, "Value", "Text"), new { @class = "form-control", id = "ddlState", oninvalid = "setCustomValidity('Please select state')", onchange = "try{setCustomValidity('')}catch(e){}", required = true })
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-4">
+                            City
+                            @Html.DropDownListFor(model => model.iCityId, new SelectList(Model.CityList, "Value", "Text"), new { @class = "form-control", id = "ddlCity", oninvalid = "setCustomValidity('Please select city')", onchange = "try{setCustomValidity('')}catch(e){}", required = true })
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-4">
+                            Macro Area Name
+                            @Html.TextBoxFor(model => model.sArea, null, new { @class = "form-control", oninvalid = "setCustomValidity('Please enter only alphabets')", onchange = "try{setCustomValidity('')}catch(e){}", pattern = "[A-Za-z ]+", maxlength = "50", required = true })
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="btnSubmit" class="btn btn-primary">SAVE</button>
+                    <button type="button" class="btn btn-danger btnCancel">CANCEL</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+}
+

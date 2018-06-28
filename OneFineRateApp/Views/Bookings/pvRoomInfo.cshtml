@@ -1,0 +1,191 @@
+﻿@model OneFineRateBLL.Entities.RoomDetails
+
+
+<style>
+    .flex-nav-prev {
+        background-image: url('/images/app-link.png');
+    }
+
+    .flex-nav-next {
+        background-image: url('/images/app-link.png');
+    }
+    /*.flexslider .slides > li {
+
+        width:332px !important;
+    }*/
+</style>
+@*<link href="~/Content/horizontalSlider.css" rel="stylesheet" />
+
+<script src="~/Scripts/horizontalSlider.js"></script>*@
+
+
+<form id="frmBanner">
+    <div class="modal-dialog width60">
+        <!-- Modal content-->
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="hoteltitles">@Model.sRoomName</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-md-6">
+
+                        <div class="col-md-12 col-xs-12">
+                            <div id="slider" class="flexslider">
+                                <div class="flex-viewport" style="overflow: hidden; position: relative;">
+                                    <ul class="slides" style="width:100%;">
+
+                                        @if (Model.Images != null)
+                                        {
+                                            for (int i = 0; i < Model.Images.Count; i++)
+                                            {
+                                                string MainURL = @System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString() + Model.Images[i].sRoomImage;
+                                                <li style="float: left; display: block;"><img src="@MainURL" style="height:200px; width:250px;"></li>
+                                            }
+                                        }
+                                    </ul>
+                                </div>
+                                <ul class="flex-direction-nav">
+                                    <li class="flex-nav-prev"> <a class="flex-prev" href="#">Previous</a></li>
+                                    <li class="flex-nav-next"> <a class="flex-next flex-disabled" href="#" tabindex="-1">Next</a></li>
+                                </ul>
+                            </div>
+                            <div id="carousel" class="flexslider">
+
+                                <div class="flex-viewport" style="overflow: hidden; position: relative;">
+                                    <ul class="slides" style="width:100%;">
+                                        @if (Model.Images != null)
+                                        {
+                                            for (int i = 0; i < Model.Images.Count; i++)
+                                            {
+                                                string MainURL = System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString() + Model.Images[i].sRoomImage;
+                                                <li style="float: left"><img src="@MainURL" style="height:40px; width: 60px;"></li>
+                                            }
+                                        }
+
+                                    </ul>
+                                </div>
+                                <ul class="flex-direction-nav">
+                                    <li class="flex-nav-prev"><a class="flex-prev" href="#">Previous</a></li>
+                                    <li class="flex-nav-next"><a class="flex-next flex-disabled" href="#" tabindex="-1">Next</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                    <div class=" col-md-6  ">
+                        <div class="table-responsive">
+                            <table class="table-striped table-bordered">
+                                <tr>
+                                    <td class="paddingleft5"><b>Child and Extra Bed Policy</b></td>
+                                </tr>
+
+                                @if (Model.Policy.Count > 0 && Model.Policy[0] != null)
+                                {
+                                    <tr>
+                                        <td class="paddingleft5"><strong> Children 0-@Model.Policy[0].iComplimentaryStayAge year(s)</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="paddingleft5">
+                                            Children upto @Model.Policy[0].iComplimentaryStayAge years stay for free. Extra cot/ bed may be chargeable
+                                            Stay for free if using existing bedding.
+                                        </td>
+                                    </tr>
+                                }
+
+
+                                @if (Model.Policy.Count > 0 && Model.Policy[0] != null)
+                                {
+                                    <tr>
+                                        <td class="paddingleft5"><strong>Children above @Model.Policy[0].iExtraBedRequiredFrom year(s)</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="paddingleft5">Children @Model.Policy[0].iExtraBedRequiredFrom years and above will be charged</td>
+                                    </tr>
+                                }
+
+                            </table>
+                            @{
+                                string CurrencyCode = Session["CurrencyCode"] != null ? Session["CurrencyCode"].ToString() : "INR";
+                            }
+
+                            @if (Model.Policy.Count > 0 && Model.Policy[0] != null)
+                            {
+                                <div class="pull-right"> <span class="red">*</span><span> Extra Bed at @CurrencyCode @Model.Policy[0].sExtraCharge</span></div>
+                            }
+
+                        </div>
+                        <div class="col-md-12 col-xs-12">
+                            <ul class="nomargin nopadding">
+                                <li><b>Room Size:</b> @Model.sSizeSqft Sq/ft - @Model.sSizeMtr Sq/mt </li>
+                                <li>
+                                    <b>Bed Types:</b>
+                                    @if (Model.sSingleBed != "" && Model.sDoubleBed != "")
+                                    {
+                                        @Html.Raw(Model.sSingleBed + "/" + Model.sDoubleBed)
+                                    }
+                                    else if (Model.sSingleBed == "" && Model.sDoubleBed != "")
+                                    {
+                                        @Html.Raw(Model.sDoubleBed)
+                                    }
+                                    else if (Model.sSingleBed != "" && Model.sDoubleBed == "")
+                                    {
+                                        @Html.Raw(Model.sSingleBed)
+                                    }
+
+                                </li>
+
+                            </ul>
+                        </div>
+
+                    </div>
+                    <div class="col-md-12 paddingleft30"><b>View:</b> @Model.sOutdoorLocation</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 col-sm-12  col-xs-12">
+
+                        <div class="col-md-12 col-sm-12  col-xs-12">
+                            <b>Room Features</b>
+                        </div>
+                        @for (int i = 0; i < Model.RoomAmenities.Count; i++)
+                        {
+                            <div class="col-md-3">
+                                <ul class="nomargin "><li style="list-style:disc !important; padding:0px;">@Model.RoomAmenities[i].sAmenity</li></ul>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+
+    $('#carousel').flexslider({
+        animation: "slide",
+        controlNav: false,
+        animationLoop: true,
+        slideshow: false,
+        itemWidth: 75,
+        itemMargin: 5,
+        asNavFor: '#slider'
+    });
+
+    $('#slider').flexslider({
+        animation: "slide",
+        controlNav: false,
+        animationLoop: true,
+        slideshow: true,
+        sync: "#carousel",
+        start: function (slider) {
+            $('body').removeClass('loading');
+        }
+    });
+
+
+</script>

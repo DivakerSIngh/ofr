@@ -1,0 +1,280 @@
+﻿@model OneFineRateBLL.Entities.PropDetailsM
+
+<style>
+    .select2 {
+        width: 50% !important;
+        float: left !important;
+    }
+
+    .select2-container--default .select2-selection--single {
+        height: 34px;
+    }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 33px;
+        }
+</style>
+
+
+<form id="frmUserDetails">
+    <div class="container">
+        <div class=" margintop10">
+
+            <div class="tablebluebg">Your Information</div>
+            <input type="hidden" id="hdnNewTaxes" value="0" />
+            <input type="hidden" value="@Model.TempDataPropDetails" id="hdnUniqueSessionId" name="UniqueSessionId" />
+            <input type="hidden" value="" id="hdnPaymentBookingId" name="bookingId" />
+
+            <div class=" table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th width="8%">TITLE<span class="red">*</span></th>
+                            <th width="13%">FIRST NAME<span class="red">*</span></th>
+                            <th width="13%">LAST NAME<span class="red">*</span></th>
+                            <th width="18%">EMAIL ID<span class="red">*</span></th>
+                            <th width="25%">MOBILE NO.<span class="red">*</span></th>
+                            <th width="15%">STATE<span class="red">*</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+
+                                @Html.DropDownListFor(m => m.sUserTitle, new List<SelectListItem> {
+                                    new SelectListItem { Value = "Mr.", Text = "Mr.", Selected = Model.sUserTitle == "Mr." },
+                                    new SelectListItem { Value = "Ms.", Text = "Ms.", Selected = Model.sUserTitle == "Ms." } },
+                                    "Select title", new { @class = "form-control mwidth110", disabled = "disabled", id = "ddtitle", required = "true" })
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.sUserFirstName, new { id = "txtFirstName", type = "text", placeholder = "First Name", disabled = "disabled", @class = "form-control mwidth130", required = "true" })
+
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.sUserLastName, new { id = "txtLastName", type = "text", placeholder = "Last Name", disabled = "disabled", @class = "form-control mwidth130", required = "true" })
+
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.sUserEmail, new { id = "txtEmailId", type = "email", placeholder = "Email Id", disabled = "disabled", @class = "form-control mwidth130", required = "true", oninvalid = "setCustomValidity('Please enter valid email id.')", onchange = "try{setCustomValidity('')}catch(e){}" })
+
+                            </td>
+                            <td>
+                                <div style="width:100%">
+                                    <div style="width:50%; float:left">
+                                        @Html.DropDownListFor(model => model.sCountryPhoneCode, new SelectList(Model.CountryCodePhoneList, "sCode", "sFrontendCode", "+91"), new { style = "width:50%; float:left", @disabled = "disabled", id = "ddlCountryCode", @class = "form-control" })
+                                    </div>
+                                    <div style="width:50%; float:left">
+                                        @Html.TextBoxFor(m => m.sUserMobileNo, new { id = "txtMobileNo", type = "phone", placeholder = "Mobile No,An OTP will sent", maxlength = "10", disabled = "disabled", @class = "form-control", required = "true", pattern = @"^[\-\+]?\d+$", oninvalid = "setCustomValidity('Please enter valid mobile number.')", onchange = "try{setCustomValidity('')}catch(e){}" })
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                @{
+                                    var selectListItem = OneFineRateBLL.BL_Country.GetStatesByCountryId(1);
+                                    selectListItem.Insert(0, new OneFineRateBLL.Entities.eStates { iStateId = -1, sState = "Outside India" });
+
+                                    <style>
+                                        .select2 {
+                                            width: 100% !important;
+                                        }
+                                    </style>
+                                }
+
+                                @if (Model.iStateId == 0)
+                                {
+                                    @Html.DropDownListFor(model => model.iStateId, new SelectList(selectListItem, "iStateId", "sState"), "Select State", new { @class = "form-control", style = "width:100% !important", id = "ddlGuestStateId" })
+                                }
+                                else
+                                {
+                                    @Html.DropDownListFor(model => model.iStateId, new SelectList(selectListItem, "iStateId", "sState"), "Select State", new { @class = "form-control", disabled = "disabled", style = "width:100% !important", id = "ddlGuestStateId" })
+                                }
+
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="col-md-12 center margintop10">
+            <button type="button" id="btnModify" class="btn btn-primary  btn-lg ">Modify Search</button>
+            <button type="submit" id="btnChargeCard" class="btn btn-primary  btn-lg mtop4">Proceed to Payment</button>
+        </div>
+    </div>
+</form>
+
+<div class="modal fade" id="showBookingInProgressModal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog width60">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Pending Booking</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <p>
+                            <h4 id="bookingProgressMessage"></h4>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="text-align:center !important;">
+                <button type="button" class="btn btn-default wait" value="Wait" id="btnWait" data-dismiss="modal" data-bookingid="0">Wait</button>
+                <button type="button" class="btn btn-danger cancel" value="Cancel" id="btnCancel" data-bookingid="0">Cancel</button>
+                <button type="button" class="btn btn-primary" value="Cancel" id="btnPopupProceedToPayment" style="display:none" data-bookingid="0">Proceed To Payment</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $('#ddlCountryCode').select2();
+
+        $('#ddlGuestStateId').select2();
+
+        $('#frmUserDetails #txtMobileNo').keypress(function (e) {
+
+            var cursorPosition = document.getElementById('txtMobileNo').selectionStart;
+
+            if ((this.value.length == 0 || cursorPosition == 0) && e.which == 48) {
+
+                return false;
+            }
+        });
+
+        $('[data-toggle="popover"]').popover();
+
+    });
+
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+
+</script>
+
+<script type="text/javascript">
+
+    $(function () {
+
+        $('#btnCancel').click(function () {
+
+            var bookingId = $(this).data('bookingid');
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("CancelRewardPointProgressBooking")',
+                dataType: 'json',
+                data: {
+                    bookingId: bookingId,
+                },
+                success: function (data) {
+
+                    debugger;
+
+                    var hdnPaymentBookingId = $('#hdnPaymentBookingId').val();
+                    
+                    if (data.status == true) {
+
+                        $('#bookingProgressMessage').html(data.message);
+                        $('#btnPopupProceedToPayment').data('bookingid', hdnPaymentBookingId).show();
+
+                        $('#btnWait').hide();
+                        $('#btnCancel').hide();
+                    }
+                    else {
+                        toastr.error(data.message);
+                    }
+                },
+                error: function (err) {
+                }
+            });
+        });
+
+        $('#btnModify').click(function () {
+            window.location.href = '@Url.Action("Index", "RedeemPoints")?propId=@ViewBag.sPropId&checkIn=@ViewBag.sCheckIn&checkOut=@ViewBag.sCheckOut&sRoomData=@Html.Raw(ViewBag.sRoomData)';
+        });
+
+        document.getElementById('frmUserDetails').onsubmit = function (e) {
+            
+            e.preventDefault();
+
+            var f = document.getElementById('frmUserDetails');
+
+            if (f.checkValidity()) {
+
+                if (!$("#ddlGuestStateId").val()) {
+                    toastr.error('Please select state, In case outside India, You can select "Outside India" as option.');
+                    return false;
+                }
+
+                if (!$("#chkAgree").prop('checked')) {
+                    toastr.error('Please accept the terms and conditions first.');
+                    return false;
+                }
+
+                debugger;
+
+                var hdnPaymentBookingId = $('#hdnPaymentBookingId').val();
+
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("ChargeCard")',
+                    dataType: 'json',
+                    data: {
+                        stateId: $("#ddlGuestStateId").val(),
+                        uniqueSessionId: $("#hdnUniqueSessionId").val(),
+                        bookingId: hdnPaymentBookingId
+                    },
+                    success: function (data) {
+
+                        debugger;
+
+                        if (data.status == true && data.bookingInProgress == true) {
+
+                            $('#bookingProgressMessage').html(data.message);
+                            
+                            $('#btnWait').data('bookingid', data.oldBookingId).show();
+                            $('#btnCancel').data('bookingid', data.oldBookingId).show();
+                            $('#btnPopupProceedToPayment').hide();
+                            $('#hdnPaymentBookingId').val(data.bookingIdForPayament);
+
+                            $('#showBookingInProgressModal').modal('show');
+                        }
+                        else if (data.status == true) {
+
+                            var bookingId = parseInt(data.bookingIdForPayament);
+                            if (bookingId > 0) {                               
+                                url = "../Payment/PayNow?bookingId=" + bookingId + "&propDetailsGUID=" + '@Model.TempDataPropDetails' + '&isPointRedumptionPayment=' + true;
+                                window.location.href = url;
+                            }
+                            else {
+                                toastr.error('kindly try after some time');
+                            }
+                        }
+                        else {
+                            toastr.error(data.message);
+                        }
+                    },
+                    error: function (err) {
+
+                        toastr.error(err.message);
+                    }
+                });
+            }
+        }
+
+
+        $('#btnPopupProceedToPayment').click(function () {
+
+            $('#btnChargeCard').click();
+
+        });
+    });
+
+</script>

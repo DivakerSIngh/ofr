@@ -1,0 +1,100 @@
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\OneFineRateWebBLL.dll.config
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\OneFineRateWebBLL.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\OneFineRateWebBLL.pdb
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\EntityFramework.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\EntityFramework.SqlServer.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.AspNet.Identity.Core.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.AspNet.Identity.EntityFramework.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.AspNet.Identity.Owin.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.Owin.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.Owin.Host.SystemWeb.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.Owin.Security.Cookies.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.Owin.Security.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.Owin.Security.OAuth.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\Newtonsoft.Json.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\OneFineRate.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\OneFineRateAppUtil.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\OneFineRateBLL.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\Owin.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.WindowsAzure.Configuration.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.WindowsAzure.StorageClient.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\System.Web.Mvc.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\System.Web.Razor.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\System.Web.WebPages.Razor.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\System.Web.WebPages.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\System.Web.WebPages.Deployment.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\OneFineRateAppUtil.pdb
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\OneFineRateBLL.pdb
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\OneFineRate.pdb
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\EntityFramework.xml
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\EntityFramework.SqlServer.xml
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.AspNet.Identity.Core.xml
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.AspNet.Identity.EntityFramework.xml
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.AspNet.Identity.Owin.xml
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.Owin.xml
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.Owin.Host.SystemWeb.xml
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.Owin.Security.xml
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.Owin.Security.Cookies.xml
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.Owin.Security.OAuth.xml
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\Newtonsoft.Json.xml
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\obj\Debug\OneFineRateWebBLL.csprojResolveAssemblyReference.cache
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\obj\Debug\OneFineRateWebBLL.dll
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\obj\Debug\OneFineRateWebBLL.pdb
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\System.Web.Mvc.xml
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\System.Web.Razor.xml
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\System.Web.WebPages.Razor.xml
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\System.Web.WebPages.xml
+E:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRateWebBLL\bin\Debug\System.Web.WebPages.Deployment.xml
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\obj\Debug\OneFineRateWebBLL.csprojResolveAssemblyReference.cache
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\OneFineRateWebBLL.dll.config
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\OneFineRateWebBLL.dll
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\OneFineRateWebBLL.pdb
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\EntityFramework.dll
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.AspNet.Identity.Core.dll
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.AspNet.Identity.EntityFramework.dll
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.AspNet.Identity.Owin.dll
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.Owin.dll
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.Owin.Host.SystemWeb.dll
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.Owin.Security.Cookies.dll
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.Owin.Security.dll
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.Owin.Security.OAuth.dll
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\Newtonsoft.Json.dll
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\OneFineRate.dll
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\OneFineRateAppUtil.dll
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\OneFineRateBLL.dll
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\Owin.dll
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.WindowsAzure.Configuration.dll
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.WindowsAzure.StorageClient.dll
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\System.Web.Mvc.dll
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\System.Web.Razor.dll
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\System.Web.WebPages.Razor.dll
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\System.Web.WebPages.dll
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\System.Web.WebPages.Deployment.dll
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\OneFineRateAppUtil.pdb
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\OneFineRateBLL.pdb
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\OneFineRate.pdb
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\EntityFramework.xml
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.AspNet.Identity.Core.xml
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.AspNet.Identity.EntityFramework.xml
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.AspNet.Identity.Owin.xml
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.Owin.xml
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.Owin.Host.SystemWeb.xml
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.Owin.Security.xml
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.Owin.Security.Cookies.xml
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.Owin.Security.OAuth.xml
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\Newtonsoft.Json.xml
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\obj\Debug\OneFineRateWebBLL.dll
+C:\Users\DeepakA.FSOFT4PDC\documents\visual studio 2013\Projects\OneFineRate\OneFineRateWebBLL\obj\Debug\OneFineRateWebBLL.pdb
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\MailKit.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\MimeKit.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\BouncyCastle.Crypto.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\Microsoft.Web.Infrastructure.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\OneFineRateAppUtil.dll.config
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\OneFineRateBLL.dll.config
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\OneFineRate.dll.config
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\MailKit.xml
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\MimeKit.xml
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateWebBLL\obj\Debug\OneFineRateWebBLL.csproj.CoreCompileInputs.cache
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRateWebBLL\bin\Debug\bin\Microsoft.WindowsAzure.Configuration.dll

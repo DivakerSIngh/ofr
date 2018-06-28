@@ -1,0 +1,1502 @@
+﻿@media only screen and (max-device-width: 375px) {
+    .wSelect-theme-classic.wSelect {
+        color: #000 !important;
+    }
+    .mob-Black {
+        color: #000 !important;
+    }
+
+    .navbar-inverse .navbar-nav > li > a {
+        /*color: #7b7b7b !important;*/
+        color: #000 !important;
+    }
+
+    #hotelFilterHeaderDiv {
+        padding: 0px;
+    }
+
+    #btnChargeCard {
+        margin-top: 4px;
+    }
+
+    .srchblueboldtext1 {
+        font-size: 14px;
+    }
+
+    .whathpn3 {
+        font-size: 15px;
+        margin: 2px;
+    }
+
+    .blueheadingbg {
+        padding: 4px;
+        font-size: 15px;
+    }
+
+    .padding12 {
+        padding: 5px 12px 5px 12px;
+    }
+
+    .panel-title {
+        font-size: 14px !important
+    }
+
+    .warningmsg {
+        font-size: 14px;
+    }
+
+    #divfirstroom h4 {
+        font-size: 14px;
+    }
+
+    header {
+        font-size: 12px;
+    }
+
+    .margintop5m {
+        margin-top: 5px;
+    }
+
+    .dropdown-menu > li > img {
+        display: block;
+        padding: 3px 20px;
+        clear: both;
+        font-weight: 400;
+        line-height: 1.42857143;
+        color: #333;
+        white-space: nowrap;
+    }
+
+    .modal-dialog {
+        margin: 10px !important;
+    }
+
+    .navbar-collapse {
+        border-bottom: 1px solid #5e2e86 /*0f204b*/ !important;
+        background: #f9f6eb !important;
+    }
+
+    .wSelect-theme-classic.wSelect {
+        border: solid #CACACA 1px !important;
+    }
+
+    .whtbdrtop10 {
+        border: 2px solid #5e2e86 /*0f204b*/;
+    }
+
+    #divRatePlan-125 {
+        border: 2px solid #5e2e86 /*0f204b*/;
+    }
+
+    .alert h3 {
+        font-size: 14px !important;
+    }
+
+    .alert {
+        padding: 5px;
+        margin-bottom: 0;
+    }
+
+    .fontsize18a {
+        font-size: 14px !important;
+    }
+    /*#stickytypeheader{top:248px;}*/
+    /*#stickytypeheader {
+        display: none;
+    }*/
+    ul.prefer li {
+        display: list-item;
+        padding: 0;
+    }
+
+    .hotelfacilitydiv {
+        width: 250px;
+    }
+
+    .roomfacilitydiv {
+        width: 165px;
+    }
+
+    .imglibrarycontainer {
+        margin-left: 15px;
+    }
+
+    .mapbtn {
+        bottom: 0px;
+    }
+    /*Search control spacing*/
+    /*.mbottom10{margin-bottom:10px;}*/
+    #videoLayoutBuy {
+        height: 100%;
+    }
+
+        #videoLayoutBuy img {
+            height: 100%;
+        }
+
+    .btnCorporate {
+        margin-top: 4px;
+    }
+
+    .mtop5 {
+        margin-top: 5px;
+    }
+
+    .navbar-nav > li {
+        border-left: 0px;
+    }
+
+    .paddingtop50 {
+        padding-top: 0px;
+    }
+
+    .padding15btm0 {
+        padding: 5px 15px 5px 15px;
+    }
+    /*.padding15{padding:0px;}*/
+    .redtext {
+        padding: 0px;
+    }
+
+    .sortlist ul li:nth-child(3) {
+        padding-left: 0px;
+    }
+    /*offer review page */
+    .sortlist ul li {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+    .reviewtextpara {
+        height: 100%;
+    }
+
+    .update-nag {
+        text-align: left;
+        position: absolute;
+        top: -248px;
+        left: 0px;
+        background: #fff;
+    }
+
+        .update-nag > .update-text {
+            width: 142px;
+        }
+
+    .update-nag-mobile {
+        text-align: left;
+        /*position: absolute;*/
+        background: #fff;
+    }
+
+    .update-nag > .update-text {
+        width: 142px;
+    }
+
+    .text_limit21 {
+        margin-top: 0 !important;
+        margin-bottom: 0;
+    }
+
+    .srchbluestrickedtext {
+        display: inline
+    }
+
+    .srchblueboldtext {
+        display: inline;
+    }
+
+    .marginbottom10 {
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+
+    ul.bullets {
+        padding-left: 20px;
+    }
+
+    .mar-padd0 {
+        margin-top: 5px;
+        font-size: 20px;
+    }
+
+    .marginleft-6 {
+        margin-left: 0;
+    }
+
+    .mtxtcenter {
+        text-align: center;
+    }
+
+    .lightcream {
+        min-height: 100%;
+        background-color: #fecb00;
+    }
+
+    .left-nav {
+        min-height: 0;
+        background: #fecb00;
+    }
+
+        .left-nav ul li {
+            display: block;
+            font-size: 15px;
+            color: #5c5b5b;
+            padding: 10px !important;
+            background-color: #fff;
+            /* border-bottom: 1px solid #fff; */
+            line-height: 21px;
+            /* margin-top: 4px; */
+        }
+
+    #divwhole {
+        width: 290px !important;
+        display: none;
+        border: 1px solid #d1d1d1;
+        background-color: #fff;
+        position: absolute;
+        top: 37px !important;
+        right: 11%;
+        overflow: auto;
+    }
+
+    /* Force table to not be like tables anymore */
+    .tbl-grid-mobile-data table,
+    .tbl-grid-mobile-data thead,
+    .tbl-grid-mobile-data tbody,
+    .tbl-grid-mobile-data th,
+    .tbl-grid-mobile-data td,
+    .tbl-grid-mobile-data tr {
+        display: block;
+    }
+
+        /* Hide table headers (but not display: none;, for accessibility) */
+        .tbl-grid-mobile-data thead tr {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+        }
+
+    .tbl-grid-mobile-data tr {
+        border: 1px solid #ccc;
+    }
+
+    .tbl-grid-mobile-data td {
+        /* Behave  like a "row" */
+        border: none !important;
+        border-bottom: 1px solid #eee !important;
+        position: relative !important;
+        padding-left: 50% !important;
+        white-space: normal !important;
+        text-align: left !important;
+    }
+
+        .tbl-grid-mobile-data td:before {
+            /* Now like a table header */
+            position: absolute;
+            /* Top/left values mimic padding */
+            top: 6px;
+            left: 6px;
+            width: 45%;
+            padding-right: 10px;
+            white-space: nowrap;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        /*
+	Label the data
+	*/
+        .tbl-grid-mobile-data td:before {
+            content: attr(data-title);
+        }
+    /* Force table to not be like tables anymore */
+    .tbl-grid-mobile-data table,
+    .tbl-grid-mobile-data thead,
+    .tbl-grid-mobile-data tbody,
+    .tbl-grid-mobile-data th,
+    .tbl-grid-mobile-data td,
+    .tbl-grid-mobile-data tr {
+        display: block;
+    }
+
+        /* Hide table headers (but not display: none;, for accessibility) */
+        .tbl-grid-mobile-data thead tr {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+        }
+
+    .tbl-grid-mobile-data tr {
+        border: 1px solid #ccc;
+    }
+
+    .tbl-grid-mobile-data td {
+        /* Behave  like a "row" */
+        border: none !important;
+        border-bottom: 1px solid #eee !important;
+        position: relative !important;
+        padding-left: 50% !important;
+        white-space: normal !important;
+        text-align: left !important;
+    }
+
+        .tbl-grid-mobile-data td:before {
+            /* Now like a table header */
+            position: absolute;
+            /* Top/left values mimic padding */
+            top: 6px;
+            left: 6px;
+            width: 45%;
+            padding-right: 10px;
+            white-space: nowrap;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        /*
+	Label the data
+	*/
+        .tbl-grid-mobile-data td:before {
+            content: attr(data-title);
+        }
+
+    .bookbtn {
+        display: none;
+    }
+
+    .margintop30mob {
+        margin-top: 0px;
+    }
+
+    .noborder-mob {
+        border: 1px solid #ccc !important;
+    }
+
+    .sticky {
+        position: fixed;
+        /*top: 80%;*/
+    }
+
+    .topHotelRooms10 {
+        /*top:80%;*/
+    }
+
+    .affix {
+        /*top: 307px;*/
+        width: 100%;
+        z-index: 9999 !important;
+    }
+
+    .bold {
+        padding-top: 5px;
+        font-size: 13px !important;
+    }
+
+    .headingnote {
+        font-size: 13px !important;
+    }
+
+    .whathpn {
+        font-size: 14px;
+    }
+
+    ul.whathppn li {
+        font-size: 12px;
+    }
+
+    .msgvertical {
+        font-size: 14px;
+    }
+
+    .loyality_infobg {
+        background-color: #fff;
+        padding-left: 0px;
+        color: #000;
+    }
+}
+
+/*iphone 4, iphone 5, iphone 6 plus start*/
+@media only screen and (max-device-width: 480px) {
+    .wSelect-theme-classic.wSelect {
+        color: #000 !important;
+    }
+    .mob-Black {
+        color: #000 !important;
+    }
+
+    .navbar-inverse .navbar-nav > li > a {
+        /*color: #7b7b7b !important;*/
+        color: #000 !important;
+    }
+
+    #hotelFilterHeaderDiv {
+        padding: 0px;
+    }
+
+    #btnChargeCard {
+        margin-top: 4px;
+    }
+
+    .srchblueboldtext1 {
+        font-size: 14px;
+    }
+
+    .whathpn3 {
+        font-size: 15px;
+        margin: 2px;
+    }
+
+    .blueheadingbg {
+        padding: 4px;
+        font-size: 15px;
+    }
+
+    .panel-title {
+        font-size: 14px !important
+    }
+
+    .msgvertical {
+        font-size: 14px;
+    }
+
+    .whathpn {
+        font-size: 14px;
+    }
+
+    ul.whathppn li {
+        font-size: 12px;
+    }
+
+    #divfirstroom h4 {
+        font-size: 14px;
+    }
+
+    header {
+        font-size: 12px;
+    }
+
+    .margintop5m {
+        margin-top: 5px;
+    }
+
+    .modal-dialog {
+        margin: 10px !important;
+    }
+
+    .negotiatecontainer {
+        min-height: 1110px;
+    }
+
+    .hotelfacilitydiv {
+        width: 250px;
+    }
+
+    .roomfacilitydiv {
+        width: 165px;
+    }
+
+    .imglibrarycontainer {
+        margin-left: 15px;
+    }
+
+    .mapbtn {
+        bottom: 0px;
+    }
+    /*#stickytypeheader {
+        display: none;
+    }
+              .padding15{padding:0px;}
+    #btnplaceholder{display:none;}*/
+    .redtext {
+        padding: 0px;
+    }
+
+    .navbar-nav > li {
+        border-left: 0px;
+    }
+
+    .mpadleft10 {
+        padding-left: 10px;
+    }
+
+    .paddingtop50 {
+        padding-top: 0px;
+    }
+
+    .mpadright10 {
+        padding-right: 10px;
+    }
+
+    .mtop5 {
+        margin-top: 5px;
+    }
+
+    #videoLayoutBuy {
+        height: 100%;
+    }
+
+        #videoLayoutBuy img {
+            height: 100%;
+        }
+
+    .marginleft15 {
+        margin-left: 0px;
+    }
+
+    .mo-marginleft5 {
+        margin-left: 5px;
+    }
+
+    .btnCorporate {
+        margin-top: 4px;
+    }
+
+    .srchlrnmore {
+        margin-top: 1px;
+        padding: 6px;
+    }
+
+    .nopadding {
+        padding: 0;
+    }
+
+    .width25 {
+        width: 96% !important;
+        padding-left: 15px !important;
+    }
+
+    .checkin { /*width:100% !important; to put date box in rows*/
+        width: 50% !important;
+        margin-top: 5px;
+    }
+
+    #adltdiv {
+        margin-top: 5px;
+    }
+
+    .width110a {
+        width: 100% !important;
+    }
+
+    #stickytypeheader {
+        position: absolute;
+        /*top: 200px !important;*/
+        top: 40px !important;
+        z-index: 99;
+        width: 100%;
+        background: rgba(0, 0, 0, 0);
+    }
+
+
+    .mbottom10 {
+        margin-bottom: 10px;
+    }
+
+    /*offer review - hotel room rate*/
+    .ptop10 {
+        padding-top: 10px;
+    }
+
+    .mtop4 {
+        margin-top: 4px;
+    }
+
+    .sortlist ul li {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+        .sortlist ul li:nth-child(3) {
+            padding-left: 0px;
+        }
+
+    .reviewtextpara {
+        height: 100%;
+    }
+    /*Search Result page btn bg color*/
+    .srchlightcream { /*min-height:127px;*/
+        min-height: 100%;
+        /*margin-top: 15px;*/
+    }
+
+    .srchlightcream-mob {
+        min-height: 127px;
+    }
+    /**search result page remove pop up width*/
+    .width60 {
+        width: 95% !important;
+    }
+
+    .width277 {
+        width: 100% !important;
+    }
+
+    .bold {
+        padding-top: 5px;
+        font-size: 13px !important;
+    }
+
+    .headingnote {
+        font-size: 13px !important;
+    }
+    /*Bid pages*/
+    .checkbox-grid li {
+        width: 45% !important;
+    }
+
+    .mwidth110 {
+        width: 110px !important;
+    }
+
+    .mwidth130 {
+        width: 130px !important
+    }
+
+    .margintop74 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    .width50 {
+        float: none;
+        margin-bottom: 5px;
+    }
+
+    .width20percent {
+        width: 100% !important;
+    }
+
+    .ui-menu {
+        width: 240px !important;
+    }
+
+    .nomarginleft {
+        margin-top: 5px;
+        margin-left: 0px;
+    }
+    /*my accountpages*/
+
+    .bookingbxbghighlight1 {
+        min-height: 100% !important;
+    }
+
+    .padding15btm0 {
+        padding: 5px 15px 5px 15px;
+    }
+
+    .width80percent {
+        width: 95% !important;
+    }
+
+    .updateroompaynow { /*right: 37%; bottom: -4px;*/
+        right: 0;
+        bottom: 0;
+        position: inherit
+    }
+
+    .image-ban {
+        height: 100%;
+    }
+
+    .update-nag {
+        text-align: left;
+        position: absolute;
+        top: -248px;
+        left: 0px;
+        background: #fff;
+    }
+
+        .update-nag > .update-text {
+            width: 142px;
+        }
+
+    .update-nag-mobile {
+        text-align: left;
+        /*position: absolute;*/
+        background: #fff;
+    }
+
+    .update-nag > .update-text {
+        width: 142px;
+    }
+
+    .text_limit21 {
+        margin-top: 0 !important;
+        margin-bottom: 0;
+    }
+
+    .margintop30mob {
+        margin-top: 0px;
+    }
+
+    .srchbluestrickedtext {
+        display: inline
+    }
+
+    .srchblueboldtext {
+        display: inline;
+    }
+
+    .marginbottom10 {
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+
+    ul.bullets {
+        padding-left: 20px;
+    }
+
+    .mar-padd0 {
+        margin-top: 5px;
+        font-size: 20px;
+    }
+
+    .marginleft-6 {
+        margin-left: 0;
+    }
+
+    .mtxtcenter {
+        text-align: center;
+    }
+
+    .lightcream {
+        min-height: 100%;
+    }
+
+    .lightgry {
+        text-align: center;
+    }
+
+    .margintop50 {
+        margin-top: 0;
+    }
+
+    .paddingtop30 {
+        padding-top: 0px !important;
+    }
+
+    .left-nav {
+        min-height: 0;
+        background-color: #fecb00;
+    }
+
+        .left-nav ul li {
+            display: block;
+            font-size: 15px;
+            color: #5c5b5b;
+            padding: 10px !important;
+            background-color: #fff;
+            /* border-bottom: 1px solid #fff; */
+            line-height: 21px;
+            /* margin-top: 4px; */
+        }
+
+    .whtbdrtop10 {
+        border: 2px solid #5e2e86;
+    }
+
+    #divRatePlan-125 {
+        border: 2px solid #5e2e86;
+    }
+
+    .alert h3 {
+        font-size: 14px !important;
+    }
+
+    .alert {
+        padding: 5px;
+        margin-bottom: 0;
+    }
+
+    .fontsize18a {
+        font-size: 14px !important;
+    }
+
+    ul.prefer li {
+        display: list-item;
+        padding: 0;
+    }
+
+    #divwhole {
+        width: 290px !important;
+        display: none;
+        border: 1px solid #d1d1d1;
+        background-color: #fff;
+        position: absolute;
+        top: 37px !important;
+        right: 11%;
+        overflow: auto;
+    }
+    /* Force table to not be like tables anymore */
+    .tbl-grid-mobile-data table,
+    .tbl-grid-mobile-data thead,
+    .tbl-grid-mobile-data tbody,
+    .tbl-grid-mobile-data th,
+    .tbl-grid-mobile-data td,
+    .tbl-grid-mobile-data tr {
+        display: block;
+    }
+
+        /* Hide table headers (but not display: none;, for accessibility) */
+        .tbl-grid-mobile-data thead tr {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+        }
+
+    .tbl-grid-mobile-data tr {
+        border: 1px solid #ccc;
+    }
+
+    .tbl-grid-mobile-data td {
+        /* Behave  like a "row" */
+        border: none !important;
+        border-bottom: 1px solid #eee !important;
+        position: relative !important;
+        padding-left: 50% !important;
+        white-space: normal !important;
+        text-align: left !important;
+    }
+
+        .tbl-grid-mobile-data td:before {
+            /* Now like a table header */
+            position: absolute;
+            /* Top/left values mimic padding */
+            top: 6px;
+            left: 6px;
+            width: 45%;
+            padding-right: 10px;
+            white-space: nowrap;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        /*
+	Label the data
+	*/
+        .tbl-grid-mobile-data td:before {
+            content: attr(data-title);
+        }
+    /* Force table to not be like tables anymore */
+    .tbl-grid-mobile-data table,
+    .tbl-grid-mobile-data thead,
+    .tbl-grid-mobile-data tbody,
+    .tbl-grid-mobile-data th,
+    .tbl-grid-mobile-data td,
+    .tbl-grid-mobile-data tr {
+        display: block;
+    }
+
+        /* Hide table headers (but not display: none;, for accessibility) */
+        .tbl-grid-mobile-data thead tr {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+        }
+
+    .tbl-grid-mobile-data tr {
+        border: 1px solid #ccc;
+    }
+
+    .tbl-grid-mobile-data td {
+        /* Behave  like a "row" */
+        border: none !important;
+        border-bottom: 1px solid #eee !important;
+        position: relative !important;
+        padding-left: 50% !important;
+        white-space: normal !important;
+        text-align: left !important;
+    }
+
+        .tbl-grid-mobile-data td:before {
+            /* Now like a table header */
+            position: absolute;
+            /* Top/left values mimic padding */
+            top: 6px;
+            left: 6px;
+            width: 45%;
+            padding-right: 10px;
+            white-space: nowrap;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        /*
+	Label the data
+	*/
+        .tbl-grid-mobile-data td:before {
+            content: attr(data-title);
+        }
+
+    .navbar-collapse {
+        border-bottom: 1px solid #0f204b !important;
+        background: #f9f6eb !important;
+    }
+
+    .wSelect-theme-classic.wSelect {
+        border: solid #CACACA 1px !important;
+    }
+
+    .bookbtn {
+        display: none;
+    }
+
+    .dropdown-menu > li > img {
+        display: block;
+        padding: 3px 20px;
+        clear: both;
+        font-weight: 400;
+        line-height: 1.42857143;
+        color: #333;
+        white-space: nowrap;
+    }
+
+    .noborder-mob {
+        border: 1px solid #ccc !important;
+    }
+
+    .sticky {
+        position: fixed;
+        /*top: 80%;*/
+    }
+
+    .topHotelRooms10 {
+        /*top: 80%;*/
+    }
+
+    .affix {
+        /*top: 307px;*/
+        width: 100%;
+        z-index: 9999 !important;
+    }
+
+    .loyality_infobg {
+        background-color: #fff;
+        padding-left: 0px;
+        color: #000;
+    }
+
+    .warningmsg {
+        font-size: 14px;
+    }
+}
+/*iphone 6 plus start ends*/
+
+@media only screen and (max-device-width: 568px) {
+    .wSelect-theme-classic.wSelect {
+        color: #000 !important;
+    }
+    .mob-Black {
+        color: #000 !important;
+    }
+
+    .navbar-inverse .navbar-nav > li > a {
+        /*color: #7b7b7b !important;*/
+        color: #000 !important;
+    }
+
+    #hotelFilterHeaderDiv {
+        padding: 0px;
+    }
+
+    #btnChargeCard {
+        margin-top: 4px;
+    }
+
+    .srchblueboldtext1 {
+        font-size: 14px;
+    }
+
+    .blueheadingbg {
+        padding: 4px;
+        font-size: 15px;
+    }
+
+    .whathpn3 {
+        font-size: 15px;
+        margin: 2px;
+    }
+
+    .panel-title {
+        font-size: 14px !important
+    }
+
+    .warningmsg {
+        font-size: 14px;
+    }
+
+    ul.whathppn li {
+        font-size: 12px;
+    }
+
+    .msgvertical {
+        font-size: 14px;
+    }
+
+    .bold {
+        padding-top: 5px;
+        font-size: 13px !important;
+    }
+
+    .headingnote {
+        font-size: 13px !important;
+    }
+
+    .whathpn {
+        font-size: 14px;
+    }
+
+    #divfirstroom h4 {
+        font-size: 14px;
+    }
+
+    header {
+        font-size: 11px;
+    }
+
+    .margintop5m {
+        margin-top: 5px;
+    }
+
+    .modal-dialog {
+        margin: 10px !important;
+    }
+
+    .negotiatecontainer {
+        min-height: 1110px;
+    }
+
+    .hotelfacilitydiv {
+        width: 250px;
+    }
+
+    .roomfacilitydiv {
+        width: 165px;
+    }
+
+    .imglibrarycontainer {
+        margin-left: 15px;
+    }
+
+    .mapbtn {
+        bottom: 0px;
+    }
+    /*.padding15 {
+        padding: 0px;
+    }*/
+    .redtext {
+        padding: 0px;
+    }
+
+    .padding15btm0 {
+        padding: 5px 15px 5px 15px;
+    }
+
+    #videoLayoutBuy {
+        height: 100%;
+    }
+
+    .paddingtop50 {
+        padding-top: 0px;
+    }
+
+    #videoLayoutBuy img {
+        height: 100%;
+    }
+
+    .mtop5 {
+        margin-top: 5px;
+    }
+
+    .navbar-nav > li {
+        border-left: 0px;
+    }
+
+    .btnCorporate {
+        margin-top: 4px;
+    }
+
+    .srchlrnmore {
+        margin-top: 1px;
+        padding: 6px;
+    }
+
+    .image-ban {
+        height: 100%;
+    }
+    /*.navbar-toggle{margin-right:-2px;}*/
+    .marginleft15 {
+        margin-left: 0px;
+    }
+
+    .mpadleft10 {
+        padding-left: 10px;
+    }
+    /*.btn-lg{    padding: 8px 12px;}*/
+    .btn-lg {
+        padding: 4px 6px;
+    }
+
+    .mnegotiatebtn {
+        padding: 4px 9px;
+    }
+
+    .margintop-40 { /*margin-left:-6px;*/
+        margin-left: 2px;
+        top: 0px;
+    }
+
+    .carousel-caption {
+        top: 2px !important;
+    }
+
+    .yellowbg {
+        padding: 15px;
+    }
+
+    .nomarginleft {
+        margin-left: 0px;
+        margin-top: 5px;
+    }
+    /*offer review page */
+    .sortlist ul li {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+        .sortlist ul li:nth-child(3) {
+            padding-left: 0px;
+        }
+
+    .reviewtextpara {
+        height: 100%;
+    }
+
+    .update-nag {
+        text-align: left;
+        position: absolute;
+        top: -248px;
+        left: 0px;
+        background: #fff;
+    }
+
+        .update-nag > .update-text {
+            width: 142px;
+        }
+
+    .update-nag-mobile {
+        text-align: left;
+        /*position: absolute;*/
+        background: #fff;
+    }
+
+        .update-nag-mobile > .update-text {
+            width: 142px;
+        }
+
+        .update-nag-mobile > .update-split {
+            /*background: #bba138;*/
+            /*border-left:1px solid #ececec;*/
+            width: 38px;
+            /*margin-top: -4px;*/
+            float: right;
+            height: 100%;
+            /*text-align: center;*/
+        }
+
+            .update-nag-mobile > .update-split > .glyphicon {
+                position: relative;
+                top: calc(50% - 9px) !important; /* 50% - 3/4 of icon height */
+            }
+
+            .update-nag-mobile > .update-split.update-success {
+                /*background: #5cb85c !important;*/
+                color: #eb0000 !important;
+            }
+
+            /* .update-nag > .update-split.update-danger {
+            background: #d9534f !important;
+        }
+*/
+
+            .update-nag-mobile > .update-split.update-info {
+                /*background: #838383 !important;*/
+                color: #000 !important;
+            }
+
+
+
+
+
+    .text_limit21 {
+        margin-top: 0 !important;
+        margin-bottom: 0;
+    }
+
+    .srchbluestrickedtext {
+        display: inline
+    }
+
+    .srchblueboldtext {
+        display: inline;
+    }
+
+    .marginbottom10 {
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+
+    ul.bullets {
+        padding-left: 20px;
+    }
+
+    .mar-padd0 {
+        margin-top: 5px;
+        font-size: 20px;
+    }
+
+    .marginleft-6 {
+        margin-left: 0;
+    }
+
+    .mtxtcenter {
+        text-align: center;
+    }
+
+    .lightcream {
+        min-height: 100%;
+    }
+
+    .left-nav {
+        min-height: 0;
+        background: #fecb00;
+    }
+
+        .left-nav ul li {
+            display: block;
+            font-size: 15px;
+            color: #5c5b5b;
+            padding: 10px !important;
+            background-color: #fff;
+            /* border-bottom: 1px solid #fff; */
+            line-height: 21px;
+            /* margin-top: 4px; */
+        }
+
+    .offerTblvalucolum {
+        background: #fff;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .height34 {
+        height: 41px;
+        padding-top: 3px;
+        padding-bottom: 3px;
+    }
+
+    .sticky {
+        position: fixed;
+        /*top: 80%;*/
+    }
+
+    .whtbdrtop10 {
+        border: 2px solid #5e2e86;
+    }
+
+    #divRatePlan-125 {
+        border: 2px solid #5e2e86;
+    }
+
+    .alert h3 {
+        font-size: 14px !important;
+    }
+
+    .alert {
+        padding: 5px;
+        margin-bottom: 0;
+    }
+
+    .fontsize18a {
+        font-size: 14px !important;
+    }
+
+    ul.prefer li {
+        display: list-item;
+        padding: 0;
+    }
+
+    #divwhole {
+        width: 290px !important;
+        display: none;
+        border: 1px solid #d1d1d1;
+        background-color: #fff;
+        position: absolute;
+        top: 37px !important;
+        right: 11% !important;
+        overflow: auto;
+    }
+    /* Force table to not be like tables anymore */
+    .tbl-grid-mobile-data table,
+    .tbl-grid-mobile-data thead,
+    .tbl-grid-mobile-data tbody,
+    .tbl-grid-mobile-data th,
+    .tbl-grid-mobile-data td,
+    .tbl-grid-mobile-data tr {
+        display: block;
+    }
+
+        /* Hide table headers (but not display: none;, for accessibility) */
+        .tbl-grid-mobile-data thead tr {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+        }
+
+    .tbl-grid-mobile-data tr {
+        border: 1px solid #ccc;
+    }
+
+    .tbl-grid-mobile-data td {
+        /* Behave  like a "row" */
+        border: none !important;
+        border-bottom: 1px solid #eee !important;
+        position: relative !important;
+        padding-left: 50% !important;
+        white-space: normal !important;
+        text-align: left !important;
+    }
+
+        .tbl-grid-mobile-data td:before {
+            /* Now like a table header */
+            position: absolute;
+            /* Top/left values mimic padding */
+            top: 6px;
+            left: 6px;
+            width: 45%;
+            padding-right: 10px;
+            white-space: nowrap;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        /*
+	Label the data
+	*/
+        .tbl-grid-mobile-data td:before {
+            content: attr(data-title);
+        }
+    /* Force table to not be like tables anymore */
+    .tbl-grid-mobile-data table,
+    .tbl-grid-mobile-data thead,
+    .tbl-grid-mobile-data tbody,
+    .tbl-grid-mobile-data th,
+    .tbl-grid-mobile-data td,
+    .tbl-grid-mobile-data tr {
+        display: block;
+    }
+
+        /* Hide table headers (but not display: none;, for accessibility) */
+        .tbl-grid-mobile-data thead tr {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+        }
+
+    .tbl-grid-mobile-data tr {
+        border: 1px solid #ccc;
+    }
+
+    .tbl-grid-mobile-data td {
+        /* Behave  like a "row" */
+        border: none !important;
+        border-bottom: 1px solid #eee !important;
+        position: relative !important;
+        padding-left: 50% !important;
+        white-space: normal !important;
+        text-align: left !important;
+    }
+
+        .tbl-grid-mobile-data td:before {
+            /* Now like a table header */
+            position: absolute;
+            /* Top/left values mimic padding */
+            top: 6px;
+            left: 6px;
+            width: 45%;
+            padding-right: 10px;
+            white-space: nowrap;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        /*
+	Label the data
+	*/
+        .tbl-grid-mobile-data td:before {
+            content: attr(data-title);
+        }
+
+    .navbar-collapse {
+        border-bottom: 1px solid #0f204b !important;
+        background: #f9f6eb !important;
+    }
+
+    .wSelect-theme-classic.wSelect {
+        border: solid #CACACA 1px !important;
+    }
+
+    .bookbtn {
+        display: none;
+    }
+
+    .margintop30mob {
+        margin-top: 0px;
+    }
+
+    .dropdown-menu > li > img {
+        display: block;
+        padding: 3px 20px;
+        clear: both;
+        font-weight: 400;
+        line-height: 1.42857143;
+        color: #333;
+        white-space: nowrap;
+    }
+
+    .noborder-mob {
+        border: 1px solid #ccc !important;
+    }
+
+    .affix {
+        bottom: -5px;
+        width: 100%;
+        z-index: 9999 !important;
+    }
+
+    .loyality_infobg {
+        background-color: #fff;
+        padding-left: 0px;
+        color: #000;
+    }
+}
+
+@media only screen and (max-device-width: 667px) {
+    .wSelect-theme-classic.wSelect {
+        color: #000 !important;
+    }
+    .loyality_infobg {
+        background-color: #fff;
+        padding-left: 0px;
+        color: #000;
+    }
+
+    .navbar-inverse .navbar-nav > li > a {
+        /*color: #7b7b7b !important;*/
+        color: #000 !important;
+    }
+    .mob-Black {
+        color: #000 !important;
+    }
+
+}

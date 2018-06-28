@@ -1,0 +1,75 @@
+﻿@model IEnumerable<OneFineRateBLL.Entities.etblBookingTx>
+
+@if (Model != null)
+{
+    foreach (var item in Model)
+    {
+        using (Html.BeginForm("BalancePayment", "Negotiation", new { bookingId = OneFineRateAppUtil.clsUtils.Encode(item.iBookingId.ToString()) }, FormMethod.Post, new { }))
+        {
+            <div class="bookingbxbg lineheight20 margintop10 marginbottom10">
+                <div class="row col-md-12 ">
+
+                    <div class="pull-left col-md-6 col-xs-6">Booking Id: <span><strong><a href="@Url.Action("BConfirmation", "Negotiation", new { bookingId = OneFineRateAppUtil.clsUtils.Encode(item.iBookingId.ToString()) })"> @item.iBookingId</a></strong></span></div>
+
+                    <div class="col-md-6 col-xs-6"><div class="pull-right">Booking Date: <span><strong>@item.sReservationDate</strong></span></div></div>
+                </div>
+                <div class="clearfix"></div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-2"><img src="@item.sImgUrl" class="img140"></div>
+                    <div class="col-md-7">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="font15a ptop10">@item.sHotelName</div>
+                                <div class="bookingstar"><img src="../images/inner-star@(item.iStarCategoryId).png"></div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row ">
+                            <div class="col-md-8 col-xs-12">Reservation from	: <span><strong>@item.CheckIn &nbsp;</strong> to <strong> &nbsp; @item.ChekOut</strong></span></div>
+                            <div class="col-md-4  col-xs-6"><div class=" ">Nights :  <span><strong> @item.Nights </strong></span></div></div>
+                       
+                            <div class="col-md-4  col-xs-6">No of Adults : 	 <span><strong>@item.Adults </strong></span></div>
+                            <div class="col-md-4  col-xs-6"><div class="">No of Child :	   <span><strong> @item.Children </strong></span></div></div>
+
+                            <div class="col-md-4 col-xs-6 "><div class=" ">No of Rooms : <span><strong>@item.Rooms</strong></span></div></div>
+                          
+                                <div class="col-xs-12 col-md-6 margintop10 font18 "><div class=" ">Your Negotiation : <span class="rscolor"><strong>@item.sTotalNegotiateAmount </strong></span></div></div>
+                          
+                        </div>
+                    </div>
+                    <div class="col-md-3 ">
+                        <div class="tableheadingbg  text-center height30 paddingtop5 ">STATUS</div>
+
+                        <div class="col-md-12 bookingbxbghighlight font12 padding15btm0 text-center">
+                            <ul>
+                                <li><strong> @item.BookingStatus</strong></li>
+                            </ul>
+
+                            @if (item.BookingStatus.Contains("Balance payment pending"))
+                            {
+                                <button type="submit" class="btn btn-primary text-center margintop10" onclick="javascript: $('.overlay').show();" value="Pay Now">Pay Now</button>
+                            }
+                            else if (item.BookingStatus.Contains("Counter offer provided by hotel"))
+                            {
+                                <button type="submit" class="btn btn-primary text-center margintop10" onclick="javascript: $('.overlay').show();" value="Pay Now">Pay Now</button>
+                            }
+                            else if (item.BookingStatus.Contains("Hotel rejected negotiation"))
+                            {
+                                <button type="submit" class="btn btn-primary text-center margintop10" onclick="javascript: $('.overlay').show();" value="Pay Now">Pay Now</button>
+                            }
+                            else
+                            {
+                                <button disabled type="submit" class="btn btn-primary text-center margintop10" onclick="javascript: $('.overlay').show();" value="Pay Now">Pay Now</button>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+}
+
+
+

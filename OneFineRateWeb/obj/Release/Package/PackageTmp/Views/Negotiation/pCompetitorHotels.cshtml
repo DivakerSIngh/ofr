@@ -1,0 +1,655 @@
+﻿@model   OneFineRateBLL.Entities.BalancePaymentModel
+@using OneFineRateAppUtil
+
+
+
+@{
+    int PropId = @Model.iPropId;
+}
+
+
+
+@{
+
+
+    if (@Model.lstRoomData.Count > 0 || @Model.lstRoomDataCurrent.Count > 0)
+    {
+        int RCountIndex = 0;
+        int CCountIndex = 0;
+        int RFCountIndex = 0;
+
+        @*<div class="row row-centered">
+
+
+                <div class="col-md-4 col-centered margintop10 tableheadingbg" style="border:0px solid green; margin-right:5px;">
+                    @if (Model.lstRoomDataCurrent.Count > 0)
+                    {
+                        <h4 style="text-align:center;">Same hotel with better rate</h4>
+                    }
+                </div>
+
+
+                @if (Model.lstRoomData.Count > 0)
+                {
+                    <div class="col-md-7 col-centered margintop10 tableheadingbg" style="border:0px solid red;">
+                        <h4 style="text-align:center;"> Other Hotel Rate Plan</h4>
+                    </div>
+                }
+
+            </div>*@
+
+        using (Html.BeginForm("BookNewNegoProperty", "Negotiation", FormMethod.Post, new { id = "competitorForm", role = "form" }))
+        {
+            @Html.HiddenFor(m => m.cBookingStatus)
+            @Html.HiddenFor(m => m.cBookingType)
+            @Html.HiddenFor(U => U.iSelected, new { id = "hdnSelected" })
+            @Html.HiddenFor(U => U.iLinkedBookId)
+            @Html.HiddenFor(U => U.sCheckInDay)
+            @Html.HiddenFor(U => U.sCheckInYear)
+            @Html.HiddenFor(U => U.sCheckOutDay)
+            @Html.HiddenFor(U => U.sCheckOutYear)
+            @Html.HiddenFor(U => U.Nights)
+            @Html.HiddenFor(U => U.ExchangeRate)
+
+            <div class="row row-centered">
+                <div class="col-md-4 col-centered" style="vertical-align:top; border:0px solid green;">
+                    @for (int i = 0; i < Model.lstRoomDataCurrent.Count; i++)
+                    {
+                        <div class="row row-centered">
+                            <div class="col-md-9 col-centered margintop10  negotiatecontainer">
+                                <span class="label label-info padding5 otherhotel-label whitetext">Same hotel with better rate</span>
+                                <img src="@Model.lstRoomDataCurrent[i].sImgUrl" alt="Image" class="imgheight124">
+                                @*<span class="label label-warning padding5 sponsored-label whitetext">Sponsored</span>*@
+                                <div class="minheight40"><h4 class="hoteltitles">@Model.lstRoomDataCurrent[i].sHotelName</h4></div>
+                                @{
+                        var dTotal = @Model.lstRoomDataCurrent[i].dDiscPrice + @Model.lstRoomDataCurrent[i].dTax;
+                        var iPropId = @Model.lstRoomDataCurrent[i].iHotelID;
+                                }
+                                <div class="row">
+                                    <div class="col-md-12">
+
+                                        @Model.lstRoomDataCurrent[i].sArea
+
+                                    </div>
+                                    <div class="col-md-4 margintop-5">
+                                        <img src="~/images/inner-star@(Model.lstRoomDataCurrent[i].iStarCategoryId).png" />
+                                    </div>
+                                    <div class="col-md-8 hoteltitles" style="vertical-align:top;">
+                                        <b class="pull-right">@Model.lstRoomDataCurrent[i].Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(dTotal))</b>
+                                    </div>
+
+                                </div>
+                                <div class="row minheight95">
+
+                                    <div class="col-md-12 "><img src="@(Model.lstRoomDataCurrent[i].sRatingImageURL)" class="tripadv_icon "><br /><em> Based on <span class="bluetext font15">50 Reviews</span></em></div>
+                                    <div class="col-md-12">
+                                        <h5 class="namelbl">Special Price :</h5>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+
+                                    <div class="col-md-6 bwncolor">Price</div>
+                                    <div class="col-md-6 bwncolor"><b>@Model.lstRoomDataCurrent[i].Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.lstRoomDataCurrent[i].dDiscPrice))</b></div>
+                                    <div class="col-md-6 bwncolor">Taxes</div>
+                                    <div class="col-md-6 bwncolor"><b>@Model.lstRoomDataCurrent[i].Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.lstRoomDataCurrent[i].dTax))</b></div>
+                                    <div class="col-md-6 bwncolor"><b>Total</b></div>
+                                    <div class="col-md-6 bwncolor"><b>@Model.lstRoomDataCurrent[i].Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(dTotal))</b></div>
+                                </div>
+                                <hr />
+                                @{
+                        if (Model.lstroomfac.Where(u => u.iHotelId == iPropId).ToList().Count > 0)
+                        {
+                            System.Text.StringBuilder RateInclusionStr = new System.Text.StringBuilder();
+                            <h5 class="namelbl">Rate Inclusions :</h5>
+                            for (int m = 0; m < Model.lstroomfac.Where(u => u.iHotelId == iPropId).ToList().Count; m++)
+                            {
+                                if (@Model.lstroomfac.Where(u => u.iHotelId == iPropId).ToList()[m].Appl == "")
+                                {
+                                    RateInclusionStr.Append(@Model.lstroomfac.Where(u => u.iHotelId == iPropId).ToList()[m].Amen);
+                                }
+                                else
+                                {
+                                    RateInclusionStr.Append(@Model.lstroomfac.Where(u => u.iHotelId == iPropId).ToList()[m].Amen + "-" + @Model.lstroomfac.Where(u => u.iHotelId == iPropId).ToList()[m].Appl);
+                                }
+
+                                RateInclusionStr.Append(", ");
+                            }
+                            if (@RateInclusionStr.ToString() != "")
+                            {
+                                if (RateInclusionStr.ToString().Length > 75)
+                                {
+                                    CCountIndex++;
+                                    <div class="divRoomView minheight60">
+                                        @RateInclusionStr.ToString().TrimEnd(',', ' ').Substring(0, 75)  ...
+                                        <div class="pull-right paddingright10"><a href="javascript:void(0);" onclick="OpenRI('@CCountIndex');">More</a></div>
+                                    </div>
+
+                                    var id = string.Format(@"{0}{1}", "divRateInclusion", CCountIndex);
+                                    <div id="@id" class="modal fade" role="dialog">
+                                        <div class="modal-dialog">
+                                            <!-- Modal content-->
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    <h4 class="modal-title">Rate Inclusions</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>@RateInclusionStr.ToString().TrimEnd(',', ' ')</p>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="minheight60">@RateInclusionStr.ToString().TrimEnd(',', ' ')</div>
+                                }
+                            }
+                        }
+                        else
+                        {
+                            <h5 class="namelbl">Rate Inclusions :</h5>
+                                    <div class="divRoomView minheight60">
+
+                                    </div>
+                        }
+                                }
+
+
+                                <hr />
+                                <h5 class="namelbl">Room Name :</h5>
+
+                                <div class="minheight30">@Model.lstRoomDataCurrent[i].sRoomName</div>
+                                <hr />
+                                <h5 class="namelbl">Room Size :</h5>
+
+                                <div class="minheight30">@Model.lstRoomDataCurrent[i].Size</div>
+                                <hr />
+                                <h5 class="namelbl">Room View :</h5>
+
+                                @{
+
+                        if (Model.lstViews.Where(u => u.iPropId == iPropId).ToList().Count > 0)
+                        {
+                            System.Text.StringBuilder RoomViewStr = new System.Text.StringBuilder();
+
+                            for (int j = 0; j < Model.lstViews.Where(u => u.iPropId == iPropId).ToList().Count; j++)
+                            {
+                                RoomViewStr.Append(", ");
+                                RoomViewStr.Append(@Model.lstViews[j].sView);
+
+                            }
+                            if (RoomViewStr.ToString() != "")
+                            {
+
+                                if (RoomViewStr.ToString().Length > 70)
+                                {
+                                    RCountIndex++;
+                                    <div class="divRoomView minheight60">@RoomViewStr.ToString().Substring(0, 65).TrimStart(',')  ... <div class="pull-right paddingright10"><a href="javascript:void(0);" onclick="OpenRView('@RCountIndex');">More</a></div></div>
+
+                                    var id = string.Format(@"{0}{1}", "divView", RCountIndex);
+                                    <div id="@id" class="modal fade" role="dialog">
+                                        <div class="modal-dialog">
+                                            <!-- Modal content-->
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    <h4 class="modal-title">Room View</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>@RoomViewStr.ToString().TrimStart(',')</p>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="minheight60">@RoomViewStr.ToString().TrimStart(',')</div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="divRoomView minheight60"><div class="pull-right paddingright10"></div></div>
+                            }
+
+                        }
+                        else
+                        {
+                            <div class="divRoomView minheight60"><div class="pull-right paddingright10"></div></div>
+                        }
+
+                                }
+
+                                <hr />
+
+                                @{
+                                    <h5 class="namelbl">Room Facilities :</h5>
+                        if (Model.lstfacilities.Where(u => u.iPropId == iPropId).ToList().Count > 0)
+                        {
+
+                            RFCountIndex++;
+                            if (Model.lstfacilities.Where(u => u.iPropId == iPropId).ToList().Count > 5)
+                            {
+                                <div class="minheight150">
+                                    <ul class="roomfacility bullets ">
+                                        @for (int l = 0; l < 5; l++)
+                                        {
+                                            <li>@Model.lstfacilities[l].sFacility</li>
+                                        }
+                                    </ul>
+                                    <div class="pull-right paddingright10"><a href="javascript:void(0);" onclick="OpenRF('@RFCountIndex');">More</a></div>
+                                </div>
+
+                                var id = string.Format(@"{0}{1}", "divRoomFacilities", RFCountIndex);
+                                <div id="@id" class="modal fade" role="dialog">
+                                    <div class="modal-dialog">
+                                        <!-- Modal content-->
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                <h4 class="modal-title">Room Facilities</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col-md-12 col-sm-12  col-xs-12">
+
+                                                        @for (int l = 0; l < Model.lstfacilities.Where(u => u.iPropId == iPropId).ToList().Count; l++)
+                                                        {
+
+                                                            <div class="col-md-4">
+                                                                <ul class="nomargin nopadding"><li style="list-style:disc !important; padding:0px;">@Model.lstfacilities[l].sFacility</li></ul>
+                                                            </div>
+                                                        }
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <ul class="roomfacility bullets">
+                                    @for (int l = 0; l < Model.lstfacilities.Where(u => u.iPropId == iPropId).ToList().Count; l++)
+                                    {
+
+                                        <li>@Model.lstfacilities[l].sFacility</li>
+
+                                    }
+                                </ul>
+                            }
+
+
+
+
+                        }
+                        else
+                        {
+                            <div class="minheight150">
+                            </div>
+                        }
+
+                                }
+
+                                <div class="negorejctbtn">
+                                    @*<button type="submit" onclick="return SelectProperty(@Model.lstRoomDataCurrent[i].Id);" class="btn btn-primary">Select This Rate</button>*@
+
+                                    <button type="submit" onclick="return SelectPropertyModified('@OneFineRateAppUtil.clsUtils.Encode(Model.iBookingId.ToString())','@Model.lstRoomDataCurrent[i].Id');" class="btn btn-primary">Select This Rate</button>
+                                </div>
+                            </div>
+                        </div>
+                        @Html.HiddenFor(U => U.lstRoomDataCurrent[i].CommissionRate)
+                        @Html.HiddenFor(U => U.lstRoomDataCurrent[i].dDiscPrice)
+                        @Html.HiddenFor(U => U.lstRoomDataCurrent[i].dPrice)
+                        @Html.HiddenFor(U => U.lstRoomDataCurrent[i].dTax)
+                        @Html.HiddenFor(U => U.lstRoomDataCurrent[i].iHotelID)
+                        @Html.HiddenFor(U => U.lstRoomDataCurrent[i].iRoomId)
+                        @Html.HiddenFor(U => U.lstRoomDataCurrent[i].iRPID)
+                        @Html.HiddenFor(U => U.lstRoomDataCurrent[i].iStarCategoryId)
+                        @Html.HiddenFor(U => U.lstRoomDataCurrent[i].sArea)
+                        @Html.HiddenFor(U => U.lstRoomDataCurrent[i].sHotelName)
+                        @Html.HiddenFor(U => U.lstRoomDataCurrent[i].sImgUrl)
+                        @Html.HiddenFor(U => U.lstRoomDataCurrent[i].sRoomName)
+                        @Html.HiddenFor(U => U.lstRoomDataCurrent[i].Symbol)
+                        @Html.HiddenFor(U => U.lstRoomDataCurrent[i].Id)
+                    }
+                </div>
+                <div class="col-md-7 col-centered" style="border:0px solid red;">
+
+                    <div class="row row-centered">
+
+                        @for (int i = 0; i < Model.lstRoomData.Count; i++)
+                        {
+
+                            <div class="col-md-5 col-centered margintop10 negotiatecontainer">
+                                <img src="@Model.lstRoomData[i].sImgUrl" alt="Image" class="imgheight124">
+                                <span class="label label-warning padding5 otherhotel-label whitetext">Other Hotel Rate Plan</span>
+                                <div class="minheight40"><h4 class="hoteltitles">@Model.lstRoomData[i].sHotelName</h4></div>
+                                @{
+                            var dTotal = @Model.lstRoomData[i].dDiscPrice + @Model.lstRoomData[i].dTax;
+                            var iPropId = @Model.lstRoomData[i].iHotelID;
+                                }
+                                <div class="row">
+                                    <div class="col-md-12">
+
+                                        @Model.lstRoomData[i].sArea
+
+                                    </div>
+                                    <div class="col-md-4 margintop-5">
+                                        <img src="~/images/inner-star@(Model.lstRoomData[i].iStarCategoryId).png" />
+                                    </div>
+                                    <div class="col-md-8 hoteltitles ">
+                                        <b class="pull-right">@Model.lstRoomData[i].Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(dTotal))</b>
+                                    </div>
+                                </div>
+                                <div class="row minheight95">
+
+                                    <div class="col-md-12 "><img src="@(Model.lstRoomData[i].sRatingImageURL)" class="tripadv_icon "><br /><em> Based on <span class="bluetext font15">50 Reviews</span></em></div>
+                                    <div class="col-md-12">
+                                        <h5 class="namelbl">Special Price :</h5>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+
+                                    <div class="col-md-6 bwncolor">Price</div>
+                                    <div class="col-md-6 bwncolor"><b>@Model.lstRoomData[i].Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.lstRoomData[i].dDiscPrice))</b></div>
+                                    <div class="col-md-6 bwncolor">Taxes</div>
+                                    <div class="col-md-6 bwncolor"><b>@Model.lstRoomData[i].Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.lstRoomData[i].dTax))</b></div>
+                                    <div class="col-md-6 bwncolor"><b>Total</b></div>
+                                    <div class="col-md-6 bwncolor"><b>@Model.lstRoomData[i].Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(dTotal))</b></div>
+                                </div>
+                                <hr />
+                                @{
+                            if (Model.lstroomfac.Where(u => u.iHotelId == iPropId).ToList().Count > 0)
+                            {
+                                System.Text.StringBuilder RateInclusionStr = new System.Text.StringBuilder();
+                                <h5 class="namelbl">Rate Inclusions :</h5>
+                                for (int m = 0; m < Model.lstroomfac.Where(u => u.iHotelId == iPropId).ToList().Count; m++)
+                                {
+                                    if (@Model.lstroomfac.Where(u => u.iHotelId == iPropId).ToList()[m].Appl == "")
+                                    {
+                                        RateInclusionStr.Append(@Model.lstroomfac.Where(u => u.iHotelId == iPropId).ToList()[m].Amen);
+                                    }
+                                    else
+                                    {
+                                        RateInclusionStr.Append(@Model.lstroomfac.Where(u => u.iHotelId == iPropId).ToList()[m].Amen + "-" + @Model.lstroomfac.Where(u => u.iHotelId == iPropId).ToList()[m].Appl);
+                                    }
+
+                                    RateInclusionStr.Append(", ");
+                                }
+                                if (@RateInclusionStr.ToString() != "")
+                                {
+                                    if (RateInclusionStr.ToString().Length > 70)
+                                    {
+                                        CCountIndex++;
+                                        <div class="divRoomView minheight60">
+                                            @RateInclusionStr.ToString().TrimEnd(',', ' ').Substring(0, 65)  ...
+                                            <div class="pull-right paddingright10"><a href="javascript:void(0);" onclick="OpenRI('@CCountIndex');">More</a></div>
+                                        </div>
+
+                                        var id = string.Format(@"{0}{1}", "divRateInclusion", CCountIndex);
+                                        <div id="@id" class="modal fade" role="dialog">
+                                            <div class="modal-dialog">
+                                                <!-- Modal content-->
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                        <h4 class="modal-title">Rate Inclusions</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>@RateInclusionStr.ToString().TrimEnd(',', ' ')</p>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="minheight60">@RateInclusionStr.ToString().TrimEnd(',', ' ')</div>
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                <h5 class="namelbl">Rate Inclusions :</h5>
+                                    <div class="divRoomView minheight60">
+
+                                    </div>
+                            }
+                                }
+
+
+                                <hr />
+                                <h5 class="namelbl">Room Name :</h5>
+
+                                <div class="minheight30">@Model.lstRoomData[i].sRoomName</div>
+                                <hr />
+                                <h5 class="namelbl">Room Size :</h5>
+
+                                <div class="minheight30">@Model.lstRoomData[i].Size</div>
+                                <hr />
+                                <h5 class="namelbl">Room View :</h5>
+
+                                @{
+
+                            if (Model.lstViews.Where(u => u.iPropId == iPropId).ToList().Count > 0)
+                            {
+                                System.Text.StringBuilder RoomViewStr = new System.Text.StringBuilder();
+
+                                for (int j = 0; j < Model.lstViews.Where(u => u.iPropId == iPropId).ToList().Count; j++)
+                                {
+                                    RoomViewStr.Append(", ");
+                                    RoomViewStr.Append(@Model.lstViews[j].sView);
+
+                                }
+                                if (RoomViewStr.ToString() != "")
+                                {
+
+                                    if (RoomViewStr.ToString().Length > 70)
+                                    {
+                                        RCountIndex++;
+                                        <div class="divRoomView minheight60">
+                                            @RoomViewStr.ToString().Substring(0, 65).TrimStart(',')  ...
+                                            <div class="pull-right paddingright10">
+                                                <a href="javascript:void(0);" onclick="OpenRView('@RCountIndex');">More</a>
+                                            </div>
+                                        </div>
+
+                                        var id = string.Format(@"{0}{1}", "divView", RCountIndex);
+                                        <div id="@id" class="modal fade" role="dialog">
+                                            <div class="modal-dialog">
+                                                <!-- Modal content-->
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                        <h4 class="modal-title">Room View</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>@RoomViewStr.ToString().TrimStart(',')</p>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="minheight60">@RoomViewStr.ToString().TrimStart(',')</div>
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="divRoomView minheight60"><div class="pull-right paddingright10"></div></div>
+                                }
+
+
+                            }
+                            else
+                            {
+                                <div class="divRoomView minheight60"><div class="pull-right paddingright10"></div></div>
+                            }
+
+
+                                }
+
+                                <hr />
+
+                                @{
+                                    <h5 class="namelbl">Room Facilities :</h5>
+                            if (Model.lstfacilities.Where(u => u.iPropId == iPropId).ToList().Count > 0)
+                            {
+
+                                RFCountIndex++;
+                                if (Model.lstfacilities.Where(u => u.iPropId == iPropId).ToList().Count > 5)
+                                {
+                                    <div class="minheight150">
+                                        <ul class="roomfacility bullets ">
+                                            @for (int l = 0; l < 5; l++)
+                                            {
+                                                <li>@Model.lstfacilities[l].sFacility</li>
+                                            }
+                                        </ul>
+                                        <div class="pull-right paddingright10 margintop-10"><a href="javascript:void(0);" onclick="OpenRF('@RFCountIndex');">More</a></div>
+                                    </div>
+
+                                    var id = string.Format(@"{0}{1}", "divRoomFacilities", RFCountIndex);
+                                    <div id="@id" class="modal fade" role="dialog">
+                                        <div class="modal-dialog">
+                                            <!-- Modal content-->
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    <h4 class="modal-title">Room Facilities</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="row">
+                                                        <div class="col-md-12 col-sm-12  col-xs-12">
+                                                            @*<ul class="roomfacility bullets">*@
+                                                            @for (int l = 0; l < Model.lstfacilities.Where(u => u.iPropId == iPropId).ToList().Count; l++)
+                                                            {
+
+                                                                @*<li>@Model.lstfacilities[l].sFacility</li>*@
+                                                                <div class="col-md-4">
+                                                                    <ul class="nomargin nopadding"><li style="list-style:disc !important; padding:0px;">@Model.lstfacilities[l].sFacility</li></ul>
+                                                                </div>
+                                                            }
+                                                            @*</ul>*@
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <ul class="roomfacility bullets">
+                                        @for (int l = 0; l < Model.lstfacilities.Where(u => u.iPropId == iPropId).ToList().Count; l++)
+                                        {
+
+                                            <li>@Model.lstfacilities[l].sFacility</li>
+
+                                        }
+                                    </ul>
+                                }
+
+
+
+
+                            }
+                            else
+                            {
+                                <div class="minheight150">
+                                </div>
+                            }
+
+                                }
+
+                                <div class="negorejctbtn">
+                                    @*<button type="submit" onclick="return SelectProperty(@Model.lstRoomData[i].Id);" class="btn btn-primary">Select This Rate</button>*@
+                                    <button type="submit" onclick="return SelectPropertyModified('@OneFineRateAppUtil.clsUtils.Encode(Model.iBookingId.ToString())','@Model.lstRoomData[i].Id');" class="btn btn-primary">Select This Rate</button>
+                                </div>
+                            </div>
+
+                            @Html.HiddenFor(U => U.lstRoomData[i].CommissionRate)
+                            @Html.HiddenFor(U => U.lstRoomData[i].dDiscPrice)
+                            @Html.HiddenFor(U => U.lstRoomData[i].dPrice)
+                            @Html.HiddenFor(U => U.lstRoomData[i].dTax)
+                            @Html.HiddenFor(U => U.lstRoomData[i].iHotelID)
+                            @Html.HiddenFor(U => U.lstRoomData[i].iRoomId)
+                            @Html.HiddenFor(U => U.lstRoomData[i].iRPID)
+                            @Html.HiddenFor(U => U.lstRoomData[i].iStarCategoryId)
+                            @Html.HiddenFor(U => U.lstRoomData[i].sArea)
+                            @Html.HiddenFor(U => U.lstRoomData[i].sHotelName)
+                            @Html.HiddenFor(U => U.lstRoomData[i].sImgUrl)
+                            @Html.HiddenFor(U => U.lstRoomData[i].sRoomName)
+                            @Html.HiddenFor(U => U.lstRoomData[i].Symbol)
+                            @Html.HiddenFor(U => U.lstRoomData[i].Id)
+                        }
+
+                        <!-- end -->
+
+
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="row row-centered  ">
+            <div class="col-md-6 col-centered  minheight150 margintop10">
+                <h3 class="text-center">No more hotels are available at this price.</h3>
+            </div>
+        </div>
+    }
+    <div class="container">
+        <div class="col-md-12 center margintop10 marginbottom20">
+            <input type="button" id="btnRefundComp" class="btn btn-danger" value="Refund my Money" />
+        </div>
+    </div>
+}
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#btnRefundComp').click(function (e) {
+            e.preventDefault();
+
+            window.location.href = "/Negotiation/RefundMoney?id=" + @OneFineRateAppUtil.clsUtils.Encode(Model.iBookingId.ToString());
+
+            @*var param = {
+                BookingId: '@Model.iBookingId'
+            }
+            var data = AjaxCallWithDataMVC('../Negotiation/RefundMoney', param);
+            if (data != null) {
+                if (data.st == 1) {
+                    toastr.success(data.msg);
+                    setTimeout(function () {
+                        window.location.href = "/";
+                    }, 300)
+                }
+                else {
+                    toastr.error(data.msg)
+                }
+            }*@
+        });
+    });
+
+</script>

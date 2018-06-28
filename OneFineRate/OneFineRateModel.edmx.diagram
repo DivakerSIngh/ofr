@@ -1,0 +1,532 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="386ec0ec78864e39acdc23c2e47ca859" Name="Diagram1" ZoomLevel="34">
+        <EntityTypeShape EntityType="OneFineRateModel.C__MigrationHistory" Width="1.5" PointX="2.75" PointY="3.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.IP2LOCATION" Width="1.5" PointX="4.75" PointY="3.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblAccessbilityM" Width="1.5" PointX="5.75" PointY="0.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblAccomodationM" Width="1.5" PointX="3" PointY="86.25" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblAdditionalCommision" Width="1.5" PointX="7.5" PointY="88.375" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblAffiliationM" Width="1.5" PointX="0.75" PointY="6.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblAmenityHeaderMapTG" Width="1.5" PointX="2.75" PointY="6.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblAmenityM" Width="1.5" PointX="3" PointY="122.375" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblApplicabilityM" Width="1.5" PointX="5.25" PointY="71.625" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblAwardM" Width="1.5" PointX="6.75" PointY="3.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblBannerM" Width="1.5" PointX="6.75" PointY="6.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblBidCountsTx" Width="1.5" PointX="7.75" PointY="0.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblBIDRoomAdultsTx" Width="1.5" PointX="8.75" PointY="3.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblBidSettingsM" Width="1.5" PointX="8.75" PointY="6.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblBookedBidAmenity" Width="1.5" PointX="7.5" PointY="54.625" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblBookedDayWiseTaxAmountDetail" Width="1.5" PointX="9.75" PointY="0.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblBookingCancellationPolicyAmendMap" Width="1.5" PointX="14.75" PointY="57.875" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblBookingCancellationPolicyMap" Width="1.5" PointX="9.75" PointY="58" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblBookingDetailsAmendTx" Width="1.5" PointX="17.75" PointY="55.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblBookingDetailsTx" Width="1.5" PointX="7.5" PointY="57.5" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblBookingGuestAmendMap" Width="1.5" PointX="0.75" PointY="9.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblBookingGuestMap" Width="1.5" PointX="9.75" PointY="60.875" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblBookingNegotiationTx" Width="1.5" PointX="8.75" PointY="9.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblBookingTrakerTx" Width="1.5" PointX="10.75" PointY="3.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblBuildingCharacteristicsM" Width="1.5" PointX="10.75" PointY="6.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblCarouselM" Width="1.5" PointX="10.75" PointY="9.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblChainM" Width="1.5" PointX="3" PointY="83.125" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblChainMTG" Width="1.5" PointX="11.75" PointY="0.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblChainMTG_Tmp" Width="1.5" PointX="2.75" PointY="12.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblChangeHistory" Width="1.5" PointX="12.75" PointY="3.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblChangeHistoryBankAdditionalCommision" Width="1.5" PointX="4.75" PointY="12.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblChangeHistoryBankDetail" Width="1.5" PointX="6.75" PointY="12.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblChangeHistoryBasicDetailsProperty" Width="1.5" PointX="12.75" PointY="7.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblChangeHistoryCompetitorSet" Width="1.5" PointX="8.75" PointY="12.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblChangeHistoryDining" Width="1.5" PointX="10.75" PointY="12.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblChangeHistoryPhoto" Width="1.5" PointX="12.75" PointY="11.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblChangeHistoryPIRoom" Width="1.5" PointX="16.5" PointY="98" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblChangeHistoryPolicy" Width="1.5" PointX="14.75" PointY="0.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblChangeHistoryPropertyAmenty" Width="1.5" PointX="14.75" PointY="4.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblChangeHistoryPropertyPromotionMap" Width="1.5" PointX="14.75" PointY="8.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblChangeHistoryPropertyRatePlanMap" Width="1.5" PointX="14.75" PointY="12.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblChangeHistoryRate" Width="1.5" PointX="13.5" PointY="101.875" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblChangeHistoryRecreation" Width="1.5" PointX="0.75" PointY="15.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblChangeHistoryRoom" Width="1.5" PointX="13.5" PointY="98" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblChangeHistorySpa" Width="1.5" PointX="16.75" PointY="0.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblChangeHistoryTax" Width="1.5" PointX="2.75" PointY="16.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblChannelMgrBookingTx" Width="1.5" PointX="7.5" PointY="79.375" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblChannelMgrM" Width="1.5" PointX="16.75" PointY="4.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblCityM" Width="1.5" PointX="10.5" PointY="86.5" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblConserveCommissionM" Width="1.5" PointX="4.75" PointY="16.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblCountryM" Width="1.5" PointX="3" PointY="76.125" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblCrediCardM" Width="1.5" PointX="6.75" PointY="16.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblCurrencyM" Width="1.5" PointX="3" PointY="72.25" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblCustomerM" Width="1.5" PointX="16.75" PointY="7.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblCustomerPointsHistoryTx" Width="1.5" PointX="8.75" PointY="16.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblCustomerPointsMap" Width="1.5" PointX="5.25" PointY="45.25" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDaywiseBookingRateTx" Width="1.5" PointX="10.75" PointY="16.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblEmailSettingsM" Width="1.5" PointX="16.75" PointY="12.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblErrorLog" Width="1.5" PointX="12.75" PointY="16.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblExchangeRatesM" Width="1.5" PointX="14.75" PointY="16.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblGolfM" Width="1.5" PointX="16.75" PointY="15.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblGroupM" Width="1.5" PointX="3" PointY="118.375" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblGroupMenuM" Width="1.5" PointX="8.25" PointY="105.25" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblHotelAmenityM" Width="1.5" PointX="18.75" PointY="0.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblHotelCommonServiceM" Width="1.5" PointX="18.75" PointY="3.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblHotelConvenienceM" Width="1.5" PointX="18.75" PointY="6.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblHotelFacilitesRankM" Width="1.5" PointX="18.75" PointY="9.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblHotelLeisureM" Width="1.5" PointX="18.75" PointY="12.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblHotelMeetingM" Width="1.5" PointX="18.75" PointY="15.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblHotelParkingM" Width="1.5" PointX="16.75" PointY="18.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblHotelPartnerM" Width="1.5" PointX="18.75" PointY="18.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblHotelRoomAmenityAdditionalM" Width="1.5" PointX="6.75" PointY="19.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblHotelRoomAmenityBathRoomM" Width="1.5" PointX="8.75" PointY="19.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblHotelRoomAmenityBeddingM" Width="1.5" PointX="10.75" PointY="19.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblHotelRoomAmenityM" Width="1.5" PointX="12.75" PointY="19.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblIndianLocalityCordinate" Width="1.5" PointX="0.75" PointY="0.875" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblItemNameM" Width="1.5" PointX="20.75" PointY="0.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblLandActivitiesM" Width="1.5" PointX="0.75" PointY="20.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblLanguageM" Width="1.5" PointX="2.75" PointY="20.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblLocalityM" Width="1.5" PointX="15.75" PointY="81.625" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblLookUp" Width="1.5" PointX="20.75" PointY="3.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblLookUpExtraBed" Width="1.5" PointX="20.75" PointY="14.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblLoyalityAmenityMap" Width="1.5" PointX="5.25" PointY="108" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblLoyalityPointsM" Width="1.5" PointX="3" PointY="93.625" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblMacroAreaM" Width="1.5" PointX="3" PointY="97.875" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblMealCodesRG" Width="1.5" PointX="14.75" PointY="21.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblMenuM" Width="1.5" PointX="6" PointY="116.125" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblMyWishListTx" Width="1.5" PointX="10.5" PointY="83" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblOfferReviewTrackerTx" Width="1.5" PointX="22.75" PointY="0.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblOFRPropertyM" Width="1.5" PointX="7.5" PointY="164" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblOnsiteRecreationFacilitiesM" Width="1.5" PointX="22.75" PointY="3.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPhotoCategoryM" Width="1.5" PointX="11.25" PointY="74" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPhotoSubCategoryM" Width="1.5" PointX="13.5" PointY="74" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPromoCodeM" Width="1.5" PointX="8.25" PointY="110" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPromoM" Width="1.5" PointX="14.25" PointY="109.875" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPromotionalHotelsM" Width="1.5" PointX="4.75" PointY="22.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropConserveCommissionMap" Width="1.5" PointX="22.75" PointY="6.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyAmenitiesMap" Width="1.5" PointX="7.5" PointY="159.875" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyAreaDataTG" Width="1.5" PointX="6.75" PointY="22.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyBasicBiddingMap" Width="1.5" PointX="13.5" PointY="91.25" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyBiddingRateM" Width="1.5" PointX="13.5" PointY="106.25" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyBidUpgradeM" Width="1.5" PointX="8.75" PointY="22.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyCancellationPolicyMap" Width="1.5" PointX="19.5" PointY="107.875" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyChannelMgrMap" Width="1.5" PointX="22.75" PointY="9.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyCompetitorSet" Width="1.5" PointX="10.75" PointY="22.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyDiningMap" Width="1.5" PointX="22.75" PointY="12.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyFacilityMap" Width="1.5" PointX="22.75" PointY="17.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyFacilityTG" Width="1.5" PointX="22.75" PointY="20.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyFacilityTG_Tmp" Width="1.5" PointX="0.75" PointY="23.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyImageUrlTG" Width="1.5" PointX="16.75" PointY="23.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyImageUrlTG_Tmp" Width="1.5" PointX="22.75" PointY="23.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyLeadTimeBiddingMap" Width="1.5" PointX="7.5" PointY="99.125" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyLocalityMap" Width="1.5" PointX="24.75" PointY="0.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyLOSBiddingMap" Width="1.5" PointX="7.5" PointY="94.125" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyM" Width="1.5" PointX="5.25" PointY="75.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyMTest" Width="1.5" PointX="24.75" PointY="3.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyMTG_Tmp" Width="1.5" PointX="12.75" PointY="24.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyParkingMap" Width="1.5" PointX="13.5" PointY="87.375" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyPhotoMap" Width="1.5" PointX="13.5" PointY="77.625" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyPolicyMap" Width="1.5" PointX="16.5" PointY="86.125" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyPrimaryPhotoMap" Width="1.5" PointX="18.75" PointY="87" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyPromoMap" Width="1.5" PointX="19.5" PointY="91.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyPromoRateMap" Width="1.5" PointX="18.75" PointY="103.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyPromotionAmenityMap" Width="1.5" PointX="24.75" PointY="18.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyPromotionCancellationMainMap" Width="1.5" PointX="18.75" PointY="115" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyPromotionCancellationMap" Width="1.5" PointX="21.75" PointY="104.5" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyPromotionMap" Width="1.5" PointX="16.5" PointY="102.125" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyPromotionRoomTypeMap" Width="1.5" PointX="21.75" PointY="99.375" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyRatePlanAmenityMap" Width="1.5" PointX="24.75" PointY="21.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyRatePlanCancellationMainMap" Width="1.5" PointX="24.75" PointY="24.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyRatePlanCancellationMap" Width="1.5" PointX="18.75" PointY="25.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyRatePlanMap" Width="1.5" PointX="3" PointY="110" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyRatePlanRoomTypeMap" Width="1.5" PointX="5.25" PointY="112.875" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyRecreationMap" Width="1.5" PointX="26.75" PointY="0.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyReviewTG" Width="1.5" PointX="0.75" PointY="26.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyReviewTG_Tmp" Width="1.5" PointX="2.75" PointY="26.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyRoomAmentiesMap" Width="1.5" PointX="13.5" PointY="83.375" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyRoomDescriptionTG" Width="1.5" PointX="26.75" PointY="3.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyRoomDescriptionTG_Tmp" Width="1.5" PointX="4.75" PointY="26.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyRoomInventory" Width="1.5" PointX="16.5" PointY="92.625" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyRoomLevelAmenityTG" Width="1.5" PointX="6.75" PointY="26.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyRoomLevelAmenityTG_Tmp" Width="1.5" PointX="26.75" PointY="7.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyRoomMap" Width="1.5" PointX="3" PointY="101.5" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyRoomRatePlanInventoryMap" Width="1.5" PointX="19.5" PointY="95.25" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyRoomsBiddingMap" Width="1.5" PointX="10.5" PointY="104.125" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyRoomTaxMap" Width="1.5" PointX="8.75" PointY="26.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyRoomTypeRoomAmentiesMap" Width="1.5" PointX="10.5" PointY="94.875" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertySpaMap" Width="1.5" PointX="26.75" PointY="11.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyTaxesMap" Width="1.5" PointX="18.5" PointY="82.125" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyTaxMap" Width="1.5" PointX="5.25" PointY="98" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyTopAttrationTG" Width="1.5" PointX="14.75" PointY="26.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyTopAttrationTG_Tmp" Width="1.5" PointX="26.75" PointY="16.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyWeekendBiddingMap" Width="1.5" PointX="10.5" PointY="99.125" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPurchaseHistory" Width="1.5" PointX="20.75" PointY="26.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblRankManagement" Width="1.5" PointX="26.75" PointY="23.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblRatePlanM" Width="1.5" PointX="26.75" PointY="27.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblRecentSavingsTx" Width="1.5" PointX="7.5" PointY="51.125" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblRoomFacilityDropDownM" Width="1.5" PointX="28.75" PointY="0.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblRoomOutdoorViewM" Width="1.5" PointX="28.75" PointY="3.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblRoomTypeM" Width="1.5" PointX="28.75" PointY="6.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblSettingM" Width="1.5" PointX="28.75" PointY="9.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblSettingsM" Width="1.5" PointX="28.75" PointY="12.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblStarCategoryM" Width="1.5" PointX="28.75" PointY="15.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblStateM" Width="1.5" PointX="8.25" PointY="84.625" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblTaxM" Width="1.5" PointX="3" PointY="80" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblTGAmenitiesMap" Width="1.5" PointX="16.75" PointY="28.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblTopSellingHotelsForTag" Width="1.5" PointX="28.75" PointY="18.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblTripAdvisorReview" Width="1.5" PointX="28.75" PointY="21.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblUserGroupM" Width="1.5" PointX="5.25" PointY="103.25" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblUserM" Width="1.5" PointX="0.75" PointY="88" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblUserPropertyMap" Width="1.5" PointX="10.5" PointY="90.375" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblVideoUrlM" Width="1.5" PointX="3" PointY="69.125" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblWebsiteUserClaim" Width="1.5" PointX="5.25" PointY="42.125" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblWebsiteUserLogin" Width="1.5" PointX="5.25" PointY="35.375" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblWebsiteUserRoleMaster" Width="1.5" PointX="5.25" PointY="38.875" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblAdditionalCommision_log" Width="1.5" PointX="28.75" PointY="26.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblAmenityM_log" Width="1.5" PointX="30.75" PointY="0.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblAnonymousRecentViewsTx" Width="1.5" PointX="30.75" PointY="4.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblBannerM_log" Width="1.5" PointX="7.75" PointY="30.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblBasicPropertyAmenitiesTGSpecific_Tmp" Width="1.5" PointX="4.75" PointY="30.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblBasicPropertyImgTGSpecific_Tmp" Width="1.5" PointX="9.75" PointY="30.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblBasicPropertyInfoTGSearch_Tmp" Width="1.5" PointX="30.75" PointY="14.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblBasicPropertyInfoTGSpecific_Tmp" Width="1.5" PointX="30.75" PointY="19.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblBasicPropertyPOITGSpecific_Tmp" Width="1.5" PointX="24.75" PointY="30.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblChainM_log" Width="1.5" PointX="0.75" PointY="31.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblChannelMgrBookingTracker" Width="1.5" PointX="9.75" PointY="77" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblChannelMgrTracker" Width="1.5" PointX="26.75" PointY="31.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblGroupM_log" Width="1.5" PointX="32.75" PointY="0.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblGroupMenuM_log" Width="1.5" PointX="32.75" PointY="5.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblLocalityM_log" Width="1.5" PointX="32.75" PointY="10.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblLoyalityAmenityMap_log" Width="1.5" PointX="32.75" PointY="15.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblLoyalityPointsM_log" Width="1.5" PointX="32.75" PointY="19.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblMacroAreaM_log" Width="1.5" PointX="32.75" PointY="25.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPolygon" Width="1.5" PointX="3" PointY="1.125" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPromoCodeM_log" Width="1.5" PointX="32.75" PointY="30.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPromotionalHotelsM_log" Width="1.5" PointX="22.75" PointY="33.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyAmenitiesMap_log" Width="1.5" PointX="34.75" PointY="0.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyCompetitorSet_log" Width="1.5" PointX="34.75" PointY="5.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyDiningMap_log" Width="1.5" PointX="34.75" PointY="9.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyLocalityMap_log" Width="1.5" PointX="9.75" PointY="34.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyM_log" Width="1.5" PointX="34.75" PointY="15.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyParkingMap_log" Width="1.5" PointX="24.75" PointY="34.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyPhotoMap_log" Width="1.5" PointX="26.75" PointY="34.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyPolicyMap_log" Width="1.5" PointX="34.75" PointY="31.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyPromoRateMap_log" Width="1.5" PointX="0.75" PointY="35.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyPromotionCancellationMainMap_log" Width="1.5" PointX="14.75" PointY="35.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyPromotionMap_log" Width="1.5" PointX="16.75" PointY="35.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyRatePlanCancellationMainMap_log" Width="1.5" PointX="36.75" PointY="0.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyRatePlanMap_log" Width="1.5" PointX="36.75" PointY="5.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyRatePlanRoomTypeMap_log" Width="1.5" PointX="36.75" PointY="13.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyRecreationMap_log" Width="1.5" PointX="36.75" PointY="17.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyRoomInventory_log" Width="1.5" PointX="36.75" PointY="21.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyRoomMap_log" Width="1.5" PointX="36.75" PointY="26.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyRoomRatePlanInventoryMap_log" Width="1.5" PointX="36.75" PointY="34.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertySpaMap_log" Width="1.5" PointX="38.75" PointY="0.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyTaxesMap_log" Width="1.5" PointX="38.75" PointY="6.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyTaxMap_log" Width="1.5" PointX="7.75" PointY="38.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblRankManagement_log" Width="1.5" PointX="9.75" PointY="38.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblRatePlanCancelPenaltyDescTGSearch_Tmp" Width="1.5" PointX="38.75" PointY="11.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblRatePlanCancelPenaltyDescTGSpecific_Tmp" Width="1.5" PointX="38.75" PointY="15.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblRatePlanCancelPenaltyTGSearch_Tmp" Width="1.5" PointX="18.75" PointY="38.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblRatePlanCancelPenaltyTGSpecific_Tmp" Width="1.5" PointX="38.75" PointY="19.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblRatePlanM_log" Width="1.5" PointX="20.75" PointY="38.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblRatePlanTGSearch_Tmp" Width="1.5" PointX="38.75" PointY="23.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblRatePlanTGSpecific_Tmp" Width="1.5" PointX="38.75" PointY="27.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblRecentViewsTx" Width="1.5" PointX="10.5" PointY="80" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblRoomAccessibilityM" Width="1.5" PointX="38.75" PointY="31.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblRoomRateTaxTGSpecific_Tmp" Width="1.5" PointX="32.75" PointY="38.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblRoomRateTGsearch_Tmp" Width="1.5" PointX="38.75" PointY="34.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblRoomRateTGSpecific_Tmp" Width="1.5" PointX="22.75" PointY="39.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblRoomTypeTGSearch_Tmp" Width="1.5" PointX="38.75" PointY="39.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblRoomTypeTGSpecific_Tmp" Width="1.5" PointX="40.75" PointY="0.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblSyncBookingToChannelMgrTracker" Width="1.5" PointX="7.5" PointY="64.875" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblTaxM_log" Width="1.5" PointX="0.75" PointY="40.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblUserM_log" Width="1.5" PointX="40.75" PointY="5.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblUserPropertyMap_log" Width="1.5" PointX="40.75" PointY="10.75" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblVideoUrlM_log" Width="1.5" PointX="11.75" PointY="40.75" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyM_tblAccomodationM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblAdditionalCommision_tblPropertyM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblAdditionalCommision_tblUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblAmenityM_tblUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblLoyalityAmenityMap_tblAmenityM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPromoCodeM_tblAmenityM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyBasicWeekendBiddingMap_tblAmenityM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyBasicWeekendBiddingMap_tblAmenityM1" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyLeadTimeBiddingMap_tblAmenityM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyLeadTimeBiddingMap_tblAmenityM1" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyLOSBiddingMap_tblAmenityM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyLOSBiddingMap_tblAmenityM1" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyRoomsBiddingMap_tblAmenityM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyRoomsBiddingMap_tblAmenityM1" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyBasicWeekendBiddingMap_tblApplicabilityM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyBasicWeekendBiddingMap_tblApplicabilityM1" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyLeadTimeBiddingMap_tblApplicabilityM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyLeadTimeBiddingMap_tblApplicabilityM1" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyLOSBiddingMap_tblApplicabilityM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyLOSBiddingMap_tblApplicabilityM1" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyRoomsBiddingMap_tblApplicabilityM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyRoomsBiddingMap_tblApplicabilityM1" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblBookingCancellationPolicyMap_tblBookingDetailsTx" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblBookingGuestMap_tblBookingDetailsTx" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblChainM_tblExtranetUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblChangeHistoryPIRoom_tblPropertyM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblChangeHistoryPIRoom_tblPropertyRoomMap" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblChangeHistoryRates_tblPropertyM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblChangeHistoryRates_tblPropertyRatePlanMap" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblChangeHistoryRates_tblPropertyRoomMap" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblChangeHistoryRoom_tblPropertyM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblChangeHistoryRoom_tblPropertyRoomMap" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblChannelMgrBookingTracker_tblChannelMgrBookingTx" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblChannelMgrBookingTx_tblPropertyM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblCityM_tblCountryM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblCityM_tblExtranetUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblCityM_tblStateM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblLocalityM_tblCityM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblCountryM_tblExtranetUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblLocalityM_tblCountryM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblStateM_tblCountryM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblCurrencyM_tblUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyM_tblCurrencyM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblGroupM_tblExtranetUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblGroupM_tblExtranetUserM1" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblGroupMenuM_tblGroupM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblUserGroupM_tblGroupM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblGroupMenuM_tblExtranetUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblGroupMenuM_tblExtranetUserM1" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblGroupMenuM_tblMenuM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPolygons_tblIndianLocalityCordinates" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblLocalityM_tblMacroAreaM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblLocalityM_tblStateM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblLoyalityAmenityMap_tblUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblLoyalityPointsM_tblUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblMacroAreaM_tblExtranetUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblMenuM_tblMenuM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblMyWishListTx_tblPropertyM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblOFRPropertyM_tblPropertyM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPhotoSubCategoryM_tblPhotoCategoryM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyPhotoMap_tblPhotoCategoryM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPromoCodeM_tblUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyPromoMap_tblPromoCodeM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyPromotionMap_tblPromoM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyAmenitiesMap_tblPropertyM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyBasicBiddingMap_tblPropertyM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyBasicBiddingMap_tblUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblBiddingRateM_tblPropertyM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblBiddingRateM_tblPropertyRatePlanMap" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblBiddingRateM_tblPropertyRoomMap" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyPromotionCancellationMap_tblPropertyCancellationPolicyMap" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyLeadTimeBiddingMap_tblPropertyM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyLeadTimeBiddingMap_tblUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyLOSBiddingMap_tblPropertyM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyLOSBiddingMap_tblUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyBasicWeekendBiddingMap_tblPropertyM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyM_tblExtranetUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyParkingMap_tblPropertyM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyPhotoMap_tblPropertyM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyPolicyMap_tblPropertyM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyPrimaryPhotoMap_tblPropertyM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyPromoMap_tblPropertyM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyPromotionMap_tblPropertyM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyRoomAmentiesMap_tblPropertyM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyRoomInventory_tblPropertyM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyRoomRatePlanInventoryMap_tblPropertyM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyRoomsBiddingMap_tblPropertyM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyRoomTypeRoomAmentiesMap_tblPropertyM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblRecentViewsTx_tblPropertyM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblUserPropertyMap_tblPropertyM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyParkingMap_tblExtranetUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyPhotoMap_tblUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyPrimaryPhotoMap_tblPropertyPhotoMap" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyPolicyMap_tblUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyPrimaryPhotoMap_tblPropertyRoomMap" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyPrimaryPhotoMap_tblUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyPromoMap_tblUserM1" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyPromoRateMap_tblPropertyPromotionMap" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyPromoRateMap_tblPropertyRoomMap" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyPromotionCancellationMainMap_tblPropertyPromoMap" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyPromotionCancellationMap_tblPropertyPromoMap" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyPromotionMap_tblPropertyRatePlanMap" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyPromotionMap_tblUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyPromotionRoomTypeMap_tblPropertyPromotionMap" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyPromotionRoomTypeMap_tblRoomTypeM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyPromotionRoomTypeMap_tblUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyRatePlanMap_tblUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyRatePlanRoomTypeMap_tblPropertyRatePlanMap" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyRoomRatePlanInventoryMap_tblPropertyRatePlanMap" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyRoomAmentiesMap_tblExtranetUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyRoomInventory_tblPropertyRoomMap" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyRoomInventory_tblUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyRoomMap_tblExtranetUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyRoomRatePlanInventoryMap_tblPropertyRoomMap" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyRoomTypeRoomAmentiesMap_tblPropertyRoomMap" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyTaxMap_tblRoomTypeM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyRoomRatePlanInventoryMap_tblUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyRoomsBiddingMap_tblUserM" />
+        <AssociationConnector Associ_tblExtranetUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblUserGroupM_tblExtranetUserM1" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblUserGroupM_tblExtranetUserM2" />
+    <AssociationConnector Association="OneFineRateModel.FK_tblPropertyVideoUrlM_tblUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblUserPropertyMap_tblUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblUserPropertyMap_tblUserM1" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblUserPropertyMap_tblUserM2" />
+        <EntityTypeShape EntityType="OneFineRateModel.vwHotelAmenity" Width="1.5" PointX="7.5310691592893875" PointY="10.399748181179049" />
+        <EntityTypeShape EntityType="OneFineRateModel.vwHotelOccupancyInventory" Width="1.5" PointX="2.9986929330037411" PointY="17.526674368198343" />
+        <EntityTypeShape EntityType="OneFineRateModel.vwRoomAmenity" Width="1.5" PointX="2.9709077007001765" PointY="19.221607142696904" />
+        <EntityTypeShape EntityType="OneFineRateModel.vwSellableRoom" Width="1.5" PointX="0.77738802543719665" PointY="25.053376582010358" />
+        <EntityTypeShape EntityType="OneFineRateModel.vwTotalHotelInventory" Width="1.5" PointX="6.835810429805802" PointY="10.887254481617013" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblOriginalBookingPrice" Width="1.5" PointX="4.09094823528591" PointY="20.515786359326814" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPastSaving" Width="1.5" PointX="5.9593785842691451" PointY="14.57068020783862" />
+        <EntityTypeShape EntityType="OneFineRateModel.sysdiagram" Width="1.5" PointX="0.2358254716898433" PointY="4.2538305093784956" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblBookingErrorTx" Width="1.5" PointX="11.56264708357055" PointY="29.986172302619636" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblViewForConversion" Width="1.5" PointX="11.343108800865295" PointY="1.0934206103409736" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblViewForConversion_tblPropertyM" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardBookingOverview" Width="1.5" PointX="4.2913706602022845" PointY="18.373416208835977" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardBookingOverviewComp" Width="1.5" PointX="2.0940242773359756" PointY="19.540694111744266" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardGuestNegotiation" Width="1.5" PointX="0.46634731649716721" PointY="14.408070898804846" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardGuestNegotiationComp" Width="1.5" PointX="0.22395894873140329" PointY="27.176467610139618" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardGuestResponse" Width="1.5" PointX="3.1178308907513652" PointY="23.449916910123974" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardGuestResponseComp" Width="1.5" PointX="3.7197816091216085" PointY="18.029907801202455" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardLeadPerc" Width="1.5" PointX="4.0780700669056138" PointY="31.623486906114728" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardLeadPercComp" Width="1.5" PointX="6.0195038197652924" PointY="1.8071082242797634" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardLeadRevenuePerc" Width="1.5" PointX="10.108507285876435" PointY="17.653254770512344" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardLeadRevenuePercComp" Width="1.5" PointX="6.5780446671778545" PointY="21.278313423170854" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardLeadRevenueValue" Width="1.5" PointX="3.6085718980098944" PointY="24.44673865681828" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardLeadRevenueValueComp" Width="1.5" PointX="7.9580608419878693" PointY="23.158303524906888" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardLeadValue" Width="1.5" PointX="6.2733479134148675" PointY="27.480530006569126" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardLeadValueComp" Width="1.5" PointX="9.3478374189454314" PointY="5.6123561587242206" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardLengthPerc" Width="1.5" PointX="3.949317624768856" PointY="28.622956781006863" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardLengthPercComp" Width="1.5" PointX="8.4131242001490314" PointY="24.338630762108895" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardLengthRevenuePerc" Width="1.5" PointX="9.7402831603494864" PointY="9.0436430019529741" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardLengthRevenuePercComp" Width="1.5" PointX="4.3371344936718863" PointY="5.2082858854943357" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardLengthRevenueValue" Width="1.5" PointX="2.9125482248666454" PointY="7.6727730071510996" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardLengthRevenueValueComp" Width="1.5" PointX="7.2334144782430565" PointY="14.711983389552675" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardLengthValue" Width="1.5" PointX="0.10585121070307271" PointY="27.088958335616141" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardLengthValueComp" Width="1.5" PointX="8.5098144712437946" PointY="14.435663900540986" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardPerformanceRate" Width="1.5" PointX="4.5352279006201908" PointY="5.3392191107101832" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardPerformanceRevenue" Width="1.5" PointX="0.8294136267292378" PointY="21.636166850866829" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardPerformanceValue" Width="1.5" PointX="6.8228658935161608" PointY="31.445894404987754" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardRoomProductivityRevenueValue" Width="1.5" PointX="3.5745387168482594" PointY="23.758936267233889" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardRoomProductivityValue" Width="1.5" PointX="5.0745994025257417" PointY="17.049126707505959" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardRoomsPerc" Width="1.5" PointX="3.9980929587027494" PointY="18.99691643705448" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardRoomsPercComp" Width="1.5" PointX="10.931970236325624" PointY="14.425761214655713" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardRoomsRevenuePerc" Width="1.5" PointX="1.0544123784892319" PointY="5.7630628374233206" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardRoomsRevenuePercComp" Width="1.5" PointX="8.0551891681063879" PointY="26.984867704559523" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardRoomsRevenueValue" Width="1.5" PointX="6.2418577290335" PointY="11.691258927663442" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardRoomsRevenueValueComp" Width="1.5" PointX="0.38059464114745833" PointY="17.580786862215394" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardRoomsValue" Width="1.5" PointX="9.0209322651014343" PointY="1.831210509795328" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardRoomsValueComp" Width="1.5" PointX="7.5216730961211358" PointY="10.843724300546443" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardWeekPerc" Width="1.5" PointX="9.7651173592382658" PointY="19.283246421852731" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardWeekPercComp" Width="1.5" PointX="11.386556060699075" PointY="2.8294690562549367" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardWeekRevenuePerc" Width="1.5" PointX="7.8735163229859975" PointY="14.533900059076911" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardWeekRevenuePercComp" Width="1.5" PointX="0.65771252506306044" PointY="6.7858316780933325" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardWeekRevenueValue" Width="1.5" PointX="4.1491359212198926" PointY="11.389708658396131" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardWeekRevenueValueComp" Width="1.5" PointX="9.4757851257341841" PointY="3.2913995996543206" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardWeekValue" Width="1.5" PointX="7.2817676660054209" PointY="11.085619261062528" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblDashBoardWeekValueComp" Width="1.5" PointX="7.1590700760293142" PointY="30.676061599830195" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblNegotiationActionRecord" Width="1.5" PointX="4.0523871332650945" PointY="8.92496172009267" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyRankTx" Width="1.5" PointX="11.393273167029616" PointY="24.568775546070551" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblActiveAmendID" Width="1.5" PointX="3.0211369707347533" PointY="25.341034051655342" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblBookedDayWiseTaxAmountDetailsAmend" Width="1.5" PointX="1.8228774991924301" PointY="13.526042437891496" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblUserFeedbackTripAdvisor" Width="1.5" PointX="9.4618046029758656" PointY="5.2974021906486719" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblCorporateDiscountLinkingTx" Width="1.5" PointX="5.6274407569446794" PointY="18.459192478311802" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyBasicBiddingMapCorp" Width="1.5" PointX="4.9859926053257624" PointY="1.292938948279684" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyLeadTimeBiddingMapCorp" Width="1.5" PointX="10.75219265127191" PointY="12.083993440533053" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyLOSBiddingMapCorp" Width="1.5" PointX="6.56766312688946" PointY="21.257285277013334" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyRoomsBiddingMapCorp" Width="1.5" PointX="9.3857795341805463" PointY="24.300097625842362" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyWeekendBiddingMapCorp" Width="1.5" PointX="10.895368571810129" PointY="7.2919405136685542" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyBasicWeekendBiddingMapCorp_tblAmenityM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyBasicWeekendBiddingMapCorp_tblAmenityM1" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyLeadTimeBiddingMapCorp_tblAmenityM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyLeadTimeBiddingMapCorp_tblAmenityM1" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyLOSBiddingMapCorp_tblAmenityM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyLOSBiddingMapCorp_tblAmenityM1" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyRoomsBiddingMapCorp_tblAmenityM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyRoomsBiddingMapCorp_tblAmenityM1" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyBasicWeekendBiddingMapCorp_tblApplicabilityM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyBasicWeekendBiddingMapCorp_tblApplicabilityM1" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyLeadTimeBiddingMapCorp_tblApplicabilityM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyLeadTimeBiddingMapCorp_tblApplicabilityM1" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyLOSBiddingMapCorp_tblApplicabilityM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyLOSBiddingMapCorp_tblApplicabilityM1" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyRoomsBiddingMapCorp_tblApplicabilityM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyRoomsBiddingMapCorp_tblApplicabilityM1" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyBasicBiddingMapCorp_tblUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyLeadTimeBiddingMapCorp_tblPropertyM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyLeadTimeBiddingMapCorp_tblUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyLOSBiddingMapCorp_tblPropertyM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyLOSBiddingMapCorp_tblUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyBasicWeekendBiddingMapCorp_tblPropertyM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyRoomsBiddingMapCorp_tblPropertyM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyRoomsBiddingMapCorp_tblUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyBasicWeekendBiddingMapCorp_tblUserM" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblCorporateCompanyM" Width="1.5" PointX="7.5602347569354977" PointY="23.312217171914977" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblBlackListedDomain" Width="1.5" PointX="10.032138223774794" PointY="19.126467773284048" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblBlackListedDomains_tblUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblCorporateCompanyM_tblUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyRoomTypeRoomAmentiesMap_tblUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyTaxesMap_tblPropertyTaxMap" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyTaxesMap_tblTaxM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyTaxesMap_tblUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyTaxMap_tblUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblPropertyBasicWeekendBiddingMap_tblUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblStateM_tblExtranetUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblTaxM_tblUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblUserGroupM_tblExtranetUserM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblExtranetUserM_tblExtranetUserM" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblCountryCodePhoneM" Width="1.5" PointX="2.7509668854768234" PointY="17.788569220243286" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblCorporateDomainMap" Width="1.5" PointX="3.8496273084774746" PointY="15.710094235702462" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblCorporateDomainM_tblCorporateCompanyM" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblCorporateDomainMap_tblUserM" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyTripAdvisorAwardsM" Width="1.5" PointX="0.73241383430194751" PointY="29.388743742084475" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblBookingTripAdvisorReviewTx" Width="1.5" PointX="10.967995812635866" PointY="18.80630452316548" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblPropertyTripAdvisorM" Width="1.5" PointX="9.388100438466342" PointY="1.1310348963043815" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblMasterTaxStateMap" Width="1.5" PointX="8.478196960165258" PointY="19.285330662171045" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblMasterTax_tblTaxM" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblServiceChargeM" Width="1.5" PointX="9.196998058444354" PointY="31.617348953903349" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblServiceChargeM_log" Width="1.5" PointX="3.6601603271719818" PointY="11.1059814296225" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblMasterTax" Width="1.5" PointX="7.35669044189001" PointY="24.222644191338979" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblWebsiteUserMater" Width="1.5" PointX="1.3527208256315073" PointY="11.22748929784982" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblMasterTaxMap" Width="1.5" PointX="3.4389824995021252" PointY="22.064642871760132" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblCustomerPointsMap_tblWebsiteUserMater" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblMyWishListTx_tblWebsiteUserMater" />
+        <AssociationConnector Association="OneFineRateModel.FK_dbo_tblWebsiteUserClaims_dbo_tblWebsiteUserMater_UserId" />
+        <AssociationConnector Association="OneFineRateModel.FK_dbo_tblWebsiteUserLogins_dbo_tblWebsiteUserMater_UserId" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblRecentViewsTx_tblWebsiteUserMater" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblRoomRateRangeM" Width="1.5" PointX="4.8989973016544228" PointY="7.1847704831439865" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblMasterTaxMap_tblRoomRateRangeM" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblBookedDayWiseTaxAmountDetails_Mod" Width="1.5" PointX="11.246888816005965" PointY="0.6077116730658858" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblTaxChangeForBookingTx" Width="1.5" PointX="9.4545002884485285" PointY="12.20165755422863" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblBookedDayWiseTaxAmountDetails_Mod_Log" Width="1.5" PointX="9.0653706793977751" PointY="6.3383955090951156" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblMasterTax_log" Width="1.5" PointX="5.0090317917098437" PointY="1.770810530414251" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblMasterTaxMap_log" Width="1.5" PointX="11.797740764821759" PointY="16.484496124314376" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblMasterTaxStateMap_log" Width="1.5" PointX="9.7623099804680376" PointY="21.413136820035586" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblBankDetailM" Width="1.5" PointX="7.7183012178718586" PointY="23.260710265143175" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblBankDetailM_log" Width="1.5" PointX="5.0407691975314028" PointY="13.958537585082715" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblBookingTx_log" Width="1.5" PointX="9.2848471315972727" PointY="17.02725511092099" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblWebsiteGuestUserMaster" Width="1.5" PointX="8.5349908082443253" PointY="4.5154445937440935" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblBookingTx" Width="1.5" PointX="3.0873781959933129" PointY="4.9830165677624834" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblBookedBidAmenities_tblBookingTx" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblBookingDetailsAmendTx_tblBookingTx" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblBookingDetailsTx_tblBookingTx" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblBookingTx_tblWebsiteUserMater" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblChannelMgrBookingTx_tblBookingTx" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblRecentSavingsTx_tblBookingTx" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblSyncBookingToChannelMgrTracker_tblBookingTx" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblBookingAmedTx" Width="1.5" PointX="0.31518810815885107" PointY="25.775054854236103" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblBookingAmedTx_tblBookingTx" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblBookingAmedTx_tblWebsiteUserMater" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblBookingCancellationPolicyAmendMap_tblBookingAmedTx" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblBookingDetailsAmendTx_tblBookingAmedTx" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblBookedDayWiseSeparateTaxAmountDetail" Width="1.5" PointX="8.0193699989558063" PointY="23.663066249183874" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblCitySearchM" Width="1.5" PointX="3.6597747093344921" PointY="15.216253153614817" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblCustomerLoyaltyBookingsMap" Width="1.5" PointX="2.4898153312922524" PointY="10.862005745462145" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblLocalitySearchM" Width="1.5" PointX="6.6304822334230336" PointY="3.6641031222716456" />
+        <EntityTypeShape EntityType="OneFineRateModel.tblMacroAreaSearchM" Width="1.5" PointX="3.2485743198769979" PointY="22.212888578983438" />
+        <EntityTypeShape EntityType="OneFineRateModel.vwCity" Width="1.5" PointX="10.480401371829398" PointY="24.652796741878984" />
+        <EntityTypeShape EntityType="OneFineRateModel.vwLocality" Width="1.5" PointX="11.840406479239654" PointY="20.154175216403871" />
+        <EntityTypeShape EntityType="OneFineRateModel.vwMacroArea" Width="1.5" PointX="1.7665290151566868" PointY="25.420077440058847" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblCustomerLoyaltyBookingsMap_tblBookingTx" />
+        <AssociationConnector Association="OneFineRateModel.FK_tblCustomerLoyaltyBookingsMap_tblWebsiteUserMater" />
+        <AssociationConnector Association="OneFineRateModel.tblWebsiteUserRoles" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

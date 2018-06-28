@@ -1,0 +1,537 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{71780191-6E4C-44D1-8697-74569663DB23}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>OneFineRateBLL</RootNamespace>
+    <AssemblyName>OneFineRateBLL</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <UseGlobalApplicationHostFile />
+    <Use64BitIISExpress />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.EntityFramework">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.1\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Owin, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.1\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Owin, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Owin.3.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Owin.Security.3.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Cookies, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.3.0.1\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.OAuth, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.3.0.1\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="MvcCheckBoxList">
+      <HintPath>..\packages\MvcCheckBoxList.1.4.5\lib\net45\MvcCheckBoxList.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="bin\OneFineRate.dll" />
+    <Content Include="bin\System.Web.Helpers.dll" />
+    <Content Include="bin\System.Web.Helpers.xml" />
+    <Content Include="bin\System.Web.Mvc.dll" />
+    <Content Include="bin\System.Web.Mvc.xml" />
+    <Content Include="bin\System.Web.Razor.dll" />
+    <Content Include="bin\System.Web.Razor.xml" />
+    <Content Include="bin\System.Web.WebPages.Deployment.dll" />
+    <Content Include="bin\System.Web.WebPages.Deployment.xml" />
+    <Content Include="bin\System.Web.WebPages.dll" />
+    <Content Include="bin\System.Web.WebPages.Razor.dll" />
+    <Content Include="bin\System.Web.WebPages.Razor.xml" />
+    <Content Include="bin\System.Web.WebPages.xml" />
+    <Content Include="packages.config" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BL_AdditionalCommission.cs" />
+    <Compile Include="BL_Amenity.cs" />
+    <Compile Include="BL_Bidding.cs" />
+    <Compile Include="BL_Booking.cs" />
+    <Compile Include="BL_BulkBid.cs" />
+    <Compile Include="BL_Chains.cs" />
+    <Compile Include="BL_ChannelManager.cs" />
+    <Compile Include="BL_ConserveCommission.cs" />
+    <Compile Include="BL_CorporateCompanyM.cs" />
+    <Compile Include="BL_BlackListedDomainM.cs" />
+    <Compile Include="BL_CorporateLinking.cs" />
+    <Compile Include="BL_Country.cs" />
+    <Compile Include="BL_Currency.cs" />
+    <Compile Include="BL_CustomerPointsMap.cs" />
+    <Compile Include="BL_Dashboard.cs" />
+    <Compile Include="BL_ExchangeRate.cs" />
+    <Compile Include="BL_Groups.cs" />
+    <Compile Include="BL_Invoice.cs" />
+    <Compile Include="BL_Locality.cs" />
+    <Compile Include="BL_Login.cs" />
+    <Compile Include="BL_LoyalityAmenityMap.cs" />
+    <Compile Include="BL_Menu.cs" />
+    <Compile Include="BL_MinimumIncome.cs" />
+    <Compile Include="BL_NegotiationBooking.cs" />
+    <Compile Include="BL_NegotiationNotification.cs" />
+    <Compile Include="BL_PendingChanges.cs" />
+    <Compile Include="BL_PromoCode.cs" />
+    <Compile Include="BL_PropDetails.cs" />
+    <Compile Include="BL_PropDetailsTG.cs" />
+    <Compile Include="BL_RatePlan.cs" />
+    <Compile Include="BL_RateRangeM.cs" />
+    <Compile Include="BL_Report.cs" />
+    <Compile Include="BL_ServiceChargeM.cs" />
+    <Compile Include="BL_Tax.cs" />
+    <Compile Include="BL_tblAccessbilityM.cs" />
+    <Compile Include="BL_tblAccomodationM.cs" />
+    <Compile Include="BL_tblBankDetailM.cs" />
+    <Compile Include="BL_tblAffiliationM.cs" />
+    <Compile Include="BL_tblAwardM.cs" />
+    <Compile Include="BL_tblBannerM.cs" />
+    <Compile Include="BL_tblBookingTx.cs" />
+    <Compile Include="BL_tblBuildingCharacteristicsM.cs" />
+    <Compile Include="BL_tblCarouselM.cs" />
+    <Compile Include="BL_tblChangeHistory.cs" />
+    <Compile Include="BL_tblCityM.cs" />
+    <Compile Include="BL_tblCrediCardM.cs" />
+    <Compile Include="BL_tblCustomerPointsHistoryTx.cs" />
+    <Compile Include="BL_tblEmailSettingsM.cs" />
+    <Compile Include="BL_tblGolfM.cs" />
+    <Compile Include="BL_tblHotelAmenityM.cs" />
+    <Compile Include="BL_tblHotelCommonServiceM.cs" />
+    <Compile Include="BL_tblHotelConvenienceM.cs" />
+    <Compile Include="BL_tblHotelLeisureM.cs" />
+    <Compile Include="BL_tblHotelMeetingM.cs" />
+    <Compile Include="BL_tblHotelParkingM.cs" />
+    <Compile Include="BL_tblHotelPartner.cs" />
+    <Compile Include="BL_tblHotelRoomAmenityAdditionalM.cs" />
+    <Compile Include="BL_tblHotelRoomAmenityBathRoomM.cs" />
+    <Compile Include="BL_tblHotelRoomAmenityBeddingM.cs" />
+    <Compile Include="BL_tblHotelRoomAmenityM.cs" />
+    <Compile Include="BL_tblLandActivitiesM.cs" />
+    <Compile Include="BL_tblLanguageM.cs" />
+    <Compile Include="BL_tblMacroAreaM.cs" />
+    <Compile Include="BL_tblMasterTax.cs" />
+    <Compile Include="BL_tblOfferReviewTrackerTx.cs" />
+    <Compile Include="BL_tblOnsiteRecreationFacilitiesM.cs" />
+    <Compile Include="BL_tblPhotoCategoryM.cs" />
+    <Compile Include="BL_tblPromotionalHotel.cs" />
+    <Compile Include="BL_tblPromotionManagement.cs" />
+    <Compile Include="BL_tblPropertyAmenitiesMap.cs" />
+    <Compile Include="BL_tblPropertyBasicBiddingMap.cs" />
+    <Compile Include="BL_tblPropertyBiddingRateM.cs" />
+    <Compile Include="BL_tblPropertyCancellationPolicyMap.cs" />
+    <Compile Include="BL_tblPropertyCompetitorSet.cs" />
+    <Compile Include="BL_tblPropertyDiningMap.cs" />
+    <Compile Include="BL_tblPropertyLeadTimeBiddingMap.cs" />
+    <Compile Include="BL_tblPropertyLOSBiddingMap.cs" />
+    <Compile Include="BL_tblPropertyPhotoMap.cs" />
+    <Compile Include="BL_tblPropertyM.cs" />
+    <Compile Include="BL_tblPropertyPolicyMap.cs" />
+    <Compile Include="BL_tblPropertyPromoMap.cs" />
+    <Compile Include="BL_tblPropertyPromotionMap.cs" />
+    <Compile Include="BL_tblPropertyRatePlanMap.cs" />
+    <Compile Include="BL_tblPropertyRecreationMap.cs" />
+    <Compile Include="BL_tblPropertyRoomAmentiesMap.cs" />
+    <Compile Include="BL_tblPropertyRoomInventory.cs" />
+    <Compile Include="BL_tblPropertyRoomMap.cs" />
+    <Compile Include="BL_tblPropertyRoomRatePlanInventoryMap.cs" />
+    <Compile Include="BL_tblPropertyRoomsBiddingMap.cs" />
+    <Compile Include="BL_tblPropertyRoomTypeRoomAmentiesMap.cs" />
+    <Compile Include="BL_tblPropertySpaMap.cs" />
+    <Compile Include="BL_tblPropertyTaxMap.cs" />
+    <Compile Include="BL_tblPropertyWeekendBiddingMap.cs" />
+    <Compile Include="BL_tblPurchaseHistory.cs" />
+    <Compile Include="BL_tblRankManagement.cs" />
+    <Compile Include="BL_tblRatePlanM.cs" />
+    <Compile Include="BL_tblRoomAccessibilityM.cs" />
+    <Compile Include="BL_tblRoomOutdoorViewM.cs" />
+    <Compile Include="BL_tblRoomTypeM.cs" />
+    <Compile Include="BL_tblStarCategoryM.cs" />
+    <Compile Include="BL_tblStateM.cs" />
+    <Compile Include="BL_tblVideoUrlM.cs" />
+    <Compile Include="BL_UnfinishedTransactions.cs" />
+    <Compile Include="BL_UserFeedbackTripAdvisor .cs" />
+    <Compile Include="BL_UserPropertyMap.cs" />
+    <Compile Include="BL_Users.cs" />
+    <Compile Include="BL_Video.cs" />
+    <Compile Include="BL_bulk.cs" />
+    <Compile Include="BL_WebsiteHomePage.cs" />
+    <Compile Include="BL_WebSiteSearchPage.cs" />
+    <Compile Include="clsBooking.cs" />
+    <Compile Include="clsDB.cs" />
+    <Compile Include="clsReservation.cs" />
+    <Compile Include="clsSearchHotel.cs" />
+    <Compile Include="clsTravelGuruApi.cs" />
+    <Compile Include="Datatable.cs" />
+    <Compile Include="Entities\BookingGuestDetails.cs" />
+    <Compile Include="Entities\eAmenity.cs" />
+    <Compile Include="Entities\eApplicability.cs" />
+    <Compile Include="Entities\eBarChanges_mob.cs" />
+    <Compile Include="Entities\eBidding.cs" />
+    <Compile Include="Entities\eBooking.cs" />
+    <Compile Include="Entities\eBookingOverviewChartModel.cs" />
+    <Compile Include="Entities\eCancelBookingResponse.cs" />
+    <Compile Include="Entities\eChains.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\eChannelManager.cs" />
+    <Compile Include="Entities\eConserveCommission.cs" />
+    <Compile Include="Entities\eCorporateCompanyM.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\eBlackListedDomainM.cs" />
+    <Compile Include="Entities\eCountry.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\eCurrency.cs" />
+    <Compile Include="Entities\eDashboardModel.cs" />
+    <Compile Include="Entities\eExchange.cs" />
+    <Compile Include="Entities\eDashboardGraphModel.cs" />
+    <Compile Include="Entities\eInvoiceModel.cs" />
+    <Compile Include="Entities\eMinimumIncome.cs" />
+    <Compile Include="Entities\eProvisionalBookingModel.cs" />
+    <Compile Include="Entities\eRefundModel.cs" />
+    <Compile Include="Entities\eServiceChargeM.cs" />
+    <Compile Include="Entities\eTaxDifferenceBookings.cs" />
+    <Compile Include="Entities\etblBidSettingsM.cs" />
+    <Compile Include="Entities\etblBookedDayWiseTaxAmountDetails.cs" />
+    <Compile Include="Entities\etblBookingAmedTx.cs" />
+    <Compile Include="Entities\etblBookingCancellationPolicyAmendMap.cs" />
+    <Compile Include="Entities\etblBookingDetailsAmendTx.cs" />
+    <Compile Include="Entities\etblBookingGuestAmendMap.cs" />
+    <Compile Include="Entities\etblBookingGuestMap.cs" />
+    <Compile Include="Entities\etblBookingNegotiationTx.cs" />
+    <Compile Include="Entities\etblBookingTrakerTx.cs" />
+    <Compile Include="Entities\etblCorporateVM.cs" />
+    <Compile Include="Entities\etblCustomerPointsHistoryTx.cs" />
+    <Compile Include="Entities\eCustomerPointsMap.cs" />
+    <Compile Include="Entities\eCustomerRecentlyViewedItems.cs" />
+    <Compile Include="Entities\eCustomerWishList.cs" />
+    <Compile Include="Entities\eGroups.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\eInventoryPlan_Ph.cs" />
+    <Compile Include="Entities\eLogin.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\eLoyalityAmenityMap.cs" />
+    <Compile Include="Entities\eLoyalityPoints.cs" />
+    <Compile Include="Entities\eMacroAreaM.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\eMenu.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\ePendingChanges.cs" />
+    <Compile Include="Entities\ePromoCode.cs" />
+    <Compile Include="Entities\ePromotionalHotels.cs" />
+    <Compile Include="Entities\ePromotionManagementMap.cs" />
+    <Compile Include="Entities\eRatePlan.cs" />
+    <Compile Include="Entities\eRecentSavings.cs" />
+    <Compile Include="Entities\eReport.cs" />
+    <Compile Include="Entities\eRoomRatePlan_Ph.cs" />
+    <Compile Include="Entities\eRoomRatePrice_Ph.cs" />
+    <Compile Include="Entities\eTax.cs" />
+    <Compile Include="Entities\etblAccessbilityM.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\etblAccomodationM.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\etblAdditionalCommission.cs" />
+    <Compile Include="Entities\etblAffiliationM.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\etblAwardM.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\etblBankDetail.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\etblBannerM.cs" />
+    <Compile Include="Entities\etblBookingTx.cs" />
+    <Compile Include="Entities\etblBuildingCharacteristicsM.cs" />
+    <Compile Include="Entities\etblCarouselM.cs" />
+    <Compile Include="Entities\etblChangeHistory.cs" />
+    <Compile Include="Entities\etblCityM.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\etblCountryM.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\etblCrediCardM.cs" />
+    <Compile Include="Entities\etblEmailSettingsM.cs" />
+    <Compile Include="Entities\etblExchangeRatesM.cs" />
+    <Compile Include="Entities\etblGolfM.cs" />
+    <Compile Include="Entities\etblHotelAmenityM.cs" />
+    <Compile Include="Entities\etblHotelCommonServiceM.cs" />
+    <Compile Include="Entities\etblHotelConvenienceM.cs" />
+    <Compile Include="Entities\etblHotelLeisureM.cs" />
+    <Compile Include="Entities\etblHotelMeetingM.cs" />
+    <Compile Include="Entities\etblHotelParkingM.cs" />
+    <Compile Include="Entities\etblHotelPartnerM.cs" />
+    <Compile Include="Entities\etblHotelRoomAmenityAdditionalM.cs" />
+    <Compile Include="Entities\etblHotelRoomAmenityBathRoomM.cs" />
+    <Compile Include="Entities\etblHotelRoomAmenityBeddingM.cs" />
+    <Compile Include="Entities\etblHotelRoomAmenityM.cs" />
+    <Compile Include="Entities\etblLandActivitiesM.cs" />
+    <Compile Include="Entities\etblLanguageM.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\etblLocality.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\etblLocalityCordinates.cs" />
+    <Compile Include="Entities\etblLoyalityPoints.cs" />
+    <Compile Include="Entities\etblMasterTax.cs" />
+    <Compile Include="Entities\etblMasterTaxMap.cs" />
+    <Compile Include="Entities\etblNegotiationNotification.cs" />
+    <Compile Include="Entities\etblOfferReviewTrackerTx.cs" />
+    <Compile Include="Entities\etblOnsiteRecreationFacilitiesM.cs" />
+    <Compile Include="Entities\etblOriginalBookingPrice.cs" />
+    <Compile Include="Entities\etblPhotoCategoryM.cs" />
+    <Compile Include="Entities\etblPhotoGallery.cs" />
+    <Compile Include="Entities\eTblPromotionalHotel.cs" />
+    <Compile Include="Entities\etblPropertyAmenitiesMap.cs" />
+    <Compile Include="Entities\etblPropertyBasicBiddingMap.cs" />
+    <Compile Include="Entities\etblPropertyBiddingRateM.cs" />
+    <Compile Include="Entities\etblPropertyBidUpgradeM.cs" />
+    <Compile Include="Entities\etblPropertyCancellationPolicyMap.cs" />
+    <Compile Include="Entities\etblPropertyCompetitorSet.cs" />
+    <Compile Include="Entities\etblPropertyDashboard.cs" />
+    <Compile Include="Entities\etblPropertyDiningMap.cs" />
+    <Compile Include="Entities\etblPropertyLeadTimeBiddingMap.cs" />
+    <Compile Include="Entities\etblPropertyLocalityMap.cs" />
+    <Compile Include="Entities\etblPropertyLOSBiddingMap.cs" />
+    <Compile Include="Entities\etblPropertyM.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\etblPropertyM_User.cs" />
+    <Compile Include="Entities\etblPropertyParkingMap.cs" />
+    <Compile Include="Entities\etblPropertyPolicyMap.cs" />
+    <Compile Include="Entities\etblPropertyPromoMap.cs" />
+    <Compile Include="Entities\etblPropertyPromotionMap.cs" />
+    <Compile Include="Entities\etblPropertyRatePlanMap.cs" />
+    <Compile Include="Entities\etblPropertyRatePlanRoomTypeMap.cs" />
+    <Compile Include="Entities\etblPropertyRecreationMap.cs" />
+    <Compile Include="Entities\etblPropertyRoomAmentiesMap.cs" />
+    <Compile Include="Entities\etblPropertyRoomInventory.cs" />
+    <Compile Include="Entities\etblPropertyRoomMap.cs" />
+    <Compile Include="Entities\etblPropertyRoomRatePlanInventoryMap.cs" />
+    <Compile Include="Entities\etblPropertyRoomsBiddingMap.cs" />
+    <Compile Include="Entities\etblPropertyRoomTypeRoomAmentiesMap.cs" />
+    <Compile Include="Entities\etblPropertySpaMap.cs" />
+    <Compile Include="Entities\etblPropertyTaxesMap.cs" />
+    <Compile Include="Entities\etblPropertyTaxMap.cs" />
+    <Compile Include="Entities\etblPropertyWeekendBiddingMap.cs" />
+    <Compile Include="Entities\etblPropetyPhotoMap.cs" />
+    <Compile Include="Entities\eTblPurchaseHistory.cs" />
+    <Compile Include="Entities\etblRankManagement.cs" />
+    <Compile Include="Entities\etblRatePlan.cs" />
+    <Compile Include="Entities\etblRateRangeM.cs" />
+    <Compile Include="Entities\etblRoomAccessibilityM.cs" />
+    <Compile Include="Entities\etblRoomOutdoorViewM.cs" />
+    <Compile Include="Entities\etblRoomTypeM.cs" />
+    <Compile Include="Entities\etblSettingM.cs" />
+    <Compile Include="Entities\etblStarCategoryM.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\etblStateM.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\etblUnfinishedTransactions.cs" />
+    <Compile Include="Entities\etblVideoUrlM.cs" />
+    <Compile Include="Entities\eUserFeedbackTripAdvisor.cs" />
+    <Compile Include="Entities\eUserPropertyMap.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\eUsers.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\eVideo.cs" />
+    <Compile Include="Entities\etblHotelDetails.cs" />
+    <Compile Include="Entities\eWebSiteSearchPage.cs" />
+    <Compile Include="Entities\PropDetailsM.cs" />
+    <Compile Include="Entities\TravelGuruModels.cs" />
+    <Compile Include="Entities\WebUserEntities\WebsiteUserMaster.cs" />
+    <Compile Include="Helper\IHotelResponseType.cs" />
+    <Compile Include="Helper\MailSubjectConstants.cs" />
+    <Compile Include="Helper\SqlHelper.cs" />
+    <Compile Include="IMultilpeResults.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="BL_WebsiteUser.cs" />
+    <Compile Include="WebUserBL\BL_tblExchangeRatesM.cs" />
+    <Compile Include="WebUserBL\IdentityConfig.cs" />
+    <Compile Include="WebUserBL\IdentityModels.cs" />
+    <Compile Include="WebUserBL\UserRepository\RoleRepository.cs" />
+    <Compile Include="WebUserBL\UserRepository\UserClaimRepository.cs" />
+    <Compile Include="WebUserBL\UserRepository\UserLoginRepository.cs" />
+    <Compile Include="WebUserBL\UserRepository\UserRepository.cs" />
+    <Compile Include="WebUserBL\UserRepository\UserRoleRepository.cs" />
+    <Compile Include="WebUserBL\WebsiteUserRoleStore.cs" />
+    <Compile Include="WebUserBL\WebsiteUserStore.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OneFineRateAppUtil\OneFineRateAppUtil.csproj">
+      <Project>{b122cc70-553f-4f8f-a0a5-0e1afa42797a}</Project>
+      <Name>OneFineRateAppUtil</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OneFineRate\OneFineRate.csproj">
+      <Project>{32d39257-5529-4ef8-a50d-5b3c57f1a686}</Project>
+      <Name>OneFineRate</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>56161</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:56161/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

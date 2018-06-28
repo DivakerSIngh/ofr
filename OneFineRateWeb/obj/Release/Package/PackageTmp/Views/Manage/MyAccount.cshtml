@@ -1,0 +1,446 @@
+﻿@model OneFineRateWeb.Models.MyAccountViewModel
+
+@{
+    ViewBag.Title = "MyAccount";
+    Layout = "~/Views/Shared/_LayoutUserManagement.cshtml";
+    ViewBag.ProfileActive = "manageActive";
+}
+<style>
+    textarea {
+        resize: vertical;
+    }
+
+    .bootstrap-select {
+        width: 40% !important;
+        float: left !important;
+    }
+
+    .dropdown-menu {
+        max-height: 200px;
+        overflow: hidden;
+        min-height: 100px;
+        width: 250%;
+    }
+</style>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h3 style="color: #333;">PROFILE</h3>
+            <hr />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class=" paddingleft0 rightwhitebox">
+
+
+                @{
+                    Html.RenderAction("UserProfile", "Manage");
+
+                    Html.RenderAction("UserPreference", "Manage");
+
+                    Html.RenderAction("GovernmentApprovedId", "Manage");
+
+                    if (Model.HasPassword)
+                    {
+                        Html.RenderAction("ChangePassword", "Manage");
+                    }
+                    else
+                    {
+                        Html.RenderAction("SetPassword", "Manage");
+                    }
+                    Html.RenderAction("ManageLogins", "Manage");
+                }
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+@section Scripts{
+
+    <script>
+
+
+        $(function () {
+
+            //$.validator.addMethod("ValidateCorporateEmail", function (value, element) {
+            //    debugger;
+            //    var email = $('#Email').val();
+            //    var result = true;
+            //    if ($("#Email").val() == $("#CorporateEmail").val()) {
+            //        result = false;
+            //    }
+            //    return result;
+            //});
+
+            $('.selectpicker').selectpicker();
+
+            var today = new Date();
+
+            $(".accordion").click(function () {
+                $(this).next(".lightbluebg").slideToggle(500);
+            });
+
+
+            $(".profileDatepicker").datepicker({
+                dateFormat: 'dd/mm/yy',
+                maxDate: today,
+                autoclose: true,
+                changeMonth: true,
+                changeYear: true,
+                yearRange: (today.getFullYear()) - 70 + ":" + (today.getFullYear())
+            });
+
+            $('#aniversaryDatepicker').datepicker({
+                dateFormat: 'dd/mm/yy',
+                autoclose: true,
+                changeMonth: true,
+                maxDate: new Date(),
+                changeYear: true,
+                yearRange: (today.getFullYear()) - 70 + ":" + (today.getFullYear())
+            });
+
+            $('#txtExpiryDate').datepicker({
+                dateFormat: 'dd/mm/yy',
+                autoclose: true,
+                minDate: new Date(),
+                todayHighlight: true,
+                changeMonth: true,
+                changeYear: true
+            });
+
+
+            $("#governmentApprovedIdImageInput").change(function () {
+
+                var fileExtension = ['jpeg', 'jpg', 'png', 'gif', 'bmp'];
+                if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+                    $(this).val(null);
+                    alert("Only '.jpeg','.jpg', '.png', '.gif', '.bmp' formats are allowed.");
+                    return false;
+                }
+                readURL(this, 'governmentApprovedIdImagePreview');
+            });
+
+            $("#profileImageInput").change(function () {
+
+                var fileExtension = ['jpeg', 'jpg', 'png', 'gif', 'bmp'];
+                if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+                    $(this).val(null);
+                    alert("Only '.jpeg','.jpg', '.png', '.gif', '.bmp' formats are allowed.");
+                    return false;
+                }
+                readURL(this, 'profilepicPreview');
+            });
+            $('#phoneVerifylnk').click(function () {
+                GetPartialsView('/Manage/VerifyPhoneNumber', { phoneNumber: $('#PhoneNumber').val() }, '#frmUserProfile', function (data) {
+                    debugger;
+                    if (data) {
+                        $('#genericModalPopupContainer').html(data);
+                        $('#verifyPhoneNumberError').html(data.message)
+                        $('#genericModalPopupDiv').modal('show');
+                        $.validator.unobtrusive.parse($('#frmVerifyPhoneNumber'));
+                    }
+                    else {
+                        toastr.error(error.responseText, '', toasterOptions)
+                    }
+                });
+
+            });
+
+            $('#emailVerifylnk').click(function () {
+                GetPartialsView('/Manage/VerifyEmail', { email: $('#Email').val() }, '#frmUserProfile', function (data) {
+                    debugger;
+                    if (data) {
+                        $('#genericModalPopupContainer').html(data);
+                        $('#verifyEmailAddressError').html(data.message)
+                        $('#genericModalPopupDiv').modal('show');
+                        $.validator.unobtrusive.parse($('#frmVerifyEmailAddress'));
+                    }
+                    else {
+                        toastr.error(error.responseText, '', toasterOptions)
+                    }
+                });
+
+            });
+            $('#frmUserProfile').submit(function (event) {
+
+                event.preventDefault();
+
+                var form = $(this);
+
+                SubmitData(form, function (data) {
+
+                    if (data.phoneVerify == true) {
+                        GetPartialsView('/Manage/VerifyPhoneNumber', { phoneNumber: $('#PhoneNumber').val() }, '#frmUserProfile', function (data) {
+
+                            if (data) {
+                                $('#genericModalPopupContainer').html(data);
+                                //$('#verifyPhoneNumberError').html(data.message)
+                                $('#genericModalPopupDiv').modal('show');
+                                $.validator.unobtrusive.parse($('#frmVerifyPhoneNumber'));
+                            }
+                            else {
+                                toastr.error(error.responseText, '', toasterOptions)
+                            }
+                        });
+                    }
+                    else if (data.status == false) {
+                        toastr.error(data.message, '', toasterOptions)
+                    }
+                    else {
+                        toastr.success(data.message, '', toasterOptions)
+                        $('#userProfileImage').attr('src', data.profileImageUrl);
+                    }
+                });
+            });
+            $('#genericModalPopupContainer').delegate('#frmVerifyEmailAddress', 'submit', function (event) {
+                event.preventDefault();
+                var form = $(this);
+                SubmitData(form, function (data) {
+                    if (data.status == true) {
+                        $('#genericModalPopupDiv').modal('hide');
+                        toastr.success(data.message);
+                        window.location.href = "/Manage/MyAccount";
+                    }
+                    else if (data.status == false) {
+                        $('#verifyEmailAddressError').html(data.message)
+                        toastr.error(data.message)
+                    }
+                });
+            });
+            $('#genericModalPopupContainer').delegate('#resendEmailOTP', 'click', function (event) {
+
+                startSpinning('#verifyEmailAddress');
+
+                $.ajax({
+                    type: "GET",
+                    url: '/Manage/ResendEmailVerificationCode',
+                    data: { email: $('#Email').val() },
+                    async: true,
+                    success: function (response) {
+
+                        $('#verifyEmailAddressError').html(response.message);
+                        $('#HiddenCode').val(response.hiddenCode);
+                    },
+                    error: function (error) {
+
+                    }
+                }).always(function () {
+                    stopSpinning('#verifyEmailAddress');
+                });
+
+            });
+            $('#genericModalPopupContainer').delegate('#frmVerifyPhoneNumber', 'submit', function (event) {
+
+                event.preventDefault();
+                var form = $(this);
+
+                SubmitData(form, function (data) {
+
+                    if (data.status == true) {
+
+                        SubmitData($('#frmUserProfile'), function (profileData) {
+                            $('#genericModalPopupDiv').modal('hide');
+                            if (profileData.status == true) {
+                                toastr.success(profileData.message)
+                                $('#userProfileImage').attr('src', data.profileImageUrl);
+                                window.location.href = "/Manage/MyAccount";
+                            }
+                            else if (profileData.status == false) {
+                                toastr.error(profileData.message)
+                            }
+                        });
+                    }
+                    else if (data.status == false) {
+                        $('#verifyPhoneNumberError').html(data.message)
+                        toastr.error(data.message)
+                    }
+                });
+            });
+
+            $('#genericModalPopupContainer').delegate('#resendOTP', 'click', function (event) {
+
+                startSpinning('#verifyPhoneNumber');
+
+                $.ajax({
+                    type: "GET",
+                    url: '/Manage/ResendVerificationCode',
+                    data: { phoneNumber: $('#phoneNumber').val() },
+                    async: true,
+                    success: function (response) {
+                        $("#verifyEmailAddressError").html(response.message);
+                    },
+                    error: function (error) {
+
+                    }
+                }).always(function () {
+                    stopSpinning('#verifyPhoneNumber');
+                });
+
+            });
+
+
+            $('#frmGovernmentApprovedId').submit(function (e) {
+                e.preventDefault();
+                switch ($('#governMentIdType').val()) {
+                    case '2': { $('#txtExpiryDate').rules("add", "required"); break; };
+                    case '3': { $('#txtExpiryDate').rules("add", "required"); break; };
+                    default: { $('#txtExpiryDate').rules("remove", "required"); $('#txtExpiryDate-error').html(''); break; };
+                }
+
+                SubmitData($(this), function (data) {
+                    if (data.status == true) {
+                        toastr.success(data.message)
+                    }
+                    else if (data.status == false) {
+                        toastr.error(data.message)
+                    }
+                });
+            });
+
+            $('#frmUserPreference').submit(function (e) {
+                e.preventDefault();
+                var form = $(this);
+                SubmitData(form, function (data) {
+                    if (data.status == true) {
+                        toastr.success(data.message)
+                    }
+                    else if (data.status == false) {
+                        toastr.error(data.message)
+                    }
+                });
+            });
+
+
+            $('#frmSetPassword').submit(function (e) {
+                e.preventDefault();
+                var form = $(this);
+                SubmitData(form, function (data) {
+                    form[0].reset();
+                    if (data.status == true) {
+                        toastr.success(data.message)
+                    }
+                    else if (data.status == false) {
+                        toastr.error(data.message)
+                    }
+                });
+            });
+
+            $('#frmChangePassword').submit(function (e) {
+                e.preventDefault();
+                var form = $(this);
+                SubmitData(form, function (data) {
+                    form[0].reset();
+                    if (data.status == true) {
+                        toastr.success(data.message)
+                    }
+                    else if (data.status == false) {
+                        toastr.error(data.message)
+                    }
+                });
+            });
+
+
+            $("#ddlCountry").change(function () {
+
+                var ddlCountry = "#ddlCountry";
+                var ddlState = "#ddlState";
+                var ddlCity = "#ddlCity";
+
+                if ($(ddlCountry).val() != '') {
+
+                    var url = '/Manage/BindStates';
+                    $.getJSON(url, { countryId: $(ddlCountry).val() }, function (data) {
+
+                        $(ddlState).empty();
+                        $(ddlCity).empty();
+                        $(ddlState).append("<option value='-1'>Select State</option>");
+                        $.each(data.results, function (index, optionData) {
+                            $(ddlState).append("<option value='" + optionData.iStateId + "'>" + optionData.sState + "</option>");
+                        });
+                    });
+                }
+                else {
+
+                    $(ddlState).empty();
+                    $(ddlCity).empty();
+                }
+            });
+
+            $("#ddlState").change(function () {
+
+                var ddlState = "#ddlState";
+                var ddlCity = "#ddlCity";
+
+                if ($(ddlState).val() != '') {
+                    var url = '/Manage/BindCity';
+                    $.getJSON(url, { stateId: $(ddlState).val() }, function (data) {
+
+                        $(ddlCity).empty();
+                        $(ddlCity).append("<option value='-1'>Select City</option>");
+                        $.each(data.results, function (index, optionData) {
+                            $(ddlCity).append("<option value='" + optionData.sCity + "'>" + optionData.sCity + "</option>");
+                        });
+                    });
+                }
+                else {
+                    $(ddlCity).empty();
+                }
+            });
+
+            $('.cancel').click(function () {
+
+                $(this).resetValidation();
+            })
+
+
+            $('#governMentIdType').change(function () {
+
+                console.log($(this).val())
+                switch ($(this).val()) {
+
+                    case '1':
+                    case '4':
+                    case '5': {
+                        $('#ID_Number').val(null);
+                        $('#dvExpiryDate').hide();
+                        $('#txtExpiryDate').val(null);
+                        break;
+                    }
+                    case '2':
+                    case '3': {
+                        $('#ID_Number').val(null);
+                        $('#txtExpiryDate').val(null);
+                        $('#dvExpiryDate').show();
+                        break;
+                    };
+                    default: { $('#dvExpiryDate').hide(); break; };
+                }
+            });
+
+
+            $('.cancelMyAccountForm').click(function () {
+
+                startSpinning($('body'));
+                window.location.reload();
+            });
+
+        });
+
+        //$("#frmUserProfile").validate({
+        //    rules: {
+
+        //        CorporateEmail: {
+        //            email: true,
+        //            ValidateCorporateEmail: true
+        //        }
+        //    },
+        //    messages: {
+        //        CorporateEmail: { ValidateCorporateEmail: "Corporate Email can not be same as Email." }
+        //    }
+        //})
+    </script>
+
+}

@@ -1,0 +1,550 @@
+﻿@model OneFineRateBLL.Entities.PropDetailsM
+@{
+    ViewBag.Title = "BookingReview";
+}
+
+<style>
+    li{
+        list-style:disc !important;
+    }
+</style>
+
+
+@if (Model != null && Model.TG_Hotel != null)
+{
+
+    var roomDetail = Model.TG_Hotel.RoomDetails.Where(x => x.RoomId == Model.sRoomId).FirstOrDefault();
+
+
+    <style>
+        a:hover {
+            text-decoration: none;
+        }
+    </style>
+
+    <div class="thirdsection margintop10">
+
+        <div class="container" style="padding-left:0px !important; padding-right:0px !important;">
+            <div class="col-md-8 paddingtop-bottom15">
+                <div class="row">
+                    <div class="col-md-4 col-xs-12">
+                        <img src="@roomDetail.RoomImages[1]" onerror="this.src='/images/noImage.jpg';" style="height:200px; width:250px;">
+                    </div>
+                    <div class="col-md-8 col-xs-12">
+                        <h3 class="mar-padd0">@Model.TG_Hotel.HotelName</h3>
+                        <div class="margintop-10"> <img src="~/images/inner-star@(Model.iStarCategory).png"></div>
+                        <address>
+                            @Model.sPropertyAddress.TrimEnd(',')
+                            <div class="row">
+                                <div class="col-md-8 col-xs-8 reviwfacilityicon">
+                                    <div class="facilityicon">
+                                        <ul>
+                                            @foreach (var roomAmenity in roomDetail.RoomAmenities.Take(4))
+                                            {
+                                                <li><img src='@roomAmenity.sImgUrl' title="@roomAmenity.sRoomFacilites" style="height: 20px; width: 20px"></li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </address>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    @functions {
+
+        public static string GetDaySuffix(int day)
+        {
+            switch (day)
+            {
+                case 1:
+                case 21:
+                case 31:
+                    return "<sup>st</sup>";
+                case 2:
+                case 22:
+                    return "<sup>nd</sup>";
+                case 3:
+                case 23:
+                    return "<sup>rd</sup>";
+                default:
+                    return "<sup>th</sup>";
+            }
+
+        }
+
+        public static string GetFormattedDate(DateTime date)
+        {
+            return date.DayOfWeek + ", " + date.Day + GetDaySuffix(date.Day) + " " + date.ToString("MMM") + ", " + date.Year;
+        }
+    }
+
+    <div class="container">
+        <div class=" margintop30">
+            <div class="tablebluebg">Stay Summary of @((Model.dtCheckOut - Model.dtCheckIn).TotalDays) Night(s) from @Html.Raw(GetFormattedDate(Model.dtCheckIn)) to @Html.Raw(GetFormattedDate(Model.dtCheckOut)) </div>
+            <div class=" table-responsive">
+                <table class="table lightgrybg table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>ROOM TYPE</th>
+                            <th>ADULTS</th>
+                            <th>CHILDREN</th>
+                            <th>RATE/NIGHT</th>
+                            <th>EXTRA BED/NIGHT</th>
+                            <th class="width100">NIGHT(S)</th>
+                            <th>TOTAL PRICE</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+
+                                            var cancellation = Html.Raw("");
+                                            string rateInclusions = "";
+
+                                            int coutner = 0;
+                                            int numberOfNights = (Model.dtCheckOut - Model.dtCheckIn).Days;
+                                            var roomDataResult = new System.Web.Script.Serialization.JavaScriptSerializer().Deserialize<List<OneFineRateBLL.Entities.RoomData>>(Model.sRoomData);
+
+                                            decimal pricePerNight = Model.dSummaryRoomRate / roomDataResult.Count / numberOfNights;
+                                            var extraBedPricePerNight = Model.dSummaryExtraBedCharges / roomDataResult.Count / numberOfNights;
+                                            decimal overAllTotal = Model.dSummaryRoomRate + Model.dSummaryExtraBedCharges;
+                                            foreach (var roomdata in roomDataResult)
+                                            {
+                                                var id = string.Format("{0}{1}", "divInclusion", coutner);
+
+                                                <tr>
+                                                    <td><a href="javascript:void(0)" onclick="OpenPopUp('@roomDetail.RoomId')">@Model.sRoomName</a></td>
+                                                    <td>@roomdata.adult</td>
+                                                    <td>@roomdata.child</td>
+                                                    <td>
+                                                        @Model.Symbol @OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(pricePerNight * ViewBag.dExchangeRate) &nbsp;
+                                                        <a href="javascript:void(0);" title="Policies" rel="popover" data-id="@id">
+                                                            <img src="@Url.Content("~/images/info.png")">
+                                                        </a>
+                                                    </td>
+                                                    @if (extraBedPricePerNight != null)
+                                                    {
+                                                        <td>@Model.Symbol @OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(extraBedPricePerNight * ViewBag.dExchangeRate)</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td>0</td>
+                                                    }
+                                                    <td>@numberOfNights</td>
+                                                    <td>@Model.Symbol @(OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(((pricePerNight * numberOfNights) + (extraBedPricePerNight * numberOfNights)) * ViewBag.dExchangeRate))</td>
+                                                </tr>
+
+                                                if (roomDetail != null)
+                                                {
+                                                    foreach (var item in roomDetail.RatePlans)
+                                                    {
+                                                        //TO DO
+                                                        rateInclusions = item.RateInclusions + Environment.NewLine;
+                                                        cancellation = Html.Raw(item.CancellationPolicyDescription != null ? item.CancellationPolicyDescription.Replace(".", ".<br/>") : item.CancellationPolicyDescription);
+                                                    }
+                                                }
+
+                                <!-- Rate Inclusions pop up -->
+                                                <div style="display:none" id="@id">
+
+                                                    <h4 class="modal-title">Rate Inclusions</h4>
+
+                                                    <p>@rateInclusions</p>
+
+
+                                                    <h4 class="modal-title">Cancellation:</h4>
+
+                                                    <p>
+                                                        @cancellation
+                                                    </p>
+
+                                                </div>
+                                            }
+
+                        }
+
+                        <tr class="noborder">
+
+                            <td colspan="6"><span class="pull-right">Total : </span></td>
+                            <td> @Model.Symbol @OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(overAllTotal * ViewBag.dExchangeRate)</td>
+                        </tr>
+                        <tr class="noborder">
+
+                            <td colspan="6"><span class="pull-right"><a href="javascript:void(0)" onclick="OpenTaxes();">Taxes and Service Fees:</a></span></td>
+                            <td> @Model.Symbol @(OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated((Model.dSummaryTaxes + Model.dOFRServiceCharge.Value) * ViewBag.dExchangeRate))</td>
+                        </tr>
+                        <tr>
+
+                            <td class="noborder" colspan="6"><strong class="pull-right">Grand Total: </strong></td>
+                            <td class="noborder"><strong class="pull-left" id="spTotalAmt">@Model.Symbol @(OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated((Model.dSummaryTaxes + overAllTotal + Model.dOFRServiceCharge.Value) * ViewBag.dExchangeRate))</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="margintop30">
+            <div class="tablebluebg">Important Information</div>
+            <div class=" table-responsive table-bordered padding10 lightgrybg">
+                <ul>
+                    <li>
+                        Requests for bed types (King, Queen, 2 Doubles, etc.) including preferences like early check in, late check out, smoking room etc. are strictly at the discretion of the hotel and subject to availability and are not to be understood as guaranteed.
+                    </li>
+                    <li>
+                        Reservation is guaranteed for arrival on the confirmed date of check-in only. If you do not check-in on the first day of your reservation, the remainder of the stay will be deemed canceled too. No refund will be applicable.
+                    </li>
+                    <li>
+                        This reservation and the rate is governed by the Hotel’s cancellation policy.
+                    </li>
+                    <li>
+                        The reservation holder must present a valid Credit Card/ Debit Card at the time of check-in.
+                    </li>
+                    <li>
+                        According to government regulations, it is mandatory to present a valid Photo ID at check in by every person above the age of 18 staying at the hotel. A Driver's License, Voter's Card, Aadhar Card and Passport are all acceptable as identity proof. PLEASE NOTE PAN cards are not a valid ID. Without a valid photo ID with address, no guest will be allowed to check in.
+                    </li>
+                    <li>
+                        The primary guest checking in to the hotel must be at least 18 years of age.
+                    </li>
+                    <li>
+                        The inclusion of an extra bed with a booking is facilitated with a folding cot or a mattress.
+                    </li>
+                    <li>
+                        A booking cannot be canceled on or after the check in date and time mentioned in the Hotel Confirmation Voucher.
+                    </li>
+                    <li>
+                        The hotel reserves the right of admission. Accommodation can be denied to guests posing as a ' couple' if suitable proof of identification is not presented at check-in. OneFineRate will not be responsible for any check-in denied by the hotel due to the aforesaid reason.
+                    </li>
+                    <li>
+                        The hotel reserves the right of admission for local residents. Accommodation can be denied to guests residing in the same city. OneFineRate will not be responsible for any check-in denied by the hotel due to the aforesaid reason.
+                    </li>
+                    <li>
+                        For any update to a booking, cancellation/modification charges are applicable as per hotel policy
+                    </li>
+                    <li>
+                        All distances (Airport/Station etc.) are approximate and actual driving distances may vary based on the route taken.
+                    </li>
+                    <li>
+                        Hotels may charge a mandatory meal surcharge on festive periods e.g. Christmas, New Year's Eve etc.  All additional charges (including mandatory meal surcharges) need to be cleared directly at the hotel.
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="fill">
+        <div class=" form-inline">
+            <div class="form-group">
+                <input type="checkbox" class="checkbox " id="chkAgree">
+                <label for="chkAgree" style="cursor:pointer">
+                    I have read, accept and agree to abide by Onefinerate.com's
+                    <a href="javascript:void(0)" onclick="Opentc();">Terms and Conditions</a>,
+                    <a href="javascript:void(0)" onclick="OpenPP();">Privacy Policy</a>
+                    and <a href="javascript:void(0)" onclick="OpenHP();">Hotel Policy</a>
+                </label>
+            </div>
+        </div>
+    </div>
+    <!-- Terms and conditions pop up -->
+    <div id="divTC" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Terms and Conditions</h4>
+                </div>
+                <div class="modal-body">
+                    <p>This page states the Terms and Conditions under which you (Visitor) may visit this web site. Please read this page carefully. If you do not accept the Terms and Conditions stated here, we would request you to exit this site. FPHL or any of its business divisions and / or its subsidiaries, associate companies or subsidiaries to subsidiaries or such other investment companies (in India or abroad) reserve their respective rights to revise these Terms and Conditions at any time by updating this posting. You should visit this page periodically to re-appraise yourself of the Terms and Conditions, because they are binding on all users of this web site.</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- Privacy Policy pop up -->
+    <div id="divprivacupolicy" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Privacy Policy</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Our policy outlines the type of personal information we collect and receive, the circumstances in which we collect or receive personal information, the policies and procedures we have established outlining its use and storage, and for sharing certain types of personal information in certain limited circumstances, the procedures you should follow if you have any questions or requests in respect of your personal information or our policies and procedures and the person to whom such questions or requests should be directed, and the means by which to communicate with that person.</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div id="divHotelPolicy" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Hotel Policy</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Reservation must be amended/cancelled 72 hours prior to the planned date of arrival. Reservations cancelled within 72 hours of the arrival date will incur a cancellation charge of one night. Peak Season cancellation must be done at least 7 days prior to arrival date to qualify for no cancellation charge. For group of 5 rooms or more confirmation for the reservation would only be given on the basis of a valid credit card. In case of a no-show or cancellation/amendment of the conference/group (in part or full), within 15 days or less from the date of check-in, a retention charge will be levied. In addition, should any participants check-out early, retention will be charged for those nights booked, now being released due to the early check-out.</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div id="divTaxes" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Taxes and Service Fees</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        In connection with facilitating your hotel transaction when onefinerate charges your card, the charge to your payment method will include a charge for Taxes and Service Fees. This charge includes an estimated or anticipated amount to recover the amount we pay to the hotel in connection with your reservation for taxes owed by the hotel including, without limitation, sales and value added tax and/or other similar taxes. The amount paid to the hotel in connection with your reservation for taxes may vary from the amount we estimate and include, in the charge to you. The balance of the charge for Taxes and Service Fees is a fee we retain as part of the compensation for our services and to cover the costs of your reservation, including, for example, customer service costs. The charge for Taxes and Fees varies based on a number of factors including, without limitation, the amount we pay the hotel and the location of the hotel where you will be staying, and may include profit that we retain.
+                    </p>
+                    <p> Taxability and the appropriate tax rate and the type of applicable taxes vary greatly by location.<br />For transactions involving hotels located within certain jurisdictions, the amount charged to you for Taxes and Service Fees includes a payment of tax that we are required to collect and remit to the jurisdiction for tax owed on amounts we retain as compensation for our services.</p><p>
+                        Depending on the property you stay at you may also be charged for certain optional incidental fees, for example, parking charges, minibar charges, phone calls, room service and movie rentals, etc. These charges, if applicable, will be payable by you to the hotel directly in local currency at checkout. When you check in, a credit card or, in the hotel's discretion, a debit card will be required to secure these charges and fees that you may incur during your stay. Please contact the hotel directly as to whether and which charges or service fees apply.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+                                            var countryCodeList = OneFineRateBLL.BL_Country.GetAllCountryPhoneCodes();
+                                            Model.CountryCodePhoneList = countryCodeList;
+
+
+                                            if (User.Identity.IsAuthenticated || ViewBag.type == "G")
+                                            {
+                                                @Html.Partial("pUserInformation", Model)
+                                            }
+                                            else
+                                            {
+                                                <div id="divGuestDetailForm" style="display:none">
+                                                    @Html.Partial("pUserInformation")
+                                                </div>
+                                                <div class="container" id="divGuestLogin">
+                                                    <div class="col-md-12 center margintop10">
+                                                        <button type="button" id="btnRegisteredUserLogin" name="buttonType" value="login" disabled="" class="btn btn-inactive   btn-lg">Log In</button>
+                                                        <button type="button" id="btnGuestUserLogin" disabled="" name="buttonType" value="guest" class="btn btn-inactive  btn-lg">Continue as Guest</button>
+                                                    </div>
+                                                </div>
+
+                                            }
+
+                                            <div id="RoomDetails@(roomDetail.RoomId)" class="modal fade" role="dialog">
+                                                <div class="modal-dialog">
+
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                            <h4 class="hoteltitles">@roomDetail.RoomName</h4>
+                                                        </div>
+                                                        <div class="modal-body">
+
+                                                            <div class="row">
+                                                                <div class="col-md-5">
+
+                                                                    <div class="col-md-12 col-xs-12">
+                                                                        <img src="@roomDetail.RoomImages[1]" onerror="this.src='/images/noImage.jpg';" style="height:200px; width:250px;">
+                                                                    </div>
+
+                                                                    @if (!string.IsNullOrEmpty(roomDetail.sOutdoorLocation))
+                                                                    {
+                                                                        <div class="col-md-12"><b>View:</b> @roomDetail.sOutdoorLocation</div>
+                                                                    }
+
+                                                                </div>
+                                                                <div class="col-md-1"></div>
+                                                                <div class="col-md-6">
+                                                                    <div class="col-md-12 col-xs-12">
+
+                                                                        <table class="table-striped table-bordered">
+                                                                            <tr>
+                                                                                <td class="paddingleft5"><b>Room occupancy policy</b></td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td class="paddingleft5">
+                                                                                    <div class="col-md-12 col-xs-12">
+                                                                                        <div class="col-md-8 col-xs-8">Max Adult</div>
+                                                                                        <div class="col-md-1 col-xs-1">:</div>
+                                                                                        <div class="col-md-2 col-xs-2">@roomDetail.MaxAdult</div>
+                                                                                    </div>
+
+                                                                                    <div class="col-md-12 col-xs-12">
+                                                                                        <div class="col-md-8 col-xs-8">Max Child </div>
+                                                                                        <div class="col-md-1 col-xs-1">:</div>
+                                                                                        <div class="col-md-2 col-xs-2">@roomDetail.MaxChild</div>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+
+                                                                        </table>
+
+                                                                    </div>
+                                                                    <div style="width:100%" class="col-md-12 col-xs-12 pull-right">
+                                                                        <span class="red">*</span>
+                                                                        @if (roomDetail.HavingExtraBed)
+                                                                        {
+                                                                            <span>
+                                                                                Extra Bed Charge: <strong>@Model.Symbol @OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(roomDetail.ExtraBedCharge * ViewBag.dExchangeRate)</strong>
+                                                                            </span>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <span>
+                                                                                No Extra bed.
+                                                                            </span>
+                                                                        }
+                                                                    </div>
+                                                                    <div class="col-md-12 col-xs-12">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-12 col-sm-12  col-xs-12">
+
+                                                                    <div class="col-md-12 col-sm-12  col-xs-12">
+                                                                        <b>Room Features</b>
+                                                                    </div>
+                                                                    <div class="clearfix"></div>
+                                                                    @if (roomDetail.RoomAmenities != null)
+                                                                    {
+                                                                        foreach (var roomAmenity in roomDetail.RoomAmenities)
+                                                                        {
+                                                                            <div class="col-md-4">
+                                                                                <ul class="nomargin ">
+                                                                                    <li style="list-style:disc !important; padding:0px;">@roomAmenity.sRoomFacilites</li>
+                                                                                </ul>
+                                                                            </div>
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="marginbottom10">&nbsp;</div>
+
+                                            <script type="text/javascript">
+
+                                                var popover = $("[rel='popover']").popover({
+                                                    trigger: 'hover',
+                                                    html: 'true'
+                                                }).on('show.bs.popover', function () {
+                                                    popover.attr('data-content', $('#' + $(this).data('id')).html());
+                                                });
+
+
+                                                $(function () {
+                                                    $('[data-toggle="tooltip"]').tooltip();
+                                                    $('[data-toggle="popover"]').popover();
+                                                });
+
+
+                                            </script>
+
+
+                                            <script type="text/javascript">
+
+                                                function OpenHP() {
+                                                    $('#divHotelPolicy').modal({
+                                                        show: 'true'
+                                                    });
+                                                }
+                                                function Opentc() {
+
+                                                    $('#divTC').modal({
+                                                        show: 'true'
+                                                    });
+                                                }
+                                                function OpenPP() {
+                                                    $('#divprivacupolicy').modal({
+                                                        show: 'true'
+                                                    });
+                                                }
+                                                function OpenTaxes() {
+                                                    $('#divTaxes').modal({
+                                                        show: 'true'
+                                                    });
+                                                }
+                                                $(function () {
+                                                    $('#chkAgree').click(function () {
+                                                        if ($(this).is(':checked')) {
+                                                            $('#btnRegisteredUserLogin').removeAttr('disabled');
+                                                            $('#btnGuestUserLogin').removeAttr('disabled');
+                                                        } else {
+                                                            $('#btnRegisteredUserLogin').attr('disabled', 'disabled');
+                                                            $('#btnGuestUserLogin').attr('disabled', 'disabled');
+                                                        }
+                                                    });
+                                                });
+
+                                            </script>
+                                            <script type="text/javascript">
+
+                                                $(function () {
+
+                                                    $("#btnRegisteredUserLogin").click(function () {
+                                                        $('#hdnExternalLoginReturnUrl').val(window.location.href + '#frmUserDetails');
+                                                        $('#hdnLoginReturnUrl').val(window.location.href + '#frmUserDetails')
+                                                        $('.nav-tabs a[href="#signin"]').tab('show');
+                                                        //$('#accountPopupContainer').html('');
+                                                        $('#homePageLoginRegisterLink').click();
+                                                    });
+
+                                                    $("#btnGuestUserLogin").click(function () {
+                                                        //$('#accountPopupContainer').html('');
+                                                        $('#divGuestLogin').hide();
+                                                        $('#divGuestDetailForm').slideDown();
+
+                                                    });
+                                                });
+
+
+                                                function OpenPopUp(id) {
+
+                                                    $('#RoomDetails' + id).modal({
+                                                        show: 'true'
+                                                    });
+
+                                                    @*var url = '@Url.Action("RoomInformation","OfferReviewTG")?sVendorId=@Model.iVendorId&sRoomTypeId=@Model.sRoomId';
+            startSpinning();
+
+            $("#RoomDetails").load(url, function () {
+                stopSpinning();
+                $('#RoomDetails').modal({
+                    show: 'true'
+                });
+
+            });*@
+                                                }
+                                            </script>
+
+}
+else
+{
+    <div class="thirdsection margintop10">
+
+        <div class="container" style="padding-left:0px !important; padding-right:0px !important;">
+            <div class="col-md-8 paddingtop-bottom15">
+                <div class="row">
+                    <h2>No details found !!!</h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+}

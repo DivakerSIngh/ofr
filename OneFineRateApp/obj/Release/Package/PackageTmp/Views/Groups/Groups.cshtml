@@ -1,0 +1,438 @@
+﻿@{
+    ViewBag.Title = "Group Management";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+
+<link href="~/css/highCheckTree.css" rel="stylesheet" />
+<script src="~/js/highchecktree.js"></script>
+<script type="text/javascript">
+
+
+    $(document).ready(function () {
+
+        var mns = AjaxCallWithDataGET("/Services/Service.asmx/GetMenuForGroupMap?id=1");
+        var menus = $.parseJSON(mns.d);
+
+        $('#hdnData1').val(JSON.stringify(menus));
+
+
+        $('#chkdiv1').highCheckTree({
+            data: menus
+        });
+
+        mns = AjaxCallWithDataGET("/Services/Service.asmx/GetMenuForGroupMap?id=2");
+        menus = $.parseJSON(mns.d);
+
+        $('#hdnData2').val(JSON.stringify(menus));
+
+
+        $('#chkdiv2').highCheckTree({
+            data: menus
+        });
+
+
+        bindgrid(); //binding datatable
+
+        //Inserting data through Ajax
+        document.getElementById('frmGroups').onsubmit = function (e) {
+            e.preventDefault();
+            var f = document.getElementById('frmGroups');
+            if (f.checkValidity()) {
+                document.getElementById('Progress').style.display = 'block';
+
+                $('#chkdivup1').highCheckTree({
+                    data: JSON.parse($('#hdnData1').val())
+                });
+
+                $('#chkdivup2').highCheckTree({
+                    data: JSON.parse($('#hdnData2').val())
+                });
+
+                var chkd = [];
+                $('.checked').parent().each(function (index) {
+                    chkd.push($(this).attr('rel'));
+                });
+
+                $('.half_checked').parent().each(function (index) {
+                    chkd.push($(this).attr('rel'));
+                });
+
+                var values = {
+                    Groupname: $("#txtGroupName").val(),
+                    Desc: $("#txtDesc").val(),
+                    Active: $("#chkActive").is(':checked'),
+                    Menus: chkd.join()
+                };
+
+                var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("AddGroups")", values));
+                if (Data != null) {
+                    if (Data.st == '1') {
+                        bindgrid();
+                        resetAll();
+                        $('.close').click();
+                        toastr.success(Data.msg);
+                        return false;
+                    }
+                    else if (Data.st == '0') {
+                        toastr.error(Data.msg);
+                        return false;
+                    }
+                }
+            }
+        }
+        //Updating data through Ajax
+        document.getElementById('frmGroupsUpdate').onsubmit = function (e) {
+            e.preventDefault();
+            var f = document.getElementById('frmGroupsUpdate');
+            if (f.checkValidity()) {
+
+                document.getElementById('Progress').style.display = 'block';
+
+                $('#chkdiv1').highCheckTree({
+                    data: JSON.parse($('#hdnData1').val())
+                });
+
+                $('#chkdiv2').highCheckTree({
+                    data: JSON.parse($('#hdnData2').val())
+                });
+
+                var chkd = [];
+                $('.checked').parent().each(function (index) {
+                    chkd.push($(this).attr('rel'));
+                });
+
+                $('.half_checked').parent().each(function (index) {
+                    chkd.push($(this).attr('rel'));
+                });
+
+                var values = {
+                    Groupname: $("#txtGroupNameup").val(),
+                    Desc: $("#txtDescup").val(),
+                    Active: $("#chkActiveup").is(':checked'),
+                    id: $('#hdnId').val(),
+                    Menus: chkd.join()
+                };
+
+                var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("UpdateGroups")", values));
+                if (Data != null) {
+                    if (Data.st == '1') {
+                        bindgrid();
+                        //   $('#chkdivup').html('');
+                        //  resetform('frmGroupsUpdate');
+                        resetAll();
+                        $('.close').click();
+                        toastr.success(Data.msg);
+                        return true;
+                    }
+                    else if (Data.st == '0') {
+                        toastr.error(Data.msg);
+                        return false;
+                    }
+                }
+
+            }
+        }
+
+        //Pop up cancel button click event
+        $('#btnCancel').click(function () {
+            resetAll();
+            // resetform('frmGroups');
+            $('.close').click();
+        });
+    })
+
+    // Delete data from list
+    function DeleteData(id) {
+        bootbox.confirm("Are you sure?", function (result) {
+            if (result == true) {
+                document.getElementById('Progress').style.display = 'block';
+
+                var values = { id: id };
+                var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("DeleteGroups")", values));
+                if (Data != null) {
+                    if (Data.st == '1') {
+                        bindgrid();
+                        $('.close').click();
+                        toastr.success(Data.msg);
+                        return true;
+                    }
+                    else if (Data.st == '0') {
+                        toastr.error(Data.msg);
+                        return false;
+                    }
+
+                }
+            }
+        });
+    }
+
+    // bind list
+    function bindgrid() {
+
+        try {
+            var aoColumns =
+                [
+                 { "sTitle": "Group Name", "mData": "sGroupName" },
+                 { "sTitle": "Description", "mData": "sDescription", "bSortable": false },
+                 { "sTitle": "Status", "mData": "cStatus" },
+                 {
+                     "sTitle": "Created Date", "mData": "dtCreationDate", "bSortable": false,
+                     "mRender": function (data, type, full) {
+                         return getNorDateTime(data);
+                     }
+                 },
+                 { "sTitle": "Created By", "mData": "CreatedBy", "bSortable": false },
+                 {
+                     "sTitle": "Modify Date", "mData": "dtActionDate", "bSortable": false,
+                     "mRender": function (data, type, full) {
+                         return getNorDateTime(data);
+                     }
+                 },
+                 { "sTitle": "Modified By", "mData": "ActionBy", "bSortable": false },
+                 {
+                     "sTitle": "Edit", "mData": "iGroupId", "bSortable": false,
+                     "mRender": function (data, type, full) {
+                         var html = '<button type="button" onclick="EditData(this)"; ename=' + encodeURIComponent(full.sGroupName) + ' eid=' + encodeURIComponent(full.iGroupId) + ' eDesc=' + encodeURIComponent(full.sDescription) + ' eStatus=' + encodeURIComponent(full.cStatus) + ' class="btn btn-warning btn-sm">Edit</button>';
+                         //html += '<button type="button" onclick="DeleteData(' + data + ')";  class="btn btn-danger">Delete</button>';
+                         return html;
+                     }
+                 }
+                ];
+            DatatableServerSide("#tblData", aoColumns, "/Services/Service.asmx/GetAllGroups");
+            $('.dataTables_filter input').attr('title', 'Type here to search in the Group Name Column');
+        }
+        catch (e) {
+
+        }
+
+    }
+    //fill form on click edit in the list
+    function EditData(obj) {
+        $('#hdnId').val(decodeURIComponent($(obj).attr('eid')));
+        $("#txtGroupNameup").val(decodeURIComponent($(obj).attr('ename')));
+        $("#txtDescup").val(decodeURIComponent($(obj).attr('eDesc')));
+        if (decodeURIComponent($(obj).attr('eStatus')) == "Live")
+            $("#chkActiveup").prop("checked", true);
+        else
+            $("#chkActiveup").prop("checked", false);
+
+        var mnsup = AjaxCallWithDataGET("/Services/Service.asmx/GetGroupMappedMenus?id=" + decodeURIComponent($(obj).attr('eid')));
+        var menusup = $.parseJSON(mnsup.d);
+
+
+        var mns = JSON.parse($('#hdnData1').val());
+
+        for (var i = 0; i < menusup.length; i++) {
+            for (var j = 0; j < mns.length; j++) {
+                if (mns[j].item.id == menusup[i].id) {
+                    mns[j].item.checked = true;
+                    break;
+                }
+                for (var k = 0; k < mns[j].children.length; k++) {
+                    if (mns[j].children[k].item.id == menusup[i].id) {
+                        mns[j].children[k].item.checked = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+
+        $('#chkdivup1').highCheckTree({
+            data: mns
+        });
+
+        // mnsup = AjaxCallWithDataGET("/Services/Service.asmx/GetGroupMappedMenus?id=" + decodeURIComponent($(obj).attr('eid')));
+        // menusup = $.parseJSON(mnsup.d);
+
+
+        mns = JSON.parse($('#hdnData2').val());
+
+        for (var i = 0; i < menusup.length; i++) {
+            for (var j = 0; j < mns.length; j++) {
+                if (mns[j].item.id == menusup[i].id) {
+                    mns[j].item.checked = true;
+                    break;
+                }
+                for (var k = 0; k < mns[j].children.length; k++) {
+                    if (mns[j].children[k].item.id == menusup[i].id) {
+                        mns[j].children[k].item.checked = true;
+                        break;
+                    }
+
+                    for (var l = 0; l < mns[j].children[k].children.length; l++) {
+                        if (mns[j].children[k].children[l].item.id == menusup[i].id) {
+                            mns[j].children[k].children[l].item.checked = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+
+        $('#chkdivup2').highCheckTree({
+            data: mns
+        });
+
+        $(".expanded").click();
+
+        $('li:not(.updated)>.expanded').click();
+
+        $('#UpdateGroups').modal({
+            show: 'true'
+        });
+
+    }
+
+    function resetAll() {
+
+        $('#chkdiv1').highCheckTree({
+            data: JSON.parse($('#hdnData1').val())
+        });
+
+        $('#chkdiv2').highCheckTree({
+            data: JSON.parse($('#hdnData2').val())
+        });
+
+        var v = "";
+        $("#txtGroupName").val(v);
+        $("#txtDesc").val(v);
+    }
+
+</script>
+
+<div class="container margintop20">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-md-6">
+                    <h4 class="panel-title">
+                        Groups
+                    </h4>
+                </div>
+                <div class="col-md-6">
+                    <button type="button" class="btn btn-warning  pull-right" data-toggle="modal" data-target="#AddNewGroups"><i class="fa fa-plus"></i> Add Group </button>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+
+            <div class="table-responsive margintop20">
+                <table class="table table-striped table-bordered table-hover display" id="tblData"></table>
+            </div>
+            <!-- End  table -->
+        </div>
+    </div>
+    <!-- container div END bottom -->
+</div>
+<!-- Add Policy -->
+<form id="frmGroups">
+    <div id="AddNewGroups" class="modal fade" role="dialog">
+        @Html.Hidden("hdnData1");
+        @Html.Hidden("hdnData2");
+        <div class="modal-dialog" style="width:800px">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" onclick="resetAll();">&times;</button>
+                    <h4 class="modal-title">Groups</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-3" style="width:22%;">
+                            <span class="star">*</span> Group Name
+                        </div>
+                        <div class="col-xs-9">
+                            @Html.TextBox("txtGroupName", null, new { @class = "form-control", oninvalid = "setCustomValidity('Only Alphabets are allowed.Special Characters,Spaces and Numerics are not allowed')", onchange = "try{setCustomValidity('')}catch(e){}", pattern = "^[a-zA-Z]+[a-zA-Z0-9 ]*$", maxlength = "50", required = true })
+                        </div>
+                        <div class="col-xs-3 margintop10" style="width:22%;">
+                            <span class="star">*</span> Description
+                        </div>
+                        <div class="col-xs-9 margintop10">
+                            @Html.TextBox("txtDesc", null, new { @class = "form-control", oninvalid = "setCustomValidity('Either alphabets or alphabets with numerics are allowed.')", onchange = "try{setCustomValidity('')}catch(e){}", pattern = "^[a-zA-Z]+[a-zA-Z0-9 ]*$", maxlength = "500", required = true })
+                        </div>
+                        <div class="col-xs-3" style="width:22%;">
+
+                        </div>
+                        <div class="col-xs-9">
+                            @Html.CheckBox("chkActive") Active
+                        </div>
+                        <div class="col-xs-6">
+                            <b> Admin Rights</b>
+                        </div>
+                        <div class="col-xs-6">
+                            <b> Extranet Rights</b>
+                        </div>
+                        <div id="chkdiv1" class="col-xs-6">
+                        </div>
+                        <div id="chkdiv2" class="col-xs-6">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="btnSubmit" class="btn btn-primary">Save</button>
+                    <button type="button" id="btnCancel" class="btn btn-danger">Cancel</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+<!-- Update Countries -->
+<form id="frmGroupsUpdate">
+    @Html.Hidden("hdnId")
+    <div id="UpdateGroups" class="modal fade" role="dialog">
+        <div class="modal-dialog" style="width:800px">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" onclick="resetAll();">&times;</button>
+                    <h4 class="modal-title">Update Group</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-3" style="width:22%;">
+                            <span class="star">*</span> Group Name
+                        </div>
+                        <div class="col-xs-8">
+                            @Html.TextBox("txtGroupNameup", null, new { @class = "form-control", oninvalid = "setCustomValidity('No special characters allowed')", onchange = "try{setCustomValidity('')}catch(e){}", maxlength = "50", required = true, disabled = "true" })
+                        </div>
+                        <div class="col-xs-3 margintop10" style="width:22%;">
+                            <span class="star">*</span> Description
+                        </div>
+                        <div class="col-xs-8 margintop10">
+                            @Html.TextBox("txtDescup", null, new { @class = "form-control", oninvalid = "setCustomValidity('Description is required')", onchange = "try{setCustomValidity('')}catch(e){}", pattern = "^[a-zA-Z]+[a-zA-Z0-9 ]*$", maxlength = "500", required = true })
+                        </div>
+                        <div class="col-xs-4">
+
+                        </div>
+                        <div class="col-xs-8">
+                            @Html.CheckBox("chkActiveup") Active
+                        </div>
+                        <div class="col-xs-6">
+                            <b>  Admin Rights</b>
+                        </div>
+                        <div class="col-xs-6">
+                            <b>Extranet Rights</b>
+                        </div>
+                        <div id="chkdivup1" class="col-xs-6">
+                        </div>
+                        <div id="chkdivup2" class="col-xs-6">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="btnUpdate" class="btn btn-primary">Update</button>
+                    <button type="button" id="btnCancel" class="btn btn-danger" onclick="$('.close').click(); ">Cancel</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+
+
+
+
+

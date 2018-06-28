@@ -1,0 +1,15 @@
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\TripAdvisorMonthlyReport\bin\Debug\TripAdvisorMonthlyReport.exe.config
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\TripAdvisorMonthlyReport\bin\Debug\TripAdvisorMonthlyReport.exe
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\TripAdvisorMonthlyReport\bin\Debug\TripAdvisorMonthlyReport.pdb
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\TripAdvisorMonthlyReport\bin\Debug\ClosedXML.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\TripAdvisorMonthlyReport\bin\Debug\DocumentFormat.OpenXml.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\TripAdvisorMonthlyReport\bin\Debug\DocumentFormat.OpenXml.xml
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\TripAdvisorMonthlyReport\obj\Debug\TripAdvisorMonthlyReport.csprojResolveAssemblyReference.cache
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\TripAdvisorMonthlyReport\obj\Debug\TripAdvisorMonthlyReport.csproj.CoreCompileInputs.cache
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\TripAdvisorMonthlyReport\obj\Debug\TripAdvisorMonthlyReport.exe
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\TripAdvisorMonthlyReport\obj\Debug\TripAdvisorMonthlyReport.pdb
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\TripAdvisorMonthlyReport\bin\Debug\BouncyCastle.Crypto.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\TripAdvisorMonthlyReport\bin\Debug\MailKit.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\TripAdvisorMonthlyReport\bin\Debug\MimeKit.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\TripAdvisorMonthlyReport\bin\Debug\MailKit.xml
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\TripAdvisorMonthlyReport\bin\Debug\MimeKit.xml

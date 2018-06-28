@@ -1,0 +1,1098 @@
+﻿
+@model   OneFineRateBLL.Entities.PropDetailsM
+@using System.Globalization;
+@*<script src="~/js/bootstrap-number_offerReview.js"></script>*@
+
+
+<style>
+    .textboxborder-0px {
+        border: 0px;
+        width: 90%;
+    }
+
+    .rateinclusion {
+        right: 5%;
+        top: 4%;
+    }
+
+    .cancelation {
+        position: absolute;
+        right: 5%;
+        bottom: 0%;
+    }
+
+    .margintop10_New {
+        margin-top: 10px;
+    }
+</style>
+
+<style>
+    #divwhole_temp {
+        width: 290px;
+        display: none;
+        border: 1px solid #d1d1d1;
+        background-color: #fff;
+        position: absolute;
+        top: 70px;
+        right: 15%;
+        height: 280px;
+        overflow: auto;
+        color: #000;
+        z-index: 10;
+    }
+
+    /*.childli {
+        float: left;
+        width: 120px;
+        margin-right: 14px;
+        margin-top: 10px;
+    }*/
+</style>
+
+
+@using (Html.BeginForm("Corporate", "Corporate", FormMethod.Post, new { id = "frmBooking" }))
+{
+    int RCountIndex = 0;
+    int CCountIndex = 0;
+    if (@Model.lstetblRooms.Count > 0)
+    {
+
+        @Html.HiddenFor(m => Model.sActionType, new { id = "hdnActionType" })
+
+        @Html.HiddenFor(m => Model.sOccuDataModified, new { id = "hdnoccudata" })
+
+        <div class="row">
+            <div class="col-md-12">
+                <h4>
+                    Choose any Room and Rate of your choice.<br />
+                    Select the number of room(s) within the room category
+                </h4>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-9 col-md-9" id="rooms">
+
+                @for (int i = 0; i < Model.lstetblRooms.Count; i++)
+                {
+                    <div class=" borderleftright hotelsectionbg bordertop  margintop10" id="divRooms-@Model.lstetblRooms[i].iRoomId-@Model.lstetblRooms[i].sRoomName">
+
+                        <div class="col-md-4 ">
+                            <img src='@Model.lstetblRooms[i].sRoomImgUrl'
+                                 alt="Image" class="imgheight132" onerror="this.src = '../images/noImage.jpg'">
+                        </div>
+                        <div class="col-md-5  ">
+
+                            <h4><a href="javascript:void(0);" class="hoteltitles" onclick="OpenPopUp('@Model.iPropId','@Model.lstetblRooms[i].iRoomId')">@Model.lstetblRooms[i].sRoomName</a></h4>
+                            <div class=" facilityicon margintop-10">
+                                <ul>
+                                    @{ int countfacility = 0; int MaxFacility = 4; }
+                                    @if (!String.IsNullOrEmpty(Model.lstetblRooms[i].Amen1))
+                                    {
+                                        <li>
+                                            <img src='@Model.lstetblRooms[i].Amen1.Split(',')[1]' title="@Model.lstetblRooms[i].Amen1.Split(',')[0]" id="iconPreview" style="height: 20px; width: 20px">
+                                        </li>
+
+                                        countfacility++;
+                                    }
+                                    @if (!String.IsNullOrEmpty(Model.lstetblRooms[i].Amen2))
+                                    {
+                                        <li>
+                                            <img src='@Model.lstetblRooms[i].Amen2.Split(',')[1]' title="@Model.lstetblRooms[i].Amen2.Split(',')[0]" id="iconPreview" style="height: 20px; width: 20px">
+                                        </li>
+                                        countfacility++;
+                                    }
+                                    @if (!String.IsNullOrEmpty(Model.lstetblRooms[i].Amen3))
+                                    {
+                                        <li>
+                                            <img src='@Model.lstetblRooms[i].Amen3.Split(',')[1]' title="@Model.lstetblRooms[i].Amen3.Split(',')[0]" id="iconPreview" style="height: 20px; width: 20px">
+                                        </li>
+                                        countfacility++;
+                                    }
+                                    @if (!String.IsNullOrEmpty(Model.lstetblRooms[i].Amen4))
+                                    {
+                                        <li>
+                                            <img src='@Model.lstetblRooms[i].Amen4.Split(',')[1]' title="@Model.lstetblRooms[i].Amen4.Split(',')[0]" id="iconPreview" style="height: 20px; width: 20px">
+                                        </li>
+                                        countfacility++;
+                                    }
+
+                                    @if (!String.IsNullOrEmpty(Model.lstetblRooms[i].Amen5) && countfacility < MaxFacility)
+                                    {
+                                        <li>
+                                            <img src='@Model.lstetblRooms[i].Amen5.Split(',')[1]' title="@Model.lstetblRooms[i].Amen5.Split(',')[0]" id="iconPreview" style="height: 20px; width: 20px">
+                                        </li>
+                                        countfacility++;
+                                    }
+                                    @if (!String.IsNullOrEmpty(Model.lstetblRooms[i].Amen6) && countfacility < MaxFacility)
+                                    {
+                                        <li>
+                                            <img src='@Model.lstetblRooms[i].Amen6.Split(',')[1]' title="@Model.lstetblRooms[i].Amen6.Split(',')[0]" id="iconPreview" style="height: 20px; width: 20px">
+                                        </li>
+                                        countfacility++;
+                                    }
+                                    @if (!String.IsNullOrEmpty(Model.lstetblRooms[i].Amen7) && countfacility < MaxFacility)
+                                    {
+                                        <li>
+                                            <img src='@Model.lstetblRooms[i].Amen7.Split(',')[1]' title="@Model.lstetblRooms[i].Amen7.Split(',')[0]" id="iconPreview" style="height: 20px; width: 20px">
+                                        </li>
+                                        countfacility++;
+                                    }
+                                    @if (!String.IsNullOrEmpty(Model.lstetblRooms[i].Amen8) && countfacility < MaxFacility)
+                                    {
+                                        <li>
+                                            <img src='@Model.lstetblRooms[i].Amen8.Split(',')[1]' title="@Model.lstetblRooms[i].Amen8.Split(',')[0]" id="iconPreview" style="height: 20px; width: 20px">
+                                        </li>
+                                        countfacility++;
+                                    }
+
+                                </ul>
+                            </div>
+
+
+                        </div>
+
+                        <div class="col-md-3 marginbottom10 ">
+                            <div class="font13 margin-9 margintop10   offerimg">
+                                <ul class="lineheight13 pull-right">
+
+                                    @{
+
+                    if (@Model.lstetblRooms[i].MaxExtraBeds > 0)
+                    {
+                        <li>
+                            Extra Bed Charge: <strong>
+                                @Model.Symbol
+
+                                @OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(Model.lstetblRooms[i].ExtraBedCharges)
+                            </strong>
+                        </li>
+                    }
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-8  hotelsectionbg">
+
+                            Rates given below are per room per night<br />
+                            @{
+
+                                <span>Taxes and charges are not included. </span>
+
+                            }
+
+
+
+                        </div>
+                        @{
+
+                    int Count = 0;
+                        }
+                        @for (int rp = 0; rp < Model.lstetblRooms[i].lstRatePlan.Count; rp++)
+                        {
+
+                            int roomid = Convert.ToInt32(Model.lstetblRooms[i].lstRatePlan[rp].iRoomId);
+                            int RPID = Convert.ToInt32(Model.lstetblRooms[i].lstRatePlan[rp].RPID);
+
+
+                            if (Count == 0)
+                            {
+                                <div id="divRatePlan-@Model.lstetblRooms[i].lstRatePlan[rp].RPID">
+
+                                    <div class=" table  table-responsive marginbottom-20">
+
+                                        <table class=" table table-bordered lightbg">
+                                            <thead class="tableheadingbg">
+                                                <tr>
+                                                    <td>Occupancy</td>
+                                                    <td>Rate</td>
+                                                    <td>Select Room(s)</td>
+                                                    <td>Adults / Children per Room</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                                @{
+                                System.Text.StringBuilder taxStringBuilder = new System.Text.StringBuilder();
+                                for (int lstRoomTaxes = 0; lstRoomTaxes < Model.lstetblRooms[i].lstRoomTaxes.Count; lstRoomTaxes++)
+                                {
+                                    taxStringBuilder.Append(Model.lstetblRooms[i].lstRoomTaxes[lstRoomTaxes].Tax);
+                                    taxStringBuilder.Append(",");
+                                }
+                                                }
+
+                                                @for (int lstOcc = 0; lstOcc < Model.lstetblRooms[i].lstRatePlan[rp].lstetblOccupancy.Count; lstOcc++)
+                                                {
+                                                    decimal baseprice = @Model.lstetblRooms[i].lstRatePlan[rp].lstetblOccupancy[lstOcc].dBasePrice;
+                                                    var price = @Model.lstetblRooms[i].lstRatePlan[rp].lstetblOccupancy[lstOcc].dPrice;
+                                                    decimal dPriceRP = @Convert.ToDecimal(Model.lstetblRooms[i].lstRatePlan[rp].lstetblOccupancy[lstOcc].dPriceRP);
+                                                    var ExtraBedNumber = @Model.lstetblRooms[i].lstRatePlan[rp].lstetblOccupancy[lstOcc].ExtraBeds;
+                                                    var ExtraBedCharges = @Model.lstetblRooms[i].ExtraBedCharges;
+                                                    var adults = @Model.lstetblRooms[i].lstRatePlan[rp].lstetblOccupancy[lstOcc].iAdults;
+                                                    var children = @Model.lstetblRooms[i].lstRatePlan[rp].lstetblOccupancy[lstOcc].iChildrens;
+                                                    var occupancy = @Model.lstetblRooms[i].lstRatePlan[rp].lstetblOccupancy[lstOcc].iOccupancy;
+                                                    var totalCount = @Model.lstetblRooms[i].lstRatePlan[rp].lstetblOccupancy[lstOcc].Cnt;
+                                                    decimal taxes = @Convert.ToDecimal(Model.lstetblRooms[i].lstRatePlan[rp].lstetblOccupancy[lstOcc].dTaxes);
+                                                    int Inventory = @Convert.ToInt32(Model.lstetblRooms[i].iAvailableInventory);
+                                                    var totaladults = occupancy - ExtraBedNumber;
+                                                    var totalchilds = occupancy - ExtraBedNumber - adults;
+                                                    var AdultChildStr = adults + " Adults," + children + " Child";
+
+
+                                                    <tr id="trOccupancy-@Model.lstetblRooms[i].iRoomId">
+
+                                                        <td style="width:20%;">
+
+                                                            @{
+                                                    if (ExtraBedNumber == 0)
+                                                    {
+                                                        totalchilds = occupancy - adults;
+                                                        totaladults = adults;
+
+                                                    }
+                                                            }
+                                                            @for (var j = 1; j <= totaladults; j++)
+                                                            {
+                                                                @Html.Raw("<span class='glyphicon glyphicon-user'></span>");
+                                                            }
+                                                            @for (var j = 1; j <= totalchilds; j++)
+                                                            {
+                                                                @Html.Raw("<i class='fa fa-child' aria-hidden='true'></i>");
+                                                            }
+
+                                                            @for (var j = 1; j <= ExtraBedNumber; j++)
+                                                            {
+                                                                @Html.Raw("+ <a><i class='fa fa-bed fontsize26' aria-hidden='true'></i></a>");
+                                                            }
+
+                                                        </td>
+                                                        <td class="bluetext font17" style="width:30%;">
+                                                            <strong>
+                                                                @Model.Symbol
+                                                                @{
+                                                    string ShowPrice = OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(baseprice);
+                                                                }
+                                                                @ShowPrice
+                                                            </strong>
+                                                            @if (Model.lstetblRooms[i].lstRatePlan[rp].lstetblOccupancy[lstOcc].blsPromo)
+                                                            {
+
+                                                                if (dPriceRP > baseprice)
+                                                                {  <span class="srchbluestrickedtext paddingleft5">
+                                                                    @{
+                                                                        @Model.Symbol
+                                                                    string OPrice = OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(dPriceRP);
+                                                                    @OPrice
+                                                                    }
+                                                                </span>
+                                                                }
+
+                                                                <span style="color:red" class="paddingleft5">
+                                                                    <img src="~/images/sale.png" />
+                                                                </span>
+                                                            }
+                                                        </td>
+                                                        <td style="width:20%;">
+                                                            <div class="input-group width110" id="divparent">
+                                                                @Html.TextBoxFor(m => Model.lstetblRooms[i].lstRatePlan[rp].lstetblOccupancy[lstOcc].iNoOfRooms, new { @readonly = "", @class = "txtRooms form-control", type = "number", Id = "txtNoOfRooms", name = "txtNoOfRooms", data_tax = taxStringBuilder, data_price = price, data_ExtraBedNumber = ExtraBedNumber, data_ExtraBedCharges = ExtraBedCharges, min = "0", max = Inventory, occupancy = occupancy, ACstring = AdultChildStr, dTaxes = taxes, roomid = roomid })
+                                                            </div>
+
+                                                        </td>
+                                                        <td>
+                                                            @AdultChildStr
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+
+                                    <div class="padding5 margintop10 ptop10">
+                                        <span class="pull-left"><strong>Rate Inclusions : &nbsp;</strong></span>
+                                        <div class="divRateInclusions">
+
+                                            @{
+                                if (Model.lstetblRooms[i].lstRatePlan[rp].RateInclusion.Length > 125)
+                                {
+                                    @Html.Raw(Model.lstetblRooms[i].lstRatePlan[rp].RateInclusion.Substring(0, 125).Replace("|", ", ") + "...")
+                                    RCountIndex++;
+
+                                    <div class="pull-right paddingright10"><a href="javascript:void(0);" onclick="OpenRI('@RCountIndex');">More</a></div>
+
+                                    var id = string.Format(@"{0}{1}", "divRateInclusion", RCountIndex);
+                                    <div id="@id" class="modal fade" role="dialog">
+                                        <div class="modal-dialog">
+                                            <!-- Modal content-->
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    <h4 class="modal-title">Rate Inclusions</h4>
+                                                </div>
+                                                @{
+                                    string rateInclusions = Model.lstetblRooms[i].lstRatePlan[rp].RateInclusion.TrimEnd('\r', '\n').Replace(Environment.NewLine, "<br/>").Replace("\"", "\'").Replace("|", "</br>");
+                                                }
+                                                <div class="modal-body">
+                                                    @Html.Raw(rateInclusions)
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    string rateInclusions = Model.lstetblRooms[i].lstRatePlan[rp].RateInclusion.Replace("|", ", ");
+                                    @Html.Raw(rateInclusions)
+                                }
+                                            }
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="clear clearfix"></div>
+
+                                    @{
+                                List<string> lst = new List<string>();
+
+                                for (int lstCancellation = 0; lstCancellation < Model.lstetblRooms[i].lstRatePlan[rp].lstCancellationPolcy.Count; lstCancellation++)
+                                {
+
+                                    lst.Add(Model.lstetblRooms[i].lstRatePlan[rp].lstCancellationPolcy[lstCancellation].CancellationMsg);
+
+                                }
+                                    }
+                                    <div class="padding5 ">
+                                        <span class="pull-left"><strong>Cancellation : &nbsp;</strong></span>
+                                        <div class="divCancellation">
+                                            @{
+                                System.Text.StringBuilder CancelStringBuilder = new System.Text.StringBuilder();
+                                var lstnew = lst.Distinct().ToList();
+                                if (lstnew.Count > 0)
+                                {
+
+                                    foreach (var item in lstnew)
+                                    {
+                                        CancelStringBuilder.Append(item.Replace(".", ","));
+                                        CancelStringBuilder.Append("| ");
+                                    }
+                                }
+
+                                if (CancelStringBuilder.ToString().Length > 125)
+                                {
+                                    @Html.Raw(CancelStringBuilder.ToString().Substring(0, 125).Replace(",", ".").Replace("|", ".") + "...")
+                                    CCountIndex++;
+
+                                    <div class="pull-right paddingright10"><a href="javascript:void(0);" onclick="OpenCP('@CCountIndex');">More</a></div>
+
+                                    var id = string.Format(@"{0}{1}", "divCancelationPolicy", CCountIndex);
+                                    <div id="@id" class="modal fade" role="dialog">
+                                        <div class="modal-dialog">
+                                            <!-- Modal content-->
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    <h4 class="modal-title">Cancellation Policy</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    @Html.Raw(CancelStringBuilder.ToString().Replace(",", ".").Replace("|", ".<br/>"))
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    if (CancelStringBuilder.ToString().Trim().ToLower().Contains("refundable"))
+                                    {
+                                        <span style="color:red;">@Html.Raw(CancelStringBuilder.ToString().Replace(",", ".").Replace("|", "."))</span>
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw(CancelStringBuilder.ToString().Replace(",", ".").Replace("|", "."))
+                                    }
+
+                                }
+
+                                            }
+
+                                        </div>
+
+                                    </div>
+
+
+
+                                </div>
+                            }
+                            else
+                            {
+                                <div id="divRatePlan-@Model.lstetblRooms[i].lstRatePlan[rp].RPID" class="whtbdrtop10">
+
+                                    <div class=" table  table-responsive marginbottom-20">
+
+                                        <table class=" table table-bordered lightbg">
+                                            <thead class="tableheadingbg">
+                                                <tr>
+                                                    <td>Occupancy</td>
+                                                    <td>Rate</td>
+                                                    <td>Select Room(s)</td>
+                                                    <td>Adults / Children per Room</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                                @{
+                                System.Text.StringBuilder taxStringBuilder = new System.Text.StringBuilder();
+                                for (int lstRoomTaxes = 0; lstRoomTaxes < Model.lstetblRooms[i].lstRoomTaxes.Count; lstRoomTaxes++)
+                                {
+                                    taxStringBuilder.Append(Model.lstetblRooms[i].lstRoomTaxes[lstRoomTaxes].Tax);
+                                    taxStringBuilder.Append(",");
+                                }
+                                                }
+
+                                                @for (int lstOcc = 0; lstOcc < Model.lstetblRooms[i].lstRatePlan[rp].lstetblOccupancy.Count; lstOcc++)
+                                                {
+                                                    decimal baseprice = @Model.lstetblRooms[i].lstRatePlan[rp].lstetblOccupancy[lstOcc].dBasePrice;
+                                                    var price = @Model.lstetblRooms[i].lstRatePlan[rp].lstetblOccupancy[lstOcc].dBasePrice;
+                                                    decimal dPriceRP = @Convert.ToDecimal(Model.lstetblRooms[i].lstRatePlan[rp].lstetblOccupancy[lstOcc].dPriceRP);
+                                                    var ExtraBedNumber = @Model.lstetblRooms[i].lstRatePlan[rp].lstetblOccupancy[lstOcc].ExtraBeds;
+                                                    var ExtraBedCharges = @Model.lstetblRooms[i].ExtraBedCharges;
+                                                    var adults = @Model.lstetblRooms[i].lstRatePlan[rp].lstetblOccupancy[lstOcc].iAdults;
+                                                    var children = @Model.lstetblRooms[i].lstRatePlan[rp].lstetblOccupancy[lstOcc].iChildrens;
+                                                    var occupancy = @Model.lstetblRooms[i].lstRatePlan[rp].lstetblOccupancy[lstOcc].iOccupancy;
+                                                    var totalCount = @Model.lstetblRooms[i].lstRatePlan[rp].lstetblOccupancy[lstOcc].Cnt;
+                                                    decimal taxes = @Convert.ToDecimal(Model.lstetblRooms[i].lstRatePlan[rp].lstetblOccupancy[lstOcc].dTaxes);
+                                                    int Inventory = @Convert.ToInt32(Model.lstetblRooms[i].iAvailableInventory);
+                                                    var totaladults = occupancy - ExtraBedNumber;
+                                                    var totalchilds = occupancy - ExtraBedNumber - adults;
+                                                    var AdultChildStr = adults + " Adults," + children + " Child";
+
+
+                                                    <tr id="trOccupancy-@Model.lstetblRooms[i].iRoomId">
+
+
+
+
+                                                        <td style="width:20%;">
+
+                                                            @{
+                                                    if (ExtraBedNumber == 0)
+                                                    {
+                                                        totalchilds = occupancy - adults;
+                                                        totaladults = adults;
+
+                                                    }
+                                                            }
+                                                            @for (var j = 1; j <= totaladults; j++)
+                                                            {
+                                                                @Html.Raw("<span class='glyphicon glyphicon-user'></span>");
+                                                            }
+                                                            @for (var j = 1; j <= totalchilds; j++)
+                                                            {
+                                                                @Html.Raw("<i class='fa fa-child' aria-hidden='true'></i>");
+                                                            }
+
+                                                            @for (var j = 1; j <= ExtraBedNumber; j++)
+                                                            {
+                                                                @Html.Raw("+ <a><i class='fa fa-bed fontsize26' aria-hidden='true'></i></a>");
+                                                            }
+
+                                                        </td>
+                                                        <td class="bluetext font17" style="width:30%;">
+                                                            <strong>
+                                                                @Model.Symbol
+                                                                @{
+                                                    string ShowPrice = OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(baseprice);
+                                                                }
+                                                                @ShowPrice
+                                                            </strong>
+                                                            @if (Model.lstetblRooms[i].lstRatePlan[rp].lstetblOccupancy[lstOcc].blsPromo)
+                                                            {
+                                                                if (dPriceRP > baseprice)
+                                                                {  <span class="paddingleft5 srchbluestrickedtext">
+                                                                    @{
+                                                                        @Model.Symbol
+                                                                    string OPrice = OneFineRateAppUtil.clsUtils.ConvertNumberToCommaSeprated(dPriceRP);
+                                                                    @OPrice
+                                                                    }
+                                                                </span>
+                                                                }
+                                                                <span class="red paddingleft5">
+                                                                    <img src="~/images/sale.png" />
+                                                                </span>
+                                                            }
+                                                        </td>
+                                                        <td style="width:20%;">
+                                                            <div class="input-group width110" id="divparent">
+                                                                @Html.TextBoxFor(m => Model.lstetblRooms[i].lstRatePlan[rp].lstetblOccupancy[lstOcc].iNoOfRooms, new { @readonly = "", @class = "txtRooms form-control", type = "number", Id = "txtNoOfRooms", name = "txtNoOfRooms", data_tax = taxStringBuilder, data_price = price, data_ExtraBedNumber = ExtraBedNumber, data_ExtraBedCharges = ExtraBedCharges, min = "0", max = Inventory, occupancy = occupancy, ACstring = AdultChildStr, dTaxes = taxes, roomid = roomid })
+                                                            </div>
+
+                                                        </td>
+                                                        <td>
+                                                            @AdultChildStr
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+
+                                    <div class="padding5 margintop10 ptop10">
+                                        <span class="pull-left"><strong>Rate Inclusions : &nbsp;</strong></span>
+                                        <div class="divRateInclusions">
+
+                                            @{
+                                if (Model.lstetblRooms[i].lstRatePlan[rp].RateInclusion.Length > 125)
+                                {
+                                    @Html.Raw(Model.lstetblRooms[i].lstRatePlan[rp].RateInclusion.Substring(0, 125).Replace("|", ",") + "...")
+                                    RCountIndex++;
+
+                                    <div class="pull-right paddingright10"><a href="javascript:void(0);" onclick="OpenRI('@RCountIndex');">More</a></div>
+
+                                    var id = string.Format(@"{0}{1}", "divRateInclusion", RCountIndex);
+                                    <div id="@id" class="modal fade" role="dialog">
+                                        <div class="modal-dialog">
+                                            <!-- Modal content-->
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    <h4 class="modal-title">Rate Inclusions</h4>
+                                                </div>
+                                                @{
+                                    string rateInclusions = Model.lstetblRooms[i].lstRatePlan[rp].RateInclusion.TrimEnd('\r', '\n').Replace(Environment.NewLine, "<br/>").Replace("\"", "\'").Replace("|", "</br>");
+                                                }
+                                                <div class="modal-body">
+                                                    @Html.Raw(rateInclusions)
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    @Html.Raw(Model.lstetblRooms[i].lstRatePlan[rp].RateInclusion.Replace("|", ","))
+
+                                }
+                                            }
+
+                                        </div>
+
+                                    </div>
+
+                                    @{
+                                List<string> lst = new List<string>();
+
+                                for (int lstCancellation = 0; lstCancellation < Model.lstetblRooms[i].lstRatePlan[rp].lstCancellationPolcy.Count; lstCancellation++)
+                                {
+
+                                    lst.Add(Model.lstetblRooms[i].lstRatePlan[rp].lstCancellationPolcy[lstCancellation].CancellationMsg);
+
+                                }
+                                    }
+                                    <div class="padding5 ">
+                                        <span class="pull-left"><strong>Cancellation : &nbsp;</strong></span>
+                                        <div class="divCancellation">
+                                            @{
+                                System.Text.StringBuilder CancelStringBuilder = new System.Text.StringBuilder();
+                                var lstnew = lst.Distinct().ToList();
+                                if (lstnew.Count > 0)
+                                {
+
+                                    foreach (var item in lstnew)
+                                    {
+                                        CancelStringBuilder.Append(item.Replace(".", ","));
+                                        CancelStringBuilder.Append("| ");
+                                    }
+                                }
+
+                                if (CancelStringBuilder.ToString().Length > 125)
+                                {
+                                    @Html.Raw(CancelStringBuilder.ToString().Substring(0, 125).Replace(",", ".").Replace("|", ".") + "...")
+                                    CCountIndex++;
+
+                                    <div class="pull-right paddingright10"><a href="javascript:void(0);" onclick="OpenCP('@CCountIndex');">More</a></div>
+
+                                    var id = string.Format(@"{0}{1}", "divCancelationPolicy", CCountIndex);
+                                    <div id="@id" class="modal fade" role="dialog">
+                                        <div class="modal-dialog">
+                                            <!-- Modal content-->
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    <h4 class="modal-title">Cancellation Policy</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    @Html.Raw(CancelStringBuilder.ToString().Replace(",", ".").Replace("|", ".<br/>"))
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    if (CancelStringBuilder.ToString().Trim().Contains("refundable"))
+                                    {
+                                        <span style="color:red;">@Html.Raw(CancelStringBuilder.ToString().Replace(",", ".").Replace("|", "."))</span>
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw(CancelStringBuilder.ToString().Replace(",", ".").Replace("|", "."))
+                                    }
+
+                                }
+
+                                            }
+
+                                        </div>
+
+                                    </div>
+
+
+
+                                </div>
+                            }
+
+
+
+
+
+                            Count++;
+                        }
+
+
+
+                    </div>
+                }
+            </div>
+
+            @* TO DO *@
+            @*@if (Request.Browser.IsMobileDevice)
+                {
+                    <style>
+                        #stickyForMobile {
+                            position: fixed;
+                            bottom: 0;
+                            width: 100%;
+                            text-align: center;
+                            opacity:1;
+                        }
+                    </style>
+
+
+                    <div class="row" id="stickyForMobile">
+                        <div class="ratesummarybg">
+                            <button type="submit" class="btn btn-bannerbtn  width138  margintop30 " onclick="return ValidateRooms('R');" value="Buy This"> Buy </button>
+                            <br>  <strong>
+                                OR
+                            </strong>
+                            <br>
+                            <button type="submit" class="btn btn-bannerbtn width138" value="Buy This" onclick="return ValidateRooms('N');" id="btnNegotiation"> Negotiate </button>
+                            <br><br>
+
+                        </div>
+                        <h4 class="font16"><strong>RATE SUMMARY</strong></h4>
+                        <hr>
+                        <div class="table-responsive">
+                            <table class="table table-responsive font16">
+                                <tbody align="left">
+                                    <tr>
+                                        <td class="grytext" width="43%">Room Rate</td>
+                                        <td width="1%">:</td>
+                                        <td class="bluetextonly">
+                                            <strong>
+                                                @Model.Symbol
+                                                @Html.TextBoxFor(m => @Model.sSummaryRoomRate_display, new { Id = "lblRoomRate", ReadOnly = "ReadOnly", name = "lblRoomRate", @class = "textboxborder-0px" })
+                                                @Html.HiddenFor(m => @Model.sSummaryRoomRate, new { Id = "lblRoomRate_hidden" })
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="grytext">
+                                            Extra Bed Charges
+
+                                        </td>
+                                        <td>:</td>
+                                        <td class="bluetextonly">
+                                            <strong>
+                                                @Model.Symbol
+                                                @Html.TextBoxFor(m => @Model.sSummaryExtraBedCharges_display, new { Id = "lblextrabedcharge", ReadOnly = "ReadOnly", name = "lblextrabedcharge", @class = "textboxborder-0px" })
+                                                @Html.HiddenFor(m => @Model.sSummaryExtraBedCharges, new { Id = "lblextrabedcharge_hidden" })
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="grytext">Taxes & Services</td>
+                                        <td>:</td>
+                                        <td class="bluetextonly">
+                                            <strong>
+                                                @Model.Symbol
+                                                @Html.TextBoxFor(m => @Model.sSummaryTaxes_display, new { Id = "lbltaxes", ReadOnly = "ReadOnly", name = "lbltaxes", @class = "textboxborder-0px" })
+                                                @Html.HiddenFor(m => @Model.sSummaryTaxes, new { Id = "lbltaxes_hidden" })
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Grand Total</strong></td>
+                                        <td>:</td>
+                                        <td class="bluetextonly">
+                                            <strong>
+                                                @Model.Symbol
+                                                @Html.TextBoxFor(m => @Model.sSummaryGrandTotal_display, new { Id = "lbltotal", ReadOnly = "ReadOnly", name = "lbltotal", @class = "textboxborder-0px" })
+                                                @Html.HiddenFor(m => @Model.sSummaryGrandTotal, new { Id = "lbltotal_hidden" })
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                }
+                else
+                {
+                    <div class="col-md-3 whitebg border1 text-center sticky" style="top:10px;">
+                        <div class="row">
+                            <div class=" ratesummarybg">
+                                <button type="submit" class="btn btn-bannerbtn  width138  margintop30 " onclick="return ValidateRooms('R');" value="Buy This"> Buy </button>
+                                <br>  <strong>
+                                    OR
+                                </strong>
+                                <br>
+                                <button type="submit" class="btn btn-bannerbtn width138" value="Buy This" onclick="return ValidateRooms('N');" id="btnNegotiation"> Negotiate </button>
+                                <br><br>
+
+                            </div>
+                            <h4 class="font16"><strong>RATE SUMMARY</strong></h4>
+                            <hr>
+                            <div class="table-responsive">
+                                <table class="table table-responsive font16">
+                                    <tbody align="left">
+                                        <tr>
+                                            <td class="grytext" width="43%">Room Rate</td>
+                                            <td width="1%">:</td>
+                                            <td class="bluetextonly">
+                                                <strong>
+                                                    @Model.Symbol
+                                                    @Html.TextBoxFor(m => @Model.sSummaryRoomRate_display, new { Id = "lblRoomRate", ReadOnly = "ReadOnly", name = "lblRoomRate", @class = "textboxborder-0px" })
+                                                    @Html.HiddenFor(m => @Model.sSummaryRoomRate, new { Id = "lblRoomRate_hidden" })
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="grytext">
+                                                Extra Bed Charges
+
+                                            </td>
+                                            <td>:</td>
+                                            <td class="bluetextonly">
+                                                <strong>
+                                                    @Model.Symbol
+                                                    @Html.TextBoxFor(m => @Model.sSummaryExtraBedCharges_display, new { Id = "lblextrabedcharge", ReadOnly = "ReadOnly", name = "lblextrabedcharge", @class = "textboxborder-0px" })
+                                                    @Html.HiddenFor(m => @Model.sSummaryExtraBedCharges, new { Id = "lblextrabedcharge_hidden" })
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="grytext">Taxes & Services</td>
+                                            <td>:</td>
+                                            <td class="bluetextonly">
+                                                <strong>
+                                                    @Model.Symbol
+                                                    @Html.TextBoxFor(m => @Model.sSummaryTaxes_display, new { Id = "lbltaxes", ReadOnly = "ReadOnly", name = "lbltaxes", @class = "textboxborder-0px" })
+                                                    @Html.HiddenFor(m => @Model.sSummaryTaxes, new { Id = "lbltaxes_hidden" })
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Grand Total</strong></td>
+                                            <td>:</td>
+                                            <td class="bluetextonly">
+                                                <strong>
+                                                    @Model.Symbol
+                                                    @Html.TextBoxFor(m => @Model.sSummaryGrandTotal_display, new { Id = "lbltotal", ReadOnly = "ReadOnly", name = "lbltotal", @class = "textboxborder-0px" })
+                                                    @Html.HiddenFor(m => @Model.sSummaryGrandTotal, new { Id = "lbltotal_hidden" })
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                }*@
+
+            <div class="col-md-3 whitebg border1 text-center sticky" style="top:10px;">
+                <div class="row">
+                    <div class="ratesummarybg">
+                        @*<button type="submit" class="btn btn-bannerbtn  width138  margintop30 " onclick="return ValidateRooms('R');" value="Buy This"> Buy </button>
+                            <br>  <strong>
+                                OR
+                            </strong>
+                            <br>
+                            <button type="submit" class="btn btn-bannerbtn width138" value="Buy This" onclick="return ValidateRooms('N');" id="btnNegotiation"> Negotiate </button>
+                            <br><br>*@
+
+                            <button type="submit" class="btn btn-bannerbtn width138 marginbottom20 margintop20" value="Buy This" onclick="return ValidateRooms('C');" id="btnCorporate"> Select </button>
+                        
+
+                        @*<button type="submit" class="btn btn-bannerbtn width138 margintop30" value="Buy This" onclick="return ValidateRooms('N');" id="btnNegotiation"> Negotiate </button>
+                            <br>  <strong>
+                                OR
+                            </strong>
+                            <br>
+                            <button type="submit" class="btn btn-bannerbtn  width138" onclick="return ValidateRooms('R');" value="Buy This"> Buy </button>*@
+
+                    </div>
+                    <h4 class="font16"><strong>RATE SUMMARY</strong></h4>
+                    <hr>
+                    <div class="table-responsive">
+                        <table class="table table-responsive font16">
+                            <tbody align="left">
+                                <tr>
+                                    <td class="grytext" width="43%">Room Rate</td>
+                                    <td width="1%">:</td>
+                                    <td class="bluetextonly">
+                                        <strong>
+                                            @Model.Symbol
+                                            @Html.TextBoxFor(m => @Model.sSummaryRoomRate_display, new { Id = "lblRoomRate", ReadOnly = "ReadOnly", name = "lblRoomRate", @class = "textboxborder-0px" })
+                                            @Html.HiddenFor(m => @Model.sSummaryRoomRate, new { Id = "lblRoomRate_hidden" })
+                                        </strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="grytext">
+                                        Extra Bed Charges
+
+                                    </td>
+                                    <td>:</td>
+                                    <td class="bluetextonly">
+                                        <strong>
+                                            @Model.Symbol
+                                            @Html.TextBoxFor(m => @Model.sSummaryExtraBedCharges_display, new { Id = "lblextrabedcharge", ReadOnly = "ReadOnly", name = "lblextrabedcharge", @class = "textboxborder-0px" })
+                                            @Html.HiddenFor(m => @Model.sSummaryExtraBedCharges, new { Id = "lblextrabedcharge_hidden" })
+                                        </strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="grytext">Taxes & Services</td>
+                                    <td>:</td>
+                                    <td class="bluetextonly">
+                                        <strong>
+                                            @Model.Symbol
+                                            @Html.TextBoxFor(m => @Model.sSummaryTaxes_display, new { Id = "lbltaxes", ReadOnly = "ReadOnly", name = "lbltaxes", @class = "textboxborder-0px" })
+                                            @Html.HiddenFor(m => @Model.sSummaryTaxes, new { Id = "lbltaxes_hidden" })
+                                        </strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Grand Total</strong></td>
+                                    <td>:</td>
+                                    <td class="bluetextonly">
+                                        <strong>
+                                            @Model.Symbol
+                                            @Html.TextBoxFor(m => @Model.sSummaryGrandTotal_display, new { Id = "lbltotal", ReadOnly = "ReadOnly", name = "lbltotal", @class = "textboxborder-0px" })
+                                            @Html.HiddenFor(m => @Model.sSummaryGrandTotal, new { Id = "lbltotal_hidden" })
+                                        </strong>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    }
+    else if (Model.bRoomAvailable == false)
+    {
+
+        <div class="col-md-12 bluetextsmall"><h4>No rooms available.</h4></div>
+        <script>
+
+
+            setTimeout(function () {
+
+                if ($('#txtfrom').is('[disabled=disabled]')) {
+                    $('#txtfrom').removeAttr('disabled');
+                    $('#txtto').removeAttr('disabled');
+                    $('#txtto').removeClass('disabletxtbox');
+                    $('#txtfrom').removeClass('disabletxtbox');
+                    $('#txttotalcount_temp').removeClass('disabletxtbox');
+                    $('#txttotalcount_temp').removeAttr('disabled');
+                    $('#btnEdit').hide();
+                    $('#btnSearch').show();
+
+                    var notH = 1,
+                    $pop = $('#divwhole_temp').hover(function () { notH ^= 1; });
+
+                    $(document).on('mousedown keydown', function (e) {
+                        if (notH || e.which == 27) $pop.stop().fadeOut();
+                    });
+
+                    /////// CALL POPUP
+                    $('#txttotalcount_temp').click(function () {
+                        if ($(window).scrollTop() > 600) {
+                            $("#divwhole_temp").css("top", "70px");
+                        }
+                        else {
+                            $("#divwhole_temp").css("top", "-305px");
+                        }
+                        $pop.stop().toggle('show');
+                    });
+                }
+
+            }, 100)
+
+        </script>
+    }
+    else
+    {
+
+        <div class="col-md-12 bluetextsmall"><h4>Please select dates.</h4></div>
+        <script>
+
+
+            setTimeout(function () {
+
+                if ($('#txtfrom').is('[disabled=disabled]')) {
+                    $('#txtfrom').removeAttr('disabled');
+                    $('#txtto').removeAttr('disabled');
+                    $('#txtto').removeClass('disabletxtbox');
+                    $('#txtfrom').removeClass('disabletxtbox');
+                    $('#txttotalcount_temp').removeClass('disabletxtbox');
+                    $('#txttotalcount_temp').removeAttr('disabled');
+                    $('#btnEdit').hide();
+                    $('#btnSearch').show();
+
+                    var notH = 1,
+                    $pop = $('#divwhole_temp').hover(function () { notH ^= 1; });
+
+                    $(document).on('mousedown keydown', function (e) {
+                        if (notH || e.which == 27) $pop.stop().fadeOut();
+                    });
+
+                    /////// CALL POPUP
+                    $('#txttotalcount_temp').click(function () {
+                        if ($(window).scrollTop() > 600) {
+                            $("#divwhole_temp").css("top", "70px");
+                        }
+                        else {
+                            $("#divwhole_temp").css("top", "-305px");
+                        }
+                        $pop.stop().toggle('show');
+                    });
+                }
+
+            }, 100)
+
+        </script>
+    }
+
+
+
+}
+
+<script src="~/js/stickyfill.js"></script>
+
+<script type="text/javascript">
+    function OpenRI(Id) {
+
+        $('#divRateInclusion' + Id + '').modal({
+            show: 'true'
+        });
+
+    }
+    function OpenCP(Id) {
+
+        $('#divCancelationPolicy' + Id + '').modal({
+            show: 'true'
+        });
+
+    }
+    var dOFRServiceCharge = '0.00';
+
+    dOFRServiceCharge = parseFloat('@ViewData["dOFRServiceCharge"]');
+    $('.sticky').Stickyfill();
+
+    var OccuData = [];
+    var jsonData = '';
+    $('input.txtRooms').bootstrapNumberOffer();
+
+    if ('@Model.bOccuData') {
+        debugger;
+        var OccuDataOld = $('#hdnoccudata').val();
+        if (OccuDataOld == '' || OccuDataOld == undefined) {
+            jsonData = '@Html.Raw(OneFineRateAppUtil.clsUtils.ConvertToJson(Model.lstOccData))';
+        }
+        else {
+            jsonData = OccuDataOld;
+        }
+    }
+    else {
+        debugger;
+        $('#lbltotal').val('0');
+        $('#lbltaxes').val('0');
+        $('#lblextrabedcharge').val('0');
+        $('#lblRoomRate').val('0');
+        jsonData = '@Html.Raw(OneFineRateAppUtil.clsUtils.ConvertToJson(Model.lstOccData))';
+    }
+
+    if (jsonData != '') {
+
+        OccuData = JSON.parse(jsonData);
+    }
+
+  
+    function ValidateRooms(btype) {
+        debugger;
+        var IsNegoValid = FetchRoomDetails_temp();   //Check for more than 3 room for a valid negotiation
+        if (btype == "N") {
+            if (IsNegoValid == false) {
+                toastr.warning('Negotiation not allowed on more than 3 rooms.');
+                return false;
+            }
+        }
+
+        $('#hdnActionType').val(btype);
+        var bvalidate = true;
+        var data = OccuData;
+        $(data).each(function (i, j) {
+            var iroom = 0;
+            var itotal = 0;
+            iroom = parseInt(j.Rooms);
+            itotal = parseInt(j.Total);
+            if (iroom != itotal)
+                bvalidate = false;
+        });
+
+        if (!bvalidate) {
+            toastr.warning('Please select the number of rooms.')
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+    $('#frmBooking').submit(function () {
+        debugger;
+        if ($(this).valid()) {
+            //startSpinning();
+            return true;
+        }
+    });
+</script>
+
+

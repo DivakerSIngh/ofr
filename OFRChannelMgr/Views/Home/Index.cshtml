@@ -1,0 +1,63 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<header>
+    <div class="content-wrapper">
+        <div class="float-left">
+            <p class="site-title">
+                <a href="~/">ASP.NET Web API</a>
+            </p>
+        </div>
+    </div>
+</header>
+<div id="body">
+
+    <h2>Multipart/form-data</h2>
+
+    <section class="main-content clear-fix">
+        <form name="trip_search" method="post" enctype="multipart/form-data" action="api/upload"> 
+            <div>
+                <label for="caption">XML Request</label>
+                <input name="xmlreq" id="xmlreq" type="text" />
+                <br />
+                <label id="lblres1">XML Response</label>
+                <label id="lblres"></label>
+                <br />
+            </div>        
+            <div>
+                <input type="button" id="btnSubmit" value="Call Web Api" />
+            </div>
+        </form>
+    </section>
+</div>
+
+@section scripts{
+<script lang="ja" type="text/javascript">
+    $(document).ready(function () {
+        
+        $("#btnSubmit").click(function () {
+            
+            // var name = $("#Name").val();
+            //var address = $("#Address").val();
+            //var dob = $("#DOB").val();
+            $.ajax({
+                url: "http://localhost:58476/api/RateGain",
+                type: "Post",
+                data: $("#xmlreq").val(), //{ Name: name, Address: address, DOB: dob },//"<HotelPropertyListGetRQ xmlns=\"http://cgbridge.rategain.com/OTA/2012/05\" TimeStamp=\"2012-05-01T06:39:09\" Target=\"Production\" Version=\"1.1\"> <Authentication UserName=\"onefinerate\" Password=\"RG@onefinerate\" /> <HotelPropertyListRequest ChainCode=\"WGH\"/> </HotelPropertyListGetRQ>",
+                contentType: 'text/xml; charset=utf-8',
+                success: function (data) {
+                    var xmlText = new XMLSerializer().serializeToString(data);
+                    $("#lblres").text(xmlText);
+                   // alert(xmlText);
+                },
+                error: function (error) {
+
+                    console.log(error);
+                    alert('error');
+                }
+            });
+        });
+    });
+</script>
+}

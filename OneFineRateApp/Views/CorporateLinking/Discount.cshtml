@@ -1,0 +1,294 @@
+﻿@model OneFineRateBLL.CorporateDiscountModel
+@{
+    ViewBag.Title = "Additional Corporate Discount";
+    Layout = null;
+}
+
+
+<div class="row">
+
+    @if (Model != null)
+    {
+        <div class="col-md-12  border paddingbottom10">
+            <!-- Basic Discount Begin -->
+            <div class="col-md-12">
+                <h4>Basic Discount</h4>
+                <hr>
+            </div>
+            <div class="col-md-12 margintop5">
+
+                @if (Model.BasicDiscount.Count > 0)
+                {
+                    <table class="table table-responsive  table-bordered corpdiscount">
+                        <thead>
+                            <tr>
+                                <th>From</th>
+                                <th>To</th>
+                                <th>Additional Discount (%)</th>
+                                @*<th>Rate Inclusion 1</th>
+                                    <th>Applicability 1</th>
+                                    <th>Rate Inclusion 2</th>
+                                    <th>Applicability 2</th>*@
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.BasicDiscount)
+                            {
+                                <tr>
+                                    <td>@item.dtFrom</td>
+                                    <td>@item.dtTo</td>
+                                    <td>@item.dDisc</td>
+                                    @*<td>@item.Amen1</td>
+                                        <td>@item.Appl1</td>
+                                        <td>@item.Amen2</td>
+                                        <td>@item.Appl2</td>*@
+                                </tr>
+                            }
+                            <tr></tr>
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <table class="table table-responsive  table-bordered corpdiscount">
+                        <thead>
+                            <tr>
+                                <th colspan="3">Basic discount not available.</th>
+                            </tr>
+                        </thead>
+                    </table>
+                }
+
+            </div>
+            <!-- Basic Discount End -->
+        </div>
+
+        <hr />
+
+        <div class="col-md-12  border paddingbottom10">
+            <!-- LOS Discount Begin -->
+            <div class="col-md-12">
+                <h4>Length of Stay</h4>
+                <hr>
+            </div>
+            <div class="col-md-12 margintop5">
+
+                @if (Model.LengthOfStay.Count > 0)
+                {
+                    <table class="table table-responsive  table-bordered corpdiscount">
+                        <thead>
+                            <tr>
+                                <th>From</th>
+                                <th>To</th>
+                                <th>Additional Discount (%)</th>
+                                <th>Rate Inclusion 1</th>
+                                <th>Applicability 1</th>
+                                <th>Rate Inclusion 2</th>
+                                <th>Applicability 2</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.LengthOfStay)
+                            {
+                                <tr>
+                                    <td>@item.dtFrom</td>
+                                    <td>@item.dtTo</td>
+                                    <td>@item.dDisc</td>
+                                    <td>@item.Amen1</td>
+                                    <td>@item.Appl1</td>
+                                    <td>@item.Amen2</td>
+                                    <td>@item.Appl2</td>
+                                </tr>
+                            }
+                            <tr></tr>
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <table class="table table-responsive  table-bordered corpdiscount">
+                        <thead>
+                            <tr>
+                                <th colspan="3">Discount for Length of stay is not available.</th>
+                            </tr>
+                        </thead>
+                    </table>
+                }
+            </div>
+            <!-- LOS Discount End -->
+        </div>
+
+        <hr />
+
+        <div class="col-md-12  border paddingbottom10">
+            <!-- Multiple Rooms Discount Begin -->
+            <div class="col-md-12">
+                <h4>Multiple Rooms</h4>
+                <hr>
+            </div>
+            <div class="col-md-12 margintop5">
+
+                @if (Model.MultipleRooms.Count > 0)
+                {
+
+                    <table class="table table-responsive  table-bordered corpdiscount">
+                        <thead>
+                            <tr>
+                                <th>From</th>
+                                <th>To</th>
+                                <th>Additional Discount (%)</th>
+                                <th>Rate Inclusion 1</th>
+                                <th>Applicability 1</th>
+                                <th>Rate Inclusion 2</th>
+                                <th>Applicability 2</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.MultipleRooms)
+                            {
+                                <tr>
+                                    <td>@item.dtFrom</td>
+                                    <td>@item.dtTo</td>
+                                    <td>@item.dDisc</td>
+                                    <td>@item.Amen1</td>
+                                    <td>@item.Appl1</td>
+                                    <td>@item.Amen2</td>
+                                    <td>@item.Appl2</td>
+                                </tr>
+                            }
+                            <tr></tr>
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <table class="table table-responsive  table-bordered corpdiscount">
+                        <thead>
+                            <tr>
+                                <th colspan="3">Discount for Multiple rooms is not available.</th>
+                            </tr>
+                        </thead>
+                    </table>
+                }
+
+            </div>
+            <!-- Multiple Rooms Discount End -->
+        </div>
+
+        <hr />
+
+        <div class="col-md-12  border paddingbottom10">
+            <!-- Lead Time Discount Begin -->
+            <div class="col-md-12">
+                <h4>Lead Time</h4>
+                <hr>
+            </div>
+            <div class="col-md-12 margintop5">
+                @if (Model.LeadTime.Count > 0)
+                {
+                    <table class="table table-responsive  table-bordered corpdiscount">
+                        <thead>
+                            <tr>
+                                <th>From</th>
+                                <th>To</th>
+                                <th>Additional Discount (%)</th>
+                                <th>Rate Inclusion 1</th>
+                                <th>Applicability 1</th>
+                                <th>Rate Inclusion 2</th>
+                                <th>Applicability 2</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.LeadTime)
+                            {
+                                <tr>
+                                    <td>@item.dtFrom</td>
+                                    <td>@item.dtTo</td>
+                                    <td>@item.dDisc</td>
+                                    <td>@item.Amen1</td>
+                                    <td>@item.Appl1</td>
+                                    <td>@item.Amen2</td>
+                                    <td>@item.Appl2</td>
+                                </tr>
+                            }
+                            <tr></tr>
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <table class="table table-responsive  table-bordered corpdiscount">
+                        <thead>
+                            <tr>
+                                <th colspan="3">Discount for Lead time is not available.</th>
+                            </tr>
+                        </thead>
+                    </table>
+                }
+            </div>
+            <!-- Lead Time Discount End -->
+        </div>
+
+        <hr />
+
+        <div class="col-md-12  border paddingbottom10">
+            <!-- Weekend/Weekday Discount Begin -->
+            <div class="col-md-12">
+                <h4>Weekend/Weekday</h4>
+                <hr>
+            </div>
+            <div class="col-md-12 margintop5">
+                @if (Model.WeekendWeekday.Count > 0)
+                {
+                    <table class="table table-responsive  table-bordered corpdiscount">
+                        <thead>
+                            <tr>
+                                <th>From</th>
+                                <th>To</th>
+                                <th>Additional Discount (%)</th>
+                                <th>Rate Inclusion 1</th>
+                                <th>Applicability 1</th>
+                                <th>Rate Inclusion 2</th>
+                                <th>Applicability 2</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.WeekendWeekday)
+                            {
+                                <tr>
+                                    <td>@item.dtFrom</td>
+                                    <td>@item.dtTo</td>
+                                    <td>@item.dDisc</td>
+                                    <td>@item.Amen1</td>
+                                    <td>@item.Appl1</td>
+                                    <td>@item.Amen2</td>
+                                    <td>@item.Appl2</td>
+                                </tr>
+                            }
+                            <tr></tr>
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <table class="table table-responsive  table-bordered corpdiscount">
+                        <thead>
+                            <tr>
+                                <th colspan="3">Discount for Weekend/Weekday is not available.</th>
+                            </tr>
+                        </thead>
+                    </table>
+                }
+            </div>
+            <!-- Weekend/Weekday Discount End -->
+        </div>
+    }
+    else
+    {
+        <div class="margintop20">
+            <div class="col-md-12  border paddingbottom10  table-bordered corpdiscount">
+                No Corporate discount Available.
+            </div>
+        </div>
+    }
+</div>

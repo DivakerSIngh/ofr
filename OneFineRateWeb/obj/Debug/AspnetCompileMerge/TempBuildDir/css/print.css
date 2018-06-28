@@ -1,0 +1,41 @@
+﻿
+
+
+@media print {
+
+  
+    header nav {
+        display: none;
+    }
+
+    footer {
+        display: none;
+    }
+    @page :left {
+        margin: 0.5cm;
+    }
+
+    @page :right {
+        margin: 0.8cm;
+    }
+    /*confirmation page*/
+    #googleMap {
+        display: none;
+    }
+
+    .imgheight150 {
+        display: none;
+    }
+}
+
+footer {
+   display:none;
+}
+
+    footer a, footer a:hover {
+          display:none;
+    }
+
+        footer a:visited {
+              display:none;
+        }

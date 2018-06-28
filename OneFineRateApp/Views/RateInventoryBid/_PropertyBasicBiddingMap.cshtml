@@ -1,0 +1,101 @@
+﻿@model OneFineRateBLL.Entities.etblPropertyBasicBiddingMapForOverview
+
+@using (Ajax.BeginForm("UpdateBasicBidding", "RateInventoryBid", new AjaxOptions() { InsertionMode = InsertionMode.Replace, UpdateTargetId = "targetid", HttpMethod = "POST", OnSuccess = "GetResult" }))
+{
+    
+    @Html.HiddenFor(x => x.Self.dtEffectiveDate)
+    @Html.HiddenFor(x => x.Self.bIsClosedroom)
+    @Html.HiddenFor(x => x.Self.bCTAroom)
+    @Html.HiddenFor(x => x.Self.bCTDroom)
+    @Html.HiddenFor(x => x.Self.bIsClosedlead)
+    @Html.HiddenFor(x => x.Self.bCTAlead)
+    @Html.HiddenFor(x => x.Self.bCTDlead)
+    @Html.HiddenFor(x => x.Self.bIsClosedlos)
+    @Html.HiddenFor(x => x.Self.bCTAlos)
+    @Html.HiddenFor(x => x.Self.bCTDlos)
+    @Html.HiddenFor(x => x.Self.bIsClosedweek)
+    @Html.HiddenFor(x => x.Self.bCTAweek)
+    @Html.HiddenFor(x => x.Self.bCTDweek)
+    @Html.HiddenFor(x => x.IsPublic)
+
+    <div class="modal-dialog modal-lg" >
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header ">
+                         <button type="button" class="close" data-dismiss="modal">&times;</button> 
+                <div class="pull-left">
+                    <h4>Base Discount</h4>
+                </div>
+                <div class="pull-right blue">@Model.Self.EffectiveDate</div>
+            </div>
+            <div class="modal-body">
+                
+
+                <div class="row">
+                    <div class="col-xs-4">
+                        @if (Model.IsPublic)
+                        {
+                            <span>Current Public  Discount (%)</span><br />
+                        }
+                        else
+                        {
+                            <span>Current Corporate Discount (%)</span><br />
+                        }
+                       @Html.DisplayFor(m => m.Self.dBasicDiscount)
+                    </div>
+
+                    <div class="col-xs-4">
+                        New Discount (%)
+                        @Html.TextBoxFor(m => m.Self.dBasicDiscount, new { type = "number", min = "0", max = "100", step = "0.01", @class = "form-control", maxlength = "5" })
+                    </div>
+                    <div class="col-xs-4">
+                        @if (!Model.IsPublic)
+                        {
+                            <span>Current Public  Discount (%)</span>
+                        }
+                        else
+                        {
+                            <span>Current Corporate Discount (%)</span>
+                        }
+                        @Html.TextBoxFor(m => m.Other.dBasicDiscount, new { @class = "form-control", disabled = "disabled" })
+                        
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4">
+                        Close Out
+                        @Html.DropDownListFor(m => m.Self.bIsClosed, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="Yes",Value="true" },
+                                                                            new SelectListItem {Text="No",Value="false" }},
+                                                                            new { @class = "form-control " })
+                    </div>
+                    <div class="col-xs-4">
+                        CTA
+                        @Html.DropDownListFor(m => m.Self.bCTA, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="Yes",Value="true" },
+                                                                            new SelectListItem {Text="No",Value="false" }},
+                                                                            new { @class = "form-control " })
+                    </div>
+                    <div class="col-xs-4">
+                        CTD
+                        @Html.DropDownListFor(m => m.Self.bCTD, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="Yes",Value="true" },
+                                                                            new SelectListItem {Text="No",Value="false" }},
+                                                                            new { @class = "form-control" })
+                    </div>
+
+                </div>
+                    <div class="row ">
+                        <div class="col-xs-12 marginbottom20 margintop10 text-center">
+                            <hr>
+                            <input type="submit" class="btn btn-primary margintop10" value="Save">
+                            <input type="button" class="btn btn-danger margintop10" value="Cancel" data-dismiss="modal">
+                        </div>
+                    </div>
+
+                </div>
+        </div>
+    </div>
+    <div id="targetid"></div>
+}

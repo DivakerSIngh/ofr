@@ -1,0 +1,49 @@
+﻿@model IEnumerable<OneFineRateBLL.Entities.etblBookingTx>
+
+@if (Model != null)
+{
+    foreach (var item in Model)
+    {
+        <div class="bookingbxbg lineheight20 margintop10 marginbottom10">
+            <div class=" row col-md-12">
+                <div class="pull-left col-md-6 col-xs-6">Booking Id: <span><strong><a href="@Url.Action("NegotiationStatus", "Negotiation", new { bookingId = OneFineRateAppUtil.clsUtils.Encode(item.iBookingId.ToString()) })"> @item.iBookingId</a></strong></span></div>
+                <div class="col-md-6 col-xs-6"><div class="pull-right">Booking Date: <span><strong>@item.sReservationDate</strong></span></div></div>
+            </div>
+            <div class="clearfix"></div>
+            <hr>
+            <div class="row">
+                <div class="col-md-2"><img src="@item.sImgUrl" class="img140"></div>
+
+                <div class="col-md-7 mo-marginleft5">
+                    <div class="row">
+                        <div class="col-md-9 ptop10"><div class="font15a">@item.sHotelName</div>
+                            <div class="bookingstar ptop10"><img src="../images/inner-star@(item.iStarCategoryId).png"></div></div>
+                    </div>
+                    <hr>
+                    <div class="row font12">
+                        <div class="col-md-8 col-xs-12">Reservation from	: <span><strong>@item.CheckIn </strong> to <strong>@item.ChekOut</strong></span></div>
+                        <div class="col-md-4  col-xs-6"><div class="">Nights :  <span ><strong> @item.Nights </strong></span></div></div>
+                   
+                        <div class="col-md-4  col-xs-6">No of Adults : 	 <span><strong>@item.Adults </strong></span></div>
+                        <div class="col-md-4  col-xs-6"><div class="">No of Child :	   <span><strong> @item.Children </strong></span></div></div>
+
+                        <div class="col-md-4 col-xs-6 "><div class="">No of Rooms : <span><strong>@item.Rooms</strong></span></div></div>
+                 
+                        <div class="col-md-6 col-xs-12 font18 "><div class="">Your offer : <span class="rscolor"><strong>@item.sTotalNegotiateAmount </strong></span></div></div>
+                    </div>
+
+                </div>
+                <div class="col-md-3">
+
+                    <div class="col-md-12  bookingbxbghighlight1  padding15btm0  font12 text-center">
+                        <span><strong>Bargain Amount</strong></span>
+                        <br>
+                        <div class="whitebg bluetextbig font28 border1 padding15 font18 text-center">@item.sTotalNegotiateAmount </div>
+                        <span><strong>is not accepted by Hotel</strong></span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+}

@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit http://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>E:\SolutionPublish\OFRWebApi</_PublishTargetUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="bin/Newtonsoft.Json.dll">
+      <publishTime>04/05/2016 13:03:02</publishTime>
+    </File>
+    <File Include="bin/OneFineRateWebApi.dll">
+      <publishTime>04/05/2016 15:45:25</publishTime>
+    </File>
+    <File Include="bin/System.Net.Http.Formatting.dll">
+      <publishTime>04/05/2016 13:03:02</publishTime>
+    </File>
+    <File Include="bin/System.Web.Helpers.dll">
+      <publishTime>04/01/2016 13:17:03</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.dll">
+      <publishTime>04/05/2016 13:03:02</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.WebHost.dll">
+      <publishTime>04/05/2016 13:03:02</publishTime>
+    </File>
+    <File Include="bin/System.Web.Mvc.dll">
+      <publishTime>04/01/2016 13:17:03</publishTime>
+    </File>
+    <File Include="bin/System.Web.Razor.dll">
+      <publishTime>04/01/2016 13:17:03</publishTime>
+    </File>
+    <File Include="bin/System.Web.Webpages.Deployment.dll">
+      <publishTime>04/01/2016 13:17:03</publishTime>
+    </File>
+    <File Include="bin/System.Web.Webpages.dll">
+      <publishTime>04/01/2016 13:17:03</publishTime>
+    </File>
+    <File Include="bin/System.Web.Webpages.Razor.dll">
+      <publishTime>04/01/2016 13:17:03</publishTime>
+    </File>
+    <File Include="ExtranetService.svc">
+      <publishTime>04/05/2016 15:03:27</publishTime>
+    </File>
+    <File Include="Global.asax">
+      <publishTime>04/05/2016 13:03:02</publishTime>
+    </File>
+    <File Include="packages.config">
+      <publishTime>04/05/2016 13:03:02</publishTime>
+    </File>
+    <File Include="Views/web.config">
+      <publishTime>04/05/2016 13:03:02</publishTime>
+    </File>
+    <File Include="Web.config">
+      <publishTime>04/05/2016 15:45:25</publishTime>
+    </File>
+  </ItemGroup>
+</Project>

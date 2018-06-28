@@ -1,0 +1,237 @@
+﻿@model OneFineRateBLL.Entities.etblMasterTaxMap
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+
+<style>
+    .nopadding {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+</style>
+
+<div class="container margintop20">
+    <div class="row panel panel-default">
+        <div class="container panel-heading">
+            <div class="col-md-12">
+                <h4 class="panel-title">
+                    <span class="pull-left">Master Tax Management</span>
+                    <span class="pull-right">
+                        <button id="btnAddMasterTaxMap" class="btn btn-warning"><i class="fa fa-plus"></i> Add Tax</button>
+                    </span>
+                </h4>
+            </div>
+        </div>
+        <div class="panel-body">
+
+            <div class="col-md-12">
+
+                <a href="javascript:void(0)" id="exportToExcel" class="btn btn-primary">
+                    <i class="fa fa-file-excel-o"></i> Export to Excel
+                </a>
+
+                <div class="table-responsive margintop20">
+
+                    <table id="tblMasterTax" style="width:100% !important" class="table table-bordered table-hover table-striped"></table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id='addUpdateMasterTaxMapModal' class='modal fade in'>
+    <div class="modal-dialog">
+        <div id='addUpdateMasterTaxMapModalContainer' class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+@System.Web.Optimization.Scripts.Render("~/bundles/ajaxpostform")
+@System.Web.Optimization.Scripts.Render("~/bundles/validation")
+
+@section scripts{
+
+
+    <script type="text/javascript">
+
+
+
+        $(function () {
+
+            $('#btnAddMasterTaxMap').click(function () {
+
+                //debugger;
+
+                var url = '@Url.Action("AddUpdate")';
+
+                $.get(url, function (data) {
+
+                    $('#addUpdateMasterTaxMapModalContainer').html(data);
+
+                    $('#addUpdateMasterTaxMapModal').modal('show');
+
+                    $.validator.unobtrusive.parse("#frmAddUpdateMasterTaxMap");
+
+                });
+            });
+
+
+            $(document).on('click', '.btnEditMasterTaxMap', function (e) {
+
+                var url = '@Url.Action("AddUpdate")' + '?Id=' + $(this).data('id');
+
+                $.get(url, function (data) {
+
+                    $('#addUpdateMasterTaxMapModalContainer').html(data);
+
+                    $('#btnSubmit').text("Update");
+
+                    $('#addUpdateMasterTaxMapModal').modal('show');
+
+                    $.validator.unobtrusive.parse("#frmAddUpdateMasterTaxMap");
+
+                });
+            });
+
+            BindMasterTaxList();
+
+            $('#exportToExcel').click(function () {
+
+                toastr.clear($('.toast'));
+
+                var selectedProperties = $(".chkSelectPropId");
+
+                if (!selectedProperties.length) {
+                    toastr.error('No data available to export.');
+                    return false;
+                }
+
+                var selectedPropertyIds = selectedProperties.map(function () {
+                    return this.value;
+                }).get().join(",");
+
+                window.open('@Url.Action("ExportToExcel")?taxIds=' + selectedPropertyIds);
+            });
+
+
+            $(document).on('click', '.btnToggleStatus', function (e) {
+
+                var id = $(this).data('id');
+                var type = $(this).data('type');
+
+                toastr.clear($('.toast'));
+
+                bootbox.confirm("Do you want to " + type + " this record?", function (result) {
+
+                    if (result == true) {
+
+                        //debugger;
+
+                        $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("ToggleStatus")",
+                            data: { id: id, status: type == 'disable' ? false : true },
+                            datatype: "json",
+                            success: function (data) {
+                                
+                                if (data.status == 1) {
+
+                                    BindMasterTaxList();
+
+                                    toastr.success(data.Msg);
+                                }
+                                else{
+                                    toastr.error(data.Msg);
+                                }                                
+                            },
+                            error: function (er) {
+                                toastr.error("An error occured!");
+                            }
+                        });
+                    }
+                });
+            });
+        });
+
+
+        function BindMasterTaxList() {
+
+            try {
+                var aoColumns =
+                    [
+                        { "sTitle": "Start Date", "mData": "sStayFrom", "sWidth": "10%" },
+
+                        { "sTitle": "End Date", "mData": "sStayTo", "sWidth": "10%" },
+
+                        { "sTitle": "Room Rate From", "mData": "sAmountFrom", "sWidth": "6%" },
+
+                        { "sTitle": "Room Rate To", "mData": "sAmountTo", "sWidth": "6%" },
+
+                        { "sTitle": "Taxe Name", "mData": "sTaxName", "sWidth": "25%" },
+
+                        { "sTitle": "Taxes", "mData": "sTax", "sWidth": "25%" },
+
+                        {
+                            "sTitle": "State", "mData": "sState", "sWidth": "15%", "bSortable": false, "mRender": function (data, type, full) {
+
+                                if (full.IsAllState == true) {
+                                    return 'All States';
+                                }
+                                else {
+                                    return data;
+                                }
+                            }
+                        },
+
+                        {
+                            "sTitle": "Status", "mData": "cStatus", "sWidth": "6%", "bSortable": false
+                        },
+                          {
+                              "sTitle": "Action On", "mData": "sActionDate", "sWidth": "8%", "bSortable": false
+                          },
+                            {
+                                "sTitle": "Action By", "mData": "sActionBy", "sWidth": "6%", "bSortable": false
+                            },
+
+                        {
+                            "sTitle": "Action", "mData": "iMasterTaxId", "bSortable": false, "sWidth": "14%",
+                            "mRender": function (data, type, full) {
+
+                                var html = '<input type="hidden" class ="chkSelectPropId" value = ' + data + '> <button class="btn btn-warning btnEditMasterTaxMap" data-id=' + data + '>Edit</button> &nbsp &nbsp';
+
+                                if (full.cStatus == 'Disable') {
+                                    html += '<button class="btn btn-success btnToggleStatus" style="margin-top:5px" data-type="enable" data-id=' + data + '>Enable</button>';
+                                }
+                                else {
+                                    html += '<button class="btn btn-danger btnToggleStatus" style="margin-top:5px" data-type="disable" data-id=' + data + '>Disable</button>';
+                                }
+
+                                return html;
+                            }
+                        }
+                    ];
+
+                DatatableServerSideForMasterTax("#tblMasterTax", aoColumns, "/Services/Service.asmx/GetMasterTaxeMappings");
+            }
+            catch (e) {
+
+                console.error(e);
+            }
+        }
+
+    </script>
+}
+
+
+
+

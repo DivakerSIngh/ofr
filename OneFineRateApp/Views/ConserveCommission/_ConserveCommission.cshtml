@@ -1,0 +1,148 @@
+﻿@model OneFineRateBLL.Entities.eConserveCommission
+
+@using (Ajax.BeginForm("AddConserveCommission", "ConserveCommission", new AjaxOptions() { InsertionMode = InsertionMode.Replace, UpdateTargetId = "AddConserveCommission", HttpMethod = "POST", OnSuccess = "GetResult" }))
+{
+    @*//Scripts for validation server side through ajax call*@
+    @System.Web.Optimization.Scripts.Render("~/bundles/validation")
+    <script type="text/javascript">
+        function GetResult(data, status, xhr) {
+            if ('@Model.st' == '1') {
+                toastr.success('@Model.msg');
+                bindgrid();
+                $('.close').click();
+
+            }
+            else if ('@Model.st' == '0') {
+                toastr.error("@Html.Raw(Model.msg)");
+            }
+        }
+
+        $(document).ready(function () {
+            var d = new Date();
+
+            var ThreeYearDate = new Date();
+            var a = ThreeYearDate.getFullYear();
+            ThreeYearDate.setFullYear(a + 3);
+
+            $('#dtStayFrom').datepicker({
+                startDate: d,
+                minDate: d,
+                autoclose: true,
+                maxDate: ThreeYearDate,
+                defaultDate: '@Model.StayFrom',
+                dateFormat: 'dd/mm/yy',
+                changeMonth: true,
+                changeYear: true,
+                onClose: function (selectedDate) {
+                    $("#dtStayTo").datepicker("option", "minDate", selectedDate);
+                }
+            });
+            $('#dtStayTo').datepicker({
+                startDate: d,
+                minDate: d,
+                autoclose: true,
+                maxDate: ThreeYearDate,
+                defaultDate: '@Model.StayTo',
+                dateFormat: 'dd/mm/yy',
+                changeMonth: true,
+                changeYear: true
+            });
+            
+            if (!$("input[id='CO']")[0].checked) {
+                $("#CounterTrigger").attr('disabled', true);
+                $("#CounterTrigger").val("");
+            }
+            else {
+                $("#CounterTrigger").attr('disabled', false);
+            }
+
+            $("#CO").change(function () {
+                if (!this.checked) {
+                    $("#CounterTrigger").attr('disabled', true);
+                    $("#CounterTrigger").val("");
+                }
+                else {
+                    $("#CounterTrigger").attr('disabled', false);
+                }
+            });
+            $("#ui-datepicker-div").hide();
+        });
+
+    </script>
+
+    @Html.HiddenFor(m => m.heading)
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"> @Model.heading</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row margintop10">
+
+                    <div class="col-xs-3">
+                        Stay From <span class="red">*</span>
+                    </div>
+                    <div class="col-xs-3">
+                        @Html.TextBoxFor(m => m.StayFrom, new { type = "text", @class = "form-control", required = "true", onkeyup = "this.value=''", id = "dtStayFrom" })
+                    </div>
+                    <div class="col-xs-2" style="width:110px;">
+                        Stay To <span class="red">*</span>
+                    </div>
+                    <div class="col-xs-3">
+                        @Html.TextBoxFor(m => m.StayTo, new { type = "text", @class = "form-control", required = "true", onkeyup = "this.value=''", id = "dtStayTo" })
+
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-xs-3"></div>
+                    <div class="col-xs-3">
+                        @Html.ValidationMessageFor(m => m.StayFrom, "", new { @class = "red" })
+                    </div>
+                    <div class="col-xs-3"></div>
+                    <div class="col-xs-3">
+                        @Html.ValidationMessageFor(m => m.StayTo, "", new { @class = "red" })
+                    </div>
+                </div>
+                <div class="row margintop10">
+                    @Html.HiddenFor(m => m.iCCId)
+
+                    <div class="col-md-3">Discount (%)<span class="red">*</span></div>
+                    <div class="col-md-4"> @Html.TextBoxFor(m => m.dCommission, new { type = "text", @class = "form-control width60", onkeyup = "this.value = minmax(this.value, 0, 100)" })</div>
+                    <div class="col-md-5">@Html.ValidationMessageFor(m => m.dCommission, "", new { @class = "red" })</div>
+
+                </div>
+                <div class="row margintop10">
+                    <div class="col-xs-6">
+                        Display Rate @Html.CheckBoxFor(m => m.bDisplayRateComm)
+                    </div>
+                    <div class="col-xs-6">
+                        Bid @Html.CheckBoxFor(m => m.bBidComm)
+                    </div>
+                </div>
+                <div class="row margintop10">
+                    <div class="col-xs-6">
+                        Counter Offer @Html.CheckBoxFor(m => m.bCOComm, new { id = "CO" })
+                    </div>
+                    <div class="col-xs-2" style="width:110px;">
+                        Trigger (%)
+                    </div>
+                    <div class="col-xs-3">
+                        @Html.TextBoxFor(m => m.dCounterTrigger, new { id = "CounterTrigger", type = "text", @class = "form-control width60", onkeyup = "this.value = minmax(this.value, 0, 100)" })
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" id="btnSubmit" class="btn btn-primary">Save</button>
+                <button type="button" id="btnCancel" onclick=" $('.close').click();" class="btn btn-danger">Cancel</button>
+            </div>
+        </div>
+
+    </div>
+    <div id="ipview">
+
+    </div>
+
+}

@@ -1,0 +1,72 @@
+﻿@model OneFineRateWeb.Models.GovernMentApprovedIdViewModel
+
+<div class="tablebluebg accordion margintop20" id="GovernmentIds">Government Approved ID</div>
+<div class="padding10 bookingbxbg">
+
+    @using (Html.BeginForm("GovernmentApprovedId", "Manage", FormMethod.Post, new { @class = "profileForm", enctype = "multipart/form-data", id = "frmGovernmentApprovedId" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>ID Type</label><span class="red">* </span>@Html.ValidationMessageFor(model => model.ID_Type, "", new { @class = "red" })
+                    @Html.DropDownListFor(x => x.ID_Type, EnumHelper.GetSelectList(typeof(OneFineRateWeb.Models.Id_Type)), "Select", new { @class = "form-control", id = "governMentIdType" })
+                    @*@Html.EnumDropDownListFor(x => x.ID_Type, "Select", new { @class = "form-control",id="governMentIdType" })*@
+
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>ID Number</label><span class="red">* </span>
+                    @Html.EditorFor(model => model.ID_Number, new { htmlAttributes = new { placeholder = "ID No.", @class = "form-control", maxlength = 40 } })
+                    @Html.ValidationMessageFor(model => model.ID_Number, "", new { @class = "red" })
+                </div>
+            </div>
+            @if (Model.ID_Type == OneFineRateWeb.Models.Id_Type.drivinglicence || Model.ID_Type == OneFineRateWeb.Models.Id_Type.passport && Model.ExpirationDate != null)
+            {
+                <div class="col-md-4" id="dvExpiryDate">
+                    <div class="form-group">
+                        <label>Expiration Date</label><span class="red">* </span>
+                        @Html.TextBoxFor(model => model.ExpirationDate, new { onkeypress = "return false;", placeholder = "dd/mm/yyyy", @class = "form-control", id = "txtExpiryDate" })
+                        @Html.ValidationMessageFor(model => model.ExpirationDate, "", new { @class = "red" })
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="col-md-2" id="dvExpiryDate" style="display:none">
+                    <div class="form-group">
+                        <label>Expiration Date</label><span class="red">* </span>
+                        @Html.TextBoxFor(model => model.ExpirationDate, new { onkeypress = "return false;", placeholder = "dd/mm/yyyy", @class = "form-control", id = "txtExpiryDate" })
+                        @Html.ValidationMessageFor(model => model.ExpirationDate, "", new { @class = "red" })
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="row">
+
+            <div class="col-md-2">
+                <div class="form-group">
+                    <img onerror="this.src ='http://placehold.it/60x60'" src="@Model.UploadedPhotoUrl" id="governmentApprovedIdImagePreview" height="120" width="120">
+                </div>
+            </div>
+            <div class="col-md-2 ">
+                <div class="form-group">
+                    <label class="btn btn-default  btn-file">
+                        Upload Pic <input type="file" accept="image/*" class="userImageInputType" style="display:none;" data-previewid="governmentApprovedIdImagePreview" name="IdImagePostedFile" id="governmentApprovedIdImageInput">
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+        <div class="row">
+            <div class="col-md-12">
+                <button type="button" data-from class="btn btn-danger marginleft5 cancelMyAccountForm pull-right">Cancel</button>
+                <button type="submit" class="btn btn-success pull-right">Save</button>
+                
+            </div>
+        </div>
+    }
+</div>

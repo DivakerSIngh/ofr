@@ -1,0 +1,118 @@
+﻿@{
+    ViewBag.Title = "PropertyList";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+
+<script type="text/javascript">
+
+
+    $(document).ready(function () {
+
+        bindgrid(); //binding datatable
+
+        //Pop up cancel button click event
+        $('#btnCancel').click(function () {
+            resetform('frmChain');
+            $('.close').click();
+        });
+    });
+
+    function UpdateAction(Id,Mode) {
+        bootbox.confirm("Are you sure?", function (result) {
+            if (result == true) {
+                var data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("UpdateStatus")", { Id: Id, Mode: Mode }))
+                if (data != null) {
+                    if (data.st == 1) {
+                        toastr.success(data.msg);
+                        bindgrid();
+                    }
+                    else {
+                        toastr.error(data.msg);
+                    }
+                }
+            }
+        });
+    }
+
+    // bind list
+    function bindgrid() {
+
+        try {
+            var aoColumns =
+                [
+                 { "sTitle": "Id", "mData": "iPropId" },
+                 {
+                     "sTitle": "Property Name", "mData": "sHotelName",
+                     "mRender": function (data, type, full) {
+
+                         var html = full.sHotelName + '<br />';
+                         html += full.sAddress;
+
+                         return html;
+                     }
+                 },
+                   { "sTitle": "Action By", "mData": "ActionBy", "bSortable": false },
+                    {
+                        "sTitle": "Created On", "mData": "dtActionDate", "bSortable": false,
+                        "mRender": function (data, type, full) {
+                            return getNorDateTime(data);
+                        }
+                    },
+                    { "sTitle": "Status", "mData": "cStatus", "bSortable": false},
+                  {
+                      "sTitle": "Action", "mData": "iPropId", "bSortable": false,
+                      "mRender": function (data, type, full) {
+                          var editurl = '@Url.Action("EditMaster", "Property")' + "/" + data;
+                          var html = '<a class="btn btn-warning btn-sm margintop5 width93" href=' + editurl + '>Edit</a>&nbsp';
+                          if (full.cStatus == 'Disable')
+                              html += "<a onclick=\"UpdateAction('" + data + "',true);\" class=\"btn btn-success btn-sm margintop5 width93 \"> Enable </a>";
+                          else
+                              html += "<a onclick=\"UpdateAction('" + data + "',false);\" class=\"btn btn-danger btn-sm margintop5  width93 \"> Disable </a>";
+                          return html;
+                      }
+                  }
+
+
+                ];
+            DatatableServerSide("#tblData", aoColumns, "/Services/Service.asmx/GetAllProperties");
+          
+        }
+        catch (e) {
+
+        }
+
+    }
+    //fill form on click edit in the list
+    function EditData(obj) {
+        $('#hdnId').val($(obj).attr('eid'));
+        $("#txtChainup").val(decodeURIComponent($(obj).attr('ename')))
+        $('#UpdateChains').modal({
+            show: 'true'
+        });
+
+    }
+
+</script>
+<div class="container margintop20">
+    <div class="row ">
+        <!--   table -->
+        <div class="panel panel-default">
+            <div class="container panel-heading">
+                <div class="col-md-6">
+                    <h4 class="panel-title">
+                        Property List
+                    </h4>
+                </div>
+                <div class="col-md-6 ">
+                    <a href="@Url.Action("Index", "Property")" class="pull-right btn btn-warning tablebtn"><i class="fa fa-plus"></i> Create Property </a>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover" id="tblData"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End  table -->
+</div>

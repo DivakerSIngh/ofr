@@ -1,0 +1,509 @@
+﻿@model OneFineRateBLL.Entities.etblCustomerPointsHistoryTx
+@{
+    ViewBag.Title = "Reward Points";
+    Layout = "~/Views/Shared/_LayoutUserManagement.cshtml";
+    ViewBag.RewardPointsActive = "manageActive";
+}
+
+
+<style>
+    .rooms ul li {
+        width: 49%;
+        float: left;
+        margin-bottom: 3%;
+        margin-right: 1%;
+    }
+
+    .divwhole {
+        top: 100% !important
+    }
+
+    .ui-datepicker {
+        z-index: 999999 !important
+    }
+
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h3>REWARD POINTS</h3>
+            <hr />
+        </div>
+    </div>
+    <div class="row margintop10">
+        <div class="col-md-12">
+
+            <div class="padding10 rightwhitebox">
+                @if (Model.TotalRemainingPoints != null && Model.TotalRemainingPoints.HasValue)
+                {
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <h5 class="rscolor">@Model.TotalRemainingPoints</h5>
+                                <label>OFR POINTS</label>
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @if (Model.RemainingPointsWithinMonth != null && Model.RemainingPointsWithinMonth.HasValue)
+                                {
+                                    <h5 class="rscolor">@Model.RemainingPointsWithinMonth</h5>
+                                    <label>POINTS EXPIRING <span class="font11 grey">(Within Month)</span></label>
+                                }
+                                else
+                                {
+                                    <label>NO POINT EXPIRING <span class="font11 grey">(Within Month)</span></label>
+                                }
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label>Search by Hotels</label>
+                            @*onkeypress="return onlyAlphabets(event ,this);"*@
+                            <input type="text" id="txtSearchHotel" name="LocalityCity" placeholder="Hotel Name" class="form-control">
+                            @Html.Hidden("hdnSelectedLocalityID")
+                            @Html.Hidden("hdnSelectedType")
+                        </div>
+                        <div class="col-md-2">
+                            <label>Check-in</label>
+                            <input type="text" onkeypress="return false" id="CheckInDate" name="CheckInDate" class="form-control">
+                        </div>
+                        <div class="col-md-2">
+                            <label>Check-out</label>
+                            <input type="text" onkeypress="return false" id="CheckOutDate" name="CheckOutDate" class="form-control marginbottom20">
+                        </div>
+                        <div class="col-md-3">
+                            <div id="txttotalcount" style="margin-top: 11.5%;" class="form-control">2 Guests in 1 Room</div>
+                            <div id="divwhole" class="row" style="display:none; border:1px solid #d1d1d1; z-index:9999; max-height:300px; overflow-y:scroll;overflow-x:hidden; background-color:#fff; position:absolute;">
+                                <i class="sprite-booking-engine ico-be-sub-arrow"></i>
+                                <div id="roomContainerDiv">
+                                    <div class="rooms">
+                                        <div class='col-md-12 col-xs-12  pull-left'>
+                                            <h5><strong>Room1:</strong></h5>
+                                        </div>
+                                        <div class='col-md-6 col-xs-6'>
+                                            <h5><strong>Adult</strong></h5>
+                                            <h6>Above 12 years</h6>
+
+                                            <div class='input-group width110'>
+                                                <input id="adult1" class="form-control adult1" itype="adult1" type="number" readonly="readonly" roomno="1" value="2" min="1" max="6" />
+                                            </div>
+                                        </div>
+                                        <div class='col-md-6 col-xs-6'>
+                                            <h5><strong>Children</strong></h5>
+                                            <h6>Below 12 years</h6>
+                                            <div class='input-group width110'>
+                                                <input id="children1" class="form-control children1" readonly="readonly" itype="children1" roomno="1" type="number" value="0" min="0" max="6" />
+
+                                            </div>
+                                        </div>
+                                        <div class='col-md-12 col-xs-12' id="divChildAge1" style="display:none;">
+
+                                            <h5><strong>Age of Childen</strong></h5>
+                                            <ul style="list-style:none; padding:0; margin:0; " id="ulchilds1"></ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-md-12 margintop5'>
+                                    <div onclick="FetchRoomDetails();" class='btn btn-filter margintop5 marginbottom10 col-md-12'>Done</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <button style="margin-top:18%;" class="btn btn-filter marginleft15" id="btnRedeemPoints">Redeem Now</button>
+                        </div>
+                    </div>
+
+                }
+                <div class="tablebluebg  margintop20">
+                    Transaction Details
+                </div>
+                <div class="padding10 border1 marginbottom20">
+
+                    <form action="#" method="post" id="frmViewDataTable">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label>From</label>
+                                    <input type="text" onkeypress="return false" id="startDateRewardPoint" name="startDateRewardPoint" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label>To </label>
+                                    <input type="text" onkeypress="return false" id="endDateRewardPoint" name="endDateRewardPoint" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-3 margintop30 padddingbottom10">
+                                <button class="btn btn-filter" id="filter" type="button">View</button>
+                                <button id="clearFilter" class="btn btn-clear">Clear Filter</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="table table-responsive">
+                        <table id="tblRewardPoints" style="width:100% !important" class="table table-bordered table-hover dt-responsive nowrap">
+                            <thead>
+                                <tr>
+                                    <th>Activity Date</th>
+                                    <th>Transaction Type</th>
+                                    <th>Points</th>
+                                    <th>Transaction Date</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    .ui-helper-hidden-accessible {
+        display: none;
+    }
+</style>
+
+@section Scripts{
+
+    <script>
+
+        $(function () {
+
+            var $tableSel = $("#tblRewardPoints").DataTable({
+                "responsive": true,
+                "bLengthChange": false,
+                "pagingType": "simple_numbers",
+                "processing": true,
+                "serverSide": true,
+                "filter": false,
+                "orderMulti": false,
+                "ajax": {
+                    "url": "/Manage/LoadRewardPointData",
+                    "type": "POST",
+                    "datatype": "json",
+                    "data": function (d) {
+                        var startDateRewardPoint = $("#startDateRewardPoint").val();
+                        var endDateRewardPoint = $("#endDateRewardPoint").val();
+
+                        d.startDateRewardPoint = startDateRewardPoint;
+                        d.endDateRewardPoint = endDateRewardPoint;
+                    },
+                    'error': function (jqXHR, textStatus, errorThrown) {
+                        $('#tblRewardPoints').DataTable().clear();
+                    }
+                },
+                fixedHeader: {
+                    header: true,
+                    footer: true
+                },
+                "columns": [
+                        {
+                            "data": "dtAction",
+                            "name": "ActivityDate",
+                            "autoWidth": true,
+                            "render": function (data) {
+                                return getNorDateTime(data);
+                            }
+                        },
+                        { "data": "Type", "name": "TransactionType", "autoWidth": true },
+                        { "data": "iTotalPoints", "name": "Points", "autoWidth": true },
+                        { "data": "dtDate", "name": "TransactionDate", "autoWidth": true }
+                ],
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                    if (aData.Type == "Redeemed") {
+                        $('td', nRow).addClass('warning');
+                    }
+                    else if (aData.Type == "Earned") {
+                        $('td', nRow).addClass('info');
+                    }
+                    else {
+                        $('td', nRow).addClass('danger');
+                    }
+                }
+            });
+
+
+            $('#filter').click(function () {
+                $tableSel.ajax.reload();
+            });
+
+            $('#clearFilter').click(function (e) {
+                $("#startDateRewardPoint").val('');
+                $("#endDateRewardPoint").val('');
+                $tableSel.ajax.reload();
+                return false;
+            });
+
+
+            var today = new Date();
+
+            $("#startDateRewardPoint").datepicker({
+                dateFormat: 'dd/mm/yy',
+                autoclose: true,
+                changeMonth: true,
+                changeYear: true,
+                yearRange: (today.getFullYear()) - 5 + ":" + (today.getFullYear()),
+                onSelect: function () {
+                    var part = this.value.split("/");
+                    var newDate = new Date(part[2], part[1] - 1, part[0]);
+                    $('#endDateRewardPoint').datepicker('option', 'minDate', newDate);
+                }
+            });
+
+            $("#endDateRewardPoint").datepicker({
+                dateFormat: 'dd/mm/yy',
+                autoclose: true,
+                changeMonth: true,
+                changeYear: true,
+                yearRange: (today.getFullYear()) - 5 + ":" + (today.getFullYear())
+            });
+                //.on('changeDate', function (selected) {
+               // var minDate = new Date(selected.date.valueOf());
+               // $('#startDateRewardPoint').datepicker('setEndDate', minDate);
+            //});
+
+            $("#txtSearchHotel").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/Manage/GetHotelSearchData",
+                        type: "GET",
+                        dataType: "json",
+                        data: { hotelSearchTxt: request.term },
+                        success: function (data) {
+                            response($.map(data.hotelList, function (item) {
+                                return { label: item.Name, value: item.Id };
+                            }))
+                        }
+                    })
+                },
+                select: function (event, ui) {
+
+                    $("#txtSearchHotel").val(ui.item.label);
+                    $('#hdnSelectedLocalityID').val(ui.item.value);
+                    $('#hdnSelectedType').val(ui.item.category);
+                    event.preventDefault();
+                },
+                focus: function (event, ui) {
+                    event.preventDefault();
+                    // $("#txtSearchHotel").val(ui.item.label);
+                    return false;
+                }
+            });
+
+
+            $('#btnRedeemPoints').click(function (e) {
+
+                e.preventDefault();
+
+                FetchRoomDetails();
+
+                if (!$("#hdnSelectedLocalityID").val()) {
+                    $('#txtSearchHotel').focus();
+                    toastr.error('Please select hotel.');
+                    return false;
+                }
+
+               
+                if (!$("#CheckInDate").val()) {
+                    $('#CheckInDate').focus();
+                    toastr.error('Please select check-in date.');
+                    return false;
+                }
+
+                if (!$("#CheckOutDate").val()) {
+                    $('#CheckOutDate').focus();
+                    toastr.error('Please select check-out date.');
+                    return false;
+                }
+
+                if (!$("#hdnJson").val()) {
+                    toastr.error('Please select rooms.');
+                    return false;
+                }
+
+               var values = {
+                        propId: $('#hdnSelectedLocalityID').val(),
+                        sCheckIn: $('#CheckInDate').val(),
+                        sCheckOut: $('#CheckOutDate').val(),
+                        sRoomData: $("#hdnJson").val()
+                    };
+
+               $('.overlay').show();
+
+               window.location.href = '@Url.Action("Index", "RedeemPoints")?propId=' + btoa(values.propId) + '&checkIn=' + values.sCheckIn + '&checkOut=' + values.sCheckOut + '&sRoomData=' + values.sRoomData;
+
+            });
+
+
+            $("#frmSearchProperty").validate({
+                rules: {
+
+                    LocalityCity: { required: true, maxlength: 50, message: false },
+                    CheckInDate: { date: false, required: true, maxlength: 50 },
+                    CheckOutDate: { date: false, required: true, maxlength: 50 }
+                },
+                errorPlacement: function (error, element) { },
+                highlight: function (element) {
+                    $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+
+                },
+                unhighlight: function (element) {
+                    $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+                }
+            });
+
+            $("#frmViewDataTable").validate({
+                rules: {
+
+                    startDateRewardPoint: { required: true, maxlength: 50, message: false },
+                    endDateRewardPoint: { required: true, maxlength: 50, message: false }
+                }
+            });
+
+        });
+
+
+        $(function () {
+
+            $('#CheckInDate').bind("cut copy paste", function (e) {
+                e.preventDefault();
+            });
+
+            $('#CheckOutDate').bind("cut copy paste", function (e) {
+                e.preventDefault();
+            });
+
+            $('#CheckInDate').keydown(function (e) {
+                e.preventDefault();
+                return false;
+            });
+
+            $('#CheckOutDate').keydown(function (e) {
+                e.preventDefault();
+                return false;
+            });
+
+            var d = new Date(),
+
+              from = $("#CheckInDate").datepicker({
+
+                  changeMonth: false,
+                  numberOfMonths: 2,
+                  minDate: new Date(),
+                  dateFormat: 'dd/mm/yy',
+                  onSelect: function (selected, event) {
+
+                      var selectedDate = new Date(event.selectedMonth + 1 + '/' + event.selectedDay + '/' + event.selectedYear);
+                      var oneDayAfter = selectedDate;
+                      oneDayAfter.setDate(oneDayAfter.getDate() + 1);
+
+                      to.datepicker("option", "minDate", oneDayAfter);
+
+                      var afterHalfMonth = new Date(selectedDate);
+                      afterHalfMonth.setDate(afterHalfMonth.getDate() + 45);
+                      to.datepicker("option", "maxDate", afterHalfMonth);
+
+                      var txtToSelectedVal = $('#CheckOutDate').val();
+
+                      if (txtToSelectedVal) {
+
+                          var toVal_ddmmyy = txtToSelectedVal.split('/');
+
+                          if (toVal_ddmmyy) {
+
+                              var txtToSelectedDate = new Date(toVal_ddmmyy[1] + '/' + toVal_ddmmyy[0] + '/' + toVal_ddmmyy[2])
+
+                              if (selectedDate > txtToSelectedDate) {
+
+                                  var dd = txtToSelectedDate.getDate();
+                                  var mm = txtToSelectedDate.getMonth() + 1;
+                                  var yy = txtToSelectedDate.getFullYear();
+
+                                  dd < 10 ? dd = '0' + dd : dd = dd;
+                                  mm < 10 ? mm = '0' + mm : mm = mm;
+
+                                  var nextDayMMDDYYFormat_txtTo = dd + '/' + mm + '/' + yy;
+                                  $('#CheckOutDate').val(nextDayMMDDYYFormat_txtTo);
+                              }
+                          }
+                      }
+                      else {
+                          var dd = oneDayAfter.getDate();
+                          var mm = oneDayAfter.getMonth() + 1;
+                          var yy = oneDayAfter.getFullYear();
+
+                          dd < 10 ? dd = '0' + dd : dd = dd;
+                          mm < 10 ? mm = '0' + mm : mm = mm;
+
+                          var nextDayMMDDYYFormat = dd + '/' + mm + '/' + yy;
+                          $('#CheckOutDate').val(nextDayMMDDYYFormat);
+                      }
+                  }
+              }),
+
+              to = $("#CheckOutDate").datepicker({
+
+                  changeMonth: false,
+                  startDate: d,
+                  minDate: d,
+                  numberOfMonths: 2,
+                  dateFormat: 'dd/mm/yy',
+                  onSelect: function (selected, event) {
+
+                      var selectedDate = new Date(event.selectedMonth + 1 + '/' + event.selectedDay + '/' + event.selectedYear);
+
+                      var txtFromSelectedVal = $('#CheckInDate').val();
+
+                      if (txtFromSelectedVal) {
+
+                          var fromVal_ddmmyy = txtFromSelectedVal.split('/');
+
+                          if (fromVal_ddmmyy) {
+
+                              var txtFromSelectedDate = new Date(fromVal_ddmmyy[1] + '/' + fromVal_ddmmyy[0] + '/' + fromVal_ddmmyy[2])
+
+                              var oneDayBefore = selectedDate;
+                              oneDayBefore.setDate(oneDayBefore.getDate() - 1);
+
+
+                              if (selectedDate < txtFromSelectedDate) {
+
+                                  var dd = oneDayBefore.getDate();
+                                  var mm = oneDayBefore.getMonth() + 1;
+                                  var yy = oneDayBefore.getFullYear();
+
+                                  dd < 10 ? dd = '0' + dd : dd = dd;
+                                  mm < 10 ? mm = '0' + mm : mm = mm;
+
+                                  var nextDayMMDDYYFormat_txtFrom = dd + '/' + mm + '/' + yy;
+                                  $('#CheckInDate').val(nextDayMMDDYYFormat_txtFrom);
+                              }
+                          }
+                      }
+                  }
+              });
+
+            $('#txtSearchHotel').focus(function () {
+
+                $(this).val('');
+                $(this).text('');
+            });
+        });
+
+
+    </script>
+
+
+}

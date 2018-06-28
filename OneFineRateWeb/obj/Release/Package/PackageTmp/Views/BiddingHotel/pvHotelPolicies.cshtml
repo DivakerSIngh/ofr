@@ -1,0 +1,77 @@
+﻿@model   OneFineRateBLL.Entities.PropDetailsM
+
+<div class="margintop10 marginbottom10 zindex99" id="rating">
+
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs tablebluebg" role="tablist">
+        <li role="presentation" ><a href="#tripAdvisory" aria-controls="1" role="tab" data-toggle="tab">Tripadvisor Rating</a></li>
+        <li role="presentation"><a href="#facilities" aria-controls="2" role="tab" data-toggle="tab">Hotel Facilities</a></li>
+        <li role="presentation" class="active"><a href="#policies" aria-controls="3" role="tab" data-toggle="tab">Policies</a></li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content whitebg">
+        <div role="tabpanel" class="tab-pane active" id="policies">
+            <div class=" table-responsive">
+                <table class="table  table-hover">
+
+                    <tbody>
+                        <tr>
+                            <td>Check-In</td>
+                            <td>:</td>
+                            <td>From @Html.DisplayFor(m => m.sCheckInHH):@Html.DisplayFor(m => m.sCheckInMM) </td>
+                        </tr>
+
+                        <tr>
+                            <td>Check-out</td>
+                            <td>:	</td>
+                            <td>Until @Html.DisplayFor(m => m.sCheckoutHH):@Html.DisplayFor(m => m.sCheckoutMM)</td>
+                        </tr>
+
+                        <tr>
+                            <td>Cancellation/ Prepayment</td>
+                            <td>:	</td>
+                            <td>
+                             Cancellation and prepayment policies vary according to room type. Please check what room conditions may apply when selecting room.</td>
+                        </tr>
+
+                        <tr>
+                            <td>Children and Extra Beds</td>
+                            <td>:	</td>
+                            <td colspan="2">
+                                <ul>
+                                    <li>All children are welcome.</li> 
+                                    <li class="alert-info">Free ! All Children under @Html.DisplayFor(m => m.iMinCheckInAge) years stay free of charge when using existing beds.</li>
+                                    <li class="alert-info">Free ! One child under 2 years stays free of charge in a crib.</li>
+                                    <li>One older child or adult is charged INR @Html.DisplayFor(m => m.dExtraBedCharges) per person per night in an extra bed.</li>
+                                    <li>The maximum number of extra beds/cribs in a room is @Html.DisplayFor(m => m.iExtraBedRequiredFrom).</li>
+                                </ul>
+                            </td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td>Pets</td>
+                            <td>:</td>
+                            <td>Pets are not @Html.DisplayFor(m => m.bPetsAllowed).</td>
+                        </tr>
+                        <tr>
+                            <td>Cards accepted at this property </td>   
+                            <td>:</td>
+                            <td>
+                                @Html.DisplayFor(m => m.sCreditCardId)                                
+                                <a href="#"></a><a href="#"><img src="../images/american-express.png"></a>
+                                <a href="#"><img src="../images/visa.png"></a>
+                                <a href="#"><img src="../images/mastercard.png"></a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="facilities">...fgsdgsdsdgsg</div>
+        <div role="tabpanel" class="tab-pane" id="tripAdvisory">...eqweqweqw</div>
+    </div>
+
+</div>

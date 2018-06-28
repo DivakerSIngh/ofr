@@ -1,0 +1,71 @@
+﻿@using OneFineRateWeb.Models
+@model LoginViewModel
+
+@{
+    Layout = null;
+
+}
+
+<div role="tabpanel" class="tab-pane active" id="signin">
+    <div class="col-md-12 margintop10">
+        @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
+    </div>
+    <div class="col-md-12 marginbottom20">
+        <hr class="divider or_class_div"></hr>
+        @*<img src="../images/sign_text.png" width="100%">*@
+    </div>
+    <div class="col-md-12" style="color:green" id="loginSuccess">
+
+    </div>
+
+    @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { id = "loginForm", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.ValidationSummary(true, "", new { @class = "red" })
+        <div class="row">
+            <div class="col-md-offset-2 col-xs-offset-1 ">
+                <div class="col-md-10 col-xs-11 margintop-10">
+
+                    @if (string.IsNullOrEmpty(ViewBag.ReturnUrl))
+                    {
+                        <input type="hidden" name="returnUrl" id="hdnLoginReturnUrl" />
+                    }
+
+                    @Html.HiddenFor(m => m.IsCorporateRequested, new { @class = "hdnCorporateRequested" })
+
+                    <div class="red margintop10" id="loginErrors"></div>
+                    @Html.TextBoxFor(m => m.EmailOrPhone, new { placeholder = "Email Or Mobile", maxlength = "100", @class = "form-control " })
+                    @Html.ValidationMessageFor(m => m.EmailOrPhone, "", new { @class = "red" })
+
+                    @Html.PasswordFor(m => m.Password, new { value = Model.Password, placeholder = "Password", maxlength = "50", @class = "form-control margintop10", id = "loginPassword" })
+                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "red" })
+
+
+                    <div class="form-inline">
+                        @Html.CheckBoxFor(m => m.RememberMe, new { @class = "checkbox margintop10" })
+                        @Html.LabelFor(m => m.RememberMe)
+                    </div>
+
+                    @Html.TextBoxFor(m => m.CorporateEmail, new { maxlength = "100", @class = "form-control", id = "txtCorporateEmailLoginPage", style = "display:none" })
+
+                    <div class="modal-footer  noborder">
+                        <div class="row form-inline">
+                            <div class="col-md-12 text-center">
+                                <button type="submit" id="btnSignIn" class="col-md-12 btn btn-filter">Sign In</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row form-inline" style="text-align:center">
+                        <a href="javascript:void(0);" id="lnkForgotPassword"> <span class="padding5">Forgot your password?</span> </a><br />
+                        @*<a href="javascript:void()" data-dismiss="modal">close</a>*@
+                    </div>
+                    @*<hr />*@
+                </div>
+            </div>
+        </div>
+      
+
+    }
+
+</div>

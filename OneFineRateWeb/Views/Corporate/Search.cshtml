@@ -1,0 +1,926 @@
+﻿@using MvcCheckBoxList.Model
+@model OneFineRateBLL.Entities.eWebSiteSearchPage
+@{
+    ViewBag.Title = "Corporate Search";
+}
+
+
+<script src="~/js/jquery-ui.js"></script>
+
+<link href="~/css/jquery-ui.css" rel="stylesheet" />
+<link href="~/Scripts/ion.rangeSlider-2.2.0/css/ion.rangeSlider.css" rel="stylesheet" />
+<link href="~/Scripts/ion.rangeSlider-2.2.0/css/normalize.css" rel="stylesheet" />
+<link href="~/Scripts/ion.rangeSlider-2.2.0/css/ion.rangeSlider.skinFlat.css" rel="stylesheet" />
+<script src="~/js/jquery.shortenNew.js"></script>
+
+<script src="//maps.googleapis.com/maps/api/js?key=AIzaSyBA8k8_YKEbkfECgXpF6FKdMkMA1jS1qAQ"></script>
+
+<script src="~/Scripts/divSlider.js"></script>
+
+
+<style>
+    #map_wrapper {
+        height: 450px;
+               margin-bottom:15px;
+    }
+
+    #map_canvas {
+        width: 100%;
+        height: 100%;
+    }
+
+    .wrap-custom {
+        position: relative;
+        margin: 3em 0;
+    }
+
+    .frame-custom {
+        height: 330px !important;
+        /*line-height: 250px;*/
+        overflow: hidden !important;
+    }
+
+        .frame-custom ul {
+            list-style: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            height: 100% !important;
+            font-size: 50px !important;
+            width: 101% !important;
+            margin-left:3px !important;
+        }
+
+            .frame-custom ul li {
+                float: left !important;
+                width: 230px !important;
+                height: 100% !important;
+                margin: 0 3px 0 0;
+                padding: 0 !important;
+                background: #fff !important;
+                border: #e7e6e6 1px solid;
+                /*color: #ddd !important;*/
+                /*text-align: center;*/
+                cursor: all-scroll !important;
+                padding-left: 10px;
+                color: #000;
+                position: relative;
+            }
+
+                .frame-custom ul li.active {
+                    /*color: #fff !important;*/
+                    /*background: #5e2e86 !important;*/
+                }
+
+    .scrollbar {
+        margin: 0 0 1em 0;
+        height: 5px;
+        background: #ccc;
+        line-height: 0;
+    }
+
+        .scrollbar .handle {
+            width: 100px;
+            height: 100%;
+            background: #292a33;
+            cursor: pointer;
+        }
+
+            .scrollbar .handle .mousearea {
+                position: absolute;
+                top: -9px;
+                left: 0;
+                width: 100%;
+                height: 20px;
+            }
+
+
+    .controls {
+        margin: 25px 0;
+        text-align: center;
+    }
+
+    @@media only screen and (max-width: 400px) {
+        .srchpricetitles {
+            margin-right: 25px;
+        }
+    }
+
+    .hotelfacilitydiv table tr td label {
+        margin-left: 5px;
+        margin-top: 0px !important;
+    }
+
+    .roomfacilitydiv table tr td label {
+        margin-left: 5px;
+        margin-top: 0px !important;
+    }
+
+    #ui-datepicker-div {
+        z-index: 999 !important;
+    }
+
+    .scrollFix {
+        line-height: 1.35;
+        overflow: hidden;
+        white-space: nowrap;
+        height: 100%;
+    }
+
+    .disabledDiv {
+        pointer-events: none;
+        opacity: 0.5;
+    }
+
+    .waitMe_container .waitMe .waitMe_text {
+        font-size: 20px;
+    }
+
+    .waitMe_container .waitMe_progress.rotation > div {
+        height: 40px !important;
+        width: 40px !important;
+    }
+
+    .ui-menu {
+        width: 360px;
+    }
+
+    .ui-widget.ui-widget-content li {
+        border: 0px !important;
+    }
+    
+   .ui-widget {
+    font-family: Verdana,Arial,sans-serif;
+     font-size: 1em !important
+}
+</style>
+
+@if (Request.Browser.IsMobileDevice)
+{
+    <div class="row" style="padding-top:15px; padding-bottom:10px">
+        <div class="col-md-12">
+            <div class="col-xs-6">
+                <button class="btn btn-filter" style="width:100%" onclick="$(this).toggleClass('btn-default'); $('#searchBarContainer').slideToggle()">Search</button>
+            </div>
+
+            <div class="col-xs-6">
+                <button class="btn btn-filter" style="width:100%" onclick="$(this).toggleClass('btn-default'); $('#filterContainer').slideToggle()">Filter</button>
+            </div>
+        </div>
+    </div>
+}
+
+<div id="searchBarContainer" class="@(Request.Browser.IsMobileDevice ? Html.Raw("col-md-12") : null)" style="display:@(Request.Browser.IsMobileDevice ? Html.Raw("none") : Html.Raw("block"))">
+    @Html.Partial("_TopSearchBar")
+</div>
+
+
+<div id="loaderContainer">
+
+    <input type="hidden" value="500" id="hdnLowerPrice">
+
+    <input type="hidden" value="50000" id="hdnUpperPrice">
+
+    <div class="container">
+        <div class="row" style="display:@(Request.Browser.IsMobileDevice ? Html.Raw("none") : Html.Raw("block")); margin-left: 0%; margin-right:0%;">
+            <div class="col-md-12 srchcaptionbg" style="padding-top:5px">
+                @*<h4 class="bold nomarginbtm"> Save up to 50% on a hotel  by Negotiating!</h4>
+                Negotiate with the hotels to lock in <span class=" font17">BIG</span> savings  within minutes.*@
+                <h4 style="margin-bottom:15px">Enlisted are OFR Corporate Club Hotels. Could'nt find your hotel ? Proceed to <a style="color:#fecb00" href="/Home/Index">Bargain</a> & <a style="color:#fecb00" href="/Home/Index">Bid</a>.</h4>               
+            </div>
+            @*<div class="col-md-2 srchlrnmore" id="learnmore">Learn More</div>*@
+            <div class="col-md-12 col-xs-12 text-center learnblock" id="lrndata" style="display:none;">
+                <div class="col-md-3 paddingtop15">
+                    <img src="~/images/big-discount.png" class="img-res text-center" /><h4 class="popuphead">BIG DISCOUNTS</h4>
+                    <hr />
+                    <div class="lineheight16">
+                        We negotiate rates upto 50%  for you.
+                    </div>
+                </div>
+                <div class="col-md-1"></div>
+                <div class=" col-md-3 paddingtop15">
+                    <img src="~/images/whatcatch.png" class="img-res text-center" /><h4 class="popuphead">WHAT's THE CATCH</h4> <hr /><div class="lineheight16">With prices this low, hotel wants to be sure that you are travelling.</div>
+                </div>
+                <div class="col-md-1"></div>
+                <div class="col-md-3 paddingtop15">
+                    <img src="~/images/how.png" class="img-res" /> <h4 class="popuphead">HOW ?</h4> <hr /><div class="lineheight16"> Just pay INR 500 was a signup fees and if your bargain is successful, you pay the balance. If not, then we refund it back to you.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="blue_header_bar" id="filterContainer" style="display:@(Request.Browser.IsMobileDevice ? Html.Raw("none") : Html.Raw("block"))">
+
+        @using (Html.BeginForm("Search", "Corporate", FormMethod.Post, new { id = "frmCorporateSeach" }))
+        {
+            <div class="container marginbottom6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>Filters</h4><hr>
+                    </div>
+                    <div class="row ">
+                        <div class="col-md-12 ">
+                            <div class="col-lg-6 col-md-12 col-sm-12  col-xs-12   ">
+                                <div class="form-group">
+                                    <label>Search by Hotel </label>
+                                    <input type="text" id="txtHotelName" class="form-control " placeholder="Hotel Name">
+                                </div>
+                            </div> 
+                            <div class="col-lg-1 col-md-12 col-sm-12  col-xs-12 margintop30mob" >
+                                <div class="form-group">
+                                    <label>OR</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-5 col-md-12 col-sm-12  col-xs-12 ">
+                                <div class="form-group">
+                                    <label>Search by Location </label>
+                                    <input type="text" id="txtlocality" class="form-control  marginbottom10" placeholder="Location Name">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="marginleftright15" />
+
+                    <div class="row col-md-12">
+                        <div class="col-lg-3 col-md-6 col-xs-10 " style="border:0px solid red;">
+                            <div class="rowxcc">
+                                <label>Star Choice/Category</label>
+                                <ul class="star-choice">
+                                    <li><img class="starChoice" data-id="1" data-startype="n" src="@Url.Content("~/images/1Star-n.png")" /></li>
+                                    <li><img class="starChoice" data-id="2" data-startype="n" src="@Url.Content("~/images/2Star-n.png")" /></li>
+                                    <li><img class="starChoice" data-id="3" data-startype="n" src="@Url.Content("~/images/3Star-n.png")" /></li>
+                                    <li><img class="starChoice" data-id="4" data-startype="n" src="@Url.Content("~/images/4Star-n.png")" /></li>
+                                    <li><img class="starChoice" data-id="5" data-startype="n" src="@Url.Content("~/images/5Star-n.png")" /></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-lg-3  col-md-6 col-xs-10 ">
+                            <div class="slider-range">
+                                <label>Room rate per night</label>
+                                @*<div id="slider-range"></div>*@
+                                <input type="text" id="slider-range" value="" />
+                                <input type="hidden" id="amount" class="noborder font12" readonly>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 border">
+                            <div class="row form-inline">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <label>&nbsp;</label><br />
+                                    <div class="btn-group">
+                                        <button type="button" class="form-control btn btn-default"> Hotel Facilities </button>
+                                        <button class="form-control btn btn-default  dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <span class="caret"></span>
+                                        </button>
+                                        <div class="dropdown-menu hotelfacilitydiv">
+                                            @{ var putCheckBoxesIntoTable = new HtmlListInfo(HtmlTag.table, 3, new { style = "width:100%;" }, TextLayout.Default, TemplateIsUsed.No); }
+                                            @Html.CheckBoxListFor(m => m.SelectedHotelFacility, m => m.HotelFacilityItems,
+                                            group => group.Value,
+                                            group => group.Text,
+                                            m => m.Selected,
+                                            putCheckBoxesIntoTable)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <label>&nbsp;</label><br />
+                                    <div class="btn-group">
+                                        <button type="button" class="form-control btn btn-default"> Room Facilities </button>
+                                        <button class="form-control btn btn-default  dropdown-toggle " type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <span class="caret"></span>
+                                        </button>
+                                        <div class="dropdown-menu roomfacilitydiv">
+                                            @Html.CheckBoxListFor(m => m.SelectedRoomFacility, m => m.RoomFacilityItems,
+                                            group => group.Value,
+                                            group => group.Text,
+                                            m => m.Selected,
+                                            putCheckBoxesIntoTable)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12 nopadding margintop10" style="border:0px solid red;">
+                            @*<label class="form-inline margintop10">
+                                <input type="checkbox" value="Special Deal" id="specialDeal" class="checkbox"> Special Deal
+                            </label>*@<br />
+                            <button type="button" id="applyFilter" data-button_name="@Model.sRequestType" class="btn btn-filter marginbottom10 ">Apply Filter</button>
+                            <button type="button" id="clearFilter" class="btn btn-clear marginbottom10  ">Clear</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+
+    <div class="container" id="searchListContainer">
+
+        @{ Html.RenderPartial("_HotelList");}
+
+    </div>
+
+</div>
+
+<script type="text/javascript" src="~/Scripts/ion.rangeSlider-2.2.0/js/ion-rangeSlider/ion.rangeSlider.js"></script>
+<script type="text/javascript">
+
+    var minrange = 0;
+    var maxrange = 0;
+    var starChoices = [];
+    var iLocalitySearchedID = 0;
+    var initialPriceListJson = [];
+
+    $.fn.isOnScreen = function () {
+        var viewport = {};
+        viewport.top = $(window).scrollTop();
+        viewport.bottom = viewport.top + $(window).height();
+        var bounds = {};
+        bounds.top = this.offset().top;
+        bounds.bottom = bounds.top + this.outerHeight();
+        return ((bounds.top <= viewport.bottom) && (bounds.bottom >= viewport.top));
+    };
+
+
+    $(function () {
+
+
+        $(document).on('click', '#mapViewLink', function (e) {
+
+            e.preventDefault();
+            $(this).hide();
+            $('#listViewLink').show();
+            $('#hotelListContainer').hide();
+            $('#hotelMapViewContainer').show();
+            initialize();
+            @if (!Request.Browser.IsMobileDevice)
+            {
+                <text>$('#propertySortDiv').hide();</text>
+            }
+            else
+            {
+                    <text>$("#propertySortDivMob").hide();</text>
+            }
+
+            $('#propertySortDivEmpty').show();
+
+        });
+
+        $(document).on('click', '#listViewLink', function (e) {
+
+            e.preventDefault();
+            $(this).hide();
+            $('#mapViewLink').show();
+            $('#hotelMapViewContainer').hide();
+            $('#hotelListContainer').show();
+            @if (!Request.Browser.IsMobileDevice) {
+            <text>$('#propertySortDiv').show();</text>
+            }
+            else
+            {
+                <text>$("#propertySortDivMob").show();</text>
+            }
+
+            $('#propertySortDivEmpty').hide();
+        });
+
+
+        var priceListJson = [];
+
+        $('.lazy').each(function(index,element){
+
+            if($(this).data('price') != undefined && $(this).data('price') != NaN)
+            {
+                var priceObj= {};
+                priceObj.dPrice= parseFloat($(this).data('price'));
+                priceListJson.push(priceObj);
+            }
+        });
+
+        MAX =  Math.round(Math.max.apply(Math,priceListJson.map(function(o){return o.dPrice;})));
+        MIN = Math.round(Math.min.apply(Math, priceListJson.map(function (o) { return o.dPrice; })));
+
+
+
+        if (MIN == Infinity || MAX == Infinity || MIN == -Infinity || MAX == -Infinity)
+        {
+            MIN= 500*@Model.dExchangeRate;
+
+            MAX= 50000*@Model.dExchangeRate;
+        }
+
+        $('#hdnLowerPrice').val(MIN);
+        $('#hdnUpperPrice').val(MAX);
+
+
+        @*$("#slider-range").slider({
+            range: true,
+            min: MIN,
+            max: MAX,
+            values: [MIN,MAX],
+            slide: function (event, ui) {
+
+                $("#amount").val('@Model.sCurrencySymbol' + ui.values[0] + ' - @Model.sCurrencySymbol' + ui.values[1]);
+
+                $('#hdnUpperPrice').val(ui.values[1].toString());
+                $('#hdnLowerPrice').val(ui.values[0].toString());
+            }
+        });*@
+
+        @*$("#amount").val('@Model.sCurrencySymbol'+ $("#slider-range").slider("values", 0 ) + " - @Model.sCurrencySymbol" + $("#slider-range").slider("values", 1 ));*@
+        $("#slider-range").ionRangeSlider({
+                type: "double",
+                min: MIN,
+
+                max: MAX,
+                from:MIN,
+                to: MAX,
+                grid: false,
+                prefix: "@Model.sCurrencySymbol",
+                //onStart: function (data) {
+                //    debugger;
+                //    console.log(data);
+                //},
+                onChange: function (data) {
+                    $("#amount").val('@Model.sCurrencySymbol' + data.from + ' - @Model.sCurrencySymbol' + data.to);
+
+                    $('#hdnUpperPrice').val(data.to);
+                    $('#hdnLowerPrice').val(data.from);
+                },
+                //onFinish: function (data) {
+                //    debugger;
+                //    console.log(data);
+                //},
+                //onUpdate: function (data) {
+                //    debugger;
+                //    console.log(data);
+                //}
+            });
+            var slider = $("#slider-range").data("ionRangeSlider");
+             $("#amount").val('@Model.sCurrencySymbol' + slider.result.min + " - @Model.sCurrencySymbol" + slider.result.max);
+
+        $('.starChoice').click(function () {
+
+
+
+            var $this = $(this);
+            var id = $this.attr('data-id');
+            var starType = $this.attr('data-startype');
+
+            switch (id) {
+                case '1':
+                    {
+                        ChangeStarType(starType, $this, 1);
+                        break;
+                    };
+                case '2':
+                    {
+                        ChangeStarType(starType, $this, 2);
+
+                        break;
+                    }
+                case '3':
+                    {
+                        ChangeStarType(starType, $this, 3);
+                        break;
+                    }
+                case '4':
+                    {
+                        ChangeStarType(starType, $this, 4);
+                        break;
+                    }
+                case '5':
+                    {
+                        ChangeStarType(starType, $this, 5);
+                        break;
+                    }
+            }
+
+            function ChangeStarType(starType, element, starNumber) {
+                try {
+
+                    if (starType == 'n') {
+                        element.attr('src', '../images/' + starNumber + 'Star-h.png');
+                        element.attr('data-starType', 'h');
+                    }
+                    else if (starType == 'h') {
+                        element.attr('src', '../images/' + starNumber + 'Star-n.png');
+                        element.attr('data-starType', 'n');
+                    }
+
+                } catch (e) {
+
+                }
+            }
+
+        });
+
+        $('#applyFilter').click(function (e) {
+
+            e.preventDefault();
+
+
+
+            $('.bodyClickHide').hide();
+
+
+            if ($('#hdnSelectedLocalityID').val() == "" || $('#hdnSelectedLocalityID').val() == undefined) {
+                toastr.warning('Please select the Destination City.');
+                return false;
+            }
+
+            if ($('#txtstayfrom').val() == "" || $('#txtstayfrom').val() == undefined) {
+                toastr.warning('Please select your Check In date.');
+                return false;
+            }
+            if ($('#txtstayto').val() == "" || $('#txtstayto').val() == undefined) {
+                toastr.warning('Please select your Check Out date.');
+                return false;
+            }
+
+            if ($("#hdnJson").val() == "" || $("#hdnJson").val() == undefined) {
+                toastr.warning('Please select rooms.');
+                return false;
+            }
+
+            starChoices = [];
+
+            $('.starChoice').each(function (element, index) {
+
+                var $this = $(this);
+                if ($this.attr('data-startype') == 'h') {
+                    var thisStarId = $this.attr('data-id');
+                    starChoices.push(thisStarId)
+                }
+            });
+
+            var values = {
+                cid: iLocalitySearchedID != 0 ? 0 : $('#hdnSelectedLocalityID').val(),
+                ctype: iLocalitySearchedID != 0 ? 0 : $('#hdnSelectedType').val(),
+                iFilterLocality: iLocalitySearchedID == 0 ? 0 : iLocalitySearchedID,
+                iAreaType: iLocalitySearchedID == 0 ? 0 : 7,
+                cname: iLocalitySearchedID == 0 ? $('#txtlocname').val() : 'Loc',
+                sCheckIn: $('#txtstayfrom').val(),
+                sCheckOut: $('#txtstayto').val(),
+                sRoomData: $("#hdnJson").val(),
+                sSelectedHotelFacility: GetSelectedHotelFacilities().toString(),
+                sSelectedRoomFacility: GetSelectedRoomFacilities().toString(),
+                dMaxPrice: $('#hdnUpperPrice').val(),
+                dMinPrice: $('#hdnLowerPrice').val(),
+                sStarRating: starChoices.toString(),
+                isSpecialDeal: $("#specialDeal").is(':checked'),
+            };
+
+            GetHotelsBYSearchParam(values);
+
+        });
+
+        $('#clearFilter').click(function (e) {
+            location.reload();
+        });
+
+        var d = new Date();
+        var dataListIdsCashed = [];
+
+        var searchId = $('#hdnSelectedLocalityID').val();
+
+        $("#txtHotelName").catcomplete({
+
+            source: function (request, response) {
+
+                $.ajax({
+                    url: '@Url.Action("GetHotelNames","Search")',
+                    contentType: "application/json; charset=utf-8",
+                    data: { txt: request.term, PlaceId: searchId, Type: SearchType },
+                    dataType: "json",
+                    type: "GET",
+                    global: false,
+                    success: function (data) {
+
+                        if (!data.length) {
+
+                            var result = [
+                             {
+                                 value: response.term,
+                                 category: "Hotel not found! Negotiate or Bid",
+                                 href:"/Home/Index"
+                             }
+                            ];
+                            response(result);
+                        }
+                        else {
+
+                            var dataIdList = $(".propertyIdDiv").map(function() {
+                                return $(this).data("id");
+                            }).get();
+
+                            var dataIdList = $(".propertyIdDiv").map(function() {
+                                return $(this).data("id");
+                            }).get();
+
+                            var filterData =[];
+
+                            if(dataListIdsCashed.length == 0)
+                            {
+                                dataListIdsCashed = dataIdList;
+                            }
+
+                            dataListIdsCashed.filter(function(id) {
+
+                                var  index = data.findIndex(x => x.Id==id);
+
+                                if(index != -1)
+                                    filterData.push(data[index]);
+                            });
+
+
+                            response($.map(filterData, function (item) {
+
+                                return {
+                                    label: item.Name,
+                                    category: "Hotels",
+                                    value: item.Id
+                                }
+                            }));
+                        }
+                    }
+                });
+            },
+
+            minLength: 1,
+
+            select: function (event, ui) {
+               //added by kuldeep
+                if (ui.item.href!=undefined) {
+                    window.location.href=ui.item.href;
+                    $(".overlay").show();
+                    return;
+                }
+               //
+                $("#txtHotelName").val(ui.item.label);
+
+                event.preventDefault();
+
+                var newValues = {
+
+                    sHotelSearch: $('#txtHotelName').val(),
+                    sCheckIn: $('#txtstayfrom').val(),
+                    sCheckOut: $('#txtstayto').val(),
+                    sRoomData: $("#hdnJson").val()
+                };
+
+                GetHotelsBYSearchParam(newValues);
+
+            },
+            focus: function (event, ui) {
+                event.preventDefault();
+                return false;
+            }
+        });
+
+
+        $("#txtlocality").catcomplete({
+
+            source: function (request, response) {
+
+                $.ajax({
+                    url: '@Url.Action("GetLocalityNames", "Search")',
+                    contentType: "application/json; charset=utf-8",
+                    data: { txt: request.term, PlaceId: searchId, Type: SearchType },
+                    dataType: "json",
+                    type: "GET",
+                    async: true,
+                    success: function (data) {
+                        if (!data.length) {
+
+                            var result = [
+                             {
+                                 value: response.term,
+                                 category: "No result Found!"
+                             }
+                            ];
+                            response(result);
+                        }
+                        else {
+                            response($.map(data, function (item) {
+                                return {
+                                    label: item.Name,
+                                    category: "Locality",
+                                    value: item.Id
+                                }
+                            }));
+                        }
+                    }
+                });
+            },
+
+            minLength: 1,
+
+            select: function (event, ui) {
+
+                $("#txtlocality").val(ui.item.label);
+
+                iLocalitySearchedID = ui.item.value;
+
+                event.preventDefault();
+
+                starChoices = [];
+
+                $('.starChoice').each(function (element, index) {
+
+                    var $this = $(this);
+                    if ($this.attr('data-startype') == 'h') {
+                        var thisStarId = $this.attr('data-id');
+                        starChoices.push(thisStarId)
+                    }
+                });
+
+                var values = {
+                    iFilterLocality: iLocalitySearchedID,
+                    iAreaType: 7,
+                    cname: 'Loc',
+                    sCheckIn: $('#txtstayfrom').val(),
+                    sCheckOut: $('#txtstayto').val(),
+                    sRoomData: $("#hdnJson").val(),
+                    sSelectedHotelFacility: GetSelectedHotelFacilities().toString(),
+                    sSelectedRoomFacility: GetSelectedRoomFacilities().toString(),
+                    dMaxPrice: 0,
+                    dMinPrice: 0,
+                    sStarRating: starChoices.toString(),
+                    isSpecialDeal: $("#specialDeal").is(':checked')
+                };
+
+                GetHotelsBYSearchParam(values);
+
+            },
+            focus: function (event, ui) {
+                event.preventDefault();
+                $("#txtlocality").val(ui.item.label);
+                return false;
+            }
+        });
+
+
+        $("#txtHotelName").focus(function () {
+            $("#txtHotelName").val('');
+            $("#txtlocality").val('');
+            iLocalitySearchedID = 0;
+        });
+
+        $("#txtlocality").focus(function () {
+            $("#txtlocality").val('');
+            $("#txtHotelName").val('');
+            iLocalitySearchedID = 0;
+        });
+
+        $('.hotelfacilitydiv').on('click', function (e) {
+            e.stopPropagation();
+        });
+
+        $('.roomfacilitydiv').on('click', function (e) {
+            e.stopPropagation();
+        });
+    });
+
+
+    function GetHotelsBYSearchParam(params) {
+
+        try {
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetHotelListPartial", "Corporate")',
+                data: params,
+                async: true,
+                success: function (response) {
+
+                    $('#searchListContainer').html(response);
+
+                    $('#hotelMapViewContainer').hide();
+
+                    var priceListJson = [];
+                    var MIN = 500;
+                    var MAX = 50000;
+
+                    $('.lazy').each(function (index, element) {
+
+                        if ($(this).data('price') != undefined && $(this).data('price') != NaN) {
+                            var priceObj = {};
+                            priceObj.dPrice = parseFloat($(this).data('price'));
+                            priceListJson.push(priceObj);
+                        }
+
+                        if ($(this).isOnScreen()) {
+                            $(this).show();
+                        }
+                    });
+                    MIN = Math.round(Math.min.apply(Math, priceListJson.map(function (o) { return o.dPrice; })));
+
+                    MAX = Math.round(Math.max.apply(Math, priceListJson.map(function (o) { return o.dPrice; })));
+
+                    @*$("#slider-range").slider("option", "values", [MIN, MAX]);
+
+                    $("#amount").val('@Model.sCurrencySymbol' + $("#slider-range").slider("values", 0) + " - @Model.sCurrencySymbol" + $("#slider-range").slider("values", 1));*@
+                     var slider = $("#slider-range").data("ionRangeSlider");
+                     slider.update({
+                         min: MIN,
+                         max: MAX,
+                         from: MIN,
+                         to: MAX
+                    });
+                    $("#amount").val('@Model.sCurrencySymbol' + slider.result.min + " - @Model.sCurrencySymbol" + slider.result.max);
+
+                },
+                error: function (error) {
+
+                    $('#hotelFilterHeaderDiv').hide();
+                    $('#hotelListContainer').html('<div class="col-md-12 lazy  marginbottom20"><div class="row border1 margintop10 boxshadow margin0">We couldn\'t find Hotel matching your preferences!</div></div>');
+
+                }
+            }).always(function () {
+
+            });
+
+        } catch (e) {
+
+            $('#hotelFilterHeaderDiv').hide();
+            $('#hotelListContainer').html('<div class="col-md-12 lazy  marginbottom20"><div class="row border1 margintop10 boxshadow margin0">An Error occured !</div></div>');
+
+        }
+    }
+
+
+    function GetSelectedHotelFacilities() {
+
+        var hotelFacilities = [];
+
+        $.each($("input[name='SelectedHotelFacility']:checked"), function () {
+            hotelFacilities.push($(this).val());
+        });
+
+        return hotelFacilities;
+    };
+
+    function GetSelectedRoomFacilities() {
+
+        var roomFacilities = [];
+
+        $.each($("input[name='SelectedRoomFacility']:checked"), function () {
+            roomFacilities.push($(this).val());
+        });
+
+        return roomFacilities;
+    };
+
+    function GetSelectedStarCategory() {
+
+        var starCategories = [];
+
+        $.each($("input[name='StarCategory']:selected"), function () {
+            starCategories.push($(this).val());
+        });
+
+        return starCategories;
+    };
+
+
+    $(document).on('click', '.negotiate', function (e) {
+
+        e.preventDefault();
+        var button = $(this);
+
+        var param = { Id: button.data('propertyid'),type:'N'};
+        AjaxCallWithDataMVC_Async("@Url.Action("UpdateConversionViews","Search")", param,function(d){});
+
+        var values = {
+
+            Id: button.data('propertyid'),
+            Slocation: $('#txtlocname').val(),
+            CIn: $('#txtstayfrom').val(),
+            COut: $('#txtstayto').val(),
+            sRoomData: $("#hdnJson").val(),
+            sRequestType: 'negotiate'
+        };
+
+        var searchInformationForGA = 'Hotel : '+ button.data('propertyname') +', Place : ' + values.Slocation + ', Checkin : ' + values.CIn + ', Checkout : ' + values.COut;
+
+
+        var completeInfo = 'IP Address :' + ipAddress + ', Place Details : ' + placeDetail + ', Url : ' + window.location.href + 'User Search Hotel :' + searchInformationForGA;
+
+        ga('send', {
+            hitType: 'event',
+            eventCategory: 'Search Hotel',
+            eventAction: completeInfo,
+            eventLabel: 'Page View'
+        });
+
+        $('.overlay').hide();
+        window.open("/Corporate/HotelDetails?Id=" + values.Id + "&Slocation=" + values.Slocation + "&sCheckIn=" + values.CIn + "&sCheckOut=" + values.COut + "&sRoomData=" + values.sRoomData+"&sRequestType=" + values.sRequestType);
+    });
+
+</script>
+
+
+
+
+

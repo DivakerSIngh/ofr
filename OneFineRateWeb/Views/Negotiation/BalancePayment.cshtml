@@ -1,0 +1,289 @@
+﻿@model OneFineRateBLL.Entities.BalancePaymentModel
+@using OneFineRateAppUtil
+
+@{
+    ViewBag.Title = "BalancePayment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-wrapper">
+
+    <!--main-wrapper-->
+    <div class="thirdsection margintop10">
+        <div class="container" style="padding-left:0px !important; padding-right:0px !important;">
+            <div class="col-md-8 paddingtop-bottom15">
+                <div class="col-md-4 col-xs-12">
+
+                    <img class="imgheight114" src='@Model.sImgUrl' id="imagePreview">
+
+                </div>
+                <div class="col-md-8 col-xs-12">
+                    <h3 class="mar-padd0">@Model.sHotelName</h3>
+                    <div class="margintop-10"> <img src="~/images/inner-star@(Model.iStarCategoryId).png"></div>
+                    <address>
+                        @Model.sPropertyAddress
+                        <div class="row">
+                            @*<div class="col-lg-3 col-md-3 col-sm-3  col-xs-3">Facilities:</div>*@
+                            <div class="col-md-8 col-xs-8 facilityicon">
+                                <ul>
+                                    @for (int i = 0; i < Model.objresultHotelFacilities.Count; i++)
+                                    {
+                                        <li><img src='@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()@Model.objresultHotelFacilities[i].sImgUrl' title="@Model.objresultHotelFacilities[i].sHotelFacilites" id="iconPreview" width="20" height="20"></li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </address>
+                </div>
+            </div>
+            @*<div class="col-md-4 col-xs-12">
+                    <div class="row">
+                        <div class="col-md-6 col-xs-6 pull-left">
+                            <div class="whitebg center  border1">
+                                <h4>Check In</h4>
+                            </div>
+                            <div class="lytgry center  border1">
+                                <div class="row">
+                                    <div class="col-md-5   col-xs-5"><img src="../images/calendar_icon.png" alt=""></div>
+                                    <div class="col-md-7   col-xs-7">
+                                        <div class="bluetextsmall">@Model.sCheckInDay</div>
+                                        <div class="bluetextbig">@Model.sCheckInYear</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-xs-6 pull-right">
+                            <div class="whitebg center  border1">
+                                <h4>Check Out</h4>
+                            </div>
+                            <div class="lytgry center  border1">
+                                <div class="row">
+                                    <div class="col-md-5  col-xs-5"><img src="../images/calendar_icon.png" alt=""></div>
+                                    <div class="col-md-7 col-xs-7">
+                                        <div class="bluetextsmall">@Model.sCheckOutDay</div>
+                                        <div class="bluetextbig">@Model.sCheckOutYear</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 margintop10">
+                            <div class="col-md-4">&nbsp;</div>
+                            <div class="col-md-4 whitebg center border1"><strong>Nights:</strong> @Model.Nights</div>
+
+                            <div class="col-md-4">&nbsp;</div>
+                        </div>
+                    </div>
+                </div>*@
+        </div>
+        <!--next section-->
+    </div>
+
+    <div class="container">
+        <div class="col-md-12 col-xs-12">
+            <div class="row">
+                <div class="col-md-2 col-xs-6 pull-left">
+
+                </div>
+                <div class="col-md-8 margintop10">
+                    <div class="row text-center">
+                        @{
+                            if (Model.sBookType == "C")
+                            {
+                                <h3>Thank you for choosing the Counter Offer</h3>
+                            }
+                            if (Model.sBookType == "N")
+                            {
+                                <h3>Congratulations ! Your offer has been accepted by Hotel.</h3>
+                            }
+                            else
+                            {
+                                @*<h3>Congratulations !</h3>*@
+                            }
+                        }
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3"></div>
+                        <div class="col-md-7">
+                            <h5>Please pay the balance amount to recieve the final confirmation.</h5>
+                        </div>
+
+                        <div class="col-md-2"></div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-xs-6 pull-right">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <div class="row marginbottom20">
+            <div class="col-md-3 margintop30">
+
+            </div>
+            <div class="col-md-6 margintop30">
+                <div class="tablebluebg">Payment Summary</div>
+                <div class="table-responsive table-bordered padding10 lightgrybg">
+                    <table class="table table-bordered table-striped  table-hover">
+
+                        <tbody>
+                            <tr>
+                                @{
+
+                                    if (Model.sBookType == "C")
+                                    {
+
+                                        if (@Model.ccType == "CR" || @Model.ccType == "RR" || @Model.ccType == "FO" || @Model.ccType == "FA")
+                                        {
+                                            <td align="left"><strong>Counter Offer Amount </strong>	</td>
+                                            <td align="right">@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dccPrice))</td>
+                                        }
+                                        else
+                                        {
+
+                                            <td align="left"><strong>Counter Offer Amount </strong>	</td>
+                                            <td align="right">@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dCounterOffer))</td>
+                                        }
+                                    }
+                                    else if (Model.sBookType == "N")
+                                    {
+
+                                        if (Model.cBookingStatus == "NS")
+                                        {
+                                            <td align="left"><strong>Total Amount </strong>	</td>
+                                            <td align="right">@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dTotalAmount))</td>
+                                        }
+                                        else if (Model.cBookingStatus == "FA" || Model.cBookingStatus == "FO")
+                                        {
+                                            <td align="left"><strong>Total Amount </strong>	</td>
+                                            <td align="right">@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dccPrice))</td>
+                                        }
+                                        else
+                                        {
+
+                                            <td align="left"><strong>Your offer </strong>	</td>
+                                            <td align="right">@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dTotalNegotiateAmount))</td>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <td align="left"><strong>Total Amount </strong>	</td>
+                                        <td align="right">@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dTotalAmount))</td>
+                                    }
+                                }
+                            </tr>
+
+                            @{
+                                if (Model.sBookType == "R")
+                                {
+                                    <tr>
+                                        <td align="left"><strong>Extra Bed Amount </strong>	</td>
+                                        <td align="right">@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dTotalExtraBedAmount))</td>
+                                    </tr>
+                                }
+                            }
+
+                            @{
+                                Decimal? Taxes;
+                                if (Model.cBookingStatus == "CO" || Model.cBookingStatus == "CA")
+                                {
+                                    <tr>
+                                        <td align="left"><strong>Taxes</strong></td>
+                                        <td align="right">@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dTaxes))</td>
+                                    </tr>
+
+                                    Taxes = Model.dOfrServiceCharge + Model.dGSTOnServiceCharge + Model.dTaxes;
+                                }
+                                else if (Model.cBookingStatus == "NA")
+                                {
+                                    Taxes = Model.dOfrServiceCharge + Model.dGSTOnServiceCharge + Model.sExtra2;
+
+                                    <tr>
+                                        <td align="left"><strong>Hotel Tax</strong></td>
+                                        <td align="right">@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.sExtra2))</td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    Taxes = Model.dOfrServiceCharge + Model.dGSTOnServiceCharge + Model.TaxHotel;
+
+                                    <tr>
+                                        <td align="left"><strong>Hotel Tax</strong></td>
+                                        <td align="right">@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.TaxHotel))</td>
+                                    </tr>
+
+                                }
+
+                                if (Convert.ToDecimal(Model.dOfrServiceCharge) > 0)
+                                {
+                                    <tr>
+                                        <td align="left"><strong>OFR Service charge</strong></td>
+                                        <td align="right">@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dOfrServiceCharge))</td>
+                                    </tr>
+                                    <tr>
+                                        <td align="left"><strong>GST On OFR Service charge</strong></td>
+                                        <td align="right">@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dGSTOnServiceCharge))</td>
+                                    </tr>
+                                }
+                            }
+
+                            <tr>
+                                <td align="left"><strong>Advance Paid </strong></td>
+                                <td align="right">@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dAdvNegotiateAmount))</td>
+                            </tr>
+                            <tr>
+                                <td align="left"><strong>Balance Payment </strong></td>
+                                @{
+                                    if (Model.sBookType == "C")
+                                    {
+                                        if (@Model.ccType == "CR" || @Model.ccType == "RR" || @Model.ccType == "FO")
+                                        {
+                                            <td align="right">@Model.Symbol @(clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dccPrice + Taxes - Model.dAdvNegotiateAmount)))</td>
+                                        }
+                                        else
+                                        {
+                                            <td align="right">@Model.Symbol @(clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dCounterOffer + Taxes - Model.dAdvNegotiateAmount)))</td>
+                                        }
+                                    }
+                                    else if (@Model.ccType == "CA" && @Model.cBookingStatus == "CO")
+                                    {
+                                        <td align="right">@Model.Symbol @(clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dccPrice + Taxes - Model.dAdvNegotiateAmount)))</td>
+                                    }
+                                    else if (Model.sBookType == "N")
+                                    {
+                                        if (Model.cBookingStatus == "NS")
+                                        {
+                                            <td align="right">@Model.Symbol @(clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dTotalAmount + Model.dTotalExtraBedAmount + Taxes - Model.dAdvNegotiateAmount)))</td>
+                                        }
+                                        else if (Model.cBookingStatus == "FO" || Model.cBookingStatus == "FA")
+                                        {
+                                            <td align="right">@Model.Symbol @(clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dccPrice + Taxes - Model.dAdvNegotiateAmount)))</td>
+                                        }
+                                        else
+                                        {
+                                            <td align="right">@Model.Symbol @(clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dTotalNegotiateAmount + Taxes - Model.dAdvNegotiateAmount)))</td>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <td align="right">@Model.Symbol @(clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.dTotalAmount + Model.dTotalExtraBedAmount + Taxes - Model.dAdvNegotiateAmount)))</td>
+                                    }
+                                }
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-3 margintop30">
+
+            </div>
+        </div>
+
+        <div class="row center marginbottom20">
+            <a href="@Url.Action("Paynow", "Payment", new { bookingId = @Model.iBookingId})" class="btn btn-primary btn-lg">Make Payment</a>
+        </div>
+    </div>
+</div>

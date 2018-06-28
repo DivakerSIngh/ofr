@@ -1,0 +1,243 @@
+﻿@model OneFineRateBLL.Entities.etblBankDetail
+@{
+    ViewBag.Title = "BankDetail";
+    Layout = "~/Views/Shared/_LayoutProperty.cshtml";
+}
+@using (Html.BeginForm("Add", "BankDetail", FormMethod.Post, new { ReturnUrl = ViewBag.ReturnUrl, id = "myform", role = "form", enctype = "multipart/form-data" }))
+{
+    <div class=" margintop20">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <b>Bank Detail</b>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    @Html.HiddenFor(m => m.iPropId)
+                    <div class="col-xs-9">
+                        <div class="row ">
+                            <div class="col-xs-3">Bank Account No <span style="color:red">*</span></div>
+                            <div class="col-xs-3">
+                                @Html.TextBoxFor(m => m.sBankAccountNo, new { @class = "form-control", required = true, placeholder = "Bank Account Number" })
+                                @Html.ValidationMessageFor(m => m.sBankAccountNo)
+                            </div>
+                            <div class="col-xs-3">Baneficiaries Name <span style="color:red">*</span></div>
+                            <div class="col-xs-3">
+                                @Html.TextBoxFor(m => m.sBaneficiariesName, new { @class = "form-control", required = true, placeholder = "Baneficiaries Name" })
+                                @Html.ValidationMessageFor(m => m.sBaneficiariesName)
+                            </div>
+                        </div>
+                        <div class="row margintop10">
+                            <div class="col-xs-3">Bank Name</div>
+                            <div class="col-xs-3">
+                                @Html.TextBoxFor(m => m.sBankName, new { @class = "form-control", placeholder = "Bank Name" })
+                            </div>
+                            <div class="col-xs-3">Branch Name</div>
+                            <div class="col-xs-3">
+                                @Html.TextBoxFor(m => m.sBranchName, new { @class = "form-control", placeholder = "Branch Name" })
+                            </div>
+                        </div>
+                        <div class="row margintop10">
+                            <div class="col-xs-3">Branch Address</div>
+                            <div class="col-xs-3">
+                                @Html.TextBoxFor(m => m.sBranchAddress, new { @class = "form-control", placeholder = "Branch Address" })
+                            </div>
+                            <div class="col-xs-3">MICR Code</div>
+                            <div class="col-xs-3">
+                                @Html.TextBoxFor(m => m.sMicrCode, new { @class = "form-control", placeholder = "MICR Code" })
+                            </div>
+                        </div>
+                        <div class="row margintop10">
+                            <div class="col-xs-3">IFSC Code</div>
+                            <div class="col-xs-3">
+                                @Html.TextBoxFor(m => m.sIfscCode, new { @class = "form-control", placeholder = "IFSC Code" })
+                            </div>
+                        </div>
+                        <div class="row margintop10">
+                            <div class="col-xs-4">Letterhead/ Bank A/C Detail</div>
+
+                            @if (Model != null && !string.IsNullOrEmpty(Model.sLetterhead_BankAccount))
+                            {
+                                <div class="col-xs-4">
+                                    <input type="file" name="Letterhead_BankAccount" id="Letterhead_BankAccount" value="@Model.sLetterhead_BankAccount" class="form-control">
+                                </div>
+                                <div class="col-xs-3">
+                                    <img id="sLetterhead_BankAccount_image_upload_preview" onerror="this.src = 'http://placehold.it/50x50'" height="50" width="50" src="@Model.sLetterhead_BankAccount" alt="bank account image" />
+
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-xs-3">
+                                    <input type="file" name="Letterhead_BankAccount" id="Letterhead_BankAccount" class="form-control">
+                                </div>
+                                <div class="col-xs-3">
+                                    <img id="sLetterhead_BankAccount_image_upload_preview" height="50" width="50" src="http://placehold.it/50x50" alt="bank account image" />
+                                </div>
+                            }
+
+                        </div>
+                        <div class="row margintop10">
+                            <div class="col-xs-4">Cancelled Cheque</div>
+
+                            @if (Model != null && !string.IsNullOrEmpty(Model.sCancelledCheque))
+                            {
+                                <div class="col-xs-4">
+                                    <input type="file" name="CancelledCheque" id="CancelledCheque" value="@Model.sCancelledCheque" class="form-control">
+                                </div>
+                                <div class="col-xs-3">
+                                    <img id="CancelledCheque_image_upload_preview" onerror="this.src = 'http://placehold.it/50x50'" height="50" width="50" src="@Model.sCancelledCheque" alt="cancelledCheque image" />
+                                </div>
+                            }
+                            else
+                            {
+
+                                <div class="col-xs-3">
+                                    <input type="file" name="CancelledCheque" id="CancelledCheque" class="form-control">
+                                </div>
+                                <div class="col-xs-3">
+                                    <img id="CancelledCheque_image_upload_preview" height="50" width="50" src="http://placehold.it/50x50" alt="cancelledCheque image" />
+                                </div>
+                            }
+                        </div>
+                        <div class="row margintop10">
+                            <div class="col-xs-4">Pan Card Details</div>
+
+                            @if (Model != null && !string.IsNullOrEmpty(Model.sPanCard))
+                            {
+                                <div class="col-xs-4">
+                                    <input type="file" name="PanCard" id="PanCard" value="@Model.sPanCard" class="form-control">
+                                </div>                            <div class="col-xs-3">
+                                    <img id="PanCard_image_upload_preview" height="50" onerror="this.src = 'http://placehold.it/50x50'" width="50" src="@Model.sPanCard" alt="panCard image" />
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-xs-3">
+                                </div>   <input type="file" name="PanCard" id="PanCard" class="form-control">
+                                <div class="col-xs-3">
+                                    <img id="PanCard_image_upload_preview" height="50" width="50" src="http://placehold.it/50x50" alt="panCard image" />
+                                </div>
+                            }
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="subheadcolor">
+                                    <h4>Commission Details</h4>
+                                </div>
+                                <hr />
+                            </div>
+                            <div class="col-xs-3">Commission %</div>
+                            <div class="col-xs-3">
+                                @Html.TextBoxFor(m => m.dCommission, new { @class = "form-control", placeholder = "Commission %" })
+                            </div>
+                        </div>
+                        <!-- Finance Contact div start -->
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="subheadcolor"><h4>Finance Contact Details</h4></div>
+                                <hr />
+                            </div>
+                            <div class="col-xs-3">Name</div>
+                            <div class="col-xs-3">
+                                @Html.TextBoxFor(m => m.sFName, new { @class = "form-control", placeholder = "Name" })
+                            </div>
+                            <div class="col-xs-3 ">Phone No</div>
+                            <div class="col-xs-3">
+                                @Html.TextBoxFor(m => m.sFPhoneNo, new { @class = "form-control", placeholder = "Phone No" })
+                            </div>
+
+                            <div class="col-xs-3 margintop10">Fax No.</div>
+                            <div class="col-xs-3 margintop10">
+                                @Html.TextBoxFor(m => m.sFFaxNo, new { @class = "form-control", placeholder = "Fax No" })
+                            </div>
+                            <div class="col-xs-3 margintop10">Email ID</div>
+                            <div class="col-xs-3 margintop10">
+                                @Html.TextBoxFor(m => m.sFEmailId, new { @class = "form-control", placeholder = "Email ID" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-3 ">
+                        @if (ViewBag.FixedOFRFinanceDetails != null)
+                        {
+                            dynamic fixedOFRFinanceDetails = ViewBag.FixedOFRFinanceDetails;
+                            <div class="row ofrfinance">
+                                <div class="col-xs-12">
+                                    <div class="subheadcolor"><h4>OFR Finance Details</h4></div>
+                                </div>
+                                <div class="col-xs-6"> Phone No.</div>
+                                <div class="col-xs-6">@fixedOFRFinanceDetails.sPhone </div>
+                                <div class="col-xs-6"> Email</div>
+                                <div class="col-xs-6" style="word-break:break-all;">@fixedOFRFinanceDetails.sEmail </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="row ofrfinance">
+                                <div class="col-xs-12">
+                                    <div class="subheadcolor"><h4>OFR Finance Details</h4></div>
+                                </div>
+                                <div class="col-xs-6"> Phone No.</div>
+                                <div class="col-xs-6">value </div>
+                                <div class="col-xs-6"> Email</div>
+                                <div class="col-xs-6">value</div>
+                                <!--<div class="col-xs-12 text-center">
+                                <input type="submit" name="Submit" value="Send Message" class="btn btn-primary"></div>-->
+                            </div>
+                        }
+
+
+                    </div>
+
+                </div>
+
+
+                <br />
+
+                <div class="row pull-right">
+                    <div class="col-xs-12 ">
+                        <input type="submit" name="Submit" value="Save" class="btn btn-primary">
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+        <br />
+        <!-- container div END bottom -->
+    </div>
+    <!-- CONTENT-WRAPPER SECTION END-->
+}
+
+<script>
+    $(function () {
+
+        function readURL(input, imagePreviewId) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#' + imagePreviewId).attr('src', e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        $('#Letterhead_BankAccount').change(function () {
+            readURL(this, 'sLetterhead_BankAccount_image_upload_preview');
+        });
+
+        $('#CancelledCheque').change(function () {
+            readURL(this, 'CancelledCheque_image_upload_preview');
+        });
+
+        $('#PanCard').change(function () {
+            readURL(this, 'PanCard_image_upload_preview');
+        });
+
+    })
+</script>

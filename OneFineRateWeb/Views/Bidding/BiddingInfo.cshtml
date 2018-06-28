@@ -1,0 +1,744 @@
+﻿@model OneFineRateBLL.Entities.eBiddingSearch
+@using OneFineRateAppUtil
+@{
+    ViewBag.Title = "Bidding";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    decimal HotelTax = 0;
+}
+
+<script type="text/javascript">
+
+    $.removeCookie('scrhBidDetails'); //for removing cookie
+    var proBid = [];
+    proBid.push();
+    $.cookie("scrhBidDetails", proBid, { expires: 2, path: '/' });
+
+    function OpenHP() {
+        $('#divHotelPolicy').modal({
+            show: 'true'
+        });
+    }
+    function Opentc() {
+
+        $('#divTC').modal({
+            show: 'true'
+        });
+    }
+    function OpenPP() {
+        $('#divprivacupolicy').modal({
+            show: 'true'
+        });
+    }
+    function OpenTaxes() {
+        $('#divTaxes').modal({
+            show: 'true'
+        });
+    }
+
+    //$(function () {
+    //    $('#chkAgree').click(function () {
+    //        if ($(this).is(':checked')) {
+    //            $('#btnProceed').removeAttr('disabled');
+    //            $('#btnNotNow').removeAttr('disabled');
+    //        } else {
+    //            $('#btnProceed').attr('disabled', 'disabled');
+    //            $('#btnNotNow').attr('disabled', 'disabled');
+    //        }
+    //    });
+    //});
+
+</script>
+
+<!-- Taxes pop up -->
+
+
+
+
+@using (Html.BeginForm("PayNow", "Bidding", FormMethod.Post, new { id = "frmPaynow" }))
+{
+
+    <div class="row">
+        <div class="col-md-12 infobg">
+            <div class=" container">
+                <h4 class="bold">
+                    You can save more on the hotels matching your bid.
+                    @Html.Raw(Model.TopMessage != null ? Model.TopMessage.Replace(".", ".<br/>") : Model.TopMessage)
+                </h4>
+
+                <ul class="nomargin paddingleft20">
+
+                    @if (Model.lstHotelData != null)
+                    {
+                        for (int i = 0; i < Model.lstHotelData.Count; i++)
+                        {
+                            <li style="list-style-type:disc !important;">
+                                @Model.lstHotelData[i].Name
+                                @Html.HiddenFor(m => m.lstHotelData[i].Name)
+                            </li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container-wrapper">
+        @*<div class="container">
+
+            </div>*@
+
+        <div class="thirdsection margintop10">
+            <div class="container" style="border:0px solid red;">
+
+                <div class="col-md-12 paddingtop-bottom15">
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="margintop-10"><img src="~/images/inner-star@(Model.sStarRating).png"></div>
+                                    @{
+                                        var myval = "";
+                                        if (Model.lstLocalities != null)
+                                        {
+                                            for (int i = 0; i < Model.lstLocalities.Count; i++)
+                                            {
+                                                myval += Model.lstLocalities[i].Name + ",";
+                                                @Html.HiddenFor(m => m.lstLocalities[i].Name)
+                                            }
+                                        }
+                                        myval = myval.TrimEnd(',');
+                                        <div>@myval </div>
+                                    }
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.Label("Name :", new { id = "lblname" })
+                                    <strong>@Html.DisplayFor(model => model.sUserFirstName) @Html.DisplayFor(model => model.sUserLastName)</strong>
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.Label("Email :", new { id = "lblemail" })
+                                    <strong>@Html.DisplayFor(model => model.sUserEmail)</strong>
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.Label("Phone :", new { id = "lblPhone" })
+                                    <strong>@Html.DisplayFor(model => model.sUserMobileNo)</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!--next section-->
+        </div>
+        <!--2nd row row end-->
+        <!--3rd row row start-->
+        <div class="container">
+            <div class="col-md-12 margintop30">
+                <div class="tablebluebg">Stay Summary of @Model.iNights Night(s) from @Html.Raw(Model.sCheckIn_Display) to @Html.Raw(Model.sCheckOut_Display) </div>
+                <div class=" table-responsive tbl-grid-mobile-data">
+                    <table class="table lightgrybg table-bordered table-hover">
+
+                        <thead>
+                            <tr>
+                                <th>ROOM</th>
+                                <th>ADULTS</th>
+                                <th>CHILDREN</th>
+                                <th>PRICE/ NIGHT</th>
+                                <th class="width100">NIGHT(S)</th>
+                                <th>TOTAL PRICE</th>
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-title="ROOM">@Model.iRooms</td>
+                                <td data-title="ADULTS">@Model.iAdults</td>
+                                <td data-title="CHILDREN">@Model.iChildrens</td>
+                                <td data-title="PRICE/ NIGHT">@Model.Symbol @(clsUtils.ConvertNumberToCommaSeprated(Math.Round(Model.dBidPrice)))</td>
+                                <td data-title="NIGHT(S)">@Model.iNights</td>
+                                <td data-title="TOTAL PRICE">@Model.Symbol @(clsUtils.ConvertNumberToCommaSeprated(Math.Round(Convert.ToDecimal(Model.dTotalPrice)))) </td>
+
+                            </tr>
+
+
+                            <tr class="noborder hidden-xs">
+
+                                <td colspan="5">
+                                    <span class="pull-right">
+                                        @*<a onclick="OpenTaxes();" style="cursor:pointer;" data-toggle="popover" title="Taxes" data-trigger="hover" data-placement="bottom" data-content=" Please read carefully.">Taxes and other service charge:</a>*@
+                                        <a title="Taxes" href="javascript:void(0);" data-id="divTaxes" rel="popover" data-content=" Please read carefully.">Taxes and other service charge:</a>
+                                    </span>
+                                </td>
+                                <td>@Model.Symbol @(clsUtils.ConvertNumberToCommaSeprated(Math.Round(Convert.ToDecimal(Model.dTaxes) + Convert.ToDecimal(Model.sOFRServiceChargeIncludingTax))))</td>
+
+                            </tr>
+                            <tr class="hidden-lg hidden-md">
+                                <td data-title="Taxes and Service Fees">
+                                    @Model.Symbol @(clsUtils.ConvertNumberToCommaSeprated(Math.Round(Convert.ToDecimal(Model.dTaxes) + Convert.ToDecimal(Model.sOFRServiceChargeIncludingTax)))) &nbsp;
+                                    <a title="Taxes" href="#divTaxes" data-toggle="modal" data-target="#divTaxes">
+                                        <img src="@Url.Content("~/images/info.png")">
+                                    </a>
+
+                                </td>
+
+                            </tr>
+                            <tr>
+
+                                <td class="noborder hidden-xs" colspan="5"><strong class="pull-right">Grand Total: </strong></td>
+                                <td class="noborder" data-title="Grand Total"><strong id="spTotalAmt">@Model.Symbol @(clsUtils.ConvertNumberToCommaSeprated(Math.Round(Convert.ToDecimal(Model.dGrandTotal) + Convert.ToDecimal(Model.sOFRServiceChargeIncludingTax))))</strong></td>
+
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="container">
+            <div class="col-md-12 margintop30">
+                <div class="tablebluebg">Important Information</div>
+                <div class=" table-responsive table-bordered padding10 lightgrybg">
+                    <p>
+                        <span style="color:red"> • Hotel Taxes calculated at @Model.MinTaxPer% . In case, you select a hotel and/or room type which attracts higher taxes, you will be asked to pay the tax differential at the time of selecting the hotel/room type.</span><br />
+                        <span style="color:red"> • No amount will be charged if your bid is not accepted. However, full amount is payable, once the bid is accepted.</span><br />
+                        <span style="color:red">• Please note that the transaction is non-cancellable, non-refundable, non-transferrable and non-amendable once the full payment and the selection of the hotel.</span><br />
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+                        <div class="container" id="fill">
+                            <div class="col-md-12  form-inline">
+                                <div class="form-group">
+                                    <input type="checkbox" class="checkbox" id="chkAgree"> <label style="cursor:pointer" for="chkAgree">
+                                        I have read, accept and agree to abide by Onefinerate.com's
+                                        <a onclick="Opentc();" class="showpointer" data-toggle="popover" title="Terms and Conditions" data-trigger="hover" data-placement="bottom" data-content=" Please read Terms and Conditions carefully.">Terms and Conditions,</a>
+                                        and <a onclick="OpenPP();" class="showpointer" data-toggle="popover" title="Privacy Policy" data-trigger="hover" data-placement="bottom" data-content=" Please read Privacy Policy carefully.">Privacy Policy</a>
+                                        @*<a onclick="OpenHP();" class="showpointer" data-toggle="popover" title="Hotel Policy" data-trigger="hover" data-placement="bottom" data-content=" Please read Hotel Policy carefully.">Hotel Policy</a>*@
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+    <!-- Terms and conditions pop up -->
+                                        <div id="divTC" class="modal fade" role="dialog">
+                                            <div class="modal-dialog">
+                                                <!-- Modal content-->
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                        <h4 class="modal-title">Terms and Conditions</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p><strong>Acceptance of Terms</strong></p>
+
+                                                        <p>These Terms of Use (the &quot;Terms&quot;) provided below are with respect to the access and use of the www.OneFineRate.com website (the &quot;Website&quot;) and/or any services provided therein which may be accessed via, but not restricted to, the World Wide Web and these Terms shall apply whenever you access the Website, on whatever device(s).</p>
+
+                                                        <p>The Website is a service of Samaara Hotels and Services Pvt. Ltd ], having its registered office at 150, TATVAM VILLAS, SOHNA ROAD, SECTOR-48, Gurgaon, Haryana, 122002, India (the &ldquo;Company&quot;). The company provides its service to you subject to the Terms as contained herein.</p>
+
+                                                        <p>These Terms govern use of the Website. By accessing and/or using the Website and/or any services provided therein in any manner whatsoever, you agree to accept these Terms in full and be legally bound by the same. If you disagree with these Terms or any part of these Terms, you shall not use and/or access the Website and/or any services provided therein or any part thereof.</p>
+
+                                                        <p>You acknowledge and understand that the Company may require you to register and provide certain information to it as a condition of using or accessing certain services, features, functions and content and you undertake to provide all the said particulars truthfully and to the best of your knowledge and information.&nbsp;</p>
+
+                                                        <p>The Company may change and/or amend these Terms from time to time. As and when such changes and/or amendments are made, the changed and/or amended Terms (the &ldquo;Amended Terms&rdquo;) shall be made available for you to view through www.OneFineRate.com/termsandconditions.</p>
+
+                                                        <p>You agree that if you use or continue to use the Website and/or any services provided therein on and/or after the date on which the Amended Terms are notified on the Website, the Company shall be entitled to presume your use as acceptance of such Amended Terms.</p>
+
+                                                        <p>You must be at least 18 years of age to use the Website and/or any services provided therein. By using the Website and by agreeing to the Terms, you warrant and represent that you are at least 18 years of age and are competent to contract under the laws of India and in case of any misrepresentations and/or false assertions on this ground, you shall be solely responsible for any dispute or claim arising out of or in connection with such misrepresentation and/or false assertion whatsoever and further hereby irrevocably agree to defend and/or settle any third party lawsuit or proceeding brought against the Company, its subsidiaries, its directors, officers, employees, agents, advertisers, licensors, suppliers, based upon such false claims, assertions and misrepresentations.</p>
+
+                                                        <p>Any reference to the expression &ldquo;Website&rdquo; in these Terms shall also include a reference to the Services provided by the Company, its directors, its subsidiaries, officers, employees, agents, advertisers, licensors, and suppliers through these Terms as defined herein below.</p>
+
+                                                        <p>Unless repugnant to the context thereof, any reference to the expression &ldquo;Company&rdquo; shall include its directors, its subsidiaries, officers, employees, agents, advertisers, licensors, and suppliers.</p>
+
+                                                        <p>The term &lsquo;Buy Rate&rsquo; shall refer to the price (excluding applicable taxes, cesses, charges and levies, if applicable) for a particular property/hotel for one night&rsquo;s stay for a certain category of room, for the selected period of stay, as displayed while you access the &lsquo;BUY&rsquo; section or &lsquo;Corporate&rsquo; section of the Website. Such rates that are displayed are the prerogative of the property/hotel and are distributed by the property/hotel for the value that they represent. Neither can the rate nor the value that they represent or the terms &amp; conditions that are linked to such rates can be contested..</p>
+
+                                                        <p>Unless expressly stated otherwise, prices indicated on the Website shall be for one night stay for a particular room for accommodation purposes only at theproperty/hotel, without any meals and excluding applicable taxes, cesses, charges and levies, if any.</p>
+
+                                                        <p>Featured/ Sponsored properties or any other marketing on the website is totally for marketing purposes and OneFineRate does not endorse any of these properties and is not responsible for any of their quality and services provided.&nbsp;</p>
+
+                                                        <p>Disclosure: for purposes of clarification, the prices offered to you include the fees charged by OneFineRate to the hotel for its services.</p>
+
+                                                        <p><strong>Services</strong></p>
+
+                                                        <p>OneFineRate is an online portal which assists and effecting the booking of hotels/ or any others accommodation by web users. Maintaining and online inventory of room and rates provided by the Hotel and/or any third party partner for accommodation in Hotels or/and any other accommodation and eventually enabling the web users to book rooms at the available rates.</p>
+
+                                                        <p>Eliciting and collecting demand from customers regarding the hotel booking details including rooms, rates for such rooms, kind of hotels etc, and relaying such demands directly to the participating seller being a hotel or an accommodation or a travel agent or to their private data bases to assist the web users in transacting at the &ldquo;Right&rdquo; Price.</p>
+
+                                                        <p>At OneFineRate customers can explore, compare and book hotel rooms on one single platform. OneFineRate.com offers three parallel alternatives to book a hotel room -- you can either <strong>bid</strong> for your preferred hotel or you can <strong>bargain</strong> a rate you wish to pay directly to your hotel. Or, if you know what exactly you want then simply <strong>book</strong> it at the price offered by the hotel.</p>
+
+                                                        <p>Customers can choose from a range of hotels across cities and destinations offering incredible rates and amenities. &nbsp;</p>
+
+                                                        <p>To understand how we operate, you need to understand the <strong>three</strong> major components we operate on:</p>
+
+                                                        <p><strong>Bid</strong>: Place a blind bid by selecting your star rating of the hotel. If you are looking for a specific locality in the city, you can select that too. OFR will recommend the range of rates to choose from, and if your bid is accepted you will get a deal for yourself in as short a time as possible.</p>
+
+                                                        <p><strong>Bargain</strong>: Bargain the rates you wish to pay for your preferred hotel and OFR will work out a deal with your hotel at the price you wish to pay. If we are unable to find your preferred hotel at your price, we will find you a similar hotel with same services and amenities for the same price.</p>
+
+                                                        <p><strong>Book</strong>: Our third platform is like any other travel portal, if you know exactly what you want than you can simply buy it at the rate offered by the hotel. In addition, OFR also provides discounted <strong>corporate rates</strong> for your business travel. Our self booking tool provides rates for any destination, saving you and your support staff the hassle to bargain rates for your travel. Let OFR work special rates for your business travel now and in the future.</p>
+
+                                                        <p>&nbsp;</p>
+
+                                                        <p><strong>Licence to use Website </strong>&nbsp;</p>
+
+                                                        <p>Subject to your acceptance of these Terms, the Company grants you a non-exclusive, non-transferable limited license to use the Website and/or its Services in strict accordance with the terms and conditions in these Terms and as permitted via instructions on the Website.</p>
+
+                                                        <p>Certain services and content offered by the Company through the Website may only be accessible to registered members. To register, you may be required to provide certain information and/or details, for the accuracy and/or completeness of which you agree to be solely liable. The provision of various services offered by the Website shall be subject to the accuracy and/or completeness of the information and/or details so supplied by you.</p>
+
+                                                        <p>Except as may be explicitly permitted through this site, you agree not to save, download, cut and paste, sell, license, rent, lease, modify, distribute, copy, reproduce, transmit, publicly display, publicly perform, publish, adapt, edit, or create derivative works from materials, code or content on or from the Website. Systematic retrieval of data or other content from the Website to create or compile, directly or indirectly, a collection, compilation, database or directory without written permission from the Company is prohibited. In addition, use of the content or materials for any purpose not expressly permitted under these Terms is prohibited and shall entail a penal action.</p>
+
+                                                        <p><strong>Intellectual property rights/ Data protection </strong></p>
+
+                                                        <p>The Website contains material, trade names and marks and other proprietary and/or confidential information, including, but not limited to, various data (including price sensitive information), text, software, photos, graphics, video, music and sound (&ldquo;Content&rdquo;), which may either be owned by the Company or any other third party/parties and may be a subject matter of protection under the relevant laws.</p>
+
+                                                        <p>Nothing on the Website shall be construed as conferring any license/right to reproduce the contents therein whether owned by the Company or any third party and the violation of the same may result in initiation of legal action by the owner/proprietor/holder of the said rights.</p>
+
+                                                        <p><strong>Conditions of Use </strong></p>
+
+                                                        <p>You agree that you shall not comment, share, display, upload, modify, publish, transmit, update or share any information on the Website site that:</p>
+
+                                                        <p>(a) belongs to another person and to which you do not have any right;</p>
+
+                                                        <p>(b) is grossly harmful, harassing, blasphemous, defamatory, obscene, pornographic, pedophilic, libelous, invasive of another&#39;s privacy, hateful, or racially, ethnically objectionable, disparaging, relating or encouraging money laundering or gambling, or otherwise unlawful in any manner whatever;</p>
+
+                                                        <p>(c) harm minors in any way;</p>
+
+                                                        <p>(d) infringes any patent, trademark, copyright or other proprietary rights;</p>
+
+                                                        <p>(e) violates any law for the time being in force;(f) deceives or misleads the addressee about the origin of such messages or communicates any information which is grossly offensive or menacing in nature;</p>
+
+                                                        <p>(g) impersonate another person;</p>
+
+                                                        <p>(h) contains software viruses or any other computer code, files or programs designed to interrupt, destroy or limit the functionality of any computer resource;</p>
+
+                                                        <p>(i) threatens the unity, integrity, defence, security or sovereignty of India, friendly relations with foreign states, or public order or causes incitement to the commission of any cognisable offence or prevents investigation of any offence or is insulting any other nation.</p>
+
+                                                        <p>You further agree that you shall not:</p>
+
+                                                        <p>Reproduce, copy, modify, sell, store, distribute or otherwise exploit for any commercial purposes the Website, or any component thereof (including, but not limited to any data, materials or information accessible through the Website);</p>
+
+                                                        <p>Use any device and/or software to interfere or attempt to interfere with the proper working of the Website and/or take any action that imposes an unreasonable or disproportionately large load on the Website infrastructure.</p>
+
+                                                        <p>You further agree to indemnify and hold harmless, without objection, the Company, its subsidiaries, its directors, officers, employees, agents, advertisers, licensors, suppliers, and partners against all and any claims, actions and/or demands and/or liabilities and/or losses and/or damages whatsoever arising from or resulting from or in any way related to such actions and/or conduct as stated under this clause.</p>
+
+                                                        <p>&nbsp;You agree and understand that the terms and conditions of provision of services appearing herein or at any other place on the Website, whether provided by the Company or a third party service provider, may be non-exhaustive, incomplete, suggestive and/or abridged, and are subject to revision, addition, modification and/or change, without prior notice, at the [COMPANY&rsquo;s] or respective third party service provider&rsquo;s discretion, as the case may be.</p>
+
+                                                        <p><strong><em>Bid:</em></strong> This sub-clause pertains to your use of the Website when you select the &lsquo;Bid&rsquo; option. Upon selecting the desired geographic area, dates of stay and star category, you shall be presented with a price spectrum. You may enter any price falling between the lower cap and upper cap of price spectrum that you&rsquo;re willing to pay for your stay.</p>
+
+                                                        <p>Upon submitting your price (hereinafter, &lsquo;Bid&rsquo;), you shall be presented with one or more options to choose from, as per the inputs provided by you under the previous step. The options displayed shall not reveal the names/ addresses or other details of the property/hotel(ies) listed, but may state certain other information, characteristics, terms &amp; conditions of stay of the property/hotel. Such terms &amp; conditions, if stated, shall by no means be exhaustive and all other and further terms &amp; conditions, if any, shall be applicable in addition to the terms &amp; conditions stated to your stay at that particular property/hotel. Each of the options presented shall be offered at a discount off the Buy Rate for that particular property/hotel for the specific period of stay that you input, but the quantum of discount / savings for the said property/hotel shall be revealed to you only after you select the said option as your preference and make full and final payment towards the same.</p>
+
+                                                        <p>In case you choose one of the options presented to you as aforementioned, you shall be required to make full and final payment towards the same. Such payment shall be the amount that you chose to enter as your Bid along with applicable taxes, cesses, charges and levies, if any. Further, such payment shall not be refunded in any case, and shall constitute your full, final and irrevocable consent and consideration towards a binding contract for the option selected by you.</p>
+
+                                                        <p>As soon as our third party payment gateway partner processes your payment, the name, address and other details of the option that you selected shall be revealed, along with further detailed terms &amp; conditions of your stay as well as your booking reference number.</p>
+
+                                                        <p>At this stage, subject to availability, you may be given the option to upgrade to a higher class of service/room at additional payment at the property/hotel you selected, in which case the payment already made by you shall be adjusted as part payment towards the payment due for the higher class of service selected by you.</p>
+
+                                                        <p><strong><em>Bargain</em></strong>: This sub-clause pertains to your use of the Website when you select the &lsquo;Bargain&rsquo; option.</p>
+
+                                                        <p>Upon selecting the desired property/hotel, room category/package(s) and dates of stay, you shall be required to submit a price that you&rsquo;re willing to pay for your stay (hereinafter, &lsquo;Offering Price&rsquo;).</p>
+
+                                                        <p>Upon submitting your price, you shall be required to pay a nominal participation fee&nbsp; as desired by the OneFineRate management]. Pursuant to our third party payment gateway partner processing the payment of your participation fee, a communication shall be sent to the nominated personnel of the property/hotel/third party service provider selected by you with your Offering Price. Such nominated personnel shall typically revert within 2 business days with a communication stating whether your Offering Price is accepted or rejected, with or without a counter-offer.</p>
+
+                                                        <p>In case your Offering Price is rejected, you shall be given the option to either (i) accept the counter-offer, if any, made by such nominated personnel or (ii) select another property/hotel/service offering/third party service provider, or (iii) ask for refund of your participation fee, which refund shall typically be processed within 48 hours of such request.</p>
+
+                                                        <p>In case your Offering Price is accepted or you accept the counter-offer made to you, you shall be intimated and required to deposit the full and final payment towards your stay, and your participation fee shall be adjusted against such full and final payment. Such payment shall be the Offering Price or the counter-offer, as the case may be, along with applicable taxes, cesses, charges and levies, if any. Further, such payment shall not be refunded in any case, and shall constitute your full, final and irrevocable consent and consideration towards a binding contract for the option selected by you.</p>
+
+                                                        <p>As soon as our third party payment gateway partner processes your payment, your booking reference number shall be provided to you.</p>
+
+                                                        <p><strong><em>Buy</em></strong>: This sub-clause pertains to your use of the Website when you select the &lsquo;Buy&rsquo; option.</p>
+
+                                                        <p>Upon selecting the desired geographic area, dates of stay and star category, you shall be presented with various options/properties/third party service providers, along with the Buy Rate for the specified category of room, per night.</p>
+
+                                                        <p>The options displayed may state certain other information, characteristics, terms &amp; conditions of stay of the property/hotel. Such terms &amp; conditions, if stated, shall by no means be exhaustive and all other and further terms &amp; conditions, if any, shall be applicable in addition to the terms &amp; conditions stated to your stay at that particular property/hotel.</p>
+
+                                                        <p>In case you choose one of the options presented to you as aforementioned, you shall be required to make full and final payment towards the same. Such payment shall be equal to an amount including the Buy Rate provided for the selected option along with applicable taxes, cesses, charges and levies, if any.</p>
+
+                                                        <p>As soon as our third party payment gateway partner processes your payment, your booking reference number shall be provided to you.</p>
+
+                                                        <p><strong><em>Corporate</em></strong>: This sub-clause pertains to your use of the Website when you select the&nbsp; &lsquo;Corporate&rsquo; option.</p>
+
+                                                        <p>The corporate email address should be given and the company domain should be valid and be an onefinerate corporate partner.</p>
+
+                                                        <p>The one time verification password will be sent to the registered email address only and will be valid for the next 30 mins.&nbsp;</p>
+
+                                                        <p>Upon selecting the desired geographic area, dates of stay and star category, you shall be presented with various options/properties/third party service providers, along with the Buy Rate for the specified category of room, per night.</p>
+
+                                                        <p>The options displayed may state certain other information, characteristics, terms &amp; conditions of stay of the property/hotel. Such terms &amp; conditions, if stated, shall by no means be exhaustive and all other and further terms &amp; conditions, if any, shall be applicable in addition to the terms &amp; conditions stated to your stay at that particular property/hotel.</p>
+
+                                                        <p>In case you choose one of the options presented to you as aforementioned, you shall be required to make full and final payment towards the same. Such payment shall be equal to an amount including the Buy Rate provided for the selected option along with applicable taxes, cesses, charges and levies, if any.</p>
+
+                                                        <p>As soon as our third party payment gateway partner processes your payment, your booking reference number shall be provided to you.</p>
+
+                                                        <p>In case you access the Website through the &lsquo;Corporate&rsquo; option, in addition to the present terms and conditions, you hereby expressly agree to be bound by the agreement entered into between the Company and your employer.</p>
+
+                                                        <p><strong>Contributing to the Website </strong></p>
+
+                                                        <p>Where you elect, or are invited, to submit any contribution or material to the Website (including, but not limited to, any comment, text, photographs, graphics, video, audio or logo) (&ldquo;Contribution&rdquo;) or otherwise consent to the use of the Contribution, then by submitting the Contribution or consenting to its use, grant the Company a royalty-free, non-exclusive, irrevocable and perpetual licence and right to use, reproduce, modify, adapt, publish, translate, abridge, create derivative works from, distribute, perform, play, make available to the public, and exercise all copyright and publicity rights with respect to your Contribution worldwide and/ or to incorporate your Contribution in other works in any media now known or later developed for the full term of any rights that may exist in your Contribution.</p>
+
+                                                        <p>Wherever the Company so decides to use the Contribution, the Company may publish the same without acknowledging you as the author of the said Contribution and in which eventuality you expressly waive all your copyrights and moral rights to be identified as the author of such Contribution. However, you agree to remain liable and to completely indemnify and hold harmless the Company in case the Contribution violates any third party rights even if your name has been withheld by the Company from such Contribution.</p>
+
+                                                        <p><strong>Indemnification</strong></p>
+
+                                                        <p>You agree to indemnify and hold harmless, without any limitation, the Company, its subsidiaries, its directors, officers, employees, agents, advertisers, licensors, suppliers, and partners from and against any claims, actions and/or demands and/or liabilities and/or losses and/or damages whatsoever arising from or resulting from or in any way related to your use and/or inability to use the Services or services offered by third parties through the Website, violation of the Terms or any other actions connected with the use of Services or services offered by third parties through the Website, including any liability or expense arising from all claims, losses, damages (actual and consequential), suits, judgments, litigation costs and attorneys&#39; fees, of every kind and nature either during the period that you are accessing the Website and/or any of its Services or services offered by third parties through the Website, and even after termination of the same in respect of any claims, actions and/or demands and/or liabilities and/or losses and/or damages whatsoever which have arisen at any time during such period that you accessed the Website and/or any of its Services or services offered by third parties through the Website. And further you agree to indemnify the Company its subsidiaries, its directors, officers, employees, agents, advertisers, licensors, suppliers, and partners in respect of any claim of ownership or any other claims associated with any logos, brands, trade marks and service marks or any other intellectual property, created and/or posted by you on the Website in violation of third-party rights to the same.</p>
+
+                                                        <p><strong>Disclaimer of Warranties</strong></p>
+
+                                                        <p>Except for the express warranties stated herein, the Website as well as any other Services as provided by the Company under these Terms are provided on an &quot;as is&quot; basis, and the company disclaims any and all other warranties, conditions, or representations (express, implied, oral or written), relating to the Website and/or such Services or any part thereof, including, without limitation, any and all implied warranties of quality, performance, usability, accessibility, accuracy of content or fitness for a particular purpose. The Company further expressly disclaims any warranty or representation to any third party whatsoever.</p>
+
+                                                        <p>It is solely your responsibility to evaluate the accuracy, completeness and usefulness of all opinions, advice, services, merchandise and other information provided through the Website.</p>
+
+                                                        <p>Since the Company acts only as an intermediary service provider, the Company shall not have any liability whatsoever for any aspect of the arrangements between the end service provider and you, or for the services provided by the end service provider.</p>
+
+                                                        <p>Although the Company makes reasonable commercial efforts to ensure that the description and content in the terms &amp; conditions and on each page of the website is correct, you agree that the Company shall not be liable for changes that occurred due to human or data entry errors or for any loss or damages suffered by any user due to any information contained herein. Also, since the Company is only an intermediary and not the end service provider, you agree, understand and acknowledge that the Company cannot control or prevent changes/ inaccuracies/ errors in the published descriptions, pictures, information, policies, facilities, terms and conditions and other content which are based upon information provided by end service providers or various other third party data sources, and the Company shall not be liable for any loss, damage and/or harm caused by the same.</p>
+
+                                                        <p>The Company does not warrant that the access to the Website will be uninterrupted, delay-free or error-free or that defects in the Website will be corrected although every effort shall be made to keep the Website up and running at all times.</p>
+
+                                                        <p>In case the there is any loss of information, caused due to any reason, whether as a result of any disruption of service, suspension and/or termination of the Service, the Company shall not be liable in any way for the same.</p>
+
+                                                        <p>The Company does not guarantee the accuracy, truthfulness and veracity of any statement, offer, comment, claim, averment, contention etc. made on the Website or in the Company&rsquo;s correspondence with you. You agree and understand that the Company is only an intermediary between you and the end service provider. There are risks, which you agree to assume when choosing to avail services listed on the Website offered by an end service provider, and you hereby irrevocably agree that the Company shall not be responsible in any manner whatsoever for the liability arising out of the same.</p>
+
+                                                        <p>The Company will not be liable for any loss or damage caused by, including but not limited to, a distributed denial-of-service attack, viruses or other technologically harmful material that may infect your computer equipment, computer programs, data or other proprietary material due to your use of the Website or to your downloading of any material posted on it, or on any website linked to it though the company shall make all efforts to ensure the proper functioning of the Website at all times.</p>
+
+                                                        <p>The Website is controlled and operated from India by the Company and the Company makes no representation that the material, content and/or services provided by the Company under these Terms are appropriate or will be available for use in other parts of the world. If you access the Website from outside India, you hereby agree to be entirely responsible for compliance with all applicable local laws as well as international conventions and treaties in this regard.</p>
+
+                                                        <p>The Company does not, by offering travel related services to particular destinations, represent or warrant that travel to such destinations is without risk, and shall not be liable for damages or losses that may result from travel to such destinations.</p>
+
+                                                        <p>You shall solely be liable to ensure compliance with all legal and contractual requirements and obligations relating to, pertaining to, arising out of, or existing as a pre-condition to your travel/stay/utilization of various services availed through the Website and/or provided by third party service providers, as applicable under relevant laws, or as required by relevant third parties.</p>
+
+                                                        <p><strong>Limitation of Liability</strong></p>
+
+                                                        <p>In no event and under no circumstances will the Company be liable for any damages whatsoever, including but not limited to direct, indirect, incidental, punitive or consequential, arising out of the use and/or access to or inability to use and/or access to the Website and/or any Services being provided by the Company under these Terms, even if the Company has been advised of the possibility of such damages.</p>
+
+                                                        <p>Notwithstanding anything else contained herein, it is hereby expressly agreed that the maximum liability of the Company arising under any circumstances, in respect of any services offered through the Website and/or by access/use of the Website otherwise, shall be limited to the refund of total amount received from you for availing the said services less any cancellation, refund or other charges, as may be applicable. You absolutely and irrevocably agree to waive/ give up all other claims/rights arising in your favour under any applicable law(s) for the time being in force with respect to any consequential harm, loss and/or damage suffered by you as a result of your access and/or use of the Website or the services provided thereunder.</p>
+
+                                                        <p>OneFineRate will not be responsible of any Death/ Loss of Property/ Fire/ Act of God or any damage or loss. OneFineRate cannot be held responsible for these losses directly or in directly and will not be liable of any damage loss.</p>
+
+                                                        <p><strong>Termination</strong></p>
+
+                                                        <p>The Company may terminate your account and/or the Services offered by the Company with immediate effect, without prior notice to you and without assigning any reason(s) whatsoever and remove all and any content and/or material and/or information that you may have uploaded and/or posted on the Website,</p>
+
+                                                        <p>(a) If in the opinion of the Company, you have breached any of the terms and conditions of the Terms and/or,</p>
+
+                                                        <p>(b) If, in the opinion of the Company and/or any regulatory authority, or in pursuance of an order, decree etc. of a court of law, it is not in the public interest and/or is illegal or has subsequently become illegal to continue providing such services to you for any reason whatsoever.</p>
+
+                                                        <p><strong>Links and Advertisements</strong></p>
+
+                                                        <p>The Website may provide, or third parties may provide, links to other World Wide Web sites or resources. Further, the Website may display or rely on certain data supplied to it by various third parties. The Company may have no control over such data, websites and resources and you acknowledge and agree that the Company is not responsible for the availability of such external sites or resources, and/or the accuracy of such displayed data, and does not endorse and is not responsible or liable for any inaccuracy/discrepancy and any consequent loss/damage resulting from such data, content, advertising, products, or other materials on or available from such third parties, sites or resources.</p>
+
+                                                        <p>You further acknowledge and agree that the Company shall not be responsible or liable, directly or indirectly, for any damage or loss caused or alleged to be caused by or in connection with use of or reliance on any such content, goods or services available on or through any such site or resource.</p>
+
+                                                        <p><strong>Jurisdiction and Governing Law </strong></p>
+
+                                                        <p>These Terms and any dispute or claim arising out of or in connection with it or its subject matter or formation (including non-contractual disputes or claims) shall be governed by and construed in accordance with the laws of India. You hereby irrevocably agree that the courts in Delhi alone shall have the exclusive jurisdiction to settle any dispute or claim that arises out of or in connection with the Terms or its subject matter or formation (including non-contractual disputes or claims).</p>
+
+                                                        <p><strong>Payment Gateway</strong></p>
+
+                                                        <p>All payments made to the Company are processed through an external third party payment gateway service provider. Upon reaching the payment stage, you will be redirected to an external website that belongs to a third party payment gateway. You expressly agree to be bound by the terms and conditions of provision of services by such third party payment gateway and your payment(s) shall be processed in accordance with and subject to your acceptance of such terms. You further agree that any dispute pertaining to provision of services by such third party payment gateway shall be directly taken up with such third party by you, and you shall, at all times, keep the Company, its subsidiaries, its directors, officers, employees, agents, advertisers, licensors, suppliers, and partners indemnified from and against any claims, actions and/or demands and/or liabilities and/or losses and/or damages whatsoever arising from or resulting from or in any way related to your use and/or inability to use the services offered by such third party payment gateway.</p>
+
+                                                        <p><strong>Entire agreement</strong></p>
+
+                                                        <p>These Terms (together with our privacy policy), constitute the entire agreement between you and us in relation to your use of the Website and/or its Services, and supersedes any and all previous agreements in respect of your use of this the Website and/or its Services.</p>
+
+                                                        <p>Supplementary agreements, terms and conditions, if any, shall apply depending on your use of the Website, its Services and choices/selections/inputs given by you while using the same, and your continued use of the Website and/or its Services shall be treated as your consent to such supplementary agreements, terms and conditions as well.</p>
+
+                                                        <p><strong>Waiver and Severability of Terms </strong></p>
+
+                                                        <p>The failure of the Company under any circumstances to exercise or enforce any right or provision of the Terms shall not constitute a waiver of such right or provision.</p>
+
+                                                        <p>In the event that any of the stipulations and conditions or any portion thereof of these Terms is held by a court/tribunal of competent jurisdiction to be invalid, it is expressly understood and agreed that such condition or portion thereof shall be automatically considered deleted/replaced/modified to embrace the order of the said court/tribunal and the same shall not impair the enforceability of the remaining provisions of these Terms.</p>
+
+                                                        <p><strong>User Credentials</strong></p>
+
+                                                        <p>You agree to take all such measures as may be necessary to protect the secrecy of your user identification and/or password, and further agree to not reveal the same to any other person(s).&nbsp; You agree to use only your own user identification and/or password to access the Website, its Services or any part thereof. You further agree and acknowledge that you acquire no rights to any mailbox number and/or the user identification and/or any codes assigned to you by the Company.</p>
+
+                                                        <p>You agree that except as otherwise proved herein, the Company reserves the right to change and/or re-assign the same at its sole discretion without being liable to you for any kind of damages and/or relief and/or any other consequence(s).</p>
+
+                                                        <p>In the event of theft and/or loss of user identification and/or password and/or security word, you shall notify the Company immediately by e-mail and concurrently provide the Company with a written notice sent by Registered Post to that effect. You agree to remain liable for use of the Services by any third party until such theft or loss is notified to the Company.</p>
+
+                                                        <p><strong>Privacy and User Data</strong></p>
+
+                                                        <p>The Company at the time of registration and/or during your access to the Website and/or any of its Services or at any other time collect data from you (&ldquo;User Data&rdquo;). Such User Data is collected, stored, handled and transmitted as per the Privacy Policy of the Website as available on www.onefirerate.com/privacypolicy], which is hereby incorporated into these terms and conditions by this reference.</p>
+
+                                                        <p>By agreeing to these Terms, you also hereby expressly agree to the Privacy Policy of the Website as available on www.onefirerate.com/privacypolicy.</p>
+
+                                                        <p><strong>Grievance Officer</strong></p>
+
+                                                        <p>Kindly address all your grievances regarding use of the Website to [contact@onefinerate.com]. The Company shall make all efforts to address your grievance within a period of one (1) month from the date of receipt of such grievance, in a manner compliant with law.</p>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+    <!-- Privacy Policy pop up -->
+                                                            <div id="divprivacupolicy" class="modal fade" role="dialog">
+                                                                <div class="modal-dialog">
+                                                                    <!-- Modal content-->
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                            <h4 class="modal-title">Privacy Policy</h4>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <p>This Privacy Policy is subject to the terms and conditions of the Terms of Use of www.onefinerate.com (the &ldquo;Website&rdquo;) which is available at https://onefinerate.com. This policy is effective from the date and time a user accepts the terms and conditions as laid out in the Terms of Use.</p>
+
+                                                                            <p>Any reference to the &ldquo;Company&rdquo;, &ldquo;us&rdquo;, &ldquo;we&rdquo; and &ldquo;our&rdquo; means Samaara Hotels and Services Pvt Ltd, having its registered office at 150, Tatvam Villas, Sohna Road, Sector 48, Gurgaon, Haryana. 122002.&nbsp;&nbsp;</p>
+
+                                                                            <p><strong>1. What information do we collect?</strong></p>
+
+                                                                            <p>While you may have access to some sections of the Website without being a registered member, access to certain sections and/or services and performance of certain activities do require registration.&nbsp;</p>
+
+                                                                            <p>When registering on the Website, we may ask you to disclose, including but not limited to, your:</p>
+
+                                                                            <p>-Name,</p>
+
+                                                                            <p>-E-mail address</p>
+
+                                                                            <p>-Mailing Address</p>
+
+                                                                            <p>-Pin Code</p>
+
+                                                                            <p>-Phone Number</p>
+
+                                                                            <p>-Gender</p>
+
+                                                                            <p>-Professional Interests</p>
+
+                                                                            <p>-Education</p>
+
+                                                                            <p>-Occupation</p>
+
+                                                                            <p>-Passport details</p>
+
+                                                                            <p>-Travel preferences</p>
+
+                                                                            <p>-Travel dates</p>
+
+                                                                            <p>-Booking details</p>
+
+                                                                            <p>-Social Media Sign up</p>
+
+                                                                            <p>We may also identify and use your IP address to help diagnose problems with our server, and to administer our Website. Your IP address is also used to help identify you and to gather broad demographic information.</p>
+
+                                                                            <p><strong>2. What do we use your information for?</strong></p>
+
+                                                                            <p>Any of the information we collect from you may be used, including but not limited to, in the following ways: to personalize your experience, to improve the Website, to improve customer service, to process transactions, to administer a contest, promotion, survey, advertisement or other Website feature, to send periodic emails, marketing purposes, and other collateral website specific activities.</p>
+
+                                                                            <p>You understand and agree that certain information, including but not limited to, your name, profile picture, posts, videos, pictures, travel preferences and other such information that you post and/or submit to the Website may be visible to other users in order to facilitate user interaction on the Website.</p>
+
+                                                                            <p>You agree that the Company may use your personal information to contact you and deliver information to you that, in some cases, are targeted to your interests, such as targeted banner advertisements, administrative notices, product offerings, and communications relevant to your use of the Website.</p>
+
+                                                                            <p>By accepting the Terms of Use and Privacy Policy, you expressly agree to receive this information. If you do not wish to receive these communications, we encourage you to opt out of the receipt of certain communications in your profile. You may make changes to your profile at any time.</p>
+
+                                                                            <p><strong>3. How do we protect your information?</strong></p>
+
+                                                                            <p>Every effort will be made to keep the information provided by you in a safe manner. We implement a variety of security measures to maintain the safety of your personal information when you enter, submit, or access your personal information.</p>
+
+                                                                            <p>We offer the use of a secure server. All supplied sensitive and personally identifiable information is transmitted via secure technology and then encrypted into our database to be only accessed by persons authorized with special access rights to our systems. Such persons are under strict instructions to keep the information confidential.</p>
+
+                                                                            <p><strong>4. Opt-out Mechanism </strong></p>
+
+                                                                            <p>You may, at any time while accessing the Website and/or availing the services or otherwise, decide to withdraw your consent towards letting the Company have access to and/or store information collected from you. A notice for such withdrawal of consent shall have to be e-mailed by you to us at assiatnce@onefinerate.com. We shall make all efforts to respond to you within 30 days from receipt of such notice, notifying our acknowledgment and acceptance of such notice (&ldquo;Response&rdquo;).</p>
+
+                                                                            <p>After receiving the Response, you may not use and/or access the Website and/or any services provided therein or any part thereof.</p>
+
+                                                                            <p><strong>5. Do we use cookies?</strong></p>
+
+                                                                            <p>Yes. Cookies are small files that a site or its service provider transfers to your computer&rsquo;s hard drive through your Web browser (if allowed by you) that enables the sites or service providers systems to recognize your browser and capture and remember certain information.</p>
+
+                                                                            <p>We use cookies to understand and save your preferences for future visits.</p>
+
+                                                                            <p>However, we may also use a third party advertisement company to display advertisements on the Website. These advertisements may contain cookies. Cookies received with banner advertisements are collected by such third party advertisement company, and we do not have access to this information.</p>
+
+                                                                            <p><strong>6. Do we disclose any information to outside parties?</strong></p>
+
+                                                                            <p>Yes. You hereby expressly agree to allow us to share information collected from you, including without limitation, your personal information/personally identifiable information with third parties for marketing purposes or where the disclosure is necessary for compliance of a legal obligation.</p>
+
+                                                                            <p>We may disclose all or part of the information collected from you in response to a request from the law enforcement authorities or in a case of bonafide requirement to prevent an imminent breach of the law.</p>
+
+                                                                            <p><strong>7. Third party links</strong></p>
+
+                                                                            <p>Occasionally, at our discretion, we may include or offer third party products or services on the Website. These third party websites have separate and independent privacy policies. We therefore have no responsibility or liability for the content and activities of these linked websites. Nonetheless, we seek to protect the integrity of the Website and welcome any feedback about these websites.</p>
+
+                                                                            <p><strong>8. Online Privacy Policy Only</strong></p>
+
+                                                                            <p>This online privacy policy applies only to information collected through the Website and not to information collected offline.</p>
+
+                                                                            <p><strong>9. Your Consent</strong></p>
+
+                                                                            <p>By accessing and/or using the Website and/or any services provided therein or any part thereof, you consent to our Privacy Policy.</p>
+
+                                                                            <p><strong>10. Changes to our Privacy Policy</strong></p>
+
+                                                                            <p>If we change our Privacy Policy, we will prominently post a link to those changes on the Website so that you are always aware of what information we collect, how we use it, and under what circumstances, if any, we disclose it.</p>
+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+    <!-- Hotel policy pop up -->
+                                                            <div id="divHotelPolicy" class="modal fade" role="dialog">
+                                                                <div class="modal-dialog">
+                                                                    <!-- Modal content-->
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                            <h4 class="modal-title">Hotel Policy</h4>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <p>Reservation must be amended/cancelled 72 hours prior to the planned date of arrival. Reservations cancelled within 72 hours of the arrival date will incur a cancellation charge of one night. Peak Season cancellation must be done at least 7 days prior to arrival date to qualify for no cancellation charge. For group of 5 rooms or more confirmation for the reservation would only be given on the basis of a valid credit card. In case of a no-show or cancellation/amendment of the conference/group (in part or full), within 15 days or less from the date of check-in, a retention charge will be levied. In addition, should any participants check-out early, retention will be charged for those nights booked, now being released due to the early check-out.</p>
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+
+
+
+                                                            @Html.HiddenFor(m => m.Tax)
+                                                            @Html.HiddenFor(m => m.Amount)
+                                                            @Html.HiddenFor(m => m.dBidPrice)
+                                                            @Html.HiddenFor(m => m.dGrandTotal)
+                                                            @Html.HiddenFor(m => m.dMaxRange)
+                                                            @Html.HiddenFor(m => m.dMinRange)
+                                                            @Html.HiddenFor(m => m.dTaxes)
+                                                            @Html.HiddenFor(m => m.dTotalPrice)
+                                                            @Html.HiddenFor(m => m.iAdults)
+                                                            @Html.HiddenFor(m => m.iBiddingCount)
+                                                            @Html.HiddenFor(m => m.iChildrens)
+                                                            @Html.HiddenFor(m => m.iGuestId)
+                                                            @Html.HiddenFor(m => m.iNights)
+                                                            @Html.HiddenFor(m => m.iRooms)
+                                                            @Html.HiddenFor(m => m.iUserId)
+                                                            @Html.HiddenFor(m => m.Message)
+                                                            @Html.HiddenFor(m => m.sActionType)
+                                                            @Html.HiddenFor(m => m.sCheckIn)
+                                                            @Html.HiddenFor(m => m.sCheckOut)
+                                                            @Html.HiddenFor(m => m.SelectedPrefrences)
+                                                            @Html.HiddenFor(m => m.sJsonLocality)
+                                                            @Html.HiddenFor(m => m.sJsonRoomData)
+                                                            @Html.HiddenFor(m => m.sLocalityData)
+                                                            @Html.HiddenFor(m => m.sLocalityType)
+                                                            @Html.HiddenFor(m => m.sPrefrencesItems)
+                                                            @Html.HiddenFor(m => m.sSearchId)
+                                                            @Html.HiddenFor(m => m.sSearchName)
+                                                            @Html.HiddenFor(m => m.sSearchType)
+                                                            @Html.HiddenFor(m => m.sSelectedAreaId)
+                                                            @Html.HiddenFor(m => m.sStarRating)
+                                                            @Html.HiddenFor(m => m.Status)
+                                                            @Html.HiddenFor(m => m.sUserEmail)
+                                                            @Html.HiddenFor(m => m.sUserFirstName)
+                                                            @Html.HiddenFor(m => m.sUserLastName)
+                                                            @Html.HiddenFor(m => m.sUserMobileNo)
+                                                            @Html.HiddenFor(m => m.sUserTitle)
+                                                            @Html.HiddenFor(m => m.Symbol)
+                                                            @Html.HiddenFor(m => m.sOFRServiceCharge)
+                                                            @Html.HiddenFor(m => m.sOFRServiceChargeIncludingTax)
+                                                            @Html.HiddenFor(m => m.sTaxOnServiceCharge_Val)
+                                                            @Html.HiddenFor(m => m.cGstValueType)
+                                                            @Html.HiddenFor(m => m.dGSTValue)
+                                                            @Html.HiddenFor(x => x.BidSearchData)
+                                                            @Html.HiddenFor(x => x.BidData)
+
+                                                            <div class="container">
+                                                                <div class="col-md-12 center margintop10">
+                                                                    <button type="button" id="btnModify" name="buttonType" class="btn btn-inactive  btn-lg">Modify Search</button>
+                                                                    <button type="submit" id="btnProceed" name="buttonType" class="btn btn-primary  btn-lg marginleft8">Pay Now</button>
+                                                                </div>
+                                                            </div>
+                                        }
+<div class="marginbottom10">&nbsp;</div>
+<div id="divTaxes" class="modal fade" role="dialog" style="display:none">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Taxes and other service charge</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td>Hotel Taxes</td>
+                                    <td>:</td>
+                                    <td>@Model.Symbol  @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.sHotelTax))</td>
+                                </tr>
+
+                                @if (!string.IsNullOrEmpty(Model.sOFRServiceCharge) && Convert.ToDecimal(Model.sOFRServiceCharge) > 0)
+                                {
+                                    <tr>
+                                        <td>OFR Service charge</td>
+                                        <td>:</td>
+                                        <td>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.sOFRServiceCharge))</td>
+                                    </tr>
+                                    <tr>
+                                        <td>GST on OFR Service charge (@Model.sTaxOnServiceCharge_Per)</td>
+                                        <td>:</td>
+                                        <td>@Model.Symbol @clsUtils.ConvertNumberToCommaSeprated(Convert.ToDecimal(Model.sTaxOnServiceCharge_Val))</td>
+                                    </tr>
+                                }
+                            </tbody>
+
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var popover = $("[rel='popover']").popover({
+        trigger: 'hover',
+        placement: function (context, source) {
+
+
+                                            @if(Request.Browser.IsMobileDevice)
+                                            {
+                                                <text>
+                                            return "bottom";
+                                                </text>
+                                            }
+
+                                            return "left";
+                                        },
+        html: 'true'
+    }).on('show.bs.popover', function () {
+        popover.attr('data-content', $('#' + $(this).data('id')).find('div.modal-body').html());
+    }).on('click', function () {
+        return false;
+    });
+    $(function () {
+
+        $('#frmPaynow').submit(function (e) {
+
+            if ($('#chkAgree').is(':checked')) {
+
+                return true;
+            }
+            else {
+                e.preventDefault()
+                toastr.warning('Please accept terms and conditions.')
+            }
+
+        });
+
+        $('#btnModify').click(function () {
+            //debugger;
+            window.location.href = '/wish-to-bid?cid=@Model.sSearchId&ctype=@Model.ctype&cname=@Model.cname&sCheckIn=@Model.sCheckIn&sCheckOut=@Model.sCheckOut&sRoomData=@Html.Raw(Model.sJsonRoomData)&sRequestType=@Model.type';
+
+        });
+
+    });
+
+    function CallPage() {
+        var path = '@Html.Raw(TempData["URL"])';
+        window.location.href = path;
+    }
+</script>

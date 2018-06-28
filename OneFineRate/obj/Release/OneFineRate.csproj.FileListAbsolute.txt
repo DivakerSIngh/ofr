@@ -1,0 +1,60 @@
+C:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRate\bin\OneFineRate.dll.config
+C:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRate\bin\OneFineRate.dll
+C:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRate\bin\OneFineRate.pdb
+C:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRate\bin\EntityFramework.dll
+C:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRate\bin\EntityFramework.SqlServer.dll
+C:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRate\bin\OneFineRateAppUtil.dll
+C:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRate\bin\Microsoft.WindowsAzure.StorageClient.dll
+C:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRate\bin\Microsoft.WindowsAzure.Configuration.dll
+C:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRate\bin\OneFineRateAppUtil.pdb
+C:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRate\bin\OneFineRateAppUtil.dll.config
+C:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRate\bin\EntityFramework.xml
+C:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRate\bin\EntityFramework.SqlServer.xml
+C:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRate\obj\Release\OneFineRate.csprojResolveAssemblyReference.cache
+C:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRate\obj\Release\OneFineRate.dll
+C:\Projects\OneFineRate\Source Code\OneFineRate\OneFineRate\obj\Release\OneFineRate.pdb
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRate\bin\OneFineRate.dll.config
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRate\bin\OneFineRate.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRate\bin\OneFineRate.pdb
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRate\bin\EntityFramework.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRate\bin\EntityFramework.SqlServer.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRate\bin\OneFineRateAppUtil.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRate\bin\Microsoft.WindowsAzure.StorageClient.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRate\bin\OneFineRateAppUtil.pdb
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRate\bin\OneFineRateAppUtil.dll.config
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRate\bin\EntityFramework.xml
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRate\bin\EntityFramework.SqlServer.xml
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRate\obj\Release\OneFineRate.csprojResolveAssemblyReference.cache
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRate\obj\Release\OneFineRate.csproj.CoreCompileInputs.cache
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRate\obj\Release\OneFineRate.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRate\obj\Release\OneFineRate.pdb
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRate\bin\MailKit.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRate\bin\MimeKit.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRate\bin\BouncyCastle.Crypto.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRate\bin\MailKit.xml
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRate\bin\MimeKit.xml
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRate\bin\bin\Microsoft.WindowsAzure.Configuration.dll
+C:\Users\DeepakA.FSOFT4PDC\Documents\Visual Studio 2013\Projects\OneFineRate\OneFineRate\bin\Microsoft.WindowsAzure.Configuration.dll
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRate\bin\bin\Microsoft.WindowsAzure.Configuration.dll
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRate\bin\OneFineRate.dll.config
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRate\bin\OneFineRate.dll
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRate\bin\OneFineRate.pdb
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRate\bin\EntityFramework.dll
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRate\bin\EntityFramework.SqlServer.dll
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRate\bin\OneFineRateAppUtil.dll
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRate\bin\MailKit.dll
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRate\bin\MimeKit.dll
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRate\bin\Microsoft.WindowsAzure.StorageClient.dll
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRate\bin\Microsoft.WindowsAzure.Configuration.dll
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRate\bin\BouncyCastle.Crypto.dll
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRate\bin\OneFineRateAppUtil.pdb
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRate\bin\OneFineRateAppUtil.dll.config
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRate\bin\EntityFramework.xml
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRate\bin\EntityFramework.SqlServer.xml
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRate\bin\MailKit.xml
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRate\bin\MimeKit.xml
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRate\obj\Release\OneFineRate.csprojAssemblyReference.cache
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRate\obj\Release\OneFineRate.csproj.CoreCompileInputs.cache
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRate\obj\Release\OneFineRate.csproj.CopyComplete
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRate\obj\Release\OneFineRate.dll
+C:\OFR\Deliverables to Samaara\Source Code\OneFineRate\OneFineRate\obj\Release\OneFineRate.pdb

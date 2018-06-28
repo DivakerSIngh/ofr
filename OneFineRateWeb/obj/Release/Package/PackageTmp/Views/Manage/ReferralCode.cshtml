@@ -1,0 +1,330 @@
+﻿@using OneFineRateBLL.WebUserBL
+@using OneFineRateWeb.Handlers
+@model OneFineRateWeb.ViewModels.ReferralCodeViewModel
+@{
+    ViewBag.Title = "ReferralCode";
+    Layout = "~/Views/Shared/_LayoutUserManagement.cshtml";
+    ViewBag.ReferralCodeActive = "manageActive";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h3>REFERRAL CODE</h3>
+            <hr />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class=" rightwhitebox">
+
+                @*@{Html.RenderAction("CustomerDetails", "Manage");}*@
+
+                <div id="alert_placeholder"></div>
+                <div class="tablebluebg">Manage Your Referral Code</div>
+                <div class="padding15 border1 lightgrybg">
+
+                    <div><h5>You can share your referral code by providing emails or phone numbers.</h5></div>
+
+                    @Html.ValidationBootstrap()
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            @Html.LabelFor(model => model.ReferralCode) : &nbsp; <label><b>@User.ReferralCode()</b></label>
+                        </div>
+                    </div>
+                    <br />
+
+                    @using (Html.BeginForm("referralCode", "Manage", FormMethod.Post, new { id = "frmEmail" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <div class="row">
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Email1)
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    @Html.TextBoxFor(model => model.Email1, new { placeholder = "Email address", maxlength = "100", @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.Email1, "", new { @class = "red" })
+                                </div>
+                            </div>
+                            <div class="col-md-1"><a href="javascript:void(0)" id="addEmailTextBox">Add</a></div>
+                            <div class="col-md-3">
+                                <button type="submit" name="submitButton" value="email" class="btn btn-primary marginleft5">Send Email</button>
+                            </div>
+                        </div>
+                    }
+                    <hr />
+                    <br />
+                    @using (Html.BeginForm("ReferralCode", "Manage", FormMethod.Post, new { id = "frmPhone" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.Hidden("refCode", User.ReferralCode())
+                        <div class="row">
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Phone1)
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">+91</span>
+                                        @Html.TextBoxFor(model => model.Phone1, new { placeholder = "Phone number", maxlength = "10", @class = "form-control gphone" })
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.Phone1, "", new { @class = "red" })
+                                </div>
+                            </div>
+                            <div class="col-md-1"><a href="javascript:void(0)" id="addPhoneTextBox">Add</a></div>
+                            <div class="col-md-3">
+                                <button type="submit" name="submitButton" value="message" class="btn btn-primary marginleft5">Send Message</button>
+                            </div>
+                        </div>
+
+                        <div class="row" id="phoneDiv2" style="display:none">
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Phone2)
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">+91</span>
+                                        @Html.TextBoxFor(model => model.Phone2, new { placeholder = "Phone number", maxlength = "10", @class = "form-control gphone" })
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.Phone2, "", new { @class = "red" })
+                                </div>
+                            </div>
+                            <div class="col-md-1"><a href="javascript:void(0)" class="remove" data-num="2" data-type="phone">Remove</a></div>
+                        </div>
+                        <div class="row" id="phoneDiv3" style="display:none">
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Phone3)
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">+91</span>
+                                        @Html.TextBoxFor(model => model.Phone3, new { placeholder = "Phone number", maxlength = "10", @class = "form-control gphone" })
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.Phone3, "", new { @class = "red" })
+                                </div>
+                            </div>
+                            <div class="col-md-1"><a href="javascript:void(0)" class="remove" data-num="3" data-type="phone">Remove</a></div>
+                        </div>
+                        <div class="row" id="phoneDiv4" style="display:none">
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Phone4)
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">+91</span>
+                                        @Html.TextBoxFor(model => model.Phone4, new { placeholder = "Phone number", maxlength = "10", @class = "form-control gphone" })
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.Phone4, "", new { @class = "red" })
+                                </div>
+                            </div>
+                            <div class="col-md-1"><a href="javascript:void(0)" class="remove" data-num="4" data-type="phone">Remove</a></div>
+                        </div>
+                        <div class="row" id="phoneDiv5" style="display:none">
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Phone5)
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">+91</span>
+                                        @Html.TextBoxFor(model => model.Phone5, new { placeholder = "Phone number", maxlength = "10", @class = "form-control gphone" })
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.Phone5, "", new { @class = "red" })
+                                </div>
+                            </div>
+                            <div class="col-md-1"><a href="javascript:void(0)" class="remove" data-num="5" data-type="phone">Remove</a></div>
+                        </div>
+                        <div class="row" id="phoneDiv6" style="display:none">
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Phone6)
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">+91</span>
+                                        @Html.TextBoxFor(model => model.Phone6, new { placeholder = "Phone number", maxlength = "10", @class = "form-control gphone" })
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.Phone6, "", new { @class = "red" })
+                                </div>
+                            </div>
+                            <div class="col-md-1"><a href="javascript:void(0)" class="remove" data-num="6" data-type="phone">Remove</a></div>
+                        </div>
+                        <div class="row" id="phoneDiv7" style="display:none">
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Phone7)
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">+91</span>
+                                        @Html.TextBoxFor(model => model.Phone7, new { placeholder = "Phone number", maxlength = "10", @class = "form-control gphone" })
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.Phone7, "", new { @class = "red" })
+                                </div>
+                            </div>
+                            <div class="col-md-1"><a href="javascript:void(0)" class="remove" data-num="7" data-type="phone">Remove</a></div>
+                        </div>
+                        <div class="row" id="phoneDiv8" style="display:none">
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Phone8)
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">+91</span>
+                                        @Html.TextBoxFor(model => model.Phone8, new { placeholder = "Phone number", maxlength = "10", @class = "form-control gphone" })
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.Phone8, "", new { @class = "red" })
+                                </div>
+                            </div>
+                            <div class="col-md-1"><a href="javascript:void(0)" class="remove" data-num="8" data-type="phone">Remove</a></div>
+                        </div>
+                        <div class="row" id="phoneDiv9" style="display:none">
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Phone9)
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">+91</span>
+                                        @Html.TextBoxFor(model => model.Phone9, new { placeholder = "Phone number", maxlength = "10", @class = "form-control gphone" })
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.Phone9, "", new { @class = "red" })
+                                </div>
+                            </div>
+                            <div class="col-md-1"><a href="javascript:void(0)" class="remove" data-num="9" data-type="phone">Remove</a></div>
+                        </div>
+                        <div class="row" id="phoneDiv10" style="display:none">
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Phone10)
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">+91</span>
+                                        @Html.TextBoxFor(model => model.Phone10, new { placeholder = "Phone number", maxlength = "10", @class = "form-control gphone" })
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.Phone10, "", new { @class = "red" })
+                                </div>
+                            </div>
+                            <div class="col-md-1"><a href="javascript:void(0)" class="remove" data-num="10" data-type="phone">Remove</a></div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+
+    <script>
+
+        var maxCounter = 10;
+        var emailCounter = 2;
+        var phoneCounter = 2;
+
+        function AddEmailTextBox(counter) {
+
+            var templete = '<div class="row" id="emailDiv' + counter + '">' +
+                           ' <div class="col-md-1">' +
+                           '     <div class="form-group">' +
+                           '         <label for="Email' + counter + '">Email' + counter + '</label>' +
+                           '     </div>' +
+                           ' </div>' +
+                           ' <div class="col-md-6">' +
+                           '     <div class="form-group">' +
+                           '         <input class="form-control" data-val="true" data-val-email="Please enter a valid e-mail address." id="Email' + counter + '" maxlength="100" name="Email' + counter + '" placeholder="Email address" type="text">' +
+                           '         <span class="field-validation-valid red" data-valmsg-for="Email' + counter + '" data-valmsg-replace="true"></span>' +
+                           '     </div>' +
+                           ' </div>' +
+                           ' <div class="col-md-1"><a href="javascript:void(0)" class="remove" data-type="email" data-num="' + counter + '">Remove</a></div>'
+            '</div>';
+            return templete;
+        }
+
+
+        $('#addEmailTextBox').click(function () {
+
+            if (emailCounter > maxCounter) {
+                alert('You can not add more than 10 textbox at one time.')
+                return false;
+            }
+            $('#frmEmail').append(AddEmailTextBox(emailCounter));
+            $('form').data('validator', null);
+            $.validator.unobtrusive.parse($('form'));
+            emailCounter++;
+        });
+
+        $('#addPhoneTextBox').click(function () {
+
+            if (phoneCounter > maxCounter) {
+                alert('You can not add more than 10 textbox at one time.')
+                return false;
+            }
+
+            $('#phoneDiv' + phoneCounter).show();
+
+            phoneCounter++;
+        });
+
+        $(document).on('click', '.remove', function () {
+
+            var num = $(this).data('num');
+            var type = $(this).data('type');
+
+            if (type == 'email') {
+
+                $('#emailDiv' + num).remove();
+                emailCounter--;
+            }
+            else {
+
+                $('#Phone' + num + '-error').hide();
+                $('#Phone' + num).val(null);
+                $('#phoneDiv' + num).hide();
+
+                phoneCounter--;
+            }
+        });
+
+
+        $('.gphone').keypress(function (e) {
+
+            var cursorPosition = $(this).getCursorPosition();
+
+            if ((this.value.length == 0 || cursorPosition == 0) && e.which == 48) {
+
+                return false;
+            }
+        });
+
+    </script>
+}

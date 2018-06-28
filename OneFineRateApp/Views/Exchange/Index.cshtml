@@ -1,0 +1,125 @@
+﻿@{
+    ViewBag.Title = "Exchange Rate";
+    Layout = "~/Views/Shared/_LayoutIntranet.cshtml";
+}
+<script type="text/javascript">
+
+
+    $(document).ready(function () {
+
+        bindgrid(); //binding datatable
+
+        var str = @Html.Raw(Json.Encode(ViewData["Data"]));
+        
+        if(str=='Exchange rates uploaded successfully.'){
+            toastr.success(str);
+        }
+        else if(str != ''){
+            toastr.error(str);
+        }
+
+    });
+
+    // Delete data from list
+    function DeleteData(obj) {
+        var from = decodeURIComponent($(obj).attr('efrom'));
+        var to = decodeURIComponent($(obj).attr('eto'));
+        bootbox.confirm("Are you sure?", function (result) {
+            if (result == true) {
+                document.getElementById('Progress').style.display = 'block';
+                var values = {
+                    from: from,
+                    to: to
+                };
+                var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("Delete")", values));
+                if (Data != null) {
+                    if (Data.st == '1') {
+                        bindgrid();
+                        $('.close').click();
+                        toastr.success(Data.msg);
+                        return true;
+                    }
+                    else if (Data.st == '0') {
+                        toastr.error(Data.msg);
+                        return false;
+                    }
+
+                }
+            }
+        });
+    }
+
+    // bind list
+    function bindgrid() {
+
+        try {
+            var aoColumns =
+                [
+
+                 { "sTitle": "FROM", "mData": "sCurrencyCodeFrom" },
+                 { "sTitle": "TO", "mData": "sCurrencyCodeTo" },
+                 { "sTitle": "RATE", "mData": "dRate", "bSortable": false },
+                 {
+                     "sTitle": "Modify Date", "mData": "dtActionDate", "bSortable": false,
+                     "mRender": function (data, type, full) {
+                         return getNorDateTime(data);
+                     }
+                 },
+                 { "sTitle": "Modified By", "mData": "sActionBy", "bSortable": false },
+                 {
+                     "sTitle": "Action", "mData": "sCurrencyCodeFrom", "bSortable": false,
+                     "mRender": function (data, type, full) {
+                         var html = '<button type="button" onclick="DeleteData(this)"; efrom=' + encodeURIComponent(full.sCurrencyCodeFrom) + ' eto=' + encodeURIComponent(full.sCurrencyCodeTo) + ' class=" btn btn-danger btn-xs margintop10">Delete</button>&nbsp';
+                         return html;
+                     }
+                 }
+
+
+                ];
+            DatatableServerSide("#tblData", aoColumns, "/Services/Service.asmx/GetExchangeList");
+        }
+        catch (e) {
+
+        }
+
+    }
+
+</script>
+@*<form id="list">*@
+<div class="container margintop20">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-md-6">
+                    <h4 class="panel-title">
+                        Exchange Rate
+                    </h4>
+                </div>
+                <div class="col-md-6">
+                    @*<button type="button" class="pull-right btn btn-warning" data-toggle="modal" data-target="#AddNewUsers"><i class="fa fa-plus"></i> Add Users </button>*@
+                </div>
+            </div>
+        </div>
+    </div>
+    @using (Html.BeginForm("Upload", "Exchange", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class=" col-md-2">Upload Rates Excel</div>
+                    <div class="col-md-3">
+                        <input type="file" name="UploadedFile" required />
+                    </div>
+                    <div class="col-md-1"> <input type="Submit" name="Submit" value="Submit" id="Submit" class="btn btn-primary width40"></div>
+                </div>
+            </div>
+        </div>
+    }
+    <div class="panel-body">
+        <div class="table-responsive margintop20">
+            <table class="table table-striped table-bordered table-hover display" id="tblData"></table>
+        </div>
+        <!-- End  table -->
+    </div>
+    <!-- container div END bottom -->
+</div>

@@ -1,0 +1,136 @@
+﻿@model OneFineRateWeb.Models.ExternalLoginConfirmationViewModel
+@{
+    ViewBag.Title = "Verify Code";
+}
+
+<div class="light_header_bar">
+    <div class="container">
+        <h4 class="msgvertical"><strong>Please verify your corporate email address.</strong></h4>
+    </div>
+</div>
+
+@if (ViewData.ModelState["AllDone"] != null && ViewData.ModelState["AllDone"].Errors.Any())
+{
+    <div class="alert alert-info alert-dismissible show margintop34" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <h2 style="text-align:center">@ViewData.ModelState["AllDone"].Errors.FirstOrDefault().ErrorMessage</h2>
+    </div>
+    <script>
+        var searchDetails = JSON.parse($.cookie('ofr.corporate.searchdata'));
+        window.location.href = '/Corporate/Search?cid=' + searchDetails.cid + '&ctype=' + searchDetails.ctype + '&cname=' + searchDetails.cname + '&sCheckIn=' + searchDetails.sCheckIn + '&sCheckOut=' + searchDetails.sCheckOut + '&sRoomData=' + searchDetails.sRoomData;
+    </script>
+}
+else
+{
+
+    <div class="container marginbottom10">
+        <div class="row" id="spinnerContainer">
+            <div class="col-md-12 margintop20">
+                @if (ViewData.ModelState["CustomModelError"] != null && ViewData.ModelState["CustomModelError"].Errors.Any())
+                {
+                    <div class="alert alert-danger alert-dismissible show" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <span>@ViewData.ModelState["CustomModelError"].Errors.FirstOrDefault().ErrorMessage</span>
+                    </div>
+                }
+                else if (ViewData.ModelState["CustomModelInfo"] != null && ViewData.ModelState["CustomModelInfo"].Errors.Any())
+                {
+                    <div class="alert alert-info alert-dismissible show" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <span>@ViewData.ModelState["CustomModelInfo"].Errors.FirstOrDefault().ErrorMessage</span>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-danger alert-dismissible show" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <span>@Html.ValidationSummary()</span>
+                    </div>
+                }
+            </div>
+
+            <div class="col-md-12">
+
+                @using (Html.BeginForm("ExternalCorporateRoundTrip", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    @Html.HiddenFor(x => x.Title)
+                    @Html.HiddenFor(x => x.Email)
+                    @Html.HiddenFor(x => x.PhoneNumber)
+                    @Html.HiddenFor(x=> x.FirstName)
+                    @Html.HiddenFor(x => x.LastName)
+                    @Html.HiddenFor(x => x.DisplayName)
+
+                    <div class="col-md-12 margintop-10">
+                        Your Corporate Email : <strong>@Html.DisplayFor(m => m.CorporateCustomerEmail) </strong><br />
+                        <hr /><br />
+                        <div class="row">
+                            @Html.HiddenFor(m => m.CorporateCustomerEmail, new { id = "hdnCorporateCustomerEmail" })
+                            <div class="clearfix"></div>
+
+                            @if (ViewData.ModelState["OTPRequired"] != null && ViewData.ModelState["OTPRequired"].Errors.Any())
+                            {
+                                <div class="col-md-4">
+                                    @Html.TextBoxFor(m => m.CorporateEmailVerificationCode, new { @class = "form-control margintop10", required = "", placeholder = "Enter email verification code", title = "Please enter email verification code" })
+                                    @Html.ValidationMessageFor(m => m.CorporateEmailVerificationCode, "", new { @class = "red" })
+                                    @Html.HiddenFor(x => x.CorporateEmailVerificationEncoded, new { id = "hdnEmailVerificationEncoded" })
+                                    <label style="float:right;" class="text-danger"><a href="javascript:void(0)" id="lnkResendEmailVericationCode">Resend OTP </a></label>
+                                </div>
+                                <div class="clearfix"></div>
+                            }
+
+                            <div class="col-md-12">
+                                <input type="submit" class="btn btn-default margintop10" value="Verify" />
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        $(function () {
+
+            $('#lnkResendEmailVericationCode').click(function (e) {
+
+                e.preventDefault();
+
+                $.post('@Url.Action("ResendCorporateOTP", "Account")', { corporateEmail: $("#hdnCorporateCustomerEmail").val() },).done(function (data) {
+
+                    //debugger;
+
+                    var toastrOption_prev = toastr.options;
+                    toastr.options = {
+                        "positionClass": "toast-top-right"
+                    }
+
+                    if (data.status == true) {
+
+                        if (data.codeEncoded) {
+                            $('#hdnEmailVerificationEncoded').val(data.codeEncoded);
+                        }
+                        toastr.success(data.message);
+                    }
+                    else {
+                        toastr.error(data.message);
+                    }
+
+                    toastr.options = toastrOption_prev;
+
+                });
+            });
+
+        });
+    </script>
+}

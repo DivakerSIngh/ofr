@@ -1,0 +1,218 @@
+﻿
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <!--[if IE]>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <![endif]-->
+    <title>OFR</title>
+    @*-------Styles-----------------*@
+
+    @System.Web.Optimization.Styles.Render("~/bundles/css")
+    @System.Web.Optimization.Styles.Render("~/bundles/dropzonescss")
+
+
+    @*-------Scripts-----------------*@
+
+    @System.Web.Optimization.Scripts.Render("~/bundles/js")
+
+
+    <style>
+        .panel-heading .accordion-toggle:after {
+            /* symbol for "opening" panels */
+            font-family: 'Glyphicons Halflings'; /* essential for enabling glyphicon */
+            content: "\e114"; /* adjust as needed, taken from bootstrap.css */
+            float: right; /* adjust as needed */
+            color: grey; /* adjust as needed */
+        }
+
+        .panel-heading .accordion-toggle.collapsed:after {
+            /* symbol for "collapsed" panels */
+            content: "\e080"; /* adjust as needed, taken from bootstrap.css */
+        }
+    </style>
+    <script type="text/javascript">
+
+        $(function () {
+            //Display Result In Toastr Message
+            var success = @((TempData["msg"] != null).ToString().ToLower());
+            if (success == true) {
+                toastr.success('@TempData["msg"]');
+            }
+
+            var error = @((TempData["ERROR"] != null).ToString().ToLower());
+            if (error == true) {
+                toastr.error('@TempData["ERROR"]');
+            }
+          
+            //Add active class to menu 
+            $('.menubgtable tr td').each(function () {
+                $(this).removeClass('active');
+                if ($(this).find('a').attr('href') == window.location.pathname) {
+                    $(this).parent().addClass('active');
+                }
+            });
+        });
+      
+    </script>
+
+
+
+</head>
+<body>
+    <header>
+        <div class=" headertoprow">
+            <div class="container">
+                <div class="col-md-12  text-right">
+                    Welcomes <strong>  @ViewBag.UserName  </strong><a href="#"></a>&nbsp;
+                    @if (Session["PropId"] != null)
+                    {
+                        <strong>|</strong>  <strong>@Session["PropName"].ToString() &nbsp; @Html.ActionLink("[ Change ]", "MappedHotels", "Property")</strong> } <strong>|</strong> @Html.ActionLink("Change Password", "ChangePassword", "Home")&nbsp;<strong>|</strong> &nbsp;&nbsp;@Html.ActionLink("Logout", "LogOut", "Account")
+
+                    </div>
+                </div>
+            </div>
+            <div class=" mainnavbar">
+                <div class="container">
+                    <div class="col-md-2"><img src="/images/logo_big.png" /></div>
+                    <div class="col-md-10 text-right padding10 text-right">
+                        <a href="#" class="btn btn-danger"> View me in OFR</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- HEADER END-->
+        <div class="navbar navbar-inverse set-radius-zero">
+            <div id="dvLoading"></div>
+
+            <div id="wrapper_admin">
+
+                <div class="container">
+                    <nav>
+
+                        @ViewBag.Menu
+
+                    </nav>
+                </div>
+
+            </div>
+        </div>
+        <!-- LOGO HEADER END-->
+        <section class="menu-section">
+            <div class="container">
+                <div class="row">
+                </div>
+            </div>
+        </section>
+        <!-- MENU SECTION END-->
+        <div class="container margintop20">
+            <div class="row">
+                <div class="col-xs-3">
+                    @ViewBag.PropertyMenu
+                    @*<table width="100%" border="0" cellspacing="0" cellpadding="0" class="menubgtable">
+                            <tr class="active">
+                                <td style="border-top:0px;"><a href="Property-basic.html">Basic Property Details</a></td>
+                                <td style="border-top:0px;">&nbsp;</td>
+                            </tr>
+                            <tr class="menubg">
+                                <td><a href="Property-hotel-Amenities.html">Amenities / Serviec Hotel </a></td>
+                                <td>&nbsp;</td>
+                            </tr>
+                            <tr class="menubg">
+                                <td><a href="#">Rooms</a></td>
+                                <td>&nbsp;</td>
+                            </tr>
+                            <tr class="menubg">
+                                <td><a href="Property-DiningRestaurant.html">Dining &amp; Restaurant </a></td>
+                                <td>&nbsp;</td>
+                            </tr>
+                            <tr class="menubg">
+                                <td><a href="Property-spa.html">SPA</a></td>
+                                <td>&nbsp;</td>
+                            </tr>
+                            <tr class="menubg">
+                                <td><a href="#">Recreation/ Fitness </a></td>
+                                <td>&nbsp;</td>
+                            </tr>
+                            <tr class="menubg">
+                                <td><a href="Property-Taxes.html">Taxes and Fees </a></td>
+                                <td>&nbsp;</td>
+                            </tr>
+                            <tr class="menubg">
+                                <td><a href="#">Policies</a></td>
+                                <td>&nbsp;</td>
+                            </tr>
+                            <tr class="menubg">
+                                <td><a href="#">Photos/ Videos </a></td>
+                                <td>&nbsp;</td>
+                            </tr>
+                            <tr class="menubg">
+                                <td><a href="CompetitorSet.html">Competitor Set </a></td>
+                                <td>&nbsp;</td>
+                            </tr>
+                        </table>*@
+
+                </div>
+                <!-- left menu ends-->
+                <div class="col-xs-9">
+                    @RenderBody()
+                </div>
+            </div>
+
+        </div>
+        <!-- container div END  -->
+        <!-- CONTENT-WRAPPER SECTION END-->
+
+
+
+
+
+        <footer>
+            <div class="container">
+                <table width="20%" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td valign="top"><a href="#">Contact OFR</a></td>
+                        <td><a href="#">Terms of Use</a></td>
+                    </tr>
+                </table>
+                <!-- <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                <td valign="top">
+                <h5><strong>Help and Training</strong></h5>
+                <ul>
+                <li><a href="#">Contact Expedia</a></li>
+                <li><a href="#">Help, Training, FAQs</a></li>
+                <li><a href="#">Health & Safety</a></li>
+                <li><a href="#">Terms of use</a></li>
+                </ul>
+                </td>
+                <td valign="top">
+                <h5>Marketing and Advertising</h5>
+                <ul>
+                <li><a href="#">Onefinerate Media Solutions</a></li>
+                <li><a href="#">TravelAds</a></li>
+                </ul>
+                </td>
+                <td valign="top">
+                <h5>Additional OneFineRate Offerings</h5>
+                <ul>
+                <li><a href="#">OneFineRate Connectivity Solutions</a></li>
+                <li><a href="#">Egencia Corporate Sign-up</a></li>
+                <li><a href="#">Hotwire Sign-up</a></li>
+                </ul>
+                </td>
+                </tr>
+                </table>-->
+            </div>
+        </footer>
+        <!-- FOOTER SECTION END-->
+        @RenderSection("ValidationScript", required: false)
+        @RenderSection("DropZoneScripts", required: false)
+
+    </body>
+</html>

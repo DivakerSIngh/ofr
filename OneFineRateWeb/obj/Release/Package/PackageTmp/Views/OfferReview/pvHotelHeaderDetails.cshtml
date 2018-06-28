@@ -1,0 +1,61 @@
+﻿@model   OneFineRateBLL.Entities.PropDetailsM
+
+
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-7 col-sm-12 col-xs-12 margintop10">
+
+
+            <div class="fonthtlnme">@Model.sPropertyName</div>
+            <div class="bookingstar"><img src="~/images/inner-star@(Model.iStarCategory).png" /></div>
+            <address>
+                @Model.sPropertyAddress
+                <div class="row">
+                    <div class="col-md-8 col-xs-8 facilityicon margintop5">
+                        <ul>
+                            @for (int i = 0; i < Model.lstetblHotelFacilities.Count; i++)
+                            {
+                                @Html.HiddenFor(m => Model.lstetblHotelFacilities[i].sImgUrl)
+                                <li><img src='@System.Configuration.ConfigurationManager.AppSettings["BlobUrl"].ToString()@Model.lstetblHotelFacilities[i].sImgUrl' id="iconPreview" title="@Model.lstetblHotelFacilities[i].sHotelFacilites" style="height: 20px; width: 20px"></li>
+                            }
+                            @*<li><i class="fa fa-wifi" aria-hidden="true"></i></li>
+                                <li><i class="fa fa-credit-card" aria-hidden="true"></i></li>
+                                <li><i class="fa fa-glass" aria-hidden="true"></i></li>
+                                <li><i class="fa fa-television" aria-hidden="true"></i></li>*@
+                        </ul>
+                    </div>
+                </div>
+            </address>
+
+        </div>
+        @{
+            if (!String.IsNullOrEmpty(Model.objTripAdvisonReviews.iTripAdvisorLOCID.ToString()))
+            {
+                <div class=" col-md-3 col-sm-12 col-xs-12 margintop20">
+                    <div class="row ">
+                        @*<div class="col-md-2 col-sm-3  col-xs-3"></div>*@
+                        <div class="col-md-12 col-sm-12  col-xs-12">
+                            <img src="../images/trip-adv-icon.png" class="tripadv_icon"> <em class="green marginleft8">
+                                @Model.objTripAdvisonReviews.sRankingString
+                            </em>
+                            <em class="marginleft8"> Based on <span class="bluetext font15">@Model.objTripAdvisonReviews.iReviewsCount Reviews</span></em>
+
+                            <br>
+                        </div>
+
+
+                    </div>
+                </div>
+                <div class=" col-md-2  col-sm-12 col-xs-12  margintop20">
+                    <strong>TripAdvisor Traveller Rating:</strong>
+                    <img src="@Model.objTripAdvisonReviews.sRatingImageURL" class="tripadv_icon"><br>
+                    <em class=" marginleft8"> <a target="_blank" href="@Model.objTripAdvisonReviews.sWebURL">Find out more</a> »</em>
+
+                </div>
+            }
+        }
+    </div>
+</div>

@@ -1,0 +1,326 @@
+﻿@model OneFineRateBLL.Entities.etblPropertyLOSBiddingMap
+
+
+<script type="text/javascript">
+    var DiscountData = [];
+    var DiscountDataOther = [];
+
+    $(document).ready(function () {
+
+        var Amenity = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("GetAmenitiesList")"));
+        var Applicability = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("GetApplicabilitiesList")"));
+
+
+        //Get Lead Discount Data with this property and bind table
+        var jsonData = '@Html.Raw(Model.JSONData)';
+        var jsonDataOther = '@Html.Raw(Model.JSONDataOther)';
+        if (jsonData != "") {
+            DiscountData = JSON.parse(jsonData);
+            BindData(DiscountData);
+        }
+
+        if (jsonDataOther != "") {
+            DiscountDataOther = JSON.parse(jsonDataOther);
+            BindDataOther(DiscountDataOther);
+        }
+
+        function BindData(pdata) {
+            var myval = '';
+
+
+            $.each(pdata, function (key, value) {
+                var i = $('#tbldiscountLOS tr.trc').length + 1;
+                var myval = '';
+
+
+                var ddlAmenities1 = "<select id='ddlAmenities1-" + i + "' name='ddlAmenities1-" + i + "' class='form-control ddlAmn1'><option value='0'>--Select--</option>";
+                $.each($.parseJSON(Amenity.msg), function (key, val) {
+                    if (value.iAmenityId1 == val.iAmenityId) {
+                        ddlAmenities1 += "<option value='" + val.iAmenityId + "' selected>" + val.sAmenityName + "</option>";
+                    }
+                    else {
+                        ddlAmenities1 += "<option value='" + val.iAmenityId + "'>" + val.sAmenityName + "</option>";
+                    }
+
+                });
+                ddlAmenities1 += "</select>";
+
+                var ddlAmenities2 = "<select id='ddlAmenities2-" + i + "' name='ddlAmenities2-" + i + "' class='form-control ddlAmn2'><option value='0'>--Select--</option>";
+                $.each($.parseJSON(Amenity.msg), function (key, val) {
+                    if (value.iAmenityId2 == val.iAmenityId)
+                        ddlAmenities2 += "<option value='" + val.iAmenityId + "' selected>" + val.sAmenityName + "</option>";
+                    else
+                        ddlAmenities2 += "<option value='" + val.iAmenityId + "'>" + val.sAmenityName + "</option>";
+
+                });
+                ddlAmenities2 += "</select>";
+
+                var ddlApplicability1 = "<select id='ddlApplicability1-" + i + "' name='ddlApplicability1-" + i + "' class='form-control ddlApp1'><option value='0'>--Select--</option>";
+                $.each($.parseJSON(Applicability.msg), function (key, val) {
+                    if (value.iApplicabilityId1 == val.iApplicabilityId)
+                        ddlApplicability1 += "<option value='" + val.iApplicabilityId + "' selected>" + val.sApplicability + "</option>";
+                    else
+                        ddlApplicability1 += "<option value='" + val.iApplicabilityId + "'>" + val.sApplicability + "</option>";
+
+                });
+                ddlApplicability1 += "</select>";
+
+                var ddlApplicability2 = "<select id='ddlApplicability2-" + i + "' name='ddlApplicability2-" + i + "' class='form-control ddlApp2'><option value='0'>--Select--</option>";
+                $.each($.parseJSON(Applicability.msg), function (key, val) {
+                    if (value.iApplicabilityId2 == val.iApplicabilityId)
+                        ddlApplicability2 += "<option value='" + val.iApplicabilityId + "' selected>" + val.sApplicability + "</option>";
+                    else
+                        ddlApplicability2 += "<option value='" + val.iApplicabilityId + "'>" + val.sApplicability + "</option>";
+
+                });
+                ddlApplicability2 += "</select>";
+
+                myval += ' <tr class="trc">';
+                myval += ' <td>' + value.ifrom + '<input type="hidden" value="' + value.ifrom + '" class="hdfrom" /></td>';
+                myval += '<td>' + value.iTo + '</td><input type="hidden" value="' + value.iTo + '" class="hdto" />';
+                myval += '<td>' + value.dLeadDiscount + '%</td>';
+                myval += '<td><input type = "number" min = "0" max = "100" step = "0.01" class="form-control txtdisc" value="' + value.dLeadDiscount + '" pattern="[0-9]+([\\.,][0-9]+)?" maxlength="5" id="txtdiscount' + i + '" placeholder="%"></td>';
+                myval += '<td>' + ddlAmenities1 + '</td>';
+                myval += '<td>' + ddlApplicability1 + '</td>';
+                myval += '<td>' + ddlAmenities2 + '</td>';
+                myval += '<td>' + ddlApplicability2 + '</td>';
+                myval += '';
+
+                $('#tbldiscountLOS').append("" + myval + "");
+            });
+        }
+
+        function BindDataOther(pdata) {
+            var myval = '';
+
+
+            $.each(pdata, function (key, value) {
+                var i = $('#tbldiscountLOSOther tr.trc').length + 1;
+                var myval = '';
+
+
+                var ddlAmenities1 = "<select id='ddlAmenities1-" + i + "-Other' name='ddlAmenities1-" + i + "-Other' class='form-control ddlAmn1' disabled><option value='0'>--Select--</option>";
+                $.each($.parseJSON(Amenity.msg), function (key, val) {
+                    if (value.iAmenityId1 == val.iAmenityId) {
+                        ddlAmenities1 += "<option value='" + val.iAmenityId + "' selected>" + val.sAmenityName + "</option>";
+                    }
+                    else {
+                        ddlAmenities1 += "<option value='" + val.iAmenityId + "'>" + val.sAmenityName + "</option>";
+                    }
+
+                });
+                ddlAmenities1 += "</select>";
+
+                var ddlAmenities2 = "<select id='ddlAmenities2-" + i + "-Other' name='ddlAmenities2-" + i + "-Other' class='form-control ddlAmn2' disabled><option value='0'>--Select--</option>";
+                $.each($.parseJSON(Amenity.msg), function (key, val) {
+                    if (value.iAmenityId2 == val.iAmenityId)
+                        ddlAmenities2 += "<option value='" + val.iAmenityId + "' selected>" + val.sAmenityName + "</option>";
+                    else
+                        ddlAmenities2 += "<option value='" + val.iAmenityId + "'>" + val.sAmenityName + "</option>";
+
+                });
+                ddlAmenities2 += "</select>";
+
+                var ddlApplicability1 = "<select id='ddlApplicability1-" + i + "-Other' name='ddlApplicability1-" + i + "-Other' class='form-control ddlApp1' disabled><option value='0'>--Select--</option>";
+                $.each($.parseJSON(Applicability.msg), function (key, val) {
+                    if (value.iApplicabilityId1 == val.iApplicabilityId)
+                        ddlApplicability1 += "<option value='" + val.iApplicabilityId + "' selected>" + val.sApplicability + "</option>";
+                    else
+                        ddlApplicability1 += "<option value='" + val.iApplicabilityId + "'>" + val.sApplicability + "</option>";
+
+                });
+                ddlApplicability1 += "</select>";
+
+                var ddlApplicability2 = "<select id='ddlApplicability2-" + i + "-Other' name='ddlApplicability2-" + i + "-Other' class='form-control ddlApp2' disabled><option value='0'>--Select--</option>";
+                $.each($.parseJSON(Applicability.msg), function (key, val) {
+                    if (value.iApplicabilityId2 == val.iApplicabilityId)
+                        ddlApplicability2 += "<option value='" + val.iApplicabilityId + "' selected>" + val.sApplicability + "</option>";
+                    else
+                        ddlApplicability2 += "<option value='" + val.iApplicabilityId + "'>" + val.sApplicability + "</option>";
+
+                });
+                ddlApplicability2 += "</select>";
+
+                myval += ' <tr class="trc">';
+                myval += ' <td>' + value.ifrom + '<input type="hidden" value="' + value.ifrom + '" class="hdfrom" /></td>';
+                myval += '<td>' + value.iTo + '</td><input type="hidden" value="' + value.iTo + '" class="hdto" />';
+                myval += '<td>' + value.dLeadDiscount + '%</td>';
+                myval += '<td><input type = "number" min = "0" max = "100" step = "0.01" class="form-control txtdisc" value="' + value.dLeadDiscount + '" pattern="[0-9]+([\\.,][0-9]+)?" maxlength="5" id="txtdiscount' + i + '" placeholder="%" disabled></td>';
+                myval += '<td>' + ddlAmenities1 + '</td>';
+                myval += '<td>' + ddlApplicability1 + '</td>';
+                myval += '<td>' + ddlAmenities2 + '</td>';
+                myval += '<td>' + ddlApplicability2 + '</td>';
+                myval += '';
+
+                $('#tbldiscountLOSOther').append("" + myval + "");
+            });
+        }
+
+    });
+
+    //Fetch data on button click before calling controller
+    function FetchData() {
+        var Data = []; var invalid = 0;
+        $("#tbldiscountLOS tr.trc").each(function () {
+            var from = $(this).find("input:hidden.hdfrom").val();
+            var to = $(this).find("input:hidden.hdto").val();
+            var disc = $(this).find("input.txtdisc").val();
+            var amen1 = $(this).find('select.ddlAmn1 option:selected').val();
+            var amen2 = $(this).find('select.ddlAmn2 option:selected').val();
+            var app1 = $(this).find('select.ddlApp1 option:selected').val();
+            var app2 = $(this).find('select.ddlApp2 option:selected').val();
+
+            if (disc < 0) {
+                toastr.error('Discount cannot be negetive.');
+                invalid = 1;
+            }
+
+            // Checking that both amenity and applicability should be provided or none should be provided
+            if ((amen1 == 0 && app1 != 0) || (amen1 != 0 && app1 == 0) || (amen2 == 0 && app2 != 0) || (amen2 != 0 && app2 == 0)) {
+                toastr.error('Both rate inclusion and applicability should be provided for a pair.');
+                invalid = 1;
+            }
+
+            // Amenities cannot be same
+            if ((amen1 == amen2) && (amen1 != 0) && (amen2 != 0)) {
+                toastr.error('Both the rate inclusions cannot be same.');
+                invalid = 1;
+            }
+            //if (parseFloat(disc) > 0) {
+            Data.push({
+                from: from,
+                to: to,
+                disc: disc,
+                amen1: amen1,
+                amen2: amen2,
+                app1: app1,
+                app2: app2
+            });
+            //}
+        });
+
+        if (Data.length == 0) {
+            toastr.info('There are no valid days.');
+            return false;
+        }
+
+        if (invalid == 1) {
+            return false;
+        }
+
+        $("#hdnJsonLOS").val('');
+        $("#hdnJsonLOS").val(JSON.stringify(Data));
+        return true;
+
+    }
+
+</script>
+@using (Ajax.BeginForm("UpdateLOSBidding", "RateInventoryBid", new AjaxOptions() { InsertionMode = InsertionMode.Replace, UpdateTargetId = "targetid", HttpMethod = "POST", OnSuccess = "GetResult" }))
+{
+    @Html.HiddenFor(x => x.SelectedDiscounts, new { id = "hdnJsonLOS" })
+    @Html.HiddenFor(x => x.dtEffectiveDate)
+    @Html.HiddenFor(x => x.IsPublic)
+    <div class="modal-dialog modal-lg" style="width: 96%;">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header ">
+                <!--         <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                <div class="pull-left">
+                    <h4>Length Of Stay</h4>
+                </div>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <div class="pull-right blue">@Model.EffectiveDate</div>
+            </div>
+            <div class="modal-body">
+                <div class="row  paddingbottom10">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            @if (Model.IsPublic)
+                            {
+                                <b>Public Discounts</b>
+                            }
+                            else
+                            {
+                                <b>Corporate Discounts</b>
+                            }
+                            <table class="table table-striped table-bordered table-hover txtcenter">
+                                <thead>
+                                    <tr>
+                                        <th>From Days</th>
+                                        <th>To Days</th>
+                                        <th>Current Discount(%)</th>
+                                        <th>New Discount (%)</th>
+                                        <th>Rate Inclusion 1</th>
+                                        <th>Applicability 1</th>
+                                        <th>Rate Inclusion 2</th>
+                                        <th>Applicability 2</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbldiscountLOS"></tbody>
+                            </table>
+                        </div>
+                        <div class="table-responsive">
+                            @if (!Model.IsPublic)
+                            {
+                                <b>Public Discounts</b>
+                            }
+                            else
+                            {
+                                <b>Corporate Discounts</b>
+                            }
+                            <table class="table table-striped table-bordered table-hover txtcenter">
+                                <thead>
+                                    <tr>
+                                        <th>From Days</th>
+                                        <th>To Days</th>
+                                        <th>Current Discount(%)</th>
+                                        <th>New Discount (%)</th>
+                                        <th>Rate Inclusion 1</th>
+                                        <th>Applicability 1</th>
+                                        <th>Rate Inclusion 2</th>
+                                        <th>Applicability 2</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbldiscountLOSOther"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-xs-3">
+                                Close Out
+                                @Html.DropDownListFor(m => m.bIsClosed, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="Yes",Value="true" },
+                                                                            new SelectListItem {Text="No",Value="false" }},
+                                                                            new { @class = "form-control " })
+                            </div>
+                            <div class="col-xs-3">
+                                CTA
+                                @Html.DropDownListFor(m => m.bCTA, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="Yes",Value="true" },
+                                                                            new SelectListItem {Text="No",Value="false" }},
+                                                                            new { @class = "form-control " })
+                            </div>
+                            <div class="col-xs-3">
+                                CTD
+                                @Html.DropDownListFor(m => m.bCTD, new List<SelectListItem> {
+                                                                            new SelectListItem {Text="Yes",Value="true" },
+                                                                            new SelectListItem {Text="No",Value="false" }},
+                                                                            new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ">
+                        <div class="col-xs-12 marginbottom20 margintop10 text-center">
+                            <hr>
+                            <input type="submit" class="btn btn-primary margintop10" onclick="return FetchData();" value="SAVE">
+                            <input type="button" class="btn btn-danger margintop10" value="CANCEL" data-dismiss="modal">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="targetid"></div>
+}

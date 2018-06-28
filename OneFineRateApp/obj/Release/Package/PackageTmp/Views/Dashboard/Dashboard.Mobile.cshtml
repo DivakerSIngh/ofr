@@ -1,0 +1,279 @@
+﻿@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_LayoutMobile.cshtml";
+}
+<style>
+    li {
+        display: list-item;
+        list-style-type: square;
+    }
+
+    .modal-body {
+        padding: 0px !important;
+    }
+
+    .red {
+        color: #FF0000;
+    }
+</style>
+
+<script src="~/js/matrix.tables.js"></script>
+<script src="~/js/bootbox.min.js"></script>
+<script>
+    function Action(act, id, ActualAmount, NegotiateRate, Code) {
+        var text = act == "R" ? "Are you sure you want to reject?" : "Are you sure you want to accept?";
+        if (act == "R") {
+            bootbox.dialog({
+                title: "Provide Counter Offer",
+                message: '<div class="row">  ' +
+                    '<div class="col-md-12"> ' +
+                    '<form> ' +
+                    '<div class="col-md-12"> ' +
+                    'Display Rate : <b>' + Code + ' ' + ActualAmount + '</b>' +
+                    '</div>' +
+                    '<div class="col-md-12 marginbottom10"> ' +
+                    'Negotiation Amount : <b>' + Code + ' ' + NegotiateRate + '</b>' +
+                    '</div>' +
+                    '<div class="col-md-12" style="padding-top: 5px;"> ' +
+                    '<input type="radio" name="Counter" value="0" class="radio-inline" onclick="CounterCheck(0);" unchecked> Continue with the display rate' +
+                    '</div>' +
+                    '<div class="col-md-12 marginbottom10"> ' +
+                    '<input type="radio" name="Counter" value="1" class="radio-inline" onclick="CounterCheck(1);" checked> Counter Offer (Excluding taxes)<b><span id="Code" style="padding-left: 5px; display:none;">' + Code + ' ' + ' </span><label id="offer" class="blue"></b></label> ' +
+                    '</div>' +
+                    '<div class="col-md-12"> ' +
+                    '<label>Discount :</label>' +
+                    '</div>' +
+                     
+                    '<div class="col-md-1 col-xs-2 "> ' +
+                    'Value' +
+                    '</div>' +
+                    '<div class="col-md-3 col-xs-4 nopadding"> ' +
+                    '<input id="offerVal" name="offerVal" type="number" class="form-control input-md" onkeyup="SetPer(' + ActualAmount + ')" onchange="SetPer(' + ActualAmount + ')">' +
+                    '</div>' +
+                    '<div class="col-md-2 col-xs-1 "> ' +
+                    '%' +
+                    '</div>' +
+                    '<div class="col-md-3 col-xs-4 nopadding"> ' +
+                    '<input id="offerPerc" name="offerPerc" type="number" class="form-control input-md" onkeyup="SetVal(' + ActualAmount + ')" onchange="SetVal(' + ActualAmount + ')">' +
+                    '</div>' +
+                    
+                    //'<div class="col-md-6"> <ul class="a">' +
+                    //'<li>Decimal numbers would be rounded to nearest integer.</li>' +
+                    //'</ul></div>' +
+                    '<div style="font-size:10px;padding-top: 10px;"  class="red col-md-8 col-xs-12">' +
+                    'NOTE : Decimal numbers would be rounded off.' +
+                    '</div>' +
+                    '</form> </div>  </div>',
+                buttons: {
+                    success: {
+                        label: "Save",
+                        className: "btn-success",
+                        callback: function () {
+                            var CO = $('#offer').html();
+                            var Counter = parseInt($("input[name='Counter']:checked").val());
+                            if (Counter == 0) {
+                                CO = -1;
+                            }
+                            else {
+                                if (CO == null || CO == '' || CO == undefined) {
+                                    toastr.error("Counter offer is not provided");
+                                    return false;
+                                }
+                                else if (isNaN(CO)) {
+                                    toastr.error("Counter offer is not a valid number");
+                                    return false;
+                                }
+                                if (parseInt(CO) <= parseInt(NegotiateRate) || parseInt(CO) >= parseInt(ActualAmount)) {
+                                    toastr.error("Counter Offer should be between " + NegotiateRate + " and " + ActualAmount);
+                                    return false;
+                                }
+                            }
+                            document.getElementById('Progress').style.display = 'block';
+                            var values = { id: id, act: act, CO: parseInt(CO) };
+                            var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("AcceptRejectNegotiation", "PendingNegotiations")", values));
+                            if (Data != null) {
+                                if (Data.st == '1') {
+                                    bindgrid();
+                                    toastr.success(Data.msg);
+                                    return true;
+                                }
+                                else if (Data.st == '0') {
+                                    toastr.error(Data.msg);
+                                    return false;
+                                }
+
+                            }
+                        }
+                    },
+                    danger: {
+                        label: "Cancel",
+                        className: "btn-danger",
+                        callback: function () {
+                        }
+                    }
+                }
+            }
+            );
+        }
+        else {
+            bootbox.confirm(text, function (result) {
+                if (result == true) {
+                    document.getElementById('Progress').style.display = 'block';
+                    var CO = null;
+                    var values = { id: id, act: act, CO: CO };
+                    var Data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("AcceptRejectNegotiation", "PendingNegotiations")", values));
+                    if (Data != null) {
+                        if (Data.st == '1') {
+                            bindgrid();
+                            toastr.success(Data.msg);
+                            return true;
+                        }
+                        else if (Data.st == '0') {
+                            toastr.error(Data.msg);
+                            return false;
+                        }
+
+                    }
+                }
+            });
+        }
+    };
+    $(document).ready(function () {
+        bindgrid(); //binding datatable
+    });
+
+    function bindgrid() {
+        var values = { PropId: '@TempData["PropID"]' };
+        var Data = $.parseJSON(AjaxCallWithDataMVC("/Services/Service.asmx/GetPendingNegotiationsByPropertyID", values));
+        var html = "";
+        for (var i = 0; i < Data.aaData.length; i++) {
+            html += "<div class=\"lineheight26 marginbottom10\">";
+            html += "<div class=\"col-md-4 \">";
+            html += "<div class=\"row lightbg\">";
+            html += "<div class=\"col-md-12\">";
+            html += "Check In: <span class=\"blklabel\">" + getNorDateWithoutTime(Data.aaData[i].StayFrom) + "</span>  ";
+            html += "Check Out: <span class=\"blklabel\">" + getNorDateWithoutTime(Data.aaData[i].StayTo) + "</span>  ";
+            html += "</div>";
+            html += "<div class=\"col-md-12\">";
+            html += "Rate Plan/Room Type: <span class=\"blklabel\">" + Data.aaData[i].RatePlanRoomType.replace("", "") + "</span>  ";//<br/>
+            html += "</div>";
+            html += "<div class=\"col-md-12\">";
+            html += "No. of Rooms: <span class=\"blklabel\">" + Data.aaData[i].NoOfRooms + "</span>  ";
+            html += "</div>";
+            html += "<div class=\"col-md-12\">";
+            html += "Display Rate: <span class=\"blklabel\">" + Data.aaData[i].Code + " " + Data.aaData[i].ActualAmount + "</span>  ";
+            html += "</div>";
+            html += "<div class=\"col-md-12\">";
+            html += "Bidding Rate: <span class=\"blklabel\">"
+            if (Data.aaData[i].BidRate == '' || Data.aaData[i].BidRate == null) {
+                html += "-";
+            }
+            else {
+                html += Data.aaData[i].Code + " " + Data.aaData[i].BidRate;
+            }
+            html += "</div>";
+            html += "<div class=\"col-md-12\">";
+            html += "Negotiation Rate: <span class=\"blklabel\">" + Data.aaData[i].Code + " " + Data.aaData[i].NegotiateRate + "</span>  ";
+            html += "</div>";
+            html += "<div class=\"col-md-12\">";
+            html += "Discount: <span class=\"blklabel\">"
+            if (Data.aaData[i].ActualAmount == '' || Data.aaData[i].ActualAmount == null || Data.aaData[i].NegotiateRate == '' || Data.aaData[i].NegotiateRate == null) {
+                html += "";
+            }
+            else {
+                html += Math.round(10000 * (Data.aaData[i].ActualAmount - Data.aaData[i].NegotiateRate) / Data.aaData[i].ActualAmount) / 100;
+            }
+            html += "%</span>  ";
+            html += "</div>";
+            //html += "<div class=\"col-md-12\">";
+            //html += "Attempts: <span class=\"blklabel\">" + Data.aaData[i].Attempts + "</span>  ";
+            //html += "</div>";
+            html += "<div class=\"col-md-12\">";
+            html += "Timer: <span class=\"blklabel\">" + Data.aaData[i].Timer + "</span>  ";
+            html += "</div>";
+            html += "</div>";
+            html += "</div>";
+            html += "<div class=\"col-md-2\">";
+            html += "<div class=\"row margintop27\">";
+            html += "<div class=\"col-md-6  col-xs-2\"><button value=\"Yes\" class=\"btn btn-success\" onclick=\"Action('B','" + Data.aaData[i].ID + "','" + Data.aaData[i].ActualAmount + "','" + Data.aaData[i].NegotiateRate + "','" + Data.aaData[i].Code + "')\";>Yes</button></div>";
+            html += "<div class=\"col-md-6  col-xs-2\"><button value=\"No\" class=\"btn btn-danger\" onclick=\"Action('R','" + Data.aaData[i].ID + "','" + Data.aaData[i].ActualAmount + "','" + Data.aaData[i].NegotiateRate + "','" + Data.aaData[i].Code + "')\";>No</button></div>";
+            html += "</div>";
+            html += "</div>";
+            html += "</div>";
+            html += "<hr/>";
+        }
+
+        if (html == "") {
+            html += "<div class=\"lineheight26 marginbottom10\" style=\"text-align: center;\">";
+            html += "<b>No Pending Negotiations.</b>"
+            html += "<\div>";
+        }
+
+        $('#Negotiations').html(html);
+    }
+
+    function CounterCheck(a) {
+        if (a == 1) {
+            $('#offerVal').prop("disabled", false);
+            $('#offerPerc').prop("disabled", false);
+        }
+        else {
+            $('#offerVal').prop("disabled", true);
+            $('#offerPerc').prop("disabled", true);
+            $('#offerVal').val("");
+            $('#offerPerc').val("");
+            $('#offer').html("");
+            $('#Code').hide();
+        }
+    }
+
+    function SetPer(MainRate) {
+        var x = $('#offerVal').val();
+        try {
+            var Val = parseFloat(x);
+
+            var Perc = Val * 100 / MainRate;
+            $('#offerPerc').val(Perc);
+            $('#offer').html(Math.round(MainRate - Val));
+            if (isNaN(Val))
+                $('#Code').hide();
+            else
+                $('#Code').show();
+        }
+        catch (e) {
+            $('#offer').html("");
+            $('#offerVal').val("");
+            $('#offerPerc').val("");
+            $('#Code').hide();
+        }
+    }
+
+    function SetVal(MainRate) {
+        var x = $('#offerPerc').val();
+        try {
+            var Perc = parseFloat(x);
+
+            var Val = MainRate * Perc / 100;
+            $('#offerVal').val(Val);
+            $('#offer').html(Math.round(MainRate - Val));
+            if (isNaN(Val))
+                $('#Code').hide();
+            else
+                $('#Code').show();
+        }
+        catch (e) {
+            $('#offer').html("");
+            $('#offerVal').val("");
+            $('#offerPerc').val("");
+            $('#Code').hide();
+        }
+    }
+</script>
+
+
+<div class="container whitebg border1">
+    <h4>Negotiation Notification</h4>
+    <hr>
+    <div id="Negotiations" class="row">
+    </div>
+</div>

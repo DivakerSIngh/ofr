@@ -1,0 +1,87 @@
+﻿@model OneFineRateBLL.Entities.etblRoomRateRangeM
+
+
+@using (Html.BeginForm("AddUpdate", "RoomRateRange", FormMethod.Post, new { id = "frmAddUpdateRoomRateRange" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Room Rate Range</h4>
+    </div>
+    <div class="modal-body">
+        <div class="form-horizontal">
+
+            @Html.HiddenFor(m => m.iRoomRateRangeId)
+            @Html.HiddenFor(m => m.dtActionDate)
+            @Html.HiddenFor(m => m.cStatus)
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="row">
+                <div class="col-md-6">
+                    @Html.LabelFor(model => model.dAmountFrom, htmlAttributes: new { @class = "control-label" }) <spam class="red">*</spam>
+
+                    @Html.TextBoxFor(model => model.dAmountFrom, new { maxlength = "8", @class = "form-control number" })
+                    @Html.ValidationMessageFor(model => model.dAmountFrom, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="col-md-6">
+                    @Html.LabelFor(model => model.dAmountTo, htmlAttributes: new { @class = "control-label" }) <spam class="red">*</spam>
+
+                    @Html.TextBoxFor(model => model.dAmountTo,new { maxlength = "8", @class = "form-control number" })
+                    @Html.ValidationMessageFor(model => model.dAmountTo, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" id="btnSubmit" class="btn btn-primary">Save</button>
+        <button type="button" data-dismiss="modal" id="btnCancel" class="btn btn-danger">Cancel</button>
+    </div>
+}
+
+<script title="AddRoomRateRange">
+
+
+    $(function () {
+
+
+        $('#frmAddUpdateRoomRateRange').submit(function (e) {
+
+            e.preventDefault();
+
+            if ($(this).valid()) {
+
+                var frmData = $(this).serializeArray();
+
+                $.post($(this).attr('action'), frmData).done(function (data) {
+
+                    toastr.clear($('.toast'));
+
+                    if (data.status == false) {
+                        toastr.error(data.Msg);
+                    }
+                    else if (data.status == true) {
+
+                        $('#addUpdateRoomRateRangeModal').modal('hide');
+
+                        BindRoomRateRangeGrid();
+
+                        toastr.success(data.Msg);
+                    }
+                });
+            }
+        });
+
+        //called when key is pressed in textbox
+        $(".number").keypress(function (e) {
+            //if the letter is not digit then display error and don't type anything
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                //display error message
+                return false;
+            }
+        });
+    });
+
+</script>

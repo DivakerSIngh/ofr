@@ -1,0 +1,177 @@
+﻿@model OneFineRateBLL.Entities.etblPropertyDiningMap
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutProperty.cshtml";
+}
+<link href="~/css/timepicki.min.css" rel="stylesheet" />
+
+@System.Web.Optimization.Scripts.Render("~/bundles/ajaxpostform")
+@System.Web.Optimization.Scripts.Render("~/bundles/validation")
+<script src="~/js/timepicki.min.js"></script>
+<script type="text/javascript">
+    var timevalid = true;
+    $(document).ready(function () {
+        bindgrid();
+    });
+
+    function EditData(Id, Name) {
+        var url = '@Url.Action("Edit")' + "?Id=" + Id + "&Name=" + encodeURI(Name);
+        $("#AddRestaurant").load(url);
+        $('#AddRestaurant').modal({
+            show: 'true'
+        });
+    }
+    function OpenPopUp() {
+        var url = '@Url.Action("Add")';
+        $("#AddRestaurant").load(url);
+        $('#AddRestaurant').modal({
+            show: 'true'
+        });
+    }
+    function UpdateAction(Id, Name, Mode) {
+        bootbox.confirm("Are you sure?", function (result) {
+            if (result == true) {
+                var data = $.parseJSON(AjaxCallWithDataMVC("@Url.Action("UpdateStatus")", { Id: Id, Name: Name, Mode: Mode }))
+                if (data != null) {
+                    if (data.st == 1) {
+                        toastr.success(data.msg);
+                        bindgrid();
+                    }
+                    else {
+                        toastr.error(data.msg);
+                    }
+                }
+            }
+        });
+    }
+
+    function GetResult(data) {
+        if (data.st == '1') {
+            toastr.success(data.msg);
+            bindgrid();
+            $('.close').click();
+        }
+        else {
+            toastr.error(data.msg);
+        }
+    }
+
+    function validate()
+    {
+        if ($('#timepicker_start').val() != "" && $('#timepicker_end').val() != "")
+            if ($('#timepicker_start').val() > $('#timepicker_end').val()) {
+                toastr.error('Start Time must be less then End Time');
+                timevalid = false;
+                return false;
+            } else {
+                timevalid = true;
+            }
+        if (timevalid == false) {
+            if (timevalid == false)
+                toastr.error('Start Time must be less then End Time');
+            return false;
+        }
+    }
+
+    // bind list
+    function bindgrid() {
+
+        try {
+            var aoColumns =
+                [
+                 { "sTitle": "Restaurant Name", "mData": "sRestaurantName" },
+                 {
+                     "sTitle": "Type", "mData": "cType",
+                     "mRender": function (data, type, full) {
+                         if (data == 'R')
+                             return 'Restaurants'
+                         else
+                             return 'Bars'
+                     }
+                 },
+                 { "sTitle": "Cuisine", "mData": "sDescription" },
+                  {
+                      "sTitle": "Time (From)", "mData": "sTimingFromHH",
+                      "mRender": function (data, type, full) {
+                          return full.sTimingFromHH + ':' + full.sTimingFromMM
+                      }
+                  },
+                   {
+                       "sTitle": "Time (To)", "mData": "sTimingToHH",
+                       "mRender": function (data, type, full) {
+                           return full.sTimingToHH + ':' + full.sTimingToMM
+                       }
+                   },
+                   {
+                       "sTitle": "Meals Served", "mData": "sTimingToHH",
+                       "mRender": function (data, type, full) {
+                           var arr = [];
+                           if (full.bBreakfast == true)
+                               arr.push('Breakfast');
+                           if (full.bLunch == true)
+                               arr.push('Lunch');
+                           if (full.bDinner == true)
+                               arr.push('Dinner');
+                           return arr;
+                       }
+                   },
+                 {
+                     "sTitle": "Status", "mData": "bActive",
+                     "mRender": function (data, type, full) {
+                         if (full.bActive == true)
+                             return 'Live'
+                         else
+                             return 'Disable'
+                     }
+                 },
+                  {
+                      "sTitle": "Action", "mData": "iPropId",
+                      "mRender": function (data, type, full) {
+                          var html = ''
+                          var html = "<a onclick=\"EditData('" + full.iPropId + "','" + full.sRestaurantName + "');\" class=\"btn btn-warning \"> Edit </a>";
+                          //var html = '<a onclick="EditData(' + full.iPropId + ',' + full.sRestaurantName + ');" eid=' + full.iPropId + '  ename=' + encodeURI(full.sRestaurantName) + '   class="btn btn-warning btn-xs width50 "> Edit </a>';
+                          if (full.bActive == false)
+                              html += "<a onclick=\"UpdateAction('" + full.iPropId + "','" + full.sRestaurantName + "',true);\" class=\"btn btn-success   margintop10 \"> Enable </a>";
+                          else
+                              html += "<a onclick=\"UpdateAction('" + full.iPropId + "','" + full.sRestaurantName + "',false);\" class=\"btn btn-danger  margintop10 \"> Disable </a>";
+                          return html;
+                      }
+                  }
+                ];
+            DatatableServerSide("#tblData", aoColumns, "/Services/Service.asmx/GetAllPropertyDining?Id=@Convert.ToInt32(Session["PropId"])");
+        }
+        catch (e) {
+
+        }
+
+    }
+</script>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-xs-10">
+                <h4 class="panel-title">
+                    <strong> Dining &amp; Restaurant </strong>
+                </h4>
+            </div>
+            <div class="col-xs-2">
+                <button type="button" class="btn btn-primary" onclick="OpenPopUp();"><i class="fa fa-plus"></i> Add  </button>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+
+        <div class="table-responsive margintop20">
+            <table class="display table-bordered" id="tblData"></table>
+        </div>
+        <!-- End  table -->
+    </div>
+
+</div>
+<!-- container div END bottom -->
+<!-- Add Restaurant -->
+<div id="AddRestaurant" class="modal fade" role="dialog">
+
+</div>
+
